@@ -1,4 +1,4 @@
-package uk.gov.hmrc.ctcpresentationnotificationfrontend.config
+package config
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
