@@ -36,7 +36,8 @@ class MoreInformationController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      Ok(view())
+      println("I got here")
+      Ok(view(lrn))
   }
 
 }

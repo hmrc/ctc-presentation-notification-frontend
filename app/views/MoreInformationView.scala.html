@@ -14,15 +14,29 @@
  * limitations under the License.
  *@
 
-@this(layout: Layout)
+@import views.html.components.{Button, Heading}
 
-@()(implicit request: Request[_], messages: Messages)
+@this(
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    button: Button,
+)
 
-@layout(pageTitle = Some("ctc-presentation-notification-frontend")) {
-    <h1 class="govuk-heading-xl">ctc-presentation-notification-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+@(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-@{
-    //$COVERAGE-OFF$
+@mainTemplate(
+    title = messages("moreInformation.title"),
+    showBackLink = true,
+    lrn = lrn
+) {
+
+    @heading(
+        heading = messages("moreInformation.heading"),
+        caption = Some(messages("caption"))
+    )
+
+    <p class="govuk-body">@messages("moreInformation.paragraph")</p>
+
+    @button(attributes = Map("id" -> "submit"))
 }
