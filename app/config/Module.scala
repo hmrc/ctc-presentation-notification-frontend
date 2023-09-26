@@ -17,12 +17,13 @@
 package config
 
 import com.google.inject.AbstractModule
-import config.FrontendAppConfig
+import controllers.actions._
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
-
-    bind(classOf[FrontendAppConfig]).asEagerSingleton()
+    bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
+    bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
+    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
   }
 }

@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package connectors
+package viewModels
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+sealed abstract class LegendSize(val className: String) {
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+  override val toString: String = className
+}
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+object LegendSize {
+  case object XL extends LegendSize("govuk-fieldset__legend--xl")
+  case object L extends LegendSize("govuk-fieldset__legend--l")
+  case object M extends LegendSize("govuk-fieldset__legend--m")
+  case object S extends LegendSize("govuk-fieldset__legend--s")
+
+  implicit def sizeToOptionString(size: LegendSize): Option[String] = Some(size.toString)
+  implicit def sizeToString(size: LegendSize): String               = size.toString
+}

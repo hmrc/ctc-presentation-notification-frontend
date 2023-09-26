@@ -16,20 +16,27 @@
 
 package controllers
 
-import views.html.HelloWorldPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import models.LocalReferenceNumber
+import controllers.actions._
+import play.api.i18n.I18nSupport
+import views.html.MoreInformationView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class HelloWorldController @Inject()(
-  mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
-    extends FrontendController(mcc) {
+class MoreInformationController @Inject() (
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  view: MoreInformationView
+) extends FrontendBaseController
+    with I18nSupport {
 
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      Ok(view())
   }
 
 }

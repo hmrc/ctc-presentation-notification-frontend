@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package connectors
+package pages
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+import queries.{Gettable, Settable}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
+  type Data = A
+}

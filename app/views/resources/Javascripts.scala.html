@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package connectors
+@this(autocompleteJavascript: HmrcAccessibleAutocompleteJavascript)
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+@()(implicit request: Request[_])
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+<script src='@routes.Assets.versioned("javascripts/application.min.js")' @{CSPNonce.attr}></script>
+@autocompleteJavascript()

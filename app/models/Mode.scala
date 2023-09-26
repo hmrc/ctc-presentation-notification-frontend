@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package connectors
+package models
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+import play.api.libs.json.{JsString, Writes}
+import play.api.mvc.JavascriptLiteral
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+sealed trait Mode
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+case object NormalMode extends Mode {
+  override def toString: String = "NormalMode"
+}
+
+case object CheckMode extends Mode {
+  override def toString: String = "CheckMode"
+}
+
+object Mode {
+  implicit val jsLiteral: JavascriptLiteral[Mode] = (mode: Mode) => s""""$mode""""
+
+  implicit def writes[T <: Mode]: Writes[T] = Writes {
+    mode => JsString(mode.toString)
+  }
+}

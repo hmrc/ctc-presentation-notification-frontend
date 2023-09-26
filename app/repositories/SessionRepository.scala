@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-package connectors
+package repositories
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+import connectors.CacheConnector
+import models.{LocalReferenceNumber, UserAnswers}
+import uk.gov.hmrc.http.HeaderCarrier
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+@Singleton
+class SessionRepository @Inject() (
+  cacheConnector: CacheConnector
+) {
+
+  def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
+    cacheConnector.get(lrn)
+
+  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
+    cacheConnector.post(userAnswers)
+
+}

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package connectors
+@import uk.gov.hmrc.hmrcfrontend.views.Utils.toClasses
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+@this(hmrcPageHeading: HmrcPageHeading)
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+@(
+    heading: String,
+    caption: Option[String] = None,
+    classes: Option[String] = None
+)(implicit messages: Messages)
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+@headingClasses = @{
+    toClasses("govuk-heading-xl", "hmrc-page-heading", classes.getOrElse(""))
+}
+
+<h1 class="@headingClasses">
+    @heading
+    @caption.map { caption =>
+        <span class="hmrc-caption govuk-caption-xl">
+            <span class="govuk-visually-hidden">@messages("site.section")</span>
+            @caption
+        </span>
+    }
+</h1>

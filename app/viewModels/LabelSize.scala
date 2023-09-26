@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package viewModels
 
-import javax.inject.{Inject, Singleton}
+sealed abstract class LabelSize(val className: String) {
 
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.ErrorTemplate
+  override val toString: String = className
+}
 
-@Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)
-    extends FrontendErrorHandler {
+object LabelSize {
+  case object XL extends LabelSize("govuk-label--xl")
+  case object L extends LabelSize("govuk-label--l")
+  case object M extends LabelSize("govuk-label--m")
+  case object S extends LabelSize("govuk-label--s")
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    errorTemplate(pageTitle, heading, message)
+  implicit def sizeToOptionString(size: LabelSize): Option[String] = Some(size.toString)
 }

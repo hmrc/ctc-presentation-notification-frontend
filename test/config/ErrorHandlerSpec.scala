@@ -7,9 +7,7 @@ import play.api.Application
 import play.api.test.FakeRequest
 import play.api.inject.guice.GuiceApplicationBuilder
 
-class ErrorHandlerSpec extends AnyWordSpec
-  with Matchers
-  with GuiceOneAppPerSuite {
+class ErrorHandlerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()

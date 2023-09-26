@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package connectors
+package queries
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+import models.{Mode, UserAnswers}
+import pages.Page
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+sealed trait Query extends Page {
+  def path: JsPath
+}
+
+trait Gettable[A] extends Query {
+  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
+}
+
+trait Settable[A] extends Query {
+
+  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
+    Success(userAnswers)
+}

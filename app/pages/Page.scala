@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package connectors
+package pages
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+trait Page
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+object Page {
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+  implicit def toString(page: Page): String =
+    page.toString
+}

@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package connectors
+package config
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+import play.api.Configuration
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+class MyServicesConfig @Inject() (configuration: Configuration) extends ServicesConfig(configuration) {
+
+  def fullServiceUrl(serviceName: String): String = {
+    val startUrl = getConfString(s"$serviceName.startUrl", "")
+    s"${baseUrl(serviceName)}/$startUrl"
+  }
+
+}
