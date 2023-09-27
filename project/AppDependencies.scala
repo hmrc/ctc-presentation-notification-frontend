@@ -1,12 +1,11 @@
 import play.core.PlayVersion
-import play.sbt.PlayImport._
-import sbt.Keys.libraryDependencies
 import sbt._
 
 object AppDependencies {
 
   private val bootstrapVersion = "7.22.0"
   private val hmrcMongoVersion = "1.3.0"
+  private val catsVersion = "2.9.0"
 
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"             %% "bootstrap-frontend-play-28" % bootstrapVersion,
@@ -23,4 +22,9 @@ object AppDependencies {
   ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test
+
+  val overrides: Seq[ModuleID] = Seq(
+    "org.typelevel" %% "cats-core" % catsVersion,
+    "org.typelevel" %% "cats-kernel" % catsVersion
+  )
 }

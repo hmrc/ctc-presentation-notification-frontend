@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package connectors
+package models.departureP5
 
-import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
-import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+import play.api.libs.json.{Json, Reads}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+case class DepartureMessages(messages: List[DepartureMessageMetaData])
 
-class APIConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {}
+object DepartureMessages {
+  implicit val reads: Reads[DepartureMessages] = Json.reads[DepartureMessages]
+}
