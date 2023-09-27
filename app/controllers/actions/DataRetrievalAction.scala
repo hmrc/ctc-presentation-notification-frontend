@@ -49,7 +49,6 @@ class DataRetrievalAction(
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     sessionRepository.get(departureId).map {
       userAnswers =>
-        println(userAnswers)
         OptionalDataRequest(request.request, request.eoriNumber, userAnswers)
     }
   }

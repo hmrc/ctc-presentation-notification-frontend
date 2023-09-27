@@ -8,9 +8,10 @@ object AppDependencies {
   private val catsVersion = "2.9.0"
 
   val compile: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"             %% "bootstrap-frontend-play-28" % bootstrapVersion,
-    "uk.gov.hmrc"             %% "play-frontend-hmrc"         % "7.20.0-play-28",
-    "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-28"         % hmrcMongoVersion
+    "uk.gov.hmrc"             %% "bootstrap-frontend-play-28"     % bootstrapVersion,
+    "uk.gov.hmrc"             %% "play-frontend-hmrc"             % "7.20.0-play-28",
+    "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-28"             % hmrcMongoVersion,
+    "org.typelevel"           %% "cats-core"                      % "2.9.0"
   )
 
   val test: Seq[ModuleID] = Seq(
@@ -22,9 +23,4 @@ object AppDependencies {
   ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test
-
-  val overrides: Seq[ModuleID] = Seq(
-    "org.typelevel" %% "cats-core" % catsVersion,
-    "org.typelevel" %% "cats-kernel" % catsVersion
-  )
 }

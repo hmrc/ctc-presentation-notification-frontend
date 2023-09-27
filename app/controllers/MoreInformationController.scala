@@ -17,25 +17,29 @@
 package controllers
 
 import controllers.actions._
-import models.LocalReferenceNumber
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.MoreInformationView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class MoreInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  service: DepartureMessageService,
   view: MoreInformationView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      Ok(view(new LocalReferenceNumber("hey")))
+      val lrn = request.userAnswers.lrn
+      Ok(view(lrn))
   }
 
 }

@@ -30,12 +30,10 @@ lazy val root = Project(appName, file("."))
         ),
         PlayKeys.playDefaultPort := 10134,
         libraryDependencies ++= AppDependencies(),
-        dependencyOverrides ++= AppDependencies.overrides,
         // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
         // suppress warnings in generated routes files
         scalacOptions ++= Seq(
               "-feature",
-              "-Ypartial-unification",
               "-language:implicitConversions",
               "-Wconf:src=routes/.*:s",
               "-Wconf:cat=unused-imports&src=html/.*:s",

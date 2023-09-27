@@ -28,6 +28,11 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   val loginUrl: String         = config.get[String]("urls.login")
   val loginContinueUrl: String = config.get[String]("urls.loginContinue")
 
+  val signOutUrl: String           = config.get[String]("urls.logoutContinue") + config.get[String]("urls.feedback")
+  lazy val nctsHelpdeskUrl: String = config.get[String]("urls.nctsHelpdesk")
+
+  val contactHost: String = config.get[Service]("microservice.services.contact-frontend").fullServiceUrl
+
   lazy val commonTransitConventionTradersUrl: String = config.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl
 
   val eccEnrolmentSplashPage: String = config.get[String]("urls.eccEnrolmentSplashPage")

@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package models.requests
 
-import play.api.libs.json._
-import play.api.mvc.{JavascriptLiteral, PathBindable}
+import models.{EoriNumber, LocalReferenceNumber}
+import play.api.mvc.{Request, WrappedRequest}
 
-final case class LocalReferenceNumber(value: String) {
-  override def toString: String = value
-}
-
-object LocalReferenceNumber {
-
-  implicit val reads: Reads[LocalReferenceNumber] =
-    (__ \ "localReferenceNumber").read[String].map(LocalReferenceNumber(_))
-
-  implicit val writes: Writes[LocalReferenceNumber] = Writes {
-    lrn =>
-      JsString(lrn.value)
-  }
-
-}
+case class AuthorisedRequest[A](request: Request[A], eoriNumber: EoriNumber, lrn: LocalReferenceNumber) extends WrappedRequest[A](request)

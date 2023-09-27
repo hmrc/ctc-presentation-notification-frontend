@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package controllers
 
-import play.api.libs.json._
-import play.api.mvc.{JavascriptLiteral, PathBindable}
+import controllers.actions.IdentifierAction
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-final case class LocalReferenceNumber(value: String) {
-  override def toString: String = value
-}
+import javax.inject.Inject
 
-object LocalReferenceNumber {
+class KeepAliveController @Inject() (
+  identify: IdentifierAction,
+  val controllerComponents: MessagesControllerComponents
+) extends FrontendBaseController
+    with I18nSupport {
 
-  implicit val reads: Reads[LocalReferenceNumber] =
-    (__ \ "localReferenceNumber").read[String].map(LocalReferenceNumber(_))
-
-  implicit val writes: Writes[LocalReferenceNumber] = Writes {
-    lrn =>
-      JsString(lrn.value)
-  }
-
+  def keepAlive: Action[AnyContent] =
+    identify {
+      _ =>
+        NoContent
+    }
 }

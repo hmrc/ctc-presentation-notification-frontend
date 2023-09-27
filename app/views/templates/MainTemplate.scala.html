@@ -39,8 +39,7 @@
     title: String,
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
-    showBackLink: Boolean = false,
-    lrn: LocalReferenceNumber
+    showBackLink: Boolean = false
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
@@ -48,8 +47,8 @@
         @hmrcTimeoutDialog(TimeoutDialog(
             timeout = Some(renderConfig.timeoutSeconds),
             countdown = Some(renderConfig.countdownSeconds),
-            keepAliveUrl = Some(appConfig.keepAliveUrl(lrn)),
-            signOutUrl = Some(appConfig.signOutUrl(lrn))
+            keepAliveUrl = Some(routes.KeepAliveController.keepAlive().url),
+            signOutUrl = Some(appConfig.signOutUrl)
         ))
     }
 
@@ -69,7 +68,7 @@
     userResearchBannerUrl = if (renderConfig.showUserResearchBanner) Some(renderConfig.userResearchUrl) else None,
     serviceName = Some(messages("site.service_name")),
     serviceUrl = Some(appConfig.serviceUrl),
-    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl(lrn)) else None,
+    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None,
     phaseBanner = Some(standardBetaBanner(url = renderConfig.feedbackUrl)),
     backLinkUrl = if (showBackLink) Some("#") else None, // This is overridden in ctc.js
     additionalScriptsBlock = Some(javascripts())

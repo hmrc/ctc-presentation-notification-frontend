@@ -22,6 +22,7 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.TimeMachine
 
@@ -33,6 +34,7 @@ class IndexController @Inject() (
   actions: Actions,
   sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
+  service: DepartureMessageService,
   timeMachine: TimeMachine
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -40,20 +42,25 @@ class IndexController @Inject() (
 
   def index(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
     implicit request =>
-      sessionRepository
-        .set(
-          request.userAnswers.getOrElse(
-            UserAnswers(
-              departureId,
-              request.eoriNumber,
-              JsObject.empty,
-              timeMachine.now()
+      service.getLRN(departureId) flatMap {
+        lrn =>
+          sessionRepository
+            .set(
+              request.userAnswers.getOrElse(
+                UserAnswers(
+                  departureId,
+                  request.eoriNumber,
+                  lrn.value,
+                  JsObject.empty,
+                  timeMachine.now()
+                )
+              )
             )
-          )
-        )
-        .map(
-          _ => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
-        )
+            .map(
+              _ => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+            )
+      }
+
   }
 
 }
