@@ -6,3 +6,5 @@ site.service_name = Manage your transit movements
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
+moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
+moreInformation.paragraph2 = Answer the following questions to complete the declaration.

@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading}
+@import views.html.components.{Button, Heading, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
+    headingCaption: HeadingCaption
 )
 
 @(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
@@ -31,12 +32,13 @@
     lrn = lrn
 ) {
 
+    @headingCaption(lrn.value)
     @heading(
-        heading = messages("moreInformation.heading"),
-        caption = Some(messages("caption"))
+        heading = messages("moreInformation.heading")
     )
 
-    <p class="govuk-body">@messages("moreInformation.paragraph")</p>
+    <p class="govuk-body">@messages("moreInformation.paragraph1")</p>
+    <p class="govuk-body">@messages("moreInformation.paragraph2")</p>
 
     @button(attributes = Map("id" -> "submit"))
 }
