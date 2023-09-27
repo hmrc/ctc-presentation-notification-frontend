@@ -16,63 +16,53 @@
 
 package models
 
-import pages.QuestionPage
 import play.api.libs.json._
-import queries.Gettable
+import queries.{Gettable, Settable}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-  lrn: LocalReferenceNumber,
+  id: String,
   eoriNumber: EoriNumber,
-  expiryInDays: Option[Long] = None,
-  data: JsObject = Json.obj()
+  data: JsObject,
+  lastUpdated: Instant
 ) {
-
-  def getOptional[A](page: Gettable[A])(implicit rds: Reads[A]): Either[String, Option[A]] =
-    Reads
-      .optionNoError(Reads.at(page.path))
-      .reads(data)
-      .asOpt
-      .toRight(
-        "Something went wrong"
-      )
-
-  def getAsEither[A](page: Gettable[A])(implicit rds: Reads[A]): Either[String, A] =
-    Reads
-      .optionNoError(Reads.at(page.path))
-      .reads(data)
-      .getOrElse(None)
-      .toRight(
-        "Something went wrong"
-      )
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
-    lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {
+  def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+
+    val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
         Failure(JsResultException(errors))
     }
 
-    lazy val cleanup: JsObject => Try[UserAnswers] = d => {
-      val updatedAnswers = copy(data = d)
-      page.cleanup(Some(value), updatedAnswers)
-    }
-
-    get(page) match {
-      case Some(`value`) => Success(this)
-      case _             => updatedData flatMap cleanup
+    updatedData.flatMap {
+      d =>
+        val updatedAnswers = copy(data = d)
+        page.cleanup(Some(value), updatedAnswers)
     }
   }
 
-  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
-    val updatedData    = data.removeObject(page.path).getOrElse(data)
-    val updatedAnswers = copy(data = updatedData)
-    page.cleanup(None, updatedAnswers)
+  def remove[A](page: Settable[A]): Try[UserAnswers] = {
+
+    val updatedData = data.removeObject(page.path) match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
+      case JsError(_) =>
+        Success(data)
+    }
+
+    updatedData.flatMap {
+      d =>
+        val updatedAnswers = copy(data = d)
+        page.cleanup(None, updatedAnswers)
+    }
   }
 }
 
@@ -80,22 +70,19 @@ object UserAnswers {
 
   import play.api.libs.functional.syntax._
 
-  implicit lazy val reads: Reads[UserAnswers] =
-    (
-      (__ \ "lrn").read[LocalReferenceNumber] and
-        (__ \ "eoriNumber").read[EoriNumber] and
-        (__ \ "expiryInDays").readNullable[Long] and
-        (__ \ "data").read[JsObject]
-    ).apply {
-      (lrn, eoriNumber, expiryInDays, data) =>
-        UserAnswers.apply(lrn, eoriNumber, expiryInDays, data)
-    }
+  implicit lazy val reads: Reads[UserAnswers] = (
+    (__ \ "_id").read[String] and
+      (__ \ "eoriNumber").read[EoriNumber] and
+      (__ \ "data").read[JsObject] and
+      (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
+  )(UserAnswers.apply _)
 
-  implicit lazy val writes: Writes[UserAnswers] =
-    (
-      (__ \ "lrn").write[LocalReferenceNumber] and
-        (__ \ "eoriNumber").write[EoriNumber] and
-        (__ \ "expiryInDays").writeNullable[Long] and
-        (__ \ "data").write[JsObject]
-    )(unlift(UserAnswers.unapply))
+  implicit lazy val writes: OWrites[UserAnswers] = (
+    (__ \ "_id").write[String] and
+      (__ \ "eoriNumber").write[EoriNumber] and
+      (__ \ "data").write[JsObject] and
+      (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
+  )(unlift(UserAnswers.unapply))
+
+  implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
 }

@@ -16,22 +16,61 @@
 
 package repositories
 
-import connectors.CacheConnector
-import models.{LocalReferenceNumber, UserAnswers}
-import uk.gov.hmrc.http.HeaderCarrier
+import config.FrontendAppConfig
+import models.UserAnswers
+import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, IndexModel, IndexOptions, Indexes, ReplaceOptions, Updates}
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import utils.TimeMachine
 
+import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionRepository @Inject() (
-  cacheConnector: CacheConnector
-) {
+  mongoComponent: MongoComponent,
+  appConfig: FrontendAppConfig,
+  timeMachine: TimeMachine
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[UserAnswers](
+      mongoComponent = mongoComponent,
+      collectionName = "user-answers",
+      domainFormat = UserAnswers.format,
+      indexes = SessionRepository.indexes(appConfig),
+      replaceIndexes = appConfig.replaceIndexes
+    ) {
 
-  def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
-    cacheConnector.get(lrn)
+  def get(departureId: String): Future[Option[UserAnswers]] = {
+    val filter = Filters.eq("_id", departureId)
+    val update = Updates.set("lastUpdated", timeMachine.now())
 
-  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
-    cacheConnector.post(userAnswers)
+    collection
+      .findOneAndUpdate(filter, update, FindOneAndUpdateOptions().upsert(false))
+      .toFutureOption()
+  }
+
+  def set(userAnswers: UserAnswers): Future[Boolean] = {
+    val filter             = Filters.eq("_id", userAnswers.id)
+    val updatedUserAnswers = userAnswers.copy(lastUpdated = timeMachine.now())
+
+    collection
+      .replaceOne(filter, updatedUserAnswers, ReplaceOptions().upsert(true))
+      .toFuture()
+      .map(_.wasAcknowledged())
+  }
+
+}
+
+object SessionRepository {
+
+  def indexes(appConfig: FrontendAppConfig): Seq[IndexModel] = {
+    val userAnswersLastUpdatedIndex: IndexModel = IndexModel(
+      keys = Indexes.ascending("lastUpdated"),
+      indexOptions = IndexOptions().name("user-answers-last-updated-index").expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
+    )
+
+    Seq(userAnswersLastUpdatedIndex)
+  }
 
 }

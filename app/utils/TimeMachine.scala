@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package utils
 
-import models.requests.{DataRequest, OptionalDataRequest}
-import play.api.mvc.{ActionBuilder, AnyContent}
-
+import java.time.{Clock, Instant, LocalDate}
 import javax.inject.Inject
 
-class Actions @Inject() (
-  identifierAction: IdentifierAction,
-  dataRetrievalActionProvider: DataRetrievalActionProvider,
-  dataRequiredAction: DataRequiredAction
-) {
+trait TimeMachine {
+  def today(): LocalDate
+  def now(): Instant
+}
 
-  def getData(departureId: String): ActionBuilder[OptionalDataRequest, AnyContent] =
-    identifierAction andThen dataRetrievalActionProvider(departureId)
+class DefaultTimeMachine @Inject() (clock: Clock) extends TimeMachine {
+  override def today(): LocalDate = LocalDate.now(clock)
 
-  def requireData(departureId: String): ActionBuilder[DataRequest, AnyContent] =
-    getData(departureId) andThen dataRequiredAction
+  override def now(): Instant = Instant.now(clock)
 }

@@ -1,2 +1,8 @@
 service.name = ctc-presentation-notification-frontend
 service.text = This is your new service
+
+site.continue = Continue
+site.service_name = Manage your transit movements
+
+moreInformation.title = More information needed to complete declaration
+moreInformation.heading = More information needed to complete declaration

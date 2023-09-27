@@ -17,25 +17,43 @@
 package controllers
 
 import controllers.actions._
-import models.LocalReferenceNumber
+import models.{LocalReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.MoreInformationView
+import utils.TimeMachine
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class MoreInformationController @Inject() (
+class IndexController @Inject() (
   actions: Actions,
+  sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
-  view: MoreInformationView
-) extends FrontendBaseController
+  timeMachine: TimeMachine
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
+  def index(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
     implicit request =>
-      Ok(view(new LocalReferenceNumber("hey")))
+      sessionRepository
+        .set(
+          request.userAnswers.getOrElse(
+            UserAnswers(
+              departureId,
+              request.eoriNumber,
+              JsObject.empty,
+              timeMachine.now()
+            )
+          )
+        )
+        .map(
+          _ => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+        )
   }
 
 }

@@ -30,25 +30,26 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DataRetrievalActionProviderImpl @Inject() (sessionRepository: SessionRepository)(implicit ec: ExecutionContext) extends DataRetrievalActionProvider {
 
-  def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
-    new DataRetrievalAction(lrn, sessionRepository)
+  def apply(departureId: String): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
+    new DataRetrievalAction(departureId, sessionRepository)
 }
 
 trait DataRetrievalActionProvider {
 
-  def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest]
+  def apply(departureId: String): ActionTransformer[IdentifierRequest, OptionalDataRequest]
 }
 
 class DataRetrievalAction(
-  lrn: LocalReferenceNumber,
+  departureId: String,
   sessionRepository: SessionRepository
 )(implicit val executionContext: ExecutionContext)
     extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    sessionRepository.get(lrn).map {
+    sessionRepository.get(departureId).map {
       userAnswers =>
+        println(userAnswers)
         OptionalDataRequest(request.request, request.eoriNumber, userAnswers)
     }
   }

@@ -52,6 +52,9 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   val hubUrl: String     = config.get[String]("urls.manageTransitMovementsFrontend")
   val serviceUrl: String = s"$hubUrl/what-do-you-want-to-do"
 
+  lazy val cacheTtl: Int           = config.get[Int]("mongodb.timeToLiveInSeconds")
+  lazy val replaceIndexes: Boolean = config.get[Boolean]("feature-flags.replace-indexes")
+
   val cacheUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-cache")
 
   def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"

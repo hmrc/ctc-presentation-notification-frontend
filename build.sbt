@@ -5,6 +5,12 @@ lazy val appName: String = "ctc-presentation-notification-frontend"
 
 lazy val root = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .configs(A11yTest)
+  .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings): _*)
+  .settings(inConfig(Test)(testSettings): _*)
+  .settings(headerSettings(A11yTest): _*)
+  .settings(automateHeaderSettings(A11yTest))
   .settings(
         majorVersion := 0,
         scalaVersion := "2.13.8",
@@ -41,3 +47,13 @@ lazy val root = Project(appName, file("."))
         uglify / includeFilter := GlobFilter("application.js"),
         ThisBuild / scalafmtOnCompile := true
   )
+  .settings(resolvers += Resolver.jcenterRepo)
+  .settings(CodeCoverageSettings.settings: _*)
+
+lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+  fork := true,
+  unmanagedResourceDirectories += baseDirectory.value / "test" / "resources",
+  javaOptions ++= Seq(
+    "-Dconfig.resource=test.application.conf"
+  )
+)
