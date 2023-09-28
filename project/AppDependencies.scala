@@ -19,7 +19,15 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % bootstrapVersion,
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"    % hmrcMongoVersion,
     "com.typesafe.play"       %% "play-test"                  % PlayVersion.current,
-    "org.jsoup"               %  "jsoup"                      % "1.15.4"
+    "org.jsoup"               %  "jsoup"                      % "1.15.4",
+    "org.mockito"             % "mockito-core"                % "5.2.0",
+    "org.scalatestplus"       %% "mockito-4-6"                % "3.2.15.0",
+    "org.scalatestplus"       %% "scalacheck-1-17"            % "3.2.15.0",
+    "org.scalacheck"          %% "scalacheck"                 % "1.17.0",
+    "io.github.wolfendale"    %% "scalacheck-gen-regexp"      % "1.1.0",
+    "org.pegdown"             % "pegdown"                     % "1.6.0",
+    "com.github.tomakehurst"  % "wiremock-standalone"         % "2.27.2",
+    "com.vladsch.flexmark"    % "flexmark-all"                % "0.62.2"
   ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test

@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.actions
 
-import controllers.actions.IdentifierAction
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.EoriNumber
+import models.requests.IdentifierRequest
+import play.api.mvc._
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class KeepAliveController @Inject() (
-  identify: IdentifierAction,
-  val controllerComponents: MessagesControllerComponents
-) extends FrontendBaseController
-    with I18nSupport {
+class FakeIdentifierAction @Inject() (bodyParsers: PlayBodyParsers) extends IdentifierAction {
 
-  def keepAlive: Action[AnyContent] =
-    identify {
-      _ =>
-        NoContent
-    }
+  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
+    block(IdentifierRequest(request, EoriNumber("id")))
+
+  override def parser: BodyParser[AnyContent] =
+    bodyParsers.default
+
+  override protected def executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
 }

@@ -15,6 +15,8 @@
  *@
 
 @import views.html.components.{Button, Heading, HeadingCaption}
+@import models.LocalReferenceNumber
+@import play.api.mvc.Call
 
 @this(
     mainTemplate: MainTemplate,
@@ -28,7 +30,8 @@
 
 @mainTemplate(
     title = messages("moreInformation.title"),
-    showBackLink = true
+    showBackLink = true,
+    lrn = LocalReferenceNumber(lrn)
 ) {
 
     @headingCaption(lrn)
@@ -39,5 +42,7 @@
     <p class="govuk-body">@messages("moreInformation.paragraph1")</p>
     <p class="govuk-body">@messages("moreInformation.paragraph2")</p>
 
-    @button(attributes = Map("id" -> "submit"))
+    @formHelper(action = Call("GET", "#"), Symbol("autoComplete") -> "off") {
+        @button(attributes = Map("id" -> "submit"))
+    }
 }

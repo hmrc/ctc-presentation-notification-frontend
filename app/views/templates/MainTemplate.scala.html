@@ -15,16 +15,15 @@
  *@
 
 @import config.{RenderConfig, FrontendAppConfig}
-@import resources._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
-@import views.utils.ViewUtils._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.{Footer, FooterItem, Meta}
+@import resources._
 @import models.LocalReferenceNumber
 
 @this(
-    appConfig: FrontendAppConfig,
     renderConfig: RenderConfig,
+    appConfig: FrontendAppConfig,
     hmrcLayout: HmrcLayout,
     hmrcInternalHead: HmrcInternalHead,
     hmrcTimeoutDialog: HmrcTimeoutDialog,
@@ -39,7 +38,8 @@
     title: String,
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
-    showBackLink: Boolean = false
+    showBackLink: Boolean = false,
+    lrn: LocalReferenceNumber
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
@@ -47,10 +47,12 @@
         @hmrcTimeoutDialog(TimeoutDialog(
             timeout = Some(renderConfig.timeoutSeconds),
             countdown = Some(renderConfig.countdownSeconds),
-            keepAliveUrl = Some(routes.KeepAliveController.keepAlive().url),
-            signOutUrl = Some(appConfig.signOutUrl)
+            keepAliveUrl = Some(appConfig.keepAliveUrl(lrn)),
+            signOutUrl = Some(appConfig.signOutUrl(lrn))
         ))
     }
+
+    <meta name="format-detection" content="telephone=no" />
 
     @stylesheets()
 }
@@ -62,13 +64,11 @@
 
 @hmrcLayout(
     pageTitle = Some(breadCrumbTitle(title, mainContent)),
-    additionalHeadBlock = Some(hmrcInternalHead(
-        headBlock = Some(headScripts)
-    )),
+    additionalHeadBlock = Some(headScripts),
     userResearchBannerUrl = if (renderConfig.showUserResearchBanner) Some(renderConfig.userResearchUrl) else None,
     serviceName = Some(messages("site.service_name")),
     serviceUrl = Some(appConfig.serviceUrl),
-    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None,
+    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl(lrn)) else None,
     phaseBanner = Some(standardBetaBanner(url = renderConfig.feedbackUrl)),
     backLinkUrl = if (showBackLink) Some("#") else None, // This is overridden in ctc.js
     additionalScriptsBlock = Some(javascripts())
