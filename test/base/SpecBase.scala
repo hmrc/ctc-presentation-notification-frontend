@@ -21,10 +21,11 @@ import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{BeforeAndAfterEach, OptionValues, TryValues}
+import org.scalatest.{BeforeAndAfterEach, EitherValues, OptionValues, TryValues}
+import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,6 +36,7 @@ trait SpecBase
     extends AnyFreeSpec
     with Matchers
     with OptionValues
+    with EitherValues
     with TryValues
     with ScalaFutures
     with IntegrationPatience
@@ -46,17 +48,35 @@ trait SpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now())
 
-  val departureId: String = "AB123"
+  val departureId: String = "651431d7e3b05b21"
 
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123")
 
   def injector: Injector = app.injector
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  implicit class RichUserAnswers(userAnswers: UserAnswers) {
+
+    def getValue[T](page: QuestionPage[T])(implicit rds: Reads[T]): T =
+      userAnswers.get(page).value
+
+    def setValue[T](page: QuestionPage[T], value: T)(implicit format: Format[T]): UserAnswers =
+      userAnswers.set(page, value).success.value
+
+    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit format: Format[T]): UserAnswers =
+      value.map(setValue(page, _)).getOrElse(userAnswers)
+
+    def setValue[T](page: QuestionPage[T], f: UserAnswers => T)(implicit format: Format[T]): UserAnswers =
+      setValue(page, f(userAnswers))
+
+    def removeValue(page: QuestionPage[_]): UserAnswers =
+      userAnswers.remove(page).success.value
+  }
 }

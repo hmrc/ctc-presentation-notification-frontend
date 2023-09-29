@@ -45,8 +45,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]
   final val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
 
-  val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
-
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()
       .build()

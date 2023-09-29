@@ -16,6 +16,7 @@
 
 package models
 
+import pages.QuestionPage
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -34,36 +35,29 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
-
-    val updatedData = data.setObject(page.path, Json.toJson(value)) match {
+  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
+    lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
+    lazy val cleanup: JsObject => Try[UserAnswers] = d => {
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
+    }
+
+    get(page) match {
+      case Some(`value`) => Success(this)
+      case _             => updatedData flatMap cleanup
     }
   }
 
-  def remove[A](page: Settable[A]): Try[UserAnswers] = {
-
-    val updatedData = data.removeObject(page.path) match {
-      case JsSuccess(jsValue, _) =>
-        Success(jsValue)
-      case JsError(_) =>
-        Success(data)
-    }
-
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(None, updatedAnswers)
-    }
+  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
+    val updatedData    = data.removeObject(page.path).getOrElse(data)
+    val updatedAnswers = copy(data = updatedData)
+    page.cleanup(None, updatedAnswers)
   }
 }
 
