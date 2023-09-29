@@ -23,12 +23,9 @@ import play.api.Configuration
 
 @Singleton
 class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServicesConfig) {
-  val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
   val loginUrl: String         = config.get[String]("urls.login")
   val loginContinueUrl: String = config.get[String]("urls.loginContinue")
-
-  lazy val nctsHelpdeskUrl: String = config.get[String]("urls.nctsHelpdesk")
 
   lazy val commonTransitConventionTradersUrl: String = config.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl
 
@@ -56,8 +53,6 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
 
   lazy val cacheTtl: Int           = config.get[Int]("mongodb.timeToLiveInSeconds")
   lazy val replaceIndexes: Boolean = config.get[Boolean]("feature-flags.replace-indexes")
-
-  val cacheUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-cache")
 
   def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"
 
