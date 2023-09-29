@@ -28,6 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import repositories.SessionRepository
+import services.DepartureMessageService
 
 import scala.concurrent.Future
 
@@ -43,6 +44,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]
   final val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
+
+  val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()
