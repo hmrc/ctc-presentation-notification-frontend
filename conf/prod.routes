@@ -1,3 +1,3 @@
 # Add all the application routes to the app.routes file
-->         /ctc-presentation-notification-frontend              app.Routes
-->         /                          health.Routes
+->         /manage-transit-movements/presentation-notification             app.Routes
+->         /                                                               health.Routes
