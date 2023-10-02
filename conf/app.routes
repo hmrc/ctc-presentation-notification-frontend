@@ -8,3 +8,9 @@ GET        /:departureId/complete-declaration/check-information      controllers
 
 GET        /:departureId                                             controllers.IndexController.index(departureId: String)
 
+GET        /location-of-goods/type/:departureId                      controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+#POST       /location-of-goods/type/:departureId                      controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-type/:departureId               controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+#POST       /location-of-goods/change-type/:departureId               controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+
+
