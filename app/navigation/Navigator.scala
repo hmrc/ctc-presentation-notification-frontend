@@ -39,7 +39,7 @@ class Navigator @Inject() (val appConfig: FrontendAppConfig) {
 
   def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
     normalRoutes(departureId, mode).lift(page) match {
-      case None => controllers.routes.IndexController.index(departureId)
+      case None       => controllers.routes.IndexController.index(departureId)
       case Some(call) => handleCall(userAnswers, call)
     }
 }
