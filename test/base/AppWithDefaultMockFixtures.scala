@@ -28,7 +28,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import repositories.SessionRepository
-import services.DepartureMessageService
 
 import scala.concurrent.Future
 

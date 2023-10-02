@@ -28,21 +28,21 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureMessageService @Inject() (departureMovementP5Connector: DepartureMovementConnector) extends Logging {
 
-//  private def getMessageMetaData(departureId: String)(implicit
-//    ec: ExecutionContext,
-//    hc: HeaderCarrier
-//  ): Future[Option[DepartureMessageMetaData]] =
-//    departureMovementP5Connector
-//      .getMessageMetaData(departureId)
-//      .map(
-//        _.messages
-//          .filter(
-//            message => message.messageType == DepartureNotification || message.messageType == AmendmentSubmitted
-//          )
-//          .sortBy(_.received)
-//          .reverse
-//          .headOption
-//      )
+  private def getMessageMetaData(departureId: String)(implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier
+  ): Future[Option[DepartureMessageMetaData]] =
+    departureMovementP5Connector
+      .getMessageMetaData(departureId)
+      .map(
+        _.messages
+          .filter(
+            message => message.messageType == DepartureNotification || message.messageType == AmendmentSubmitted
+          )
+          .sortBy(_.received)
+          .reverse
+          .headOption
+      )
 
   def getLRN(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[LocalReferenceNumber] =
     departureMovementP5Connector.getLRN(departureId)

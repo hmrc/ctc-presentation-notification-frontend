@@ -16,11 +16,9 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import generators.Generators
 import helper.WireMockServerHandler
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 
