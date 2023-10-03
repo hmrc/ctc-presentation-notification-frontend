@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.locationOfGoods.EoriView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class EoriController @Inject() (
   override val messagesApi: MessagesApi,
@@ -52,16 +52,16 @@ class EoriController @Inject() (
       Ok(view(preparedForm, request.userAnswers.lrn, departureId, mode))
   }
 
-//  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
-//    implicit request =>
-//      form
-//        .bindFromRequest()
-//        .fold(
-//          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
-//          value => {
-//            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-//            EoriPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-//          }
-//        )
-//  }
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            EoriPage
+          }
+        )
+  }
 }
