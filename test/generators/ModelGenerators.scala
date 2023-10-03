@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
   self: Generators =>
@@ -35,4 +35,13 @@ trait ModelGenerators {
         lrn <- alphaNumericWithMaxLength(22)
       } yield new LocalReferenceNumber(lrn)
     }
+
+  implicit lazy val arbitraryLocationType: Arbitrary[LocationType] =
+    Arbitrary {
+      for {
+        locationType <- Gen.alphaNumStr
+        description  <- Gen.alphaNumStr
+      } yield LocationType(locationType, description)
+    }
+
 }

@@ -25,7 +25,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 @Singleton
-class Navigator @Inject() (val appConfig: FrontendAppConfig) {
+class Navigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case InferredLocationTypePage => ua => ???
