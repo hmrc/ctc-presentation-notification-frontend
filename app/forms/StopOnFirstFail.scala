@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 
-import java.time.LocalDate
+object StopOnFirstFail {
 
-trait ModelGenerators {
-  self: Generators =>
+  def apply[T](constraints: Constraint[T]*): Constraint[T] = Constraint {
+    field: T =>
+      constraints.toList dropWhile (_(field) == Valid) match {
+        case Nil             => Valid
+        case constraint :: _ => constraint(field)
+      }
+  }
 
-  implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
-    Arbitrary {
-      for {
-        number <- stringsWithMaxLength(17)
-      } yield EoriNumber(number)
-    }
-
-  implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
-    Arbitrary {
-      for {
-        lrn <- stringsWithMaxLength(22)
-      } yield new LocalReferenceNumber(lrn)
-    }
+  def constraint[T](message: String, validator: T => Boolean): Constraint[T] =
+    Constraint(
+      (data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message)))
+    )
 }

@@ -20,14 +20,14 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.ProcedureType.Normal
 import models.{LocationType, Mode}
-import pages.LocationTypePage
+import pages.locationOfGoods.LocationTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.LocationTypeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.LocationTypeView
+import views.html.locationOfGoods.LocationTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

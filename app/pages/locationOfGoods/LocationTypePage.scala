@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.locationOfGoods
 
-import controllers.locationOfGoods.routes
 import models.{LocationType, Mode, UserAnswers}
+import pages.QuestionPage
 import pages.sections.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import uk.gov.hmrc.hmrcfrontend.controllers.routes
 
 import scala.util.Try
 

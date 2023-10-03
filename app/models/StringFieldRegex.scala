@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package generators
+package models
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import scala.util.matching.Regex
 
-import java.time.LocalDate
+object StringFieldRegex {
 
-trait ModelGenerators {
-  self: Generators =>
+  val stringFieldRegex: Regex              = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
+  val alphaNumericRegex: Regex             = "^[a-zA-Z0-9]*$".r
+  val telephoneNumberCharacterRegex: Regex = "^[0-9+ ]+$".r
+  val telephoneNumberFormatRegex: Regex    = "^\\+[0-9 ]+$".r
+  val alphaNumericWithSpacesRegex: Regex   = "^[a-zA-Z\\s0-9]*$".r
 
-  implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
-    Arbitrary {
-      for {
-        number <- stringsWithMaxLength(17)
-      } yield EoriNumber(number)
-    }
-
-  implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
-    Arbitrary {
-      for {
-        lrn <- stringsWithMaxLength(22)
-      } yield new LocalReferenceNumber(lrn)
-    }
 }

@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-package generators
+package pages.locationOfGoods
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import java.time.LocalDate
+case object EoriPage extends QuestionPage[String] {
 
-trait ModelGenerators {
-  self: Generators =>
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-  implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
-    Arbitrary {
-      for {
-        number <- stringsWithMaxLength(17)
-      } yield EoriNumber(number)
-    }
+  override def toString: String = "eori"
 
-  implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
-    Arbitrary {
-      for {
-        lrn <- stringsWithMaxLength(22)
-      } yield new LocalReferenceNumber(lrn)
-    }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = ???
+
 }

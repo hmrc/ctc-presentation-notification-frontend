@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import controllers.routes
 import models._
 import pages._
+import pages.locationOfGoods.InferredLocationTypePage
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 

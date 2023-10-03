@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import config.Constants.maxEoriNumberLength
+import forms.mappings.Mappings
+import models.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
 
-import java.time.LocalDate
+import javax.inject.Inject
 
-trait ModelGenerators {
-  self: Generators =>
+class EoriNumberFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
-    Arbitrary {
-      for {
-        number <- stringsWithMaxLength(17)
-      } yield EoriNumber(number)
-    }
-
-  implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
-    Arbitrary {
-      for {
-        lrn <- stringsWithMaxLength(22)
-      } yield new LocalReferenceNumber(lrn)
-    }
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
+            maxLength(maxEoriNumberLength, s"$prefix.error.length")
+          )
+        )
+    )
 }
