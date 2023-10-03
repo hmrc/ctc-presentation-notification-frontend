@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import scala.util.matching.Regex
+import models.{Mode, UserAnswers}
+import pages.sections.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-object StringFieldRegex {
+case object UnLocodePage extends QuestionPage[String] {
 
-  val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
-  val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
-  val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
-  val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
-  val unLocodeInputRegex: Regex            = "^[0-9a-zA-Z]+$".r
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
+
+  override def toString: String = "unLocode"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
 }
