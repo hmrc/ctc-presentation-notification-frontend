@@ -10,6 +10,8 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+locationOfGoods.caption = Location of goods
+
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
@@ -42,3 +44,12 @@ locationOfGoods.coordinates.error.latitude.maximum = The latitude coordinates mu
 locationOfGoods.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
 locationOfGoods.coordinates.error.required = Enter the {0} coordinates for the location of goods
 locationOfGoods.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
+
+locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
+locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
+locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
+locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.

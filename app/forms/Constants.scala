@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import scala.util.matching.Regex
-
-object StringFieldRegex {
-
-  val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
-  val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
-  val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
-  val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
-  val alphaNumericRegex: Regex             = "^[a-zA-Z0-9]*$".r
+object Constants {
+  lazy val maxAuthorisationNumberLength: Int = 35
 }

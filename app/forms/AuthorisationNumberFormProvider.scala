@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import scala.util.matching.Regex
+import forms.Constants.maxAuthorisationNumberLength
+import forms.mappings.Mappings
+import models.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
 
-object StringFieldRegex {
+import javax.inject.Inject
 
-  val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
-  val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
-  val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
-  val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
-  val alphaNumericRegex: Regex             = "^[a-zA-Z0-9]*$".r
+class AuthorisationNumberFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
+            maxLength(maxAuthorisationNumberLength, s"$prefix.error.length")
+          )
+        )
+    )
 }
