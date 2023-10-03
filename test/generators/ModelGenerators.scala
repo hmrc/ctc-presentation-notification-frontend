@@ -16,8 +16,11 @@
 
 package generators
 
+import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
 import org.scalacheck.{Arbitrary, Gen}
+
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
   self: Generators =>
@@ -29,10 +32,18 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
+  implicit lazy val arbitraryCoordinates: Arbitrary[Coordinates] =
+    Arbitrary {
+      for {
+        latitude  <- RegexpGen.from(coordinatesLatitudeMaxRegex)
+        longitude <- RegexpGen.from(coordinatesLongitudeMaxRegex)
+      } yield Coordinates(latitude, longitude)
+    }
+
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {
-        lrn <- alphaNumericWithMaxLength(22)
+        lrn <- stringsWithMaxLength(22: Int, Gen.alphaNumChar)
       } yield new LocalReferenceNumber(lrn)
     }
 
