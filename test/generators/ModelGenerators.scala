@@ -20,6 +20,7 @@ import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitud
 import models._
 import models.reference.{Country, CountryCode}
 import org.scalacheck.{Arbitrary, Gen}
+
 import wolfendale.scalacheck.regexp.RegexpGen
 import org.scalacheck.Arbitrary.arbitrary
 
