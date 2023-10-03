@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import models.{LocalReferenceNumber, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}

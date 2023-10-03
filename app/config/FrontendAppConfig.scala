@@ -31,6 +31,8 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
 
   val eccEnrolmentSplashPage: String = config.get[String]("urls.eccEnrolmentSplashPage")
 
+  lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customsReferenceData")
+
   lazy val legacyEnrolmentKey: String           = config.get[String]("microservice.services.auth.legacy.enrolmentKey")
   lazy val legacyEnrolmentIdentifierKey: String = config.get[String]("microservice.services.auth.legacy.enrolmentIdentifierKey")
 
@@ -54,7 +56,7 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   lazy val cacheTtl: Int           = config.get[Int]("mongodb.timeToLiveInSeconds")
   lazy val replaceIndexes: Boolean = config.get[Boolean]("feature-flags.replace-indexes")
 
-  def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"  // TODO: Build KeepAliveCOntroller for this service
+  def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive" // TODO: Build KeepAliveCOntroller for this service
 
   def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
 }

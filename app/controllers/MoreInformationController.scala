@@ -30,7 +30,6 @@ import scala.concurrent.ExecutionContext
 class MoreInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  service: DepartureMessageService,
   view: MoreInformationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

@@ -1,8 +1,27 @@
 # microservice specific routes
 
-->         /hmrc-frontend                                            hmrcfrontend.Routes
-GET        /assets/*file                                             controllers.Assets.versioned(path = "/public", file: Asset)
+->         /hmrc-frontend                                                           hmrcfrontend.Routes
+GET        /assets/*file                                                            controllers.Assets.versioned(path = "/public", file: Asset)
+
 
 GET        /:departureId/complete-declaration/more-information       controllers.MoreInformationController.onPageLoad(departureId: String)
+GET        /:departureId/complete-declaration/check-information      controllers.CheckInformationController.onPageLoad(departureId: String)
+
 GET        /:departureId                                             controllers.IndexController.index(departureId: String)
+
+GET        /location-of-goods/type/:departureId                                     controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/type/:departureId                                     controllers.locationOfGoods.LocationTypeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-type/:departureId                              controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-type/:departureId                              controllers.locationOfGoods.LocationTypeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/authorisation-number/:departureId                     controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/authorisation-number/:departureId                     controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-authorisation-number/:departureId              controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-authorisation-number/:departureId              controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/coordinates/:departureId               controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/coordinates/:departureId               controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-coordinates/:departureId        controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-coordinates/:departureId        controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 

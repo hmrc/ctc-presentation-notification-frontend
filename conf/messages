@@ -2,9 +2,54 @@ service.name = ctc-presentation-notification-frontend
 service.text = This is your new service
 
 site.continue = Continue
+site.saveAndContinue = Save and continue
 site.service_name = Manage your transit movements
+
+site.section = This section is
+
+error.title.prefix = Error:
+error.summary.title = There is a problem
+
+locationOfGoods.caption = Location of goods
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
 moreInformation.paragraph2 = Answer the following questions to complete the declaration.
+
+checkInformation.title = Confirmation needed to complete declaration
+checkInformation.heading = Confirmation needed to complete declaration
+checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
+checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
+
+locationOfGoods.locationType.title = Which type of location is it?
+locationOfGoods.locationType.heading = Which type of location is it?
+locationOfGoods.locationType.checkYourAnswersLabel = Location type
+locationOfGoods.locationType.change.hidden = location type
+locationOfGoods.locationType.error.required = Select which type of location it is
+locationOfGoods.locationType.authorisedPlace = Authorised place - the authorised consignor’s own premises
+locationOfGoods.caption = Location of goods
+locationOfGoods.p1 = This is where Customs will carry out any physical checks.
+locationOfGoods.p2 = For goods not present at a customs office, this is their location at the time they are declared.
+
+locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
+locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?
+locationOfGoods.coordinates.latitude = Latitude
+locationOfGoods.coordinates.longitude = Longitude
+locationOfGoods.coordinates.hint = These numbers can be positive or negative and need between 5 and 7 decimal places. For example, 50.96622 or 1.86201.
+locationOfGoods.coordinates.checkYourAnswersLabel = Coordinates
+locationOfGoods.coordinates.change.hidden = coordinates
+locationOfGoods.coordinates.error.invalid = The {0} coordinates must only include numbers 0 to 9, a decimal point and a plus or minus sign
+locationOfGoods.coordinates.error.latitude.maximum = The latitude coordinates must be between -90 and 90
+locationOfGoods.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
+locationOfGoods.coordinates.error.required = Enter the {0} coordinates for the location of goods
+locationOfGoods.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
+
+locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
+locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
+locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
+locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
