@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.locationOfGoods.LocationTypePage
+import pages.LocationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

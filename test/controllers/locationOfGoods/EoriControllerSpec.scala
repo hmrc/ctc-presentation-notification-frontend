@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EoriNumberFormProvider
 import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
-import pages.locationOfGoods.EoriPage
+import pages.EoriPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

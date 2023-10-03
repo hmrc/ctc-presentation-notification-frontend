@@ -19,7 +19,6 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
-import pages.locationOfGoods.{EoriPage, InferredLocationTypePage}
 import play.api.mvc.Call
 
 @Singleton
