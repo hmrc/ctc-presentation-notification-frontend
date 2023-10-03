@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package navigator.pages.behaviours
+package pages.behaviours
 
 import base.SpecBase
 import generators.{Generators, UserAnswersGenerator}

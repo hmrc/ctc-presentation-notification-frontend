@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package navigator.pages
+package pages
 
 import models.Coordinates
-import navigator.pages.behaviours.PageBehaviours
 import pages.CoordinatesPage
+import pages.behaviours.PageBehaviours
 
 class CoordinatesPageSpec extends PageBehaviours {
 
