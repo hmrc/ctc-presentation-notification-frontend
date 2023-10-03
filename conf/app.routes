@@ -12,8 +12,8 @@ GET        /location-of-goods/change-type/:departureId               controllers
 POST       /location-of-goods/change-type/:departureId               controllers.locationOfGoods.LocationTypeController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
 GET        /location-of-goods/eori-tin/:departureId                  controllers.locationOfGoods.EoriController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /location-of-goods/eori-tin/:departureId                  controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/eori-tin/:departureId                  controllers.locationOfGoods.EoriController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-eori-tin/:departureId           controllers.locationOfGoods.EoriController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /location-of-goods/change-eori-tin/:departureId           controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-eori-tin/:departureId           controllers.locationOfGoods.EoriController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
 

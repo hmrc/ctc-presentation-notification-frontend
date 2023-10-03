@@ -36,7 +36,7 @@
 ) {
 
 @*    TODO change to on submit once done*@
-    @formHelper(action =  routes.EoriController.onPageLoad(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action =  routes.EoriController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -50,6 +50,6 @@
             hint = Some(messages("locationOfGoods.eori.hint"))
         )
 
-        @button(attributes = Map("id" -> "submit"))
+        @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
 }

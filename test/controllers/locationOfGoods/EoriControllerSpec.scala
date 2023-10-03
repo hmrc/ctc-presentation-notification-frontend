@@ -41,6 +41,13 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
   private lazy val validAnswer = eoriNumber.value
 
+  override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+
+  override def beforeEach(): Unit =
+    super.beforeEach()
+
   "Eori Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -80,8 +87,6 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

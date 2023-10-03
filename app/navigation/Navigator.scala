@@ -30,7 +30,7 @@ class Navigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case InferredLocationTypePage => ua => ???
-    case EoriPage => ua => ???
+    case EoriPage                 => ua => ???
   }
 
   private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
