@@ -66,7 +66,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn.toString, countryList.values, mode)(request, messages).toString
+        view(form, departureId, lrn.toString, countryList.values, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -86,7 +86,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn.toString, countryList.values, mode)(request, messages).toString
+        view(filledForm, departureId, lrn.toString, countryList.values, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -120,7 +120,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn.toString, countryList.values, mode)(request, messages).toString
+        view(boundForm, departureId, lrn.toString, countryList.values, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

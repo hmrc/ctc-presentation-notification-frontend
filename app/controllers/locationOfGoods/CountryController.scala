@@ -61,7 +61,7 @@ class CountryController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, lrn, countryList.values, mode))
+            Ok(view(preparedForm, departureId, lrn, countryList.values, mode))
         }
     }
 
@@ -74,7 +74,7 @@ class CountryController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, countryList.values, mode))),
               value => redirect(mode, CountryPage, value, departureId)
             )
       }
