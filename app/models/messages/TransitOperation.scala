@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package models.messages
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
 
-final case class LocalReferenceNumber(value: String) {
-  override def toString: String = value
-}
+case class TransitOperation(
+  limitDate: Option[String]
+)
 
-object LocalReferenceNumber {
-
-  implicit val reads: Reads[LocalReferenceNumber] =
-    (__ \ "localReferenceNumber").read[String].map(LocalReferenceNumber(_))
-
-  implicit val writes: Writes[LocalReferenceNumber] = Writes {
-    lrn =>
-      JsString(lrn.value)
-  }
-
+object TransitOperation {
+  implicit val format: OFormat[TransitOperation] = Json.format[TransitOperation]
 }

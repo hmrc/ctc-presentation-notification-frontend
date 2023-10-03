@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package models.messages
 
-import play.api.libs.json._
+import models.departureP5.DepartureMessageType
+import models.departureP5.DepartureMessageType._
+import play.api.libs.json.{__, Json, OWrites, Reads}
 
-final case class LocalReferenceNumber(value: String) {
-  override def toString: String = value
-}
+case class Data(data: MessageData)
 
-object LocalReferenceNumber {
+object Data {
 
-  implicit val reads: Reads[LocalReferenceNumber] =
-    (__ \ "localReferenceNumber").read[String].map(LocalReferenceNumber(_))
+  def reads(messageType: DepartureMessageType): Reads[Data] =
+    messageType match {
+      case DepartureNotification => (__ \ "body" \ "n1:CC015C").read[MessageData].map(Data.apply)
+      case AmendmentSubmitted    => (__ \ "body" \ "n1:CC013C").read[MessageData].map(Data.apply)
+    }
 
-  implicit val writes: Writes[LocalReferenceNumber] = Writes {
-    lrn =>
-      JsString(lrn.value)
-  }
-
+  implicit val writes: OWrites[Data] = Json.writes[Data]
 }

@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package models.messages
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
 
-final case class LocalReferenceNumber(value: String) {
-  override def toString: String = value
-}
+case class Consignment(
+  containerIndicator: Option[String],
+  modeOfTransportAtTheBorder: Option[String],
+  TransportEquipment: Option[List[TransportEquipment]],
+  LocationOfGoods: Option[LocationOfGoods],
+  ActiveBorderTransportMeans: Option[List[ActiveBorderTransportMeans]],
+  PlaceOfLoading: Option[PlaceOfLoading]
+)
 
-object LocalReferenceNumber {
-
-  implicit val reads: Reads[LocalReferenceNumber] =
-    (__ \ "localReferenceNumber").read[String].map(LocalReferenceNumber(_))
-
-  implicit val writes: Writes[LocalReferenceNumber] = Writes {
-    lrn =>
-      JsString(lrn.value)
-  }
-
+object Consignment {
+  implicit val format: OFormat[Consignment] = Json.format[Consignment]
 }

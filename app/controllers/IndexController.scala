@@ -20,7 +20,7 @@ import controllers.actions._
 import models.{LocalReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,25 +42,33 @@ class IndexController @Inject() (
 
   def index(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
     implicit request =>
-      service.getLRN(departureId) flatMap {
-        lrn =>
-          sessionRepository
-            .set(
-              request.userAnswers.getOrElse(
-                UserAnswers(
-                  departureId,
-                  request.eoriNumber,
-                  lrn.value,
-                  JsObject.empty,
-                  timeMachine.now()
+      service.getDepartureData(departureId).flatMap {
+        case Some(departureData) =>
+          service.getLRN(departureId) flatMap {
+            lrn =>
+              sessionRepository
+                .set(
+                  request.userAnswers.getOrElse(
+                    UserAnswers(
+                      departureId,
+                      request.eoriNumber,
+                      lrn.value,
+                      JsObject.empty,
+                      timeMachine.now()
+                    )
+                  )
                 )
-              )
-            )
-            .map(
-              _ => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
-            )
+                .map {
+                  _ =>
+                    if (departureData.data.isDataComplete) {
+                      Redirect(Call("GET", "#"))
+                    } else {
+                      Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+                    }
+                }
+          }
+        case None => ??? //technical difficulties
       }
-
   }
 
 }

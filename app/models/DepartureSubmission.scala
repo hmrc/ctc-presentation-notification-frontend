@@ -16,20 +16,10 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.Reads
 
-final case class LocalReferenceNumber(value: String) {
-  override def toString: String = value
-}
+trait DepartureSubmission
 
-object LocalReferenceNumber {
-
-  implicit val reads: Reads[LocalReferenceNumber] =
-    (__ \ "localReferenceNumber").read[String].map(LocalReferenceNumber(_))
-
-  implicit val writes: Writes[LocalReferenceNumber] = Writes {
-    lrn =>
-      JsString(lrn.value)
-  }
-
-}
+//object DepartureSubmission {
+//  implicit val reads: Reads[]
+//}
