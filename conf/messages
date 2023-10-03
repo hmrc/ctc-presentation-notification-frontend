@@ -2,7 +2,13 @@ service.name = ctc-presentation-notification-frontend
 service.text = This is your new service
 
 site.continue = Continue
+site.saveAndContinue = Save and continue
 site.service_name = Manage your transit movements
+
+site.section = This section is
+
+error.title.prefix = Error:
+error.summary.title = There is a problem
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
@@ -10,6 +16,16 @@ moreInformation.paragraph1 = When you pre-lodged this declaration, you left out 
 moreInformation.paragraph2 = Answer the following questions to complete the declaration.
 
 locationOfGoods.caption = Location of goods
+
+locationOfGoods.locationType.title = Which type of location is it?
+locationOfGoods.locationType.heading = Which type of location is it?
+locationOfGoods.locationType.checkYourAnswersLabel = Location type
+locationOfGoods.locationType.change.hidden = location type
+locationOfGoods.locationType.error.required = Select which type of location it is
+locationOfGoods.locationType.authorisedPlace = Authorised place - the authorised consignor’s own premises
+locationOfGoods.caption = Location of goods
+locationOfGoods.p1 = This is where Customs will carry out any physical checks.
+locationOfGoods.p2 = For goods not present at a customs office, this is their location at the time they are declared.
 
 locationOfGoods.eori.title = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
 locationOfGoods.eori.heading = What is the EORI number or Trader Identification Number (TIN) for the location of goods?

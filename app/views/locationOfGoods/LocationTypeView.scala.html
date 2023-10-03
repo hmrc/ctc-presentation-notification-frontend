@@ -35,22 +35,22 @@
     lrn = LocalReferenceNumber(lrn)
 ) {
 
-    @*
-        TODO this wants to be onSubmit
-    *@
-    @formHelper(action = routes.LocationTypeController.onPageLoad(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.LocationTypeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputRadio(
             field = form("value"),
-            radioType = Radio(
+            radioType = RadioWithAdditionalHtml(
                 heading = messages("locationOfGoods.locationType.heading"),
-                caption = Some(messages("locationOfGoods.caption"))
+                caption = Some(messages("locationOfGoods.caption")),
+                additionalHtml = {
+                    Html(messages("locationOfGoods.p1").toParagraphString + messages("locationOfGoods.p2").toParagraphString)
+                }
             ),
             radioItems = fieldId => values.toRadioItems(fieldId, form.value)
         )
 
-        @button(attributes = Map("id" -> "submit"))
+        @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
 }

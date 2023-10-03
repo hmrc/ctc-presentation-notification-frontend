@@ -21,20 +21,27 @@ import config.FrontendAppConfig
 import controllers.routes
 import models._
 import pages._
-import pages.locationOfGoods.InferredLocationTypePage
+import pages.locationOfGoods.{EoriPage, InferredLocationTypePage}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 @Singleton
-class Navigator @Inject() (val appConfig: FrontendAppConfig) {
+class Navigator {
 
-  protected def normalRoutes(departureId: String, lrn: LocalReferenceNumber): PartialFunction[Page, UserAnswers => Option[Call]] = {
+  protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case InferredLocationTypePage => ua => ???
+    case EoriPage => ua => ???
   }
 
   private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
     call(userAnswers) match {
       case Some(onwardRoute) => onwardRoute
       case None              => ??? //TODO add error page
+    }
+
+  def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
+    normalRoutes(departureId, mode).lift(page) match {
+      case None       => controllers.routes.IndexController.index(departureId)
+      case Some(call) => handleCall(userAnswers, call)
     }
 }
