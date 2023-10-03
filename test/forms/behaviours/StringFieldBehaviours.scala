@@ -23,12 +23,12 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait StringFieldBehaviours extends FieldBehaviours {
 
   def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
-    s"not bind strings longer than $maxLength characters" in {
+    s"must not bind strings longer than $maxLength characters" in {
 
       forAll(stringsLongerThan(maxLength) -> "longString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors must contain only lengthError
+          result.errors mustEqual Seq(lengthError)
       }
     }
 
@@ -48,6 +48,16 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
+  def fieldWithMinLength(form: Form[_], fieldName: String, minLength: Int, lengthError: FormError): Unit =
+    s"must not bind strings shorter than $minLength characters" in {
+
+      forAll(stringsWithLength(minLength - 1) -> "shortString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
   def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int = 100): Unit =
     "must not bind strings with invalid characters" in {
 
@@ -60,4 +70,19 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
+  def stringFieldWithMaximumIntValue(form: Form[_], fieldName: String, max: Int, fieldMax: Int, expectedError: FormError): Unit =
+    s"must not bind values > $max and < $max" in {
+      forAll(positiveIntsMinMax(max, fieldMax)) {
+        number =>
+          val result = form.bind(Map(fieldName -> number.toString)).apply(fieldName)
+          result.errors mustEqual Seq(expectedError)
+      }
+    }
+
+  def stringFieldWithMinimumIntValue(form: Form[_], fieldName: String, min: Int, expectedError: FormError): Unit =
+    s"must not bind values < $min" in {
+      val testCase = min - 1
+      val result   = form.bind(Map(fieldName -> testCase.toString)).apply(fieldName)
+      result.errors mustEqual Seq(expectedError)
+    }
 }

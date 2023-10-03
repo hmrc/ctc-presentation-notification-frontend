@@ -62,6 +62,8 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(emptyUserAnswers)
 
+      when(mockLocationTypeService.getLocationTypes(any())(any())).thenReturn(Future.successful(lts))
+
       val request = FakeRequest(GET, locationTypeRoute)
 
       val result = route(app, request).value
@@ -101,6 +103,8 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(userAnswers)
 
+      when(mockLocationTypeService.getLocationTypes(any())(any())).thenReturn(Future.successful(lts))
+
       val request = FakeRequest(GET, locationTypeRoute)
 
       val result = route(app, request).value
@@ -119,6 +123,8 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(emptyUserAnswers)
 
+      when(mockLocationTypeService.getLocationTypes(any())(any())).thenReturn(Future.successful(lts))
+
       val request = FakeRequest(POST, locationTypeRoute)
         .withFormUrlEncodedBody(("value", lt.code))
 
@@ -132,6 +138,8 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers)
+
+      when(mockLocationTypeService.getLocationTypes(any())(any())).thenReturn(Future.successful(lts))
 
       val request   = FakeRequest(POST, locationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))

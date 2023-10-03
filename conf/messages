@@ -15,6 +15,11 @@ moreInformation.heading = More information needed to complete declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
 moreInformation.paragraph2 = Answer the following questions to complete the declaration.
 
+checkInformation.title = Confirmation needed to complete declaration
+checkInformation.heading = Confirmation needed to complete declaration
+checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
+checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
+
 locationOfGoods.caption = Location of goods
 
 locationOfGoods.locationType.title = Which type of location is it?
@@ -35,3 +40,16 @@ locationOfGoods.eori.error.required = Enter the EORI number or Trader Identifica
 locationOfGoods.eori.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
 locationOfGoods.eori.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 locationOfGoods.eori.change.hidden = the EORI number or TIN for the location of goods
+
+locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
+locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?
+locationOfGoods.coordinates.latitude = Latitude
+locationOfGoods.coordinates.longitude = Longitude
+locationOfGoods.coordinates.hint = These numbers can be positive or negative and need between 5 and 7 decimal places. For example, 50.96622 or 1.86201.
+locationOfGoods.coordinates.checkYourAnswersLabel = Coordinates
+locationOfGoods.coordinates.change.hidden = coordinates
+locationOfGoods.coordinates.error.invalid = The {0} coordinates must only include numbers 0 to 9, a decimal point and a plus or minus sign
+locationOfGoods.coordinates.error.latitude.maximum = The latitude coordinates must be between -90 and 90
+locationOfGoods.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
+locationOfGoods.coordinates.error.required = Enter the {0} coordinates for the location of goods
+locationOfGoods.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places

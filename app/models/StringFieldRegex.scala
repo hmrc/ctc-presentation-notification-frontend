@@ -26,4 +26,8 @@ object StringFieldRegex {
   val telephoneNumberFormatRegex: Regex    = "^\\+[0-9 ]+$".r
   val alphaNumericWithSpacesRegex: Regex   = "^[a-zA-Z\\s0-9]*$".r
 
+  val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
+  val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
+  val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
+  val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
 }

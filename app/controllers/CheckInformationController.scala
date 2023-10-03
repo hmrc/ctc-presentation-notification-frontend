@@ -20,16 +20,16 @@ import controllers.actions._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.MoreInformationView
+import views.html.CheckInformationView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class MoreInformationController @Inject() (
+class CheckInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: MoreInformationView
+  view: CheckInformationView
 ) extends FrontendBaseController
     with I18nSupport {
 
