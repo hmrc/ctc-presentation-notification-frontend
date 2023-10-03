@@ -18,9 +18,8 @@ package models
 
 import base.SpecBase
 import pages.QuestionPage
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsPath, Json}
 
-import java.util.UUID
 import scala.util.Try
 
 class UserAnswersSpec extends SpecBase {

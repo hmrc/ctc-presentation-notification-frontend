@@ -17,12 +17,10 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.CustomHttpReads.rawHttpResponseHttpReads
 import models.LocalReferenceNumber
 import models.departureP5._
-import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

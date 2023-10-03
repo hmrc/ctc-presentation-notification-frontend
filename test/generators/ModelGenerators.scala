@@ -19,6 +19,7 @@ package generators
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
 import org.scalacheck.{Arbitrary, Gen}
+
 import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
