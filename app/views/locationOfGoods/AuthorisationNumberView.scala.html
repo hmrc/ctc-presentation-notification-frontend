@@ -34,7 +34,7 @@
     lrn = LocalReferenceNumber(lrn)
 ) {
 
-    @formHelper(action = routes.AuthorisationNumberController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AuthorisationNumberController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

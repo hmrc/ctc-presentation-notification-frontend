@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.locationOfGoods
 
 import models.{Mode, UserAnswers}
+import pages.QuestionPage
 import pages.sections.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

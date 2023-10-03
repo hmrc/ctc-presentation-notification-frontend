@@ -21,7 +21,7 @@ import forms.AuthorisationNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AuthorisationNumberPage
+import pages.locationOfGoods.AuthorisationNumberPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

@@ -16,8 +16,8 @@
 
 package pages.behaviours.locationOfGoods
 
-import pages.AuthorisationNumberPage
 import pages.behaviours.PageBehaviours
+import pages.locationOfGoods.AuthorisationNumberPage
 
 class AuthorisationNumberPageSpec extends PageBehaviours {
 

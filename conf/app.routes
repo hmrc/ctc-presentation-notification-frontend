@@ -19,7 +19,6 @@ POST       /location-of-goods/authorisation-number/:departureId                 
 GET        /location-of-goods/change-authorisation-number/:departureId              controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-authorisation-number/:departureId              controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
-
 GET        /location-of-goods/coordinates/:departureId               controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /location-of-goods/coordinates/:departureId               controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-coordinates/:departureId        controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = CheckMode)
