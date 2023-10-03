@@ -17,26 +17,31 @@
 package controllers.locationOfGoods
 
 import controllers.actions._
-import models.{LocalReferenceNumber, Mode}
+import forms.locationOfGoods.PostalCodeFormProvider
+import models.requests.MandatoryDataRequest
+import models.{Mode, PostalCodeAddress}
 import navigation.Navigator
+import pages.locationOfGoods.PostalCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.locationOfGoods.PostalCodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PostalCodeController @Inject()(
+class PostalCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: Navigator,
+  navigator: Navigator,
   actions: Actions,
   formProvider: PostalCodeFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: PostalCodeView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -54,12 +59,12 @@ class PostalCodeController @Inject()(
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, departureId, mode, countryList.values))
+            Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode, countryList.values))
         }
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn)
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
+    .requireData(departureId)
     .async {
       implicit request =>
         countriesService.getAddressPostcodeBasedCountries().flatMap {
@@ -68,17 +73,20 @@ class PostalCodeController @Inject()(
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, countryList.values))),
-                value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                  PostalCodePage
-                    .writeToUserAnswers(value)
-                    .updateTask()
-                    .writeToSession()
-                    .navigate()
-                }
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode, countryList.values))),
+                value => redirect(mode, value, departureId)
               )
 
         }
     }
+
+  private def redirect(
+    mode: Mode,
+    value: PostalCodeAddress,
+    departureId: String
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(PostalCodePage, value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(PostalCodePage, updatedAnswers, departureId, mode))
 }

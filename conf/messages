@@ -10,6 +10,12 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+address.postalCode = postal code
+address.country = country
+address.numberAndStreet = number and street name
+address.city = town or city
+address.streetNumber = street number
+
 locationOfGoods.caption = Location of goods
 
 moreInformation.title = More information needed to complete declaration

@@ -16,9 +16,7 @@
 
 package models
 
-import config.PhaseConfig
 import models.StringFieldRegex.{alphaNumericRegex, alphaNumericWithSpacesRegex, stringFieldRegex}
-import models.domain.StringFieldRegex._
 import play.api.i18n.Messages
 
 import scala.util.matching.Regex
@@ -40,21 +38,20 @@ object AddressLine {
   }
 
   case object StreetNumber extends AddressLineWithValidation {
-    override val field: String                         = "streetNumber"
-    def length: Int                                    = 17
-    override val regex: Regex                          = alphaNumericRegex
+    override val field: String = "streetNumber"
+    def length: Int            = 17
+    override val regex: Regex  = alphaNumericRegex
   }
 
-
   case object City extends AddressLineWithValidation {
-    override val field: String                         = "city"
-    def length: Int                                    = 35
-    override val regex: Regex                          = stringFieldRegex
+    override val field: String = "city"
+    def length: Int            = 35
+    override val regex: Regex  = stringFieldRegex
   }
 
   case object PostalCode extends AddressLineWithValidation {
-    override val field: String                         = "postalCode"
-    def length: Int                                    = 17
-    override val regex: Regex                          = alphaNumericWithSpacesRegex
+    override val field: String = "postalCode"
+    def length: Int            = 17
+    override val regex: Regex  = alphaNumericWithSpacesRegex
   }
 }

@@ -29,7 +29,8 @@
 
 @(
     form: Form[PostalCodeAddress],
-    lrn: LocalReferenceNumber,
+    departureId: String,
+    lrn: String,
     mode: Mode,
     countries: Seq[Country]
 )(implicit request: Request[_], messages: Messages)
@@ -37,10 +38,10 @@
 @mainTemplate(
     title = messages("locationOfGoods.postalCode.title"),
     showBackLink = true,
-    lrn = lrn
+    lrn = LocalReferenceNumber(lrn)
 ) {
 
-   @formHelper(action = routes.PostalCodeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+   @formHelper(action = routes.PostalCodeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
       @errorSummary(form.errors)
 
@@ -51,6 +52,6 @@
           countries = countries
       )
 
-      @button(attributes = Map("id" -> "submit"))
+      @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
    }
 }
