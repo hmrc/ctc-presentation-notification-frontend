@@ -18,8 +18,10 @@ package generators
 
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
+import models.reference.{Country, CountryCode}
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
+import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
   self: Generators =>
@@ -52,6 +54,23 @@ trait ModelGenerators {
         locationType <- Gen.alphaNumStr
         description  <- Gen.alphaNumStr
       } yield LocationType(locationType, description)
+    }
+
+  implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
+    Arbitrary {
+      Gen
+        .pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z')
+        .map(
+          code => CountryCode(code.mkString)
+        )
+    }
+
+  implicit lazy val arbitraryCountry: Arbitrary[Country] =
+    Arbitrary {
+      for {
+        code <- arbitrary[CountryCode]
+        name <- nonEmptyString
+      } yield Country(code, name)
     }
 
 }

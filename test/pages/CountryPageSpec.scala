@@ -16,22 +16,18 @@
 
 package pages
 
-import controllers.locationOfGoods.routes
 import models.reference.Country
-import models.{Mode, UserAnswers}
-import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class CountryPageSpec extends PageBehaviours {
 
-case object CountryPage extends QuestionPage[Country] {
+  "CountryPage" - {
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+    beRetrievable[Country](CountryPage)
 
-  override def toString: String = "country"
+    beSettable[Country](CountryPage)
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CountryController.onPageLoad(userAnswers.lrn, mode))
+    beRemovable[Country](CountryPage)
 
+  }
 }

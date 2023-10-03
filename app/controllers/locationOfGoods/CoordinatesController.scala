@@ -47,7 +47,7 @@ class CoordinatesController @Inject() (
     .requireData(departureId) {
       implicit request =>
         val lrn  = request.userAnswers.lrn
-        val form = formProvider("locationOfGoods.country")
+        val form = formProvider("locationOfGoods.coordinates")
         val preparedForm = request.userAnswers.get(CoordinatesPage) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -60,7 +60,7 @@ class CoordinatesController @Inject() (
     .async {
       implicit request =>
         val lrn  = request.userAnswers.lrn
-        val form = formProvider("locationOfGoods.country")
+        val form = formProvider("locationOfGoods.coordinates")
         form
           .bindFromRequest()
           .fold(
