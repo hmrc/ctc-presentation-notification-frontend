@@ -17,7 +17,7 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.AuthorisationNumberFormProvider
+import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

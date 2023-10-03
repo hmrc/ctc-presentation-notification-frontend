@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.Constants.maxAuthorisationNumberLength
-import forms.mappings.Mappings
-import models.StringFieldRegex.alphaNumericRegex
-import play.api.data.Form
+import models.reference.Country
+import play.api.libs.json.{Json, OFormat}
 
-import javax.inject.Inject
+case class PostalCodeAddress(
+  streetNumber: String,
+  postalCode: String,
+  country: Country
+) {
 
-class AuthorisationNumberFormProvider @Inject() extends Mappings {
+  override def toString: String = Seq(streetNumber, postalCode, country.description).mkString("<br>")
+}
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
-            maxLength(maxAuthorisationNumberLength, s"$prefix.error.length")
-          )
-        )
-    )
+object PostalCodeAddress {
+  implicit val format: OFormat[PostalCodeAddress] = Json.format[PostalCodeAddress]
 }

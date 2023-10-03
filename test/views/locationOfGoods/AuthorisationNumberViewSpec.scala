@@ -16,7 +16,7 @@
 
 package views.locationOfGoods
 
-import forms.AuthorisationNumberFormProvider
+import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form

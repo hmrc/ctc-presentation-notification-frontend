@@ -17,7 +17,7 @@
 package controllers.locationOfGoods
 
 import controllers.actions._
-import forms.AuthorisationNumberFormProvider
+import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
