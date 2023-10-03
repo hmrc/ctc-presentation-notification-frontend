@@ -11,4 +11,9 @@ GET        /location-of-goods/type/:departureId                      controllers
 GET        /location-of-goods/change-type/:departureId               controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 #POST       /location-of-goods/change-type/:departureId               controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/coordinates/:departureId               controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/coordinates/:departureId               controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-coordinates/:departureId        controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-coordinates/:departureId        controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 

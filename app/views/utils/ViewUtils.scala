@@ -16,7 +16,7 @@
 
 package views.utils
 
-import play.api.data.{Form, FormError}
+import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -98,6 +98,17 @@ object ViewUtils {
 
   implicit class StringImplicits(string: String) {
     def toParagraph: Html = Html(s"""<p class="govuk-body">$string</p>""")
+  }
+
+  implicit class FieldsetImplicits(fieldset: Fieldset)(implicit val messages: Messages) extends ImplicitsSupport[Fieldset] {
+    override def withFormField(field: Field): Fieldset = fieldset
+
+    override def withFormFieldWithErrorAsHtml(field: Field): Fieldset = fieldset
+
+    def withHeadingAndCaption(heading: String, caption: Option[String]): Fieldset =
+      withHeadingLegend(fieldset, Text(heading), caption.map(Text))(
+        (fs, l) => fs.copy(legend = Some(l))
+      )
   }
 
 }
