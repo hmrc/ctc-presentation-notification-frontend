@@ -16,13 +16,10 @@
 
 package navigation
 
-import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
-import controllers.routes
+import com.google.inject.Singleton
 import models._
 import pages._
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 @Singleton
 class Navigator {

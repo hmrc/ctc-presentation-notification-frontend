@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package navigator
+package models
 
-import models.{Mode, UserAnswers}
-import navigation.Navigator
-import pages._
-import play.api.mvc.Call
+case class Field(name: String, errorKeys: Map[ErrorFieldType, String])
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+object Field {
 
-  // override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
-
+  def apply(name: String, errors: (ErrorFieldType, String)*): Field =
+    Field(name, errors.toMap)
 }
+
+sealed trait ErrorFieldType
+case object Required extends ErrorFieldType
+case object Invalid extends ErrorFieldType

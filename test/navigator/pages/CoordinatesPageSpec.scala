@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package navigator
+package navigator.pages
 
-import models.{Mode, UserAnswers}
-import navigation.Navigator
-import pages._
-import play.api.mvc.Call
+import models.Coordinates
+import navigator.pages.behaviours.PageBehaviours
+import pages.CoordinatesPage
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+class CoordinatesPageSpec extends PageBehaviours {
 
-  // override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+  "CoordinatesPage" - {
 
+    beRetrievable[Coordinates](CoordinatesPage)
+
+    beSettable[Coordinates](CoordinatesPage)
+
+    beRemovable[Coordinates](CoordinatesPage)
+  }
 }
