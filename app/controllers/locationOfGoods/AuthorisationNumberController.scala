@@ -62,19 +62,18 @@ class AuthorisationNumberController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode))),
-            value => redirect(mode, AuthorisationNumberPage, value, departureId)
+            value => redirect(mode, value, departureId)
           )
 
     }
 
   private def redirect(
     mode: Mode,
-    page: QuestionPage[String],
     value: String,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AuthorisationNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AuthorisationNumberPage, updatedAnswers, departureId, mode))
 }
