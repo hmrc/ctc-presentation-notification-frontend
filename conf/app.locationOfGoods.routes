@@ -1,8 +1,0 @@
-
-
-GET        /location-of-goods/authorisation-number/:departureId                     controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /location-of-goods/authorisation-number/:departureId                     controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /location-of-goods/change-authorisation-number/:departureId              controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /location-of-goods/change-authorisation-number/:departureId              controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
-
-

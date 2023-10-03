@@ -16,7 +16,6 @@
 
 package controllers.locationOfGoods
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.AuthorisationNumberFormProvider
 import models.Mode
@@ -27,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.locationOfGoods.AuthorisationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,7 @@ class AuthorisationNumberController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   navigator: Navigator,
   view: AuthorisationNumberView
-)(implicit ec: ExecutionContext, frontendAppConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -51,7 +51,7 @@ class AuthorisationNumberController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, departureId, mode))
+      Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions

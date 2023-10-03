@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.behaviours.locationOfGoods
 
-import models.{Mode, UserAnswers}
-import pages.sections.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.AuthorisationNumberPage
+import pages.behaviours.PageBehaviours
 
-case object AuthorisationNumberPage extends QuestionPage[String] {
+class AuthorisationNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  "AuthorisationNumberPage" - {
 
-  override def toString: String = "authorisationNumber"
+    beRetrievable[String](AuthorisationNumberPage)
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(userAnswers.lrn, mode))
+    beSettable[String](AuthorisationNumberPage)
+
+    beRemovable[String](AuthorisationNumberPage)
+  }
 }
