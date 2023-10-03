@@ -24,3 +24,8 @@ locationOfGoods.locationType.authorisedPlace = Authorised place - the authorised
 locationOfGoods.caption = Location of goods
 locationOfGoods.p1 = This is where Customs will carry out any physical checks.
 locationOfGoods.p2 = For goods not present at a customs office, this is their location at the time they are declared.
+
+checkInformation.title = Confirmation needed to complete declaration
+checkInformation.heading = Confirmation needed to complete declaration
+checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
+checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
