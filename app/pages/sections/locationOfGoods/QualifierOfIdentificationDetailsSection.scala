@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.locationOfGoods
 
-import controllers.locationOfGoods.routes
-import models.{Coordinates, Mode, UserAnswers}
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case object CoordinatesPage extends QuestionPage[Coordinates] {
+case object QualifierOfIdentificationDetailsSection extends Section[JsObject] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-  override def toString: String = "coordinates"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CoordinatesController.onPageLoad(userAnswers.lrn, mode))
+  override def toString: String = "qualifierOfIdentificationDetails"
 }

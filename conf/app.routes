@@ -17,3 +17,8 @@ GET        /location-of-goods/change-coordinates/:departureId        controllers
 POST       /location-of-goods/change-coordinates/:departureId        controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
 
+GET        /location-of-goods/country/:departureId                   controllers.locationOfGoods.CountryController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/country/:departureId                   controllers.locationOfGoods.CountryController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-country/:departureId            controllers.locationOfGoods.CountryController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-country/:departureId            controllers.locationOfGoods.CountryController.onSubmit(departureId: String, mode: Mode = CheckMode)
+

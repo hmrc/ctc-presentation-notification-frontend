@@ -16,12 +16,10 @@
 
 package pages
 
-import controllers.locationOfGoods.routes
 import models.{LocationType, Mode, UserAnswers}
-import pages.sections.LocationOfGoodsSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import uk.gov.hmrc.hmrcfrontend.controllers.routes
 
 import scala.util.Try
 
