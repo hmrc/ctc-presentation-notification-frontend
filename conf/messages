@@ -45,18 +45,19 @@ locationOfGoods.coordinates.error.longitude.maximum = The longitude coordinates 
 locationOfGoods.coordinates.error.required = Enter the {0} coordinates for the location of goods
 locationOfGoods.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
 
-locationOfGoods.unLocode.title = What is the UN/LOCODE for the location of goods?
-locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goods?
-locationOfGoods.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
-locationOfGoods.unLocode.hint = Enter the code, like DEBER or ESMAD.
-locationOfGoods.unLocode.error.required = Enter the UN/LOCODE for the location of goods
-locationOfGoods.unLocode.error.length = Enter the UN/LOCODE for the location of goods
-locationOfGoods.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
+locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
+locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
+locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
+locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.unLocode.title = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
 locationOfGoods.unLocode.hint = Enter the code, like DEBER or ESMAD.
 locationOfGoods.unLocode.error.required = Enter the UN/LOCODE for the location of goods
-locationOfGoods.unLocode.error.length = Enter the UN/LOCODE for the location of goods
+locationOfGoods.unLocode.error.length = The UN/LOCODE must be 5 characters long
 locationOfGoods.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9

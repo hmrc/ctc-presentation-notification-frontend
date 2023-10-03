@@ -21,12 +21,12 @@ import forms.UnLocodeFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.{QuestionPage, UnLocodePage}
+import pages.UnLocodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnLocodeView
+import views.html.locationOfGoods.UnLocodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -62,19 +62,18 @@ class UnLocodeController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode))),
-            value => redirect(mode, UnLocodePage, value, departureId)
+            value => redirect(mode, value, departureId)
           )
 
     }
 
   private def redirect(
     mode: Mode,
-    page: QuestionPage[String],
     value: String,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(UnLocodePage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(UnLocodePage, updatedAnswers, departureId, mode))
 }

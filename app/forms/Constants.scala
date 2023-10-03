@@ -18,5 +18,5 @@ package forms
 
 object Constants {
   lazy val maxAuthorisationNumberLength: Int = 35
-  lazy val minUnLocodeLength: Int = 5
+  lazy val minUnLocodeLength: Int            = 5
 }

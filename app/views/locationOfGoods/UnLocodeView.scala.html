@@ -35,7 +35,7 @@ button: Button
  lrn = LocalReferenceNumber(lrn)
 ) {
 
- @formHelper(action = routes.UnLocodeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+ @formHelper(action = routes.UnLocodeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
   @errorSummary(form.errors)
 

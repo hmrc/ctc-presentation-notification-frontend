@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.minUnLocodeLength
 import forms.mappings.Mappings
-import models.StringFieldRegex.unLocodeInputRegex
+import models.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class UnLocodeFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             minLength(minUnLocodeLength, s"$prefix.error.length"),
-            regexp(unLocodeInputRegex, s"$prefix.error.invalid")
+            regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
     )
