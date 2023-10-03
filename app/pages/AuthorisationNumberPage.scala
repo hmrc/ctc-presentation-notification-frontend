@@ -28,5 +28,5 @@ case object AuthorisationNumberPage extends QuestionPage[String] {
   override def toString: String = "authorisationNumber"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(AuthorisationNumberController.onPageLoad(userAnswers.lrn, mode))
+    Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(userAnswers.lrn, mode))
 }
