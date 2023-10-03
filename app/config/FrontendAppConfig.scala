@@ -17,9 +17,9 @@
 package config
 
 import models.LocalReferenceNumber
+import play.api.Configuration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 
 @Singleton
 class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServicesConfig) {

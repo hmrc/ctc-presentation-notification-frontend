@@ -17,7 +17,6 @@
 package models
 
 import play.api.libs.json._
-import play.api.mvc.{JavascriptLiteral, PathBindable}
 
 final case class LocalReferenceNumber(value: String) {
   override def toString: String = value

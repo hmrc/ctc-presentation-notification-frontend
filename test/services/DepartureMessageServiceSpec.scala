@@ -19,8 +19,8 @@ package services
 import base.SpecBase
 import connectors.DepartureMovementConnector
 import generators.Generators
-import models.departureP5.{DepartureMessageMetaData, DepartureMessages}
 import models.departureP5.DepartureMessageType.DepartureNotification
+import models.departureP5.{DepartureMessageMetaData, DepartureMessages}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach

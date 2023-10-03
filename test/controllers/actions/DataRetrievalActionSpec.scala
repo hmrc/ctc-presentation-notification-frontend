@@ -17,15 +17,15 @@
 package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.{LocalReferenceNumber, UserAnswers}
+import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContent, Results}
 
-import scala.concurrent.Future
 import java.time.Instant
+import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 

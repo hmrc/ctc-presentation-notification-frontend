@@ -17,7 +17,6 @@
 package controllers.actions
 
 import com.google.inject.Singleton
-import models.LocalReferenceNumber
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 import repositories.SessionRepository
