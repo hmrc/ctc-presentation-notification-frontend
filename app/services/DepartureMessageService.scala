@@ -19,7 +19,7 @@ package services
 import connectors.DepartureMovementConnector
 import models.LocalReferenceNumber
 import models.departureP5.DepartureMessageMetaData
-import models.departureP5.DepartureMessageType._
+import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 

@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.locationOfGoods
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int = 35
-  lazy val minUnLocodeLength: Int = 5
+import pages.behaviours.PageBehaviours
+
+class AuthorisationNumberPageSpec extends PageBehaviours {
+
+  "AuthorisationNumberPage" - {
+
+    beRetrievable[String](AuthorisationNumberPage)
+
+    beSettable[String](AuthorisationNumberPage)
+
+    beRemovable[String](AuthorisationNumberPage)
+  }
 }

@@ -10,6 +10,8 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+locationOfGoods.caption = Location of goods
+
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
@@ -51,3 +53,10 @@ locationOfGoods.unLocode.error.required = Enter the UN/LOCODE for the location o
 locationOfGoods.unLocode.error.length = Enter the UN/LOCODE for the location of goods
 locationOfGoods.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
 
+locationOfGoods.unLocode.title = What is the UN/LOCODE for the location of goods?
+locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goods?
+locationOfGoods.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+locationOfGoods.unLocode.hint = Enter the code, like DEBER or ESMAD.
+locationOfGoods.unLocode.error.required = Enter the UN/LOCODE for the location of goods
+locationOfGoods.unLocode.error.length = Enter the UN/LOCODE for the location of goods
+locationOfGoods.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9

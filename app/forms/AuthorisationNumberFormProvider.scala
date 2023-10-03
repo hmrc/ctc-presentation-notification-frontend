@@ -16,7 +16,23 @@
 
 package forms
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int = 35
-  lazy val minUnLocodeLength: Int = 5
+import forms.Constants.maxAuthorisationNumberLength
+import forms.mappings.Mappings
+import models.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class AuthorisationNumberFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
+            maxLength(maxAuthorisationNumberLength, s"$prefix.error.length")
+          )
+        )
+    )
 }
