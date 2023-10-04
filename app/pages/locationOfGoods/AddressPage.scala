@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package pages.locationOfGoods
 
-import scala.util.matching.Regex
+import controllers.locationOfGoods.routes
+import models.{DynamicAddress, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.locationOfGoods.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-object StringFieldRegex {
+case class AddressPage() extends QuestionPage[DynamicAddress] {
 
-  val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
-  val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
-  val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
-  val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
-  val alphaNumericRegex: Regex             = "^[a-zA-Z0-9]*$".r
-  val alphaNumericWithSpacesRegex: Regex   = "^[a-zA-Z\\s0-9]*$".r
-  val stringFieldRegex: Regex              = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
+  override def toString: String = "address"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddressController.onPageLoad(userAnswers.lrn, mode))
 }
