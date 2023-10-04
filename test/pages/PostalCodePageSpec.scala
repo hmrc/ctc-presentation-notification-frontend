@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import forms.Constants.maxAuthorisationNumberLength
-import forms.mappings.Mappings
-import models.StringFieldRegex.alphaNumericRegex
-import play.api.data.Form
+import models.PostalCodeAddress
+import pages.behaviours.PageBehaviours
+import pages.locationOfGoods.PostalCodePage
 
-import javax.inject.Inject
+class PostalCodePageSpec extends PageBehaviours {
 
-class AuthorisationNumberFormProvider @Inject() extends Mappings {
+  "PostalCodePage" - {
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
-            maxLength(maxAuthorisationNumberLength, s"$prefix.error.length")
-          )
-        )
-    )
+    beRetrievable[PostalCodeAddress](PostalCodePage)
+
+    beSettable[PostalCodeAddress](PostalCodePage)
+
+    beRemovable[PostalCodeAddress](PostalCodePage)
+  }
 }

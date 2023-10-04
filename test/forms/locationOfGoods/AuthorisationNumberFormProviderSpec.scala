@@ -16,7 +16,6 @@
 
 package forms.locationOfGoods
 
-import forms.AuthorisationNumberFormProvider
 import forms.Constants.maxAuthorisationNumberLength
 import forms.behaviours.StringFieldBehaviours
 import models.StringFieldRegex.alphaNumericRegex
