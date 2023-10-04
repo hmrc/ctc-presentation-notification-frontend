@@ -18,7 +18,7 @@ package models
 
 import pages.QuestionPage
 import play.api.libs.json._
-import queries.{Gettable, Settable}
+import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant

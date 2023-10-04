@@ -16,11 +16,13 @@
 
 package generators
 
+import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
-import org.scalacheck.Arbitrary.arbitrary
+import models.reference.{Country, CountryCode}
 import org.scalacheck.{Arbitrary, Gen}
 
-import java.time.LocalDate
+import wolfendale.scalacheck.regexp.RegexpGen
+import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
   self: Generators =>
@@ -32,10 +34,18 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
+  implicit lazy val arbitraryCoordinates: Arbitrary[Coordinates] =
+    Arbitrary {
+      for {
+        latitude  <- RegexpGen.from(coordinatesLatitudeMaxRegex)
+        longitude <- RegexpGen.from(coordinatesLongitudeMaxRegex)
+      } yield Coordinates(latitude, longitude)
+    }
+
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {
-        lrn <- alphaNumericWithMaxLength(22)
+        lrn <- stringsWithMaxLength(22: Int, Gen.alphaNumChar)
       } yield new LocalReferenceNumber(lrn)
     }
 
@@ -53,6 +63,23 @@ trait ModelGenerators {
         qualifier   <- Gen.alphaNumStr
         description <- Gen.alphaNumStr
       } yield LocationOfGoodsIdentification(qualifier, description)
+    }
+
+  implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
+    Arbitrary {
+      Gen
+        .pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z')
+        .map(
+          code => CountryCode(code.mkString)
+        )
+    }
+
+  implicit lazy val arbitraryCountry: Arbitrary[Country] =
+    Arbitrary {
+      for {
+        code <- arbitrary[CountryCode]
+        name <- nonEmptyString
+      } yield Country(code, name)
     }
 
 }

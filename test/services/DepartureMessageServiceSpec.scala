@@ -40,8 +40,6 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
   private val departureMessageMetaData2: DepartureMessageMetaData =
     DepartureMessageMetaData(LocalDateTime.now().minusDays(1), DepartureNotification, "path/url")
 
-  private val departureMessages: DepartureMessages = DepartureMessages(List(departureMessageMetaData1, departureMessageMetaData2))
-
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()

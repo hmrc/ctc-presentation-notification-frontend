@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
@@ -30,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.LocationTypeService
-import views.html.LocationTypeView
+import views.html.locationOfGoods.LocationTypeView
 
 import scala.concurrent.Future
 
