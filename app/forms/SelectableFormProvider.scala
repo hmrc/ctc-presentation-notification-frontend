@@ -29,3 +29,4 @@ class SelectableFormProvider @Inject() extends Mappings {
       "value" -> selectable[T](selectableList, s"$prefix.error.required", args)
     )
 }
+
