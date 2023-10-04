@@ -17,17 +17,19 @@
 package pages
 
 import controllers.locationOfGoods.routes
-import models.{Coordinates, Mode, UserAnswers}
-import pages.sections.locationOfGoods.LocationOfGoodsSection
+import models.reference.Country
+import models.{Mode, UserAnswers}
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CoordinatesPage extends QuestionPage[Coordinates] {
+case object CountryPage extends QuestionPage[Country] {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-  override def toString: String = "coordinates"
+  override def toString: String = "country"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.CoordinatesController.onPageLoad(departureId, mode))
+    Some(routes.CountryController.onPageLoad(departureId, mode))
+
 }

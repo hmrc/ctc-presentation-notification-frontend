@@ -17,74 +17,85 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.locationOfGoods.AuthorisationNumberFormProvider
-import models.NormalMode
+import forms.SelectableFormProvider
+import generators.Generators
+import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.locationOfGoods.AuthorisationNumberPage
+import pages.CountryPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.AuthorisationNumberView
+import services.CountriesService
+import views.html.CountryView
 
 import scala.concurrent.Future
 
-class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                  = new AuthorisationNumberFormProvider()
-  private val form                          = formProvider("locationOfGoods.authorisationNumber")
-  private val mode                          = NormalMode
-  private lazy val authorisationNumberRoute = controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode).url
+  private val country1    = arbitraryCountry.arbitrary.sample.value
+  private val country2    = arbitraryCountry.arbitrary.sample.value
+  private val countryList = SelectableList(Seq(country1, country2))
+
+  private val formProvider = new SelectableFormProvider()
+  private val form         = formProvider("locationOfGoods.country", countryList)
+  private val mode         = NormalMode
+
+  private lazy val countryRoute = routes.CountryController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
 
-  "AuthorisationNumber Controller" - {
+  "Country Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
+      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, authorisationNumberRoute)
+      val request = FakeRequest(GET, countryRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AuthorisationNumberView]
+      val view = injector.instanceOf[CountryView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.toString, mode)(request, messages).toString
+        view(form, departureId, lrn.toString, countryList.values, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AuthorisationNumberPage, "testString")
+      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      val userAnswers = emptyUserAnswers.setValue(CountryPage, country1)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, authorisationNumberRoute)
+      val request = FakeRequest(GET, countryRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "testString"))
+      val filledForm = form.bind(Map("value" -> country1.code.code))
 
-      val view = injector.instanceOf[AuthorisationNumberView]
+      val view = injector.instanceOf[CountryView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(filledForm, departureId, lrn.toString, countryList.values, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
+      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val request = FakeRequest(POST, authorisationNumberRoute)
-        .withFormUrlEncodedBody(("value", "testString"))
+      val request = FakeRequest(POST, countryRoute)
+        .withFormUrlEncodedBody(("value", country1.code.code))
 
       val result = route(app, request).value
 
@@ -95,33 +106,31 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val invalidAnswer = ""
-
-      val request    = FakeRequest(POST, authorisationNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+      val request   = FakeRequest(POST, countryRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[CountryView]
+
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AuthorisationNumberView]
-
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(boundForm, departureId, lrn.toString, countryList.values, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, authorisationNumberRoute)
+      val request = FakeRequest(GET, countryRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
 
@@ -129,8 +138,8 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, authorisationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, countryRoute)
+        .withFormUrlEncodedBody(("value", country1.code.code))
 
       val result = route(app, request).value
 

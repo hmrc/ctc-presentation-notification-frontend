@@ -30,6 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import repositories.SessionRepository
+import services.CountriesService
 
 import scala.concurrent.Future
 
@@ -38,13 +39,13 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
-
     when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
   }
 
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]
   final val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
+  final val mockCountriesService: CountriesService                       = mock[CountriesService]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()

@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import controllers.locationOfGoods.routes
-import models.{Coordinates, Mode, UserAnswers}
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.reference.Country
+import play.api.libs.json.{Json, OFormat}
 
-case object CoordinatesPage extends QuestionPage[Coordinates] {
+case class PostalCodeAddress(
+  streetNumber: String,
+  postalCode: String,
+  country: Country
+) {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  override def toString: String = Seq(streetNumber, postalCode, country.description).mkString("<br>")
+}
 
-  override def toString: String = "coordinates"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.CoordinatesController.onPageLoad(departureId, mode))
+object PostalCodeAddress {
+  implicit val format: OFormat[PostalCodeAddress] = Json.format[PostalCodeAddress]
 }

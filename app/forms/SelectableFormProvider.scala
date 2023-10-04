@@ -16,23 +16,16 @@
 
 package forms
 
-import forms.Constants.maxAuthorisationNumberLength
 import forms.mappings.Mappings
-import models.StringFieldRegex.alphaNumericRegex
+import models.{Selectable, SelectableList}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class AuthorisationNumberFormProvider @Inject() extends Mappings {
+class SelectableFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply[T <: Selectable](prefix: String, selectableList: SelectableList[T], args: Any*): Form[T] =
     Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
-            maxLength(maxAuthorisationNumberLength, s"$prefix.error.length")
-          )
-        )
+      "value" -> selectable[T](selectableList, s"$prefix.error.required", args)
     )
 }
