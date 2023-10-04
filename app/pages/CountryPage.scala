@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages
 
+import controllers.locationOfGoods.routes
+import models.reference.Country
 import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AuthorisationNumberPage extends QuestionPage[String] {
+import scala.util.Try
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+case object CountryPage extends QuestionPage[Country] {
 
-  override def toString: String = "authorisationNumber"
+  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+
+  override def toString: String = "country"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.CountryController.onPageLoad(userAnswers.lrn, mode))
+
 }

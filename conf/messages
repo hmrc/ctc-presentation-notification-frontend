@@ -45,6 +45,16 @@ locationOfGoods.coordinates.error.longitude.maximum = The longitude coordinates 
 locationOfGoods.coordinates.error.required = Enter the {0} coordinates for the location of goods
 locationOfGoods.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
 
+locationOfGoods.country.title = In which country is the location of goods?
+locationOfGoods.country.heading = In which country is the location of goods?
+locationOfGoods.country.hint = Enter the country, like Italy or Spain.
+locationOfGoods.country.error.required = Enter which country the location of goods is in
+
+checkInformation.title = Confirmation needed to complete declaration
+checkInformation.heading = Confirmation needed to complete declaration
+checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
+checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
+
 locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
 locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
 locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number

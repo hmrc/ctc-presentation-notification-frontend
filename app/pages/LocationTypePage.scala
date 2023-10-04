@@ -17,7 +17,7 @@
 package pages
 
 import models.{LocationType, Mode, UserAnswers}
-import pages.sections.LocationOfGoodsSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

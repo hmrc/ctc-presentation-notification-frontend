@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
-
-case object AuthorisationNumberPage extends QuestionPage[String] {
-
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
-
-  override def toString: String = "authorisationNumber"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(userAnswers.lrn, mode))
-}
+case class SelectableList[T <: Selectable](values: Seq[T])

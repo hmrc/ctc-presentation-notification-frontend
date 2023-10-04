@@ -18,7 +18,6 @@ import cats.data.ReaderT
 import models.OpsError.WriterError
 import models.UserAnswers
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
 import pages.QuestionPage
 import play.api.libs.json._
 import play.api.mvc.Results.Redirect
