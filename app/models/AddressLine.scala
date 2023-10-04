@@ -23,7 +23,7 @@ import scala.util.matching.Regex
 
 sealed trait AddressLine {
   val field: String
-  def arg(implicit messages: Messages): String = messages(s"address.$field")
+  def arg(implicit messages: Messages): String = messages(s"locationOfGoods.address.$field").toLowerCase()
 }
 
 object AddressLine {

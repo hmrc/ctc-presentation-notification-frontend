@@ -28,6 +28,7 @@
 
 @(
     form: Form[DynamicAddress],
+    departureId: String,
     lrn: String,
     mode: Mode,
     isPostalCodeRequired: Boolean
@@ -39,7 +40,7 @@
     lrn = LocalReferenceNumber(lrn)
 ) {
 
-    @formHelper(action = routes.AddressController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddressController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

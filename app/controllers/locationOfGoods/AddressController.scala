@@ -54,7 +54,7 @@ class AddressController @Inject() (
   private def country(implicit request: Request): Country = request.arg
 
   private def form(isPostalCodeRequired: Boolean)(implicit request: Request): Form[DynamicAddress] =
-    formProvider("location.address", isPostalCodeRequired)
+    formProvider("locationOfGoods.address", isPostalCodeRequired)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
@@ -69,7 +69,7 @@ class AddressController @Inject() (
               case Some(value) => form(isPostalCodeRequired).fill(value)
             }
 
-            Ok(view(preparedForm, lrn, mode, isPostalCodeRequired))
+            Ok(view(preparedForm, departureId, lrn, mode, isPostalCodeRequired))
         }
     }
 
@@ -88,7 +88,7 @@ class AddressController @Inject() (
             preparedForm
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, isPostalCodeRequired))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, mode, isPostalCodeRequired))),
                 value => redirect(mode, AddressPage.apply(), value, departureId)
               )
         }

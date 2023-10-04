@@ -41,10 +41,10 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val country     = arbitrary[Country].sample.value
 
   private val formProvider                        = new DynamicAddressFormProvider()
-  private def form(isPostalCodeRequired: Boolean) = formProvider("location.address", isPostalCodeRequired)
+  private def form(isPostalCodeRequired: Boolean) = formProvider("locationOfGoods.address", isPostalCodeRequired)
 
   private val mode              = NormalMode
-  private lazy val addressRoute = routes.AddressController.onPageLoad(lrn.toString, mode).url
+  private lazy val addressRoute = routes.AddressController.onPageLoad(departureId, mode).url
 
   private lazy val mockCountriesService: CountriesService = mock[CountriesService]
 
@@ -80,7 +80,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(isPostalCodeRequired), lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(form(isPostalCodeRequired), departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
       }
 
       "when postcode is optional" in {
@@ -101,7 +101,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(isPostalCodeRequired), lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(form(isPostalCodeRequired), departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
       }
     }
 
@@ -137,7 +137,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(filledForm, departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
       }
 
       "when postcode is optional" in {
@@ -170,7 +170,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(filledForm, departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
       }
     }
 
@@ -219,7 +219,8 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val view = injector.instanceOf[AddressView]
 
         contentAsString(result) mustEqual
-          view(boundForm, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(boundForm, departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+
       }
 
       "when postcode is optional" in {
@@ -240,13 +241,16 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual BAD_REQUEST
 
         val view = injector.instanceOf[AddressView]
-
         contentAsString(result) mustEqual
-          view(boundForm, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(boundForm, departureId, lrn.value, mode, isPostalCodeRequired)(request, messages).toString
       }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
+
+      val isPostalCodeRequired = false
+
+      when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
       setNoExistingUserAnswers()
 
