@@ -23,8 +23,6 @@ import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
-
 case object CountryPage extends QuestionPage[Country] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
