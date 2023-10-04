@@ -18,7 +18,7 @@ package pages.locationOfGoods
 
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.LocationOfGoodsSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,6 +28,6 @@ case object AuthorisationNumberPage extends QuestionPage[String] {
 
   override def toString: String = "authorisationNumber"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(userAnswers.lrn, mode))
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
 }

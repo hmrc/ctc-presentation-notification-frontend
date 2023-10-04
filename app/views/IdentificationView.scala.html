@@ -15,44 +15,44 @@
  *@
 
 @import controllers.locationOfGoods.routes
-@import models.{LocalReferenceNumber, LocationType}
-@import viewModels.components.InputRadioViewModel._
+@import models.LocalReferenceNumber
+@import models.LocationOfGoodsIdentification
 @import views.html.components.{Button, ErrorSummary, InputRadio}
+@import viewModels.components.InputRadioViewModel
+@import viewModels.components.InputRadioViewModel._
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        inputRadio: InputRadio,
-        errorSummary: ErrorSummary,
-        button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputRadio: InputRadio,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[LocationType], departureId: String, lrn: String, values: Seq[LocationType], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[LocationOfGoodsIdentification], departureId: String, lrn: String, identifiers: Seq[LocationOfGoodsIdentification], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("locationOfGoods.locationType.title"),
+    title = messages("locationOfGoods.identification.title"),
     showBackLink = true,
     lrn = LocalReferenceNumber(lrn)
 ) {
 
-    @formHelper(action = routes.LocationTypeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.IdentificationController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputRadio(
             field = form("value"),
             radioType = RadioWithAdditionalHtml(
-                heading = messages("locationOfGoods.locationType.heading"),
+                heading = messages("locationOfGoods.identification.heading"),
                 caption = Some(messages("locationOfGoods.caption")),
                 additionalHtml = {
-                    Html(
-                        messages("locationOfGoods.locationType.p1").toParagraphString +
-                        messages("locationOfGoods.locationType.p2").toParagraphString
-                    )
+                    Html(messages("locationOfGoods.identification.p1").toParagraphString)
                 }
             ),
-            radioItems = fieldId => values.toRadioItems(fieldId, form.value)
+            radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )
+
 
         @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
