@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.HttpVerbs.GET
 class Navigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case InferredLocationTypePage => ua => ???
+    case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
   }
 
   private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =

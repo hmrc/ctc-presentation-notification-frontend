@@ -47,4 +47,12 @@ trait ModelGenerators {
       } yield LocationType(locationType, description)
     }
 
+  implicit lazy val arbitraryLocationOfGoodsIdentification: Arbitrary[LocationOfGoodsIdentification] =
+    Arbitrary {
+      for {
+        qualifier   <- Gen.alphaNumStr
+        description <- Gen.alphaNumStr
+      } yield LocationOfGoodsIdentification(qualifier, description)
+    }
+
 }

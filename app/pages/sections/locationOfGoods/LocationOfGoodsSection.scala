@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package queries
+package pages.sections.locationOfGoods
 
-import models.{Mode, UserAnswers}
-import pages.Page
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-import scala.util.{Success, Try}
+case object LocationOfGoodsSection extends Section[JsObject] {
 
-sealed trait Query extends Page {
-  def path: JsPath
-}
+  override def path: JsPath = JsPath \ toString
 
-trait Gettable[A] extends Query {
-  def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = None
-}
-
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  override def toString: String = "locationOfGoods"
 }
