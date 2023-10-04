@@ -16,13 +16,11 @@
 
 package forms.behaviours
 
-import generators.Generators
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.data.{Field, Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-trait StringFieldBehaviours extends FieldBehaviours with Generators {
+trait StringFieldBehaviours extends FieldBehaviours {
 
   def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"must not bind strings longer than $maxLength characters" in {

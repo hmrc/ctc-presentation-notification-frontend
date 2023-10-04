@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package pages.locationOfGoods
 
-import scala.util.matching.Regex
+import pages.behaviours.PageBehaviours
 
-object StringFieldRegex {
+class AuthorisationNumberPageSpec extends PageBehaviours {
 
-  val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
-  val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
-  val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
-  val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
-  val alphaNumericRegex: Regex             = "^[a-zA-Z0-9]*$".r
+  "AuthorisationNumberPage" - {
+
+    beRetrievable[String](AuthorisationNumberPage)
+
+    beSettable[String](AuthorisationNumberPage)
+
+    beRemovable[String](AuthorisationNumberPage)
+  }
 }

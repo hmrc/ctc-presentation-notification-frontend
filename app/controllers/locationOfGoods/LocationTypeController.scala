@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.LocationTypeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.LocationTypeView
+import views.html.locationOfGoods.LocationTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

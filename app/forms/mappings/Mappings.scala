@@ -21,6 +21,8 @@ import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
 
+import java.time.{LocalDate, LocalTime}
+
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
@@ -54,4 +56,5 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[Any] = Seq.empty
   ): FieldMapping[T] =
     of(selectableFormatter[T](selectableList, errorKey, args))
+
 }
