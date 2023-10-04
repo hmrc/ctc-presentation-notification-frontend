@@ -29,6 +29,6 @@ case object PostalCodePage extends QuestionPage[PostalCodeAddress] {
 
   override def toString: String = "postalCode"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PostalCodeController.onPageLoad(userAnswers.lrn, mode))
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.PostalCodeController.onPageLoad(departureId, mode))
 }
