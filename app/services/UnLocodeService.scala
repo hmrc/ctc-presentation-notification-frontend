@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package services
 
+import connectors.ReferenceDataConnector
+import models.SelectableList
 import models.reference.UnLocode
-import models.{Mode, UserAnswers}
-import pages.sections.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import uk.gov.hmrc.http.HeaderCarrier
 
-case object UnLocodePage extends QuestionPage[UnLocode] {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+class UnLocodeService @Inject() (
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext) {
 
-  override def toString: String = "unLocode"
+  def getUnLocodeList()(implicit hc: HeaderCarrier): Future[SelectableList[UnLocode]] =
+    referenceDataConnector
+      .getUnLocodes()
+      .map(
+        unLocodes => SelectableList(unLocodes.sortBy(_.name.toLowerCase))
+      )
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
 }

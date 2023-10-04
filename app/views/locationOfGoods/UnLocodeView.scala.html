@@ -15,19 +15,21 @@
  *@
 
 @import controllers.locationOfGoods.routes
-@import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText, Paragraph}
+@import viewModels.components.InputSelectViewModel._
+@import models.LocalReferenceNumber
+@import models.reference.UnLocode
+@import views.html.components.{Button, ErrorSummary, InputSelect, Paragraph}
 
 @this(
 mainTemplate: MainTemplate,
 formHelper: FormWithCSRF,
-inputText: InputText,
+inputSelect: InputSelect,
 paragraph: Paragraph,
 errorSummary: ErrorSummary,
 button: Button
 )
 
-@(form: Form[String], departureId: String, lrn:String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[UnLocode], unLocodeList: Seq[UnLocode], departureId: String, lrn:String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
  title = messages("locationOfGoods.unLocode.title"),
@@ -39,16 +41,16 @@ button: Button
 
   @errorSummary(form.errors)
 
-  @inputText(
-   field = form("value"),
-   inputTextType = TextInputWithHiddenLabel(
-    heading = messages("locationOfGoods.unLocode.heading"),
-    caption = Some(messages("locationOfGoods.caption")),
-    additionalHtml = paragraph(messages("locationOfGoods.unLocode.paragraph"))
-   ),
-  hint = Some(messages("locationOfGoods.unLocode.hint")),
-  inputClass = InputSize.Width20
-  )
+   @inputSelect(
+      field = form("value"),
+      selectType = SelectWithAdditionalHtml(
+         heading = messages("locationOfGoods.unLocode.heading"),
+         additionalHtml = paragraph(messages("locationOfGoods.unLocode.paragraph"))
+      ),
+      hint = Some(messages("locationOfGoods.unLocode.hint")),
+      selectItems = unLocodeList.toSelectItems(form.value),
+      placeholder = messages("officeOfDeparture.placeholder")
+   )
 
 @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
 }

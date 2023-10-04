@@ -17,14 +17,12 @@
 package controllers.locationOfGoods
 
 import controllers.actions._
-import controllers.{NavigatorOps, SettableOps}
 import forms.locationOfGoods.CoordinatesFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Coordinates, LocalReferenceNumber, Mode}
+import models.{Coordinates, Mode}
 import navigation.Navigator
 import pages.{CoordinatesPage, QuestionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

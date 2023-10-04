@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.reference.UnLocode
-import models.{Mode, UserAnswers}
-import pages.sections.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
-
-case object UnLocodePage extends QuestionPage[UnLocode] {
-
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
-
-  override def toString: String = "unLocode"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
-}
+case class SelectableList[T <: Selectable](values: Seq[T])
