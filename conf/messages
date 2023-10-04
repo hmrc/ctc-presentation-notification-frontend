@@ -10,6 +10,12 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+address.postalCode = postal code
+address.country = country
+address.numberAndStreet = number and street name
+address.city = town or city
+address.streetNumber = street number
+
 locationOfGoods.caption = Location of goods
 
 moreInformation.title = More information needed to complete declaration
@@ -28,9 +34,15 @@ locationOfGoods.locationType.checkYourAnswersLabel = Location type
 locationOfGoods.locationType.change.hidden = location type
 locationOfGoods.locationType.error.required = Select which type of location it is
 locationOfGoods.locationType.authorisedPlace = Authorised place - the authorised consignor’s own premises
-locationOfGoods.caption = Location of goods
-locationOfGoods.p1 = This is where Customs will carry out any physical checks.
-locationOfGoods.p2 = For goods not present at a customs office, this is their location at the time they are declared.
+locationOfGoods.locationType.p1 = This is where Customs will carry out any physical checks.
+locationOfGoods.locationType.p2 = For goods not present at a customs office, this is their location at the time they are declared.
+
+locationOfGoods.identification.title = How do you want to identify the location of goods?
+locationOfGoods.identification.heading = How do you want to identify the location of goods?
+locationOfGoods.identification.p1 = This needs to be precise enough for Customs to locate the goods and carry out their checks.
+locationOfGoods.identification.checkYourAnswersLabel = Identifier type for the location of goods
+locationOfGoods.identification.change.hidden = identifier type for the location of goods
+locationOfGoods.identification.error.required = Select how you want to identify the location of goods
 
 locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
 locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?
@@ -44,6 +56,15 @@ locationOfGoods.coordinates.error.latitude.maximum = The latitude coordinates mu
 locationOfGoods.coordinates.error.longitude.maximum = The longitude coordinates must be between -180 and 180
 locationOfGoods.coordinates.error.required = Enter the {0} coordinates for the location of goods
 locationOfGoods.coordinates.error.format = The {0} coordinates must include between 5 and 7 decimal places
+
+locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
+locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
+locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
+locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
+locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.country.title = In which country is the location of goods?
 locationOfGoods.country.heading = In which country is the location of goods?
@@ -64,6 +85,17 @@ locationOfGoods.authorisationNumber.error.length = The authorisation number must
 locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
 locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 
+locationOfGoods.postalCode.title = What is the address for the location of goods?
+locationOfGoods.postalCode.heading = What is the address for the location of goods?
+locationOfGoods.postalCode.streetNumber = Street number
+locationOfGoods.postalCode.postalCode = Postal code
+locationOfGoods.postalCode.country = Country
+locationOfGoods.postalCode.checkYourAnswersLabel = What is the address for the location of goods?
+locationOfGoods.postalCode.change.hidden = the address for the location of goods
+locationOfGoods.postalCode.error.streetNumber.invalid = The street number must only include numbers 0 to 9 and letters a to z
+locationOfGoods.postalCode.error.postalCode.invalid = The postal code must only include letters a to z, numbers 0 to 9 and spaces
+locationOfGoods.postalCode.error.length = The {0} must be {1} characters or less
+locationOfGoods.postalCode.error.required = Enter the {0} for the location of goods
 locationOfGoods.address.title = What is the address for the location of goods?
 locationOfGoods.address.heading = What is the address for the location of goods?
 locationOfGoods.address.numberAndStreet = Number and street name

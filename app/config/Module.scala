@@ -28,6 +28,7 @@ class Module extends AbstractModule {
     bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
     bind(classOf[TimeMachine]).to(classOf[DefaultTimeMachine]).asEagerSingleton()

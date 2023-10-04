@@ -46,13 +46,6 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val mode              = NormalMode
   private lazy val addressRoute = routes.AddressController.onPageLoad(departureId, mode).url
 
-  private lazy val mockCountriesService: CountriesService = mock[CountriesService]
-
-  override def beforeEach(): Unit = {
-    reset(mockCountriesService)
-    super.beforeEach()
-  }
-
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()

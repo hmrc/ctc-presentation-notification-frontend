@@ -42,8 +42,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val form         = formProvider("locationOfGoods.country", countryList)
   private val mode         = NormalMode
 
-  private val mockCountriesService: CountriesService = mock[CountriesService]
-  private lazy val countryRoute                      = routes.CountryController.onPageLoad(departureId, mode).url
+  private lazy val countryRoute = routes.CountryController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

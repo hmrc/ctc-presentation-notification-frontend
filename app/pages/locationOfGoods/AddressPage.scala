@@ -29,6 +29,6 @@ case class AddressPage() extends QuestionPage[DynamicAddress] {
 
   override def toString: String = "address"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddressController.onPageLoad(userAnswers.lrn, mode))
 }

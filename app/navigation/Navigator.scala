@@ -25,8 +25,8 @@ import play.api.mvc.Call
 class Navigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case InferredLocationTypePage => ua => ???
-    case CoordinatesPage          => ???
+    case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
+    case CoordinatesPage                             => ???
   }
 
   private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =

@@ -24,6 +24,7 @@ case class PostalCodeAddress(
   postalCode: String,
   country: Country
 ) {
+
   override def toString: String = Seq(streetNumber, postalCode, country.description).mkString("<br>")
 }
 
