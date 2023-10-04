@@ -57,6 +57,12 @@ trait ModelGenerators {
       } yield LocationType(locationType, description)
     }
 
+  implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield SelectableList(values.distinctBy(_.value))
+  }
+
   implicit lazy val arbitraryLocationOfGoodsIdentification: Arbitrary[LocationOfGoodsIdentification] =
     Arbitrary {
       for {
@@ -80,6 +86,15 @@ trait ModelGenerators {
         code <- arbitrary[CountryCode]
         name <- nonEmptyString
       } yield Country(code, name)
+    }
+
+  implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
+    Arbitrary {
+      for {
+        streetNumber <- nonEmptyString
+        postalCode   <- nonEmptyString
+        country      <- arbitrary[Country]
+      } yield PostalCodeAddress(streetNumber, postalCode, country)
     }
 
 }

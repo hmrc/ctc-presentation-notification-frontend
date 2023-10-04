@@ -16,15 +16,18 @@
 
 package models
 
-import scala.util.matching.Regex
+import models.reference.Country
+import play.api.libs.json.{Json, OFormat}
 
-object StringFieldRegex {
+case class PostalCodeAddress(
+  streetNumber: String,
+  postalCode: String,
+  country: Country
+) {
 
-  val coordinatesCharacterRegex: Regex     = "^[0-9.+-]+$".r
-  val coordinatesLatitudeMaxRegex: String  = "^[+-]?([0-8]?[0-9]\\.[0-9]{5,7})$"
-  val coordinateFormatRegex: Regex         = "^[+-]?([0-9]+\\.[0-9]{5,7})$".r
-  val coordinatesLongitudeMaxRegex: String = "^[+-]?([0-1]?[0-7]?[0-9]\\.[0-9]{5,7})$"
-  val alphaNumericRegex: Regex             = "^[a-zA-Z0-9]*$".r
-  val stringFieldRegex: Regex              = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val alphaNumericWithSpacesRegex: Regex   = "^[a-zA-Z\\s0-9]*$".r
+  override def toString: String = Seq(streetNumber, postalCode, country.description).mkString("<br>")
+}
+
+object PostalCodeAddress {
+  implicit val format: OFormat[PostalCodeAddress] = Json.format[PostalCodeAddress]
 }
