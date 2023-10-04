@@ -16,11 +16,10 @@
 
 package views.locationOfGoods
 
-import forms.locationOfGoods.DynamicAddressFormProvider
+import forms.DynamicAddressFormProvider
 import generators.Generators
 import models.{DynamicAddress, NormalMode}
 import play.api.data.Form
-import play.api.test.Helpers.baseApplicationBuilder.injector
 import play.twirl.api.HtmlFormat
 import views.behaviours.DynamicAddressViewBehaviours
 import views.html.locationOfGoods.AddressView

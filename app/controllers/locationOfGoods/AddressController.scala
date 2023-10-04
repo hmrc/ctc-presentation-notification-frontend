@@ -17,7 +17,7 @@
 package controllers.locationOfGoods
 
 import controllers.actions._
-import forms.locationOfGoods.DynamicAddressFormProvider
+import forms.DynamicAddressFormProvider
 import models.reference.Country
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{DynamicAddress, Mode}

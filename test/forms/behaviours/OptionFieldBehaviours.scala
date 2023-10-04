@@ -18,7 +18,6 @@ package forms.behaviours
 
 import generators.Generators
 import models.Radioable
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.data.{Form, FormError}
 
 class OptionFieldBehaviours extends FieldBehaviours with Generators {

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package forms.locationOfGoods
+package forms
 
-import forms.StopOnFirstFail
 import forms.mappings.Mappings
-import models.AddressLine.{City, NumberAndStreet, PostalCode}
+import models.AddressLine._
 import models.DynamicAddress
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional}
@@ -32,7 +31,7 @@ class DynamicAddressFormProvider @Inject() extends Mappings {
     Form(
       mapping(
         NumberAndStreet.field -> {
-          trimmedText(s"$prefix.error.required", NumberAndStreet.arg +: args)
+          text(s"$prefix.error.required", NumberAndStreet.arg +: args)
             .verifying(
               StopOnFirstFail[String](
                 maxLength(NumberAndStreet.length, s"$prefix.error.length", Seq(NumberAndStreet.arg) ++ args ++ Seq(NumberAndStreet.length)),
@@ -41,7 +40,7 @@ class DynamicAddressFormProvider @Inject() extends Mappings {
             )
         },
         City.field -> {
-          trimmedText(s"$prefix.error.required", City.arg +: args)
+          text(s"$prefix.error.required", City.arg +: args)
             .verifying(
               StopOnFirstFail[String](
                 maxLength(City.length, s"$prefix.error.length", Seq(City.arg) ++ args ++ Seq(City.length)),
@@ -55,22 +54,16 @@ class DynamicAddressFormProvider @Inject() extends Mappings {
             regexp(PostalCode.regex, s"$prefix.error.postalCode.invalid", args)
           )
           if (isPostalCodeRequired) {
-            trimmedText(s"$prefix.error.required", PostalCode.arg +: args)
+            text(s"$prefix.error.required", PostalCode.arg +: args)
               .verifying(constraint)
               .transform[Option[String]](Some(_), _.getOrElse(""))
           } else {
             optional(
-              trimmedText()
+              text()
                 .verifying(constraint)
             )
           }
         }
       )(DynamicAddress.apply)(DynamicAddress.unapply)
     )
-}
-
-object DynamicAddressFormProvider {
-
-  def apply(prefix: String, isPostalCodeRequired: Boolean, args: Any*)(implicit messages: Messages): Form[DynamicAddress] =
-    new DynamicAddressFormProvider()(prefix, isPostalCodeRequired, args: _*)
 }

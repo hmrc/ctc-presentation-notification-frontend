@@ -17,10 +17,10 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.locationOfGoods.DynamicAddressFormProvider
+import forms.DynamicAddressFormProvider
 import generators.Generators
 import models.reference.Country
-import models.{DynamicAddress, LocalReferenceNumber, NormalMode}
+import models.{DynamicAddress, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
