@@ -31,7 +31,7 @@ case object CountryPage extends QuestionPage[Country] {
 
   override def toString: String = "country"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CountryController.onPageLoad(userAnswers.lrn, mode))
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.CountryController.onPageLoad(departureId, mode))
 
 }

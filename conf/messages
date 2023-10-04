@@ -28,9 +28,15 @@ locationOfGoods.locationType.checkYourAnswersLabel = Location type
 locationOfGoods.locationType.change.hidden = location type
 locationOfGoods.locationType.error.required = Select which type of location it is
 locationOfGoods.locationType.authorisedPlace = Authorised place - the authorised consignor’s own premises
-locationOfGoods.caption = Location of goods
-locationOfGoods.p1 = This is where Customs will carry out any physical checks.
-locationOfGoods.p2 = For goods not present at a customs office, this is their location at the time they are declared.
+locationOfGoods.locationType.p1 = This is where Customs will carry out any physical checks.
+locationOfGoods.locationType.p2 = For goods not present at a customs office, this is their location at the time they are declared.
+
+locationOfGoods.identification.title = How do you want to identify the location of goods?
+locationOfGoods.identification.heading = How do you want to identify the location of goods?
+locationOfGoods.identification.p1 = This needs to be precise enough for Customs to locate the goods and carry out their checks.
+locationOfGoods.identification.checkYourAnswersLabel = Identifier type for the location of goods
+locationOfGoods.identification.change.hidden = identifier type for the location of goods
+locationOfGoods.identification.error.required = Select how you want to identify the location of goods
 
 locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
 locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?

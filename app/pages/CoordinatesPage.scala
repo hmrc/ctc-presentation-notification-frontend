@@ -28,6 +28,6 @@ case object CoordinatesPage extends QuestionPage[Coordinates] {
 
   override def toString: String = "coordinates"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CoordinatesController.onPageLoad(userAnswers.lrn, mode))
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.CoordinatesController.onPageLoad(departureId, mode))
 }

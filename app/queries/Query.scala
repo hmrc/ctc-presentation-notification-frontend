@@ -28,7 +28,7 @@ sealed trait Query extends Page {
 }
 
 trait Gettable[A] extends Query {
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
+  def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = None
 }
 
 trait Settable[A] extends Query {

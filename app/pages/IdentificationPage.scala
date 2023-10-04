@@ -16,44 +16,40 @@
 
 package pages
 
-import models.{LocationType, Mode, UserAnswers}
-import pages.sections.locationOfGoods.LocationOfGoodsSection
+import controllers.locationOfGoods.routes
+import models.{LocationOfGoodsIdentification, Mode, UserAnswers}
+import pages.sections.locationOfGoods.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-abstract class BaseLocationTypePage extends QuestionPage[LocationType] {
+trait BaseIdentificationPage extends QuestionPage[LocationOfGoodsIdentification] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+    Some(routes.IdentificationController.onPageLoad(departureId, mode))
 
   def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
 
-  override def cleanup(value: Option[LocationType], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[LocationOfGoodsIdentification], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) =>
-        userAnswers
-          .remove(IdentificationPage)
-          .flatMap(_.remove(InferredIdentificationPage))
-          .flatMap(cleanup)
-      case None =>
-        super.cleanup(value, userAnswers)
+      case Some(_) => userAnswers.remove(QualifierOfIdentificationDetailsSection).flatMap(cleanup)
+      case None    => super.cleanup(value, userAnswers)
     }
 }
 
-case object LocationTypePage extends BaseLocationTypePage {
-  override def toString: String = "typeOfLocation"
+case object IdentificationPage extends BaseIdentificationPage {
+  override def toString: String = "qualifierOfIdentification"
 
   override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
-    userAnswers.remove(InferredLocationTypePage)
+    userAnswers.remove(InferredIdentificationPage)
 }
 
-case object InferredLocationTypePage extends BaseLocationTypePage {
-  override def toString: String = "inferredTypeOfLocation"
+case object InferredIdentificationPage extends BaseIdentificationPage {
+  override def toString: String = "inferredQualifierOfIdentification"
 
   override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
-    userAnswers.remove(LocationTypePage)
+    userAnswers.remove(IdentificationPage)
 }
