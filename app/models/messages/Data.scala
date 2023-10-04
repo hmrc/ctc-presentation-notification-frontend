@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package models.messages
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.departureP5.DepartureMessageType
+import play.api.libs.json.{__, Json, OWrites, Reads}
 
-case object AddArrivalDateYesNoPage extends QuestionPage[Boolean] {
+case class Data(data: MessageData)
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+object Data {
 
-  override def toString: String = "addArrivalDate"
+  def reads(messageType: DepartureMessageType): Reads[Data] =
+    (__ \ "body" \ s"n1:${messageType.dataPath}").read[MessageData].map(Data.apply)
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.transitOperation.routes.AddArrivalDateYesNoController.onPageLoad(departureId, mode))
-
+  implicit val writes: OWrites[Data] = Json.writes[Data]
 }

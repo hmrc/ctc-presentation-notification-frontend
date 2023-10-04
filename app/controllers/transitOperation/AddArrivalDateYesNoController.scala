@@ -18,8 +18,8 @@ package controllers.transitOperation
 
 import controllers.actions._
 import forms.YesNoFormProvider
+import models.Mode
 import models.requests.MandatoryDataRequest
-import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.transitOperation.AddArrivalDateYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}

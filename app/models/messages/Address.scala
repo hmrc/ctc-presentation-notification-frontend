@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package models.messages
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.json.{Json, OFormat}
 
-case object AddArrivalDateYesNoPage extends QuestionPage[Boolean] {
+case class Address(
+  streetAndNumber: String,
+  postcode: Option[String],
+  city: String,
+  country: String
+)
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
-
-  override def toString: String = "addArrivalDate"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.transitOperation.routes.AddArrivalDateYesNoController.onPageLoad(departureId, mode))
-
+object Address {
+  implicit val format: OFormat[Address] = Json.format[Address]
 }

@@ -42,25 +42,33 @@ class IndexController @Inject() (
 
   def index(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
     implicit request =>
-      service.getLRN(departureId) flatMap {
-        lrn =>
-          sessionRepository
-            .set(
-              request.userAnswers.getOrElse(
-                UserAnswers(
-                  departureId,
-                  request.eoriNumber,
-                  lrn.value,
-                  JsObject.empty,
-                  timeMachine.now()
+      service.getDepartureData(departureId).flatMap {
+        case Some(departureData) =>
+          service.getLRN(departureId) flatMap {
+            lrn =>
+              sessionRepository
+                .set(
+                  request.userAnswers.getOrElse(
+                    UserAnswers(
+                      departureId,
+                      request.eoriNumber,
+                      lrn.value,
+                      JsObject.empty,
+                      timeMachine.now()
+                    )
+                  )
                 )
-              )
-            )
-            .map(
-              _ => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
-            )
+                .map {
+                  _ =>
+                    if (departureData.data.isDataComplete) {
+                      Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
+                    } else {
+                      Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+                    }
+                }
+          }
+        case None => ??? //technical difficulties
       }
-
   }
 
 }
