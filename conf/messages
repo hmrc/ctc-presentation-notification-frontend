@@ -4,6 +4,8 @@ service.text = This is your new service
 site.continue = Continue
 site.saveAndContinue = Save and continue
 site.service_name = Manage your transit movements
+site.no = No
+site.yes = Yes
 
 site.section = This section is
 
@@ -17,6 +19,7 @@ address.city = town or city
 address.streetNumber = street number
 
 locationOfGoods.caption = Location of goods
+arrivalDate.caption = Estimated arrival date
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
@@ -102,3 +105,10 @@ locationOfGoods.postalCode.error.streetNumber.invalid = The street number must o
 locationOfGoods.postalCode.error.postalCode.invalid = The postal code must only include letters a to z, numbers 0 to 9 and spaces
 locationOfGoods.postalCode.error.length = The {0} must be {1} characters or less
 locationOfGoods.postalCode.error.required = Enter the {0} for the location of goods
+
+transitOperation.addArrivalDateYesNo.title = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.heading = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
+transitOperation.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
+transitOperation.addArrivalDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
