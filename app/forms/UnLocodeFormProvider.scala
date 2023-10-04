@@ -21,9 +21,7 @@ import models.SelectableList
 import models.reference.UnLocode
 import play.api.data.Form
 
-import javax.inject.Inject
-
-class UnLocodeFormProvider @Inject() extends Mappings {
+class UnLocodeFormProvider extends Mappings {
 
   def apply(prefix: String, unLocodeSeq: SelectableList[UnLocode]): Form[UnLocode] =
     Form(

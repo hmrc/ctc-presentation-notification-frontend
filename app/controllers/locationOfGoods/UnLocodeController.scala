@@ -51,7 +51,7 @@ class UnLocodeController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      service.getUnLocodeList().flatMap {
+      service.getUnLocodeList.flatMap {
         unLocodeSeq =>
           val preparedForm = request.userAnswers.get(UnLocodePage) match {
             case None        => form(unLocodeSeq)
@@ -65,7 +65,7 @@ class UnLocodeController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getUnLocodeList().flatMap {
+        service.getUnLocodeList.flatMap {
           unLocodeSeq =>
             form(unLocodeSeq)
               .bindFromRequest()

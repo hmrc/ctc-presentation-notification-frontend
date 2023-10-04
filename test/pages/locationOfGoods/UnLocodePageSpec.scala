@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package services
+package pages.locationOfGoods
 
-import connectors.ReferenceDataConnector
-import models.SelectableList
 import models.reference.UnLocode
-import uk.gov.hmrc.http.HeaderCarrier
+import pages.behaviours.PageBehaviours
+import pages._
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+class UnLocodePageSpec extends PageBehaviours {
 
-class UnLocodeService @Inject() (
-  referenceDataConnector: ReferenceDataConnector
-)(implicit ec: ExecutionContext) {
+  "UnLocodePage" - {
 
-  def getUnLocodeList(implicit hc: HeaderCarrier): Future[SelectableList[UnLocode]] =
-    referenceDataConnector
-      .getUnLocodes()
-      .map(
-        unLocodes => SelectableList(unLocodes.sortBy(_.name.toLowerCase))
-      )
+    beRetrievable[UnLocode](UnLocodePage)
 
+    beSettable[UnLocode](UnLocodePage)
+
+    beRemovable[UnLocode](UnLocodePage)
+  }
 }
