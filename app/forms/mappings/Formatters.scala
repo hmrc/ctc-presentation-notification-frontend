@@ -113,10 +113,10 @@ trait Formatters {
     }
 
   private[mappings] def selectableFormatter[T <: Selectable](
-                                                              selectableList: SelectableList[T],
-                                                              errorKey: String,
-                                                              args: Seq[Any] = Seq.empty
-                                                            ): Formatter[T] = new Formatter[T] {
+    selectableList: SelectableList[T],
+    errorKey: String,
+    args: Seq[Any] = Seq.empty
+  ): Formatter[T] = new Formatter[T] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
@@ -126,7 +126,7 @@ trait Formatters {
         case Some(value) =>
           selectableList.values.find(_.value == value) match {
             case Some(selectable) => Right(selectable)
-            case None => error
+            case None             => error
           }
       }
     }
