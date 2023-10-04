@@ -38,7 +38,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   private lazy val withIncompleteDataNextPage = routes.MoreInformationController.onPageLoad(departureId).url
 
-  private lazy val withCompleteDataNextPage = "#"
+  private lazy val withCompleteDataNextPage = routes.CheckInformationController.onPageLoad(departureId).url
 
   private val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
 

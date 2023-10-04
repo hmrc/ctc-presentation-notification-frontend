@@ -20,7 +20,7 @@ import controllers.actions._
 import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -61,7 +61,7 @@ class IndexController @Inject() (
                 .map {
                   _ =>
                     if (departureData.data.isDataComplete) {
-                      Redirect(Call("GET", "#"))
+                      Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
                     } else {
                       Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
                     }

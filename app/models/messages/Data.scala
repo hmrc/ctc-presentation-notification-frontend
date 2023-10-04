@@ -17,7 +17,6 @@
 package models.messages
 
 import models.departureP5.DepartureMessageType
-import models.departureP5.DepartureMessageType._
 import play.api.libs.json.{__, Json, OWrites, Reads}
 
 case class Data(data: MessageData)
@@ -25,10 +24,7 @@ case class Data(data: MessageData)
 object Data {
 
   def reads(messageType: DepartureMessageType): Reads[Data] =
-    messageType match {
-      case DepartureNotification => (__ \ "body" \ "n1:CC015C").read[MessageData].map(Data.apply)
-      case AmendmentSubmitted    => (__ \ "body" \ "n1:CC013C").read[MessageData].map(Data.apply)
-    }
+    (__ \ "body" \ s"n1:${messageType.dataPath}").read[MessageData].map(Data.apply)
 
   implicit val writes: OWrites[Data] = Json.writes[Data]
 }

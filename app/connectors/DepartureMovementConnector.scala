@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import models.LocalReferenceNumber
 import models.departureP5._
 import models.messages.Data
-import play.api.libs.json.{JsValue, Reads}
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry}
 
