@@ -20,6 +20,7 @@ import models.{Enumerable, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
+import scala.collection.immutable.Seq
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {

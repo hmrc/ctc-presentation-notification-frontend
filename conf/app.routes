@@ -14,6 +14,11 @@ POST       /location-of-goods/type/:departureId                                 
 GET        /location-of-goods/change-type/:departureId                              controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-type/:departureId                              controllers.locationOfGoods.LocationTypeController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/identification/:departureId            controllers.locationOfGoods.IdentificationController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/identification/:departureId            controllers.locationOfGoods.IdentificationController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-identification/:departureId     controllers.locationOfGoods.IdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-identification/:departureId     controllers.locationOfGoods.IdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 GET        /location-of-goods/authorisation-number/:departureId                     controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /location-of-goods/authorisation-number/:departureId                     controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-authorisation-number/:departureId              controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
@@ -28,3 +33,8 @@ GET        /location-of-goods/un-locode/:departureId                 controllers
 POST       /location-of-goods/un-locode/:departureId                 controllers.locationOfGoods.UnLocodeController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-un-locode/:departureId          controllers.locationOfGoods.UnLocodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-un-locode/:departureId          controllers.locationOfGoods.UnLocodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/country/:departureId                   controllers.locationOfGoods.CountryController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/country/:departureId                   controllers.locationOfGoods.CountryController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-country/:departureId            controllers.locationOfGoods.CountryController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-country/:departureId            controllers.locationOfGoods.CountryController.onSubmit(departureId: String, mode: Mode = CheckMode)

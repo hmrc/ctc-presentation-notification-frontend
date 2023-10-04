@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages
 
-import play.api.libs.json.{JsObject, JsPath}
+import models.reference.Country
+import pages.behaviours.PageBehaviours
 
-case object LocationOfGoodsSection extends Section[JsObject] {
+class CountryPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "CountryPage" - {
 
-  override def toString: String = "locationOfGoods"
+    beRetrievable[Country](CountryPage)
+
+    beSettable[Country](CountryPage)
+
+    beRemovable[Country](CountryPage)
+
+  }
 }
