@@ -1,0 +1,54 @@
+GET        /location-of-goods/type/:departureId                               controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/type/:departureId                               controllers.locationOfGoods.LocationTypeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-type/:departureId                        controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-type/:departureId                        controllers.locationOfGoods.LocationTypeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/identification/:departureId                     controllers.locationOfGoods.IdentificationController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/identification/:departureId                     controllers.locationOfGoods.IdentificationController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-identification/:departureId              controllers.locationOfGoods.IdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-identification/:departureId              controllers.locationOfGoods.IdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/authorisation-number/:departureId               controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/authorisation-number/:departureId               controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-authorisation-number/:departureId        controllers.locationOfGoods.AuthorisationNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-authorisation-number/:departureId        controllers.locationOfGoods.AuthorisationNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/coordinates/:departureId                        controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/coordinates/:departureId                        controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-coordinates/:departureId                 controllers.locationOfGoods.CoordinatesController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-coordinates/:departureId                 controllers.locationOfGoods.CoordinatesController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/postal-code/:departureId                        controllers.locationOfGoods.PostalCodeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/postal-code/:departureId                        controllers.locationOfGoods.PostalCodeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-postal-code/:departureId                 controllers.locationOfGoods.PostalCodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-postal-code/:departureId                 controllers.locationOfGoods.PostalCodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/country/:departureId                            controllers.locationOfGoods.CountryController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/country/:departureId                            controllers.locationOfGoods.CountryController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-country/:departureId                     controllers.locationOfGoods.CountryController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-country/:departureId                     controllers.locationOfGoods.CountryController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/un-locode/:departureId                          controllers.locationOfGoods.UnLocodeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/un-locode/:departureId                          controllers.locationOfGoods.UnLocodeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-un-locode/:departureId                   controllers.locationOfGoods.UnLocodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-un-locode/:departureId                   controllers.locationOfGoods.UnLocodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/contact-name/:departureId                       controllers.locationOfGoods.contact.NameController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/contact-name/:departureId                       controllers.locationOfGoods.contact.NameController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-contact-name/:departureId                controllers.locationOfGoods.contact.NameController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-contact-name/:departureId                controllers.locationOfGoods.contact.NameController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/add-contact/:departureId                        controllers.locationOfGoods.AddContactYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/add-contact/:departureId                        controllers.locationOfGoods.AddContactYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-add-contact/:departureId                 controllers.locationOfGoods.AddContactYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-add-contact/:departureId                 controllers.locationOfGoods.AddContactYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/address/:departureId                            controllers.locationOfGoods.AddressController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/address/:departureId                            controllers.locationOfGoods.AddressController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-address/:departureId                     controllers.locationOfGoods.AddressController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-address/:departureId                     controllers.locationOfGoods.AddressController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/add-identifier/:departureId                     controllers.locationOfGoods.AddIdentifierYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/add-identifier/:departureId                     controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)

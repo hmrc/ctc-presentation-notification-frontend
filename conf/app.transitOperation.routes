@@ -1,0 +1,4 @@
+GET        /office-of-destination/add-arrival-date/:departureId               controllers.transitOperation.AddArrivalDateYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /office-of-destination/add-arrival-date/:departureId               controllers.transitOperation.AddArrivalDateYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /office-of-destination/change-add-arrival-date/:departureId        controllers.transitOperation.AddArrivalDateYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /office-of-destination/change-add-arrival-date/:departureId        controllers.transitOperation.AddArrivalDateYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
