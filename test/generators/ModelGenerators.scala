@@ -19,7 +19,7 @@ package generators
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
-import models.reference.{Country, CountryCode, UnLocode}
+import models.reference.{Country, CountryCode}
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
 import org.scalacheck.Arbitrary.arbitrary
