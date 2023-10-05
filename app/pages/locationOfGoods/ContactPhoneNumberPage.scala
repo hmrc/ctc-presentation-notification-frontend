@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages.locationOfGoods
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int = 35
-  lazy val minTelephoneNumberLength: Int     = 6
-  lazy val maxTelephoneNumberLength: Int     = 35
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.locationOfGoods.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
+case object ContactPhoneNumberPage extends QuestionPage[String] {
+
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
+
+  override def toString: String = "telephoneNumber"
+
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.ContactPhoneNumberController.onPageLoad(userAnswers.lrn, mode))
 }

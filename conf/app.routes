@@ -48,6 +48,11 @@ POST       /location-of-goods/add-contact/:departureId                        co
 GET        /location-of-goods/change-add-contact/:departureId                 controllers.locationOfGoods.AddContactYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-add-contact/:departureId                 controllers.locationOfGoods.AddContactYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/contact-phone-number/:departureId               controllers.locationOfGoods.ContactPhoneNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/contact-phone-number/:departureId               controllers.locationOfGoods.ContactPhoneNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-contact-phone-number/:departureId        controllers.locationOfGoods.ContactPhoneNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-contact-phone-number/:departureId        controllers.locationOfGoods.ContactPhoneNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 GET        /office-of-destination/add-arrival-date/:departureId               controllers.transitOperation.AddArrivalDateYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /office-of-destination/add-arrival-date/:departureId               controllers.transitOperation.AddArrivalDateYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /office-of-destination/change-add-arrival-date/:departureId        controllers.transitOperation.AddArrivalDateYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)

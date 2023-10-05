@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.locationOfGoods
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int = 35
-  lazy val minTelephoneNumberLength: Int     = 6
-  lazy val maxTelephoneNumberLength: Int     = 35
+import pages.behaviours.PageBehaviours
 
+class ContactPhoneNumberPageSpec extends PageBehaviours {
+
+  "TelephoneNumberPage" - {
+
+    beRetrievable[String](ContactPhoneNumberPage)
+
+    beSettable[String](ContactPhoneNumberPage)
+
+    beRemovable[String](ContactPhoneNumberPage)
+  }
 }

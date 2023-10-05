@@ -120,8 +120,6 @@ locationOfGoods.addContact.checkYourAnswersLabel = Do you want to add a contact 
 locationOfGoods.addContact.error.required = Select yes if you want to add a contact for the location of goods
 locationOfGoods.addContact.change.hidden = if you want to add a contact for the location of goods
 
-
-
 locationOfGoods.address.title = What is the address for the location of goods?
 locationOfGoods.address.heading = What is the address for the location of goods?
 locationOfGoods.address.numberAndStreet = Number and street name
@@ -134,3 +132,14 @@ locationOfGoods.address.error.postalCode.invalid = The postal code must only inc
 locationOfGoods.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 locationOfGoods.address.error.required = Enter the {0} for the location of goods
 locationOfGoods.address.error.length = The {0} must be {1} characters or less
+
+locationOfGoods.contactPhoneNumber.title = What is the phone number for the location of goods` contact?
+locationOfGoods.contactPhoneNumber.heading = What is {0}’s phone number?
+locationOfGoods.contactPhoneNumber.hint = Include the country code, for example +44 808 157 0192.
+locationOfGoods.contactPhoneNumber.checkYourAnswersLabel = Contact`s phone number
+locationOfGoods.contactPhoneNumber.change.hidden = contact’s phone number for the location of goods
+locationOfGoods.contactPhoneNumber.error.required = Enter {0}`s phone number.
+locationOfGoods.contactPhoneNumber.error.invalidCharacters = {0}`s phone number must only include numbers 0 to 9 and a plus sign
+locationOfGoods.contactPhoneNumber.error.invalidFormat = {0}`s phone number must start with a plus sign
+locationOfGoods.contactPhoneNumber.error.maxLength = {0}`s phone number must be {1} characters or less
+locationOfGoods.contactPhoneNumber.error.minLength = {0}`s phone number must be {1} characters or more
