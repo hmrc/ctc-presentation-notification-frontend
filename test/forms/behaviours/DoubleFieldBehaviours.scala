@@ -18,7 +18,6 @@ package forms.behaviours
 
 import generators.Generators
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.data.{Form, FormError}
 
 trait DoubleFieldBehaviours extends FieldBehaviours with Generators {

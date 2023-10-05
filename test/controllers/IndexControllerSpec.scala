@@ -16,9 +16,10 @@
 
 package controllers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import generators.Generators
 import models.UserAnswers
+import models.messages.{Data, MessageData}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -31,11 +32,13 @@ import services.DepartureMessageService
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with TestMessageData {
 
   private lazy val indexRoute = routes.IndexController.index(departureId).url
 
-  private lazy val nextPage = routes.MoreInformationController.onPageLoad(departureId).url
+  private lazy val withIncompleteDataNextPage = routes.MoreInformationController.onPageLoad(departureId).url
+
+  private lazy val withCompleteDataNextPage = routes.CheckInformationController.onPageLoad(departureId).url
 
   private val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
 
@@ -55,6 +58,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         setNoExistingUserAnswers()
 
         when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
@@ -65,7 +69,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual nextPage
+        redirectLocation(result).value mustEqual withCompleteDataNextPage
 
         val expectedData = JsObject.empty
 
@@ -81,6 +85,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         val request = FakeRequest(GET, indexRoute)
 
         when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
 
@@ -88,7 +93,57 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual nextPage
+        redirectLocation(result).value mustEqual withCompleteDataNextPage
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.lrn mustBe lrn.value
+        userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
+        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+      }
+
+      "must redirect to the correct onward route when there are UserAnswers and complete message data" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, indexRoute)
+
+        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
+
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual withCompleteDataNextPage
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.lrn mustBe lrn.value
+        userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
+        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+      }
+
+      "must redirect to the correct onward route when there are UserAnswers and incomplete message data" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, indexRoute)
+
+        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(
+          Some(Data(incompleteJsonValue.as[MessageData]))
+        )
+
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual withIncompleteDataNextPage
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())

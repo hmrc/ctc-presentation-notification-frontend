@@ -17,7 +17,6 @@
 package forms.behaviours
 
 import generators.Generators
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.data.{Form, FormError}
 
 trait IntFieldBehaviours extends FieldBehaviours with Generators {

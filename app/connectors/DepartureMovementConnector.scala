@@ -19,6 +19,8 @@ package connectors
 import config.FrontendAppConfig
 import models.LocalReferenceNumber
 import models.departureP5._
+import models.messages.Data
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry}
 
@@ -28,6 +30,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class DepartureMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {
 
   private def headers(implicit hc: HeaderCarrier): HeaderCarrier = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
+
+  def getData(location: String, messageType: DepartureMessageType)(implicit hc: HeaderCarrier): Future[Data] = {
+    implicit val dataReads: Reads[Data] = Data.reads(messageType)
+    val url                             = s"${config.commonTransitConventionTradersUrl}$location"
+    http.GET[Data](url)(implicitly, headers, ec)
+  }
 
   def getMessageMetaData(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DepartureMessages] = {
     val url = s"${config.commonTransitConventionTradersUrl}movements/departures/$departureId/messages"

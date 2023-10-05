@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.locationOfGoods
 
 import forms.locationOfGoods.PostalCodeFormProvider
 import generators.Generators

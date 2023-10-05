@@ -19,7 +19,7 @@ package generators
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
-import models.reference.{Country, CountryCode}
+import models.reference.{Country, CountryCode, UnLocode}
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
 import org.scalacheck.Arbitrary.arbitrary
@@ -86,6 +86,14 @@ trait ModelGenerators {
         code <- arbitrary[CountryCode]
         name <- nonEmptyString
       } yield Country(code, name)
+    }
+
+  implicit lazy val arbitraryUnLocode: Arbitrary[UnLocode] =
+    Arbitrary {
+      for {
+        id   <- nonEmptyString
+        name <- nonEmptyString
+      } yield UnLocode(id, name)
     }
 
   implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =

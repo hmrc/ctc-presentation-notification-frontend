@@ -27,18 +27,13 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
-  private val mockConnector                                       = mock[DepartureMovementConnector]
-  private val service                                             = new DepartureMessageService(mockConnector)
-  private val departureMessageMetaData1: DepartureMessageMetaData = DepartureMessageMetaData(LocalDateTime.now(), DepartureNotification, "path/url")
-
-  private val departureMessageMetaData2: DepartureMessageMetaData =
-    DepartureMessageMetaData(LocalDateTime.now().minusDays(1), DepartureNotification, "path/url")
+  private val mockConnector = mock[DepartureMovementConnector]
+  private val service       = new DepartureMessageService(mockConnector)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
