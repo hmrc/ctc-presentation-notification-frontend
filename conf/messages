@@ -113,6 +113,15 @@ transitOperation.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add 
 transitOperation.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
 transitOperation.addArrivalDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
 
+locationOfGoods.addContact.title = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.heading = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.paragraph = This is additional contact information for if Customs have any queries.
+locationOfGoods.addContact.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.error.required = Select yes if you want to add a contact for the location of goods
+locationOfGoods.addContact.change.hidden = if you want to add a contact for the location of goods
+
+
+
 locationOfGoods.address.title = What is the address for the location of goods?
 locationOfGoods.address.heading = What is the address for the location of goods?
 locationOfGoods.address.numberAndStreet = Number and street name

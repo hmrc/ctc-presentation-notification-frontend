@@ -39,20 +39,20 @@ button: Button
 
  @formHelper(action = routes.UnLocodeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
-  @errorSummary(form.errors)
+   @errorSummary(form.errors)
 
    @inputSelect(
-      field = form("value"),
-      selectType = SelectWithAdditionalHtml(
-         heading = messages("locationOfGoods.unLocode.heading"),
-         caption = Some(messages("locationOfGoods.caption")),
-         additionalHtml = paragraph(messages("locationOfGoods.unLocode.paragraph"))
-      ),
-      hint = Some(messages("locationOfGoods.unLocode.hint")),
-      selectItems = unLocodeList.toSelectItems(form.value),
-      placeholder = ""
-   )
+          field = form("value"),
+          selectType = SelectWithAdditionalHtml(
+             heading = messages("locationOfGoods.unLocode.heading"),
+             caption = Some(messages("locationOfGoods.caption")),
+             additionalHtml = paragraph(messages("locationOfGoods.unLocode.paragraph"))
+          ),
+          hint = Some(messages("locationOfGoods.unLocode.hint")),
+          selectItems = unLocodeList.toSelectItems(form.value),
+          placeholder = ""
+       )
 
-@button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
-}
+        @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
+    }
 }
