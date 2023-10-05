@@ -14,30 +14,24 @@
  * limitations under the License.
  */
 
-package views
+package views.locationOfGoods
 
-import forms.locationOfGoods.PostalCodeFormProvider
+import forms.DynamicAddressFormProvider
 import generators.Generators
-import models.reference.Country
-import models.{NormalMode, PostalCodeAddress, SelectableList}
-import org.scalacheck.Arbitrary.arbitrary
+import models.{DynamicAddress, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.PostalCodeAddressViewBehaviours
-import views.html.locationOfGoods.PostalCodeView
+import views.behaviours.DynamicAddressViewBehaviours
+import views.html.locationOfGoods.AddressView
 
-class PostalCodeViewSpec extends PostalCodeAddressViewBehaviours with Generators {
+class AddressViewSpec extends DynamicAddressViewBehaviours with Generators {
 
-  private val formProvider = new PostalCodeFormProvider()
+  override def form: Form[DynamicAddress] = new DynamicAddressFormProvider()(prefix, isPostalCodeRequired)
 
-  private val countryList = arbitrary[SelectableList[Country]].sample.value
+  override def applyView(form: Form[DynamicAddress]): HtmlFormat.Appendable =
+    injector.instanceOf[AddressView].apply(form, departureId, lrn.toString, NormalMode, isPostalCodeRequired)(fakeRequest, messages)
 
-  override val prefix: String = "locationOfGoods.postalCode"
-
-  override def form: Form[PostalCodeAddress] = formProvider(prefix, countryList)
-
-  def applyView(form: Form[PostalCodeAddress]): HtmlFormat.Appendable =
-    injector.instanceOf[PostalCodeView].apply(form, departureId, lrn.toString, NormalMode, countryList.values)(fakeRequest, messages)
+  override val prefix: String = "locationOfGoods.address"
 
   behave like pageWithTitle()
 

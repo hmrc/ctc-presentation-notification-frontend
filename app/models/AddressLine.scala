@@ -16,14 +16,14 @@
 
 package models
 
-import models.StringFieldRegex.{alphaNumericRegex, alphaNumericWithSpacesRegex, stringFieldRegex}
+import models.StringFieldRegex._
 import play.api.i18n.Messages
 
 import scala.util.matching.Regex
 
 sealed trait AddressLine {
   val field: String
-  def arg(implicit messages: Messages): String = messages(s"address.$field")
+  def arg(implicit messages: Messages): String = messages(s"locationOfGoods.address.$field").toLowerCase()
 }
 
 object AddressLine {
@@ -33,25 +33,31 @@ object AddressLine {
   }
 
   sealed trait AddressLineWithValidation extends AddressLine {
-    def length: Int
+    val length: Int
     val regex: Regex
   }
 
   case object StreetNumber extends AddressLineWithValidation {
     override val field: String = "streetNumber"
-    def length: Int            = 17
+    override val length: Int   = 17
     override val regex: Regex  = alphaNumericRegex
+  }
+
+  case object NumberAndStreet extends AddressLineWithValidation {
+    override val field: String = "numberAndStreet"
+    override val length: Int   = 70
+    override val regex: Regex  = stringFieldRegex
   }
 
   case object City extends AddressLineWithValidation {
     override val field: String = "city"
-    def length: Int            = 35
+    override val length: Int   = 35
     override val regex: Regex  = stringFieldRegex
   }
 
   case object PostalCode extends AddressLineWithValidation {
     override val field: String = "postalCode"
-    def length: Int            = 17
+    override val length: Int   = 17
     override val regex: Regex  = alphaNumericWithSpacesRegex
   }
 }

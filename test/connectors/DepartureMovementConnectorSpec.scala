@@ -16,12 +16,14 @@
 
 package connectors
 
-import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock.{get, okJson, urlEqualTo}
+import base.{SpecBase, TestMessageData}
+import com.github.tomakehurst.wiremock.client.WireMock.{containing, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler
 import models.LocalReferenceNumber
+import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}
 import models.departureP5.{DepartureMessageMetaData, DepartureMessageType, DepartureMessages}
+import models.messages.Data
 import org.scalatest.EitherValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,7 +33,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators with EitherValues {
+class DepartureMovementConnectorSpec
+    extends SpecBase
+    with WireMockServerHandler
+    with ScalaCheckPropertyChecks
+    with Generators
+    with TestMessageData
+    with EitherValues {
 
   private lazy val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
 
@@ -153,6 +161,58 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
       }
     }
 
-  }
+    "getData" - {
+      "when IE015 messageData" in {
+        val jsonIE015 = Json.parse(s"""
+             |{
+             |  "type": "IE015",
+             |  "body" : {
+             |    "n1:CC015C": $jsonValue
+             |  }
+             |}
+             |""".stripMargin)
 
+        server.stubFor(
+          get(urlEqualTo(s"/$departureId"))
+            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
+            .willReturn(okJson(jsonIE015.toString()))
+        )
+
+        val result: Data = connector.getData(departureId, DepartureNotification).futureValue
+
+        val expectedResult =
+          Data(
+            messageData
+          )
+
+        result mustBe expectedResult
+      }
+
+      "when IE013 messageData" in {
+        val jsonIE013 = Json.parse(s"""
+             |{
+             |  "type": "IE013",
+             |  "body" : {
+             |    "n1:CC013C": $jsonValue
+             |  }
+             |}
+             |""".stripMargin)
+
+        server.stubFor(
+          get(urlEqualTo(s"/$departureId"))
+            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
+            .willReturn(okJson(jsonIE013.toString()))
+        )
+
+        val result: Data = connector.getData(departureId, AmendmentSubmitted).futureValue
+
+        val expectedResult =
+          Data(
+            messageData
+          )
+
+        result mustBe expectedResult
+      }
+    }
+  }
 }

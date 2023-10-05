@@ -16,6 +16,7 @@
 
 package generators
 
+import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
 import models.reference.{Country, CountryCode, UnLocode}
@@ -97,10 +98,28 @@ trait ModelGenerators {
   implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
     Arbitrary {
       for {
-        streetNumber <- nonEmptyString
-        postalCode   <- nonEmptyString
+        streetNumber <- stringsWithMaxLength(StreetNumber.length, Gen.alphaNumChar)
+        postalCode   <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
         country      <- arbitrary[Country]
       } yield PostalCodeAddress(streetNumber, postalCode, country)
+    }
+
+  lazy val arbitraryDynamicAddressWithRequiredPostalCode: Arbitrary[DynamicAddress] =
+    Arbitrary {
+      for {
+        numberAndStreet <- stringsWithMaxLength(NumberAndStreet.length, Gen.alphaNumChar)
+        city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
+        postalCode      <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
+      } yield DynamicAddress(numberAndStreet, city, Some(postalCode))
+    }
+
+  implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
+    Arbitrary {
+      for {
+        numberAndStreet <- stringsWithMaxLength(NumberAndStreet.length, Gen.alphaNumChar)
+        city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
+        postalCode      <- Gen.option(stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar))
+      } yield DynamicAddress(numberAndStreet, city, postalCode)
     }
 
 }
