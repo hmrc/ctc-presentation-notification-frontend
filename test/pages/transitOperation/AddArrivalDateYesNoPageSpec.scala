@@ -16,8 +16,6 @@
 
 package pages.transitOperation
 
-import models.Coordinates
-import pages.CoordinatesPage
 import pages.behaviours.PageBehaviours
 
 class AddArrivalDateYesNoPageSpec extends PageBehaviours {
