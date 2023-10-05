@@ -14,72 +14,72 @@
  * limitations under the License.
  */
 
-package controllers.locationOfGoods
+package controllers.locationOfGoods.contact
 
 import controllers.actions._
-import forms.locationOfGoods.CoordinatesFormProvider
+import forms.TelephoneNumberFormProvider
+import models.Mode
 import models.requests.MandatoryDataRequest
-import models.{Coordinates, Mode}
 import navigation.Navigator
-import pages.QuestionPage
-import pages.locationOfGoods.CoordinatesPage
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.CoordinatesView
+import views.html.locationOfGoods.contact.PhoneNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CoordinatesController @Inject() (
+class PhoneNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigator: Navigator,
+  formProvider: TelephoneNumberFormProvider,
   actions: Actions,
-  formProvider: CoordinatesFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: CoordinatesView
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  view: PhoneNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId) {
+    .requireData(departureId)
+    .andThen(getMandatoryPage(NamePage)) {
       implicit request =>
-        val lrn  = request.userAnswers.lrn
-        val form = formProvider("locationOfGoods.coordinates")
-        val preparedForm = request.userAnswers.get(CoordinatesPage) match {
+        val contactName = request.arg
+        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
+        val preparedForm = request.userAnswers.get(PhoneNumberPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, departureId, lrn, mode))
+        Ok(view(preparedForm, departureId, request.userAnswers.lrn, contactName, mode))
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
+    .andThen(getMandatoryPage(NamePage))
     .async {
       implicit request =>
-        val lrn  = request.userAnswers.lrn
-        val form = formProvider("locationOfGoods.coordinates")
+        val contactName = request.arg
+        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, mode))),
-            value => redirect(mode, CoordinatesPage, value, departureId)
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, contactName, mode))),
+            value => redirect(mode, value, departureId)
           )
 
     }
 
   private def redirect(
     mode: Mode,
-    page: QuestionPage[Coordinates],
-    value: Coordinates,
+    value: String,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(PhoneNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
-
+    } yield Redirect(navigator.nextPage(PhoneNumberPage, updatedAnswers, departureId, mode))
 }

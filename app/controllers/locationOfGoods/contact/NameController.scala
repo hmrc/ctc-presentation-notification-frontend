@@ -14,44 +14,43 @@
  * limitations under the License.
  */
 
-package controllers.locationOfGoods
+package controllers.locationOfGoods.contact
 
 import controllers.actions._
-import forms.YesNoFormProvider
+import forms.NameFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.locationOfGoods.AddIdentifierYesNoPage
+import pages.locationOfGoods.contact.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.AddIdentifierYesNoView
+import views.html.locationOfGoods.contact.NameView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddIdentifierYesNoController @Inject() (
+class NameController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigator: Navigator,
+  formProvider: NameFormProvider,
   actions: Actions,
-  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddIdentifierYesNoView
+  view: NameView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("locationOfGoods.addIdentifierYesNo")
+  private val form = formProvider("locationOfGoods.contact.name")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddIdentifierYesNoPage) match {
+      val preparedForm = request.userAnswers.get(NamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-
       Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode))
   }
 
@@ -67,11 +66,11 @@ class AddIdentifierYesNoController @Inject() (
 
   private def redirect(
     mode: Mode,
-    value: Boolean,
+    value: String,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddIdentifierYesNoPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(NamePage, updatedAnswers, departureId, mode))
 }

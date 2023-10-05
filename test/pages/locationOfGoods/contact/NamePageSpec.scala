@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages.locationOfGoods.contact
 
 import pages.behaviours.PageBehaviours
 
-class AddIdentifierYesNoPageSpec extends PageBehaviours {
+class NamePageSpec extends PageBehaviours {
 
-  "AddIdentifierYesNoPage" - {
+  "LocationOfGoodsContactNamePage" - {
 
-    beRetrievable[Boolean](AddIdentifierYesNoPage)
+    beRetrievable[String](NamePage)
 
-    beSettable[Boolean](AddIdentifierYesNoPage)
+    beSettable[String](NamePage)
 
-    beRemovable[Boolean](AddIdentifierYesNoPage)
-
+    beRemovable[String](NamePage)
   }
 }

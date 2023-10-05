@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package views.behaviours
 
-import pages.behaviours.PageBehaviours
+import org.scalacheck.{Arbitrary, Gen}
+import viewModels.InputSize
 
-class AddIdentifierYesNoPageSpec extends PageBehaviours {
+trait TelephoneNumberViewBehaviours extends InputTextViewBehaviours[String] {
 
-  "AddIdentifierYesNoPage" - {
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-    beRetrievable[Boolean](AddIdentifierYesNoPage)
+  def pageWithTelephoneNumberInput(): Unit = {
 
-    beSettable[Boolean](AddIdentifierYesNoPage)
+    behave like pageWithInputText(Some(InputSize.Width20))
 
-    beRemovable[Boolean](AddIdentifierYesNoPage)
+    "page with a telephone number field" - {
 
+      "must contain a telephone number input field" in {
+        val input = getElementByTag(doc, "input")
+        input.attr("type") mustBe "tel"
+        input.attr("autocomplete") mustBe "tel"
+      }
+    }
   }
+
 }

@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Coordinates
-import pages.CoordinatesPage
-import pages.behaviours.PageBehaviours
+import forms.Constants.maxNameLength
+import forms.mappings.Mappings
+import models.StringFieldRegex.stringFieldRegex
+import play.api.data.Form
 
-class CoordinatesPageSpec extends PageBehaviours {
+import javax.inject.Inject
 
-  "CoordinatesPage" - {
+class NameFormProvider @Inject() extends Mappings {
 
-    beRetrievable[Coordinates](CoordinatesPage)
-
-    beSettable[Coordinates](CoordinatesPage)
-
-    beRemovable[Coordinates](CoordinatesPage)
-  }
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxNameLength, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid")
+          )
+        )
+    )
 }

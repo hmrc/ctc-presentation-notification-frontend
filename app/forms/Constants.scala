@@ -18,5 +18,9 @@ package forms
 
 object Constants {
   lazy val maxAuthorisationNumberLength: Int  = 35
+  lazy val maxNameLength: Int                 = 70
+  lazy val minTelephoneNumberLength: Int      = 6
+  lazy val maxTelephoneNumberLength: Int      = 35
   lazy val maxAdditionalIdentifierLength: Int = 4
+
 }

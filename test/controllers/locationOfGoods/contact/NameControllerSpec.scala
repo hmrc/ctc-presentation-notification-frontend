@@ -14,77 +14,77 @@
  * limitations under the License.
  */
 
-package controllers.locationOfGoods
+package controllers.locationOfGoods.contact
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.YesNoFormProvider
+import forms.NameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.locationOfGoods.AddIdentifierYesNoPage
+import pages.locationOfGoods.contact.NamePage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.AddIdentifierYesNoView
+import views.html.locationOfGoods.contact.NameView
 
 import scala.concurrent.Future
 
-class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                 = new YesNoFormProvider()
-  private val form                         = formProvider("locationOfGoods.addIdentifierYesNo")
-  private val mode                         = NormalMode
-  private lazy val addIdentifierYesNoRoute = routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
+  private val formProvider   = new NameFormProvider()
+  private val form           = formProvider("locationOfGoods.contact.name")
+  private val mode           = NormalMode
+  private lazy val nameRoute = routes.NameController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "AddIdentifierYesNo Controller" - {
+  "LocationOfGoodsContact Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addIdentifierYesNoRoute)
-      val result  = route(app, request).value
+      val request = FakeRequest(GET, nameRoute)
 
-      val view = injector.instanceOf[AddIdentifierYesNoView]
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[NameView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.toString, mode)(request, messages).toString
+        view(form, departureId, lrn.value, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddIdentifierYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(NamePage, "test string")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addIdentifierYesNoRoute)
+      val request = FakeRequest(GET, nameRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "test string"))
 
-      val view = injector.instanceOf[AddIdentifierYesNoView]
+      val view = injector.instanceOf[NameView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(filledForm, departureId, lrn.value, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addIdentifierYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, nameRoute)
+        .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
 
@@ -97,24 +97,26 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addIdentifierYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val invalidAnswer = ""
+
+      val request    = FakeRequest(POST, nameRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddIdentifierYesNoView]
+      val view = injector.instanceOf[NameView]
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(filledForm, departureId, lrn.value, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addIdentifierYesNoRoute)
+      val request = FakeRequest(GET, nameRoute)
 
       val result = route(app, request).value
 
@@ -127,8 +129,8 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addIdentifierYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, nameRoute)
+        .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
 
