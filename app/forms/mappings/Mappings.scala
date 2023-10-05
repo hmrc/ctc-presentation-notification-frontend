@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.{Enumerable, Radioable}
+import models.{Enumerable, Radioable, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
@@ -47,4 +47,15 @@ trait Mappings extends Formatters with Constraints {
     ev: Enumerable[A]
   ): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey))
+
+  protected def selectable[T <: Selectable](
+    selectableList: SelectableList[T],
+    errorKey: String = "error.required",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[T] =
+    of(selectableFormatter[T](selectableList, errorKey, args))
+
+  protected def trimmedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
+    of(trimmedStringFormatter(errorKey, args))
+
 }

@@ -19,15 +19,18 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
+import pages.locationOfGoods.CoordinatesPage
 import play.api.mvc.Call
 
 @Singleton
 class Navigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case InferredLocationTypePage => ua => ???
-    case CoordinatesPage          => ???
-    case EoriPage                 => ua => ???
+    case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
+    case CoordinatesPage                             => ???
+    case InferredLocationTypePage                    => ua => ???
+    case CoordinatesPage                             => ???
+    case EoriPage                                    => ua => ???
   }
 
   private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =

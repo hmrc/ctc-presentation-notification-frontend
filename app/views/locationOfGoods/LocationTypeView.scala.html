@@ -45,7 +45,10 @@
                 heading = messages("locationOfGoods.locationType.heading"),
                 caption = Some(messages("locationOfGoods.caption")),
                 additionalHtml = {
-                    Html(messages("locationOfGoods.p1").toParagraphString + messages("locationOfGoods.p2").toParagraphString)
+                    Html(
+                        messages("locationOfGoods.locationType.p1").toParagraphString +
+                        messages("locationOfGoods.locationType.p2").toParagraphString
+                    )
                 }
             ),
             radioItems = fieldId => values.toRadioItems(fieldId, form.value)

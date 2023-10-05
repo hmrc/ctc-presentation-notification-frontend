@@ -16,10 +16,11 @@
 
 package forms.mappings
 
-import models.{Enumerable, Radioable, RichString}
+import models.{Enumerable, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
+import scala.collection.immutable.Seq
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
@@ -110,4 +111,42 @@ trait Formatters {
       override def unbind(key: String, value: A): Map[String, String] =
         baseFormatter.unbind(key, value.code)
     }
+
+  private[mappings] def selectableFormatter[T <: Selectable](
+    selectableList: SelectableList[T],
+    errorKey: String,
+    args: Seq[Any] = Seq.empty
+  ): Formatter[T] = new Formatter[T] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
+      lazy val error = Left(Seq(FormError(key, errorKey, args)))
+      data.get(key) match {
+        case None =>
+          error
+        case Some(value) =>
+          selectableList.values.find(_.value == value) match {
+            case Some(selectable) => Right(selectable)
+            case None             => error
+          }
+      }
+    }
+
+    override def unbind(key: String, selectable: T): Map[String, String] =
+      Map(key -> selectable.value)
+  }
+
+  private[mappings] def trimmedStringFormatter(errorKey: String, args: Seq[Any] = Seq.empty): Formatter[String] = new Formatter[String] {
+
+    private def error(key: String) = Left(Seq(FormError(key, errorKey, args)))
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
+      data.get(key) match {
+        case None                      => error(key)
+        case Some(s) if s.trim.isEmpty => error(key)
+        case Some(s)                   => Right(s.trim)
+      }
+
+    override def unbind(key: String, value: String): Map[String, String] =
+      Map(key -> value)
+  }
 }

@@ -17,8 +17,7 @@
 package pages
 
 import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.LocationOfGoodsSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,6 +27,7 @@ case object EoriPage extends QuestionPage[String] {
 
   override def toString: String = "eori"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = ???
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
 
 }

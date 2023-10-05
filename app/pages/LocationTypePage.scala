@@ -17,8 +17,7 @@
 package pages
 
 import models.{LocationType, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.LocationOfGoodsSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,16 +27,18 @@ abstract class BaseLocationTypePage extends QuestionPage[LocationType] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(???)
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
 
   def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
 
   override def cleanup(value: Option[LocationType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>
-        // TODO add following page when implemented
-        super.cleanup(value, userAnswers)
+        userAnswers
+          .remove(IdentificationPage)
+          .flatMap(_.remove(InferredIdentificationPage))
+          .flatMap(cleanup)
       case None =>
         super.cleanup(value, userAnswers)
     }

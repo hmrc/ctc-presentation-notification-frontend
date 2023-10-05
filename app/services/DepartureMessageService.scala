@@ -16,10 +16,12 @@
 
 package services
 
+import cats.data.OptionT
 import connectors.DepartureMovementConnector
 import models.LocalReferenceNumber
 import models.departureP5.DepartureMessageMetaData
 import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}
+import models.messages.Data
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -28,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureMessageService @Inject() (departureMovementP5Connector: DepartureMovementConnector) extends Logging {
 
-  private def getMessageMetaData(departureId: String)(implicit
+  private def getAMessageMetaData(departureId: String)(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier
   ): Future[Option[DepartureMessageMetaData]] =
@@ -43,6 +45,15 @@ class DepartureMessageService @Inject() (departureMovementP5Connector: Departure
           .reverse
           .headOption
       )
+
+  def getDepartureData(departureId: String)(implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier
+  ): Future[Option[Data]] =
+    (for {
+      messageMetaData <- OptionT(getAMessageMetaData(departureId))
+      getData         <- OptionT.liftF(departureMovementP5Connector.getData(messageMetaData.path, messageMetaData.messageType))
+    } yield getData).value
 
   def getLRN(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[LocalReferenceNumber] =
     departureMovementP5Connector.getLRN(departureId)
