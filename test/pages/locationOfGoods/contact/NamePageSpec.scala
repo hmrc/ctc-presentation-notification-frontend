@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.locationOfGoods.contact
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int = 35
-  lazy val maxNameLength: Int                = 70
+import pages.behaviours.PageBehaviours
+
+class NamePageSpec extends PageBehaviours {
+
+  "LocationOfGoodsContactNamePage" - {
+
+    beRetrievable[String](NamePage)
+
+    beSettable[String](NamePage)
+
+    beRemovable[String](NamePage)
+  }
 }

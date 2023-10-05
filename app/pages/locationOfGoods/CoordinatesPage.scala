@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package pages.locationOfGoods
 
-import models.Coordinates
-import pages.CoordinatesPage
-import pages.behaviours.PageBehaviours
+import controllers.locationOfGoods.routes
+import models.{Coordinates, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.locationOfGoods.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class CoordinatesPageSpec extends PageBehaviours {
+case object CoordinatesPage extends QuestionPage[Coordinates] {
 
-  "CoordinatesPage" - {
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-    beRetrievable[Coordinates](CoordinatesPage)
+  override def toString: String = "coordinates"
 
-    beSettable[Coordinates](CoordinatesPage)
-
-    beRemovable[Coordinates](CoordinatesPage)
-  }
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.CoordinatesController.onPageLoad(departureId, mode))
 }

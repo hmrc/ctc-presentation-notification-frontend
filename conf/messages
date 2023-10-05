@@ -97,20 +97,6 @@ locationOfGoods.postalCode.error.postalCode.invalid = The postal code must only 
 locationOfGoods.postalCode.error.length = The {0} must be {1} characters or less
 locationOfGoods.postalCode.error.required = Enter the {0} for the location of goods
 
-transitOperation.addArrivalDateYesNo.title = Do you want to add the arrival date at the office of destination?
-transitOperation.addArrivalDateYesNo.heading = Do you want to add the arrival date at the office of destination?
-transitOperation.addArrivalDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
-transitOperation.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
-transitOperation.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
-transitOperation.addArrivalDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
-
-locationOfGoods.addContact.title = Do you want to add a contact for the location of goods?
-locationOfGoods.addContact.heading = Do you want to add a contact for the location of goods?
-locationOfGoods.addContact.paragraph = This is additional contact information for if Customs have any queries.
-locationOfGoods.addContact.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
-locationOfGoods.addContact.error.required = Select yes if you want to add a contact for the location of goods
-locationOfGoods.addContact.change.hidden = if you want to add a contact for the location of goods
-
 locationOfGoods.address.title = What is the address for the location of goods?
 locationOfGoods.address.heading = What is the address for the location of goods?
 locationOfGoods.address.numberAndStreet = Number and street name
@@ -130,3 +116,29 @@ locationOfGoods.addIdentifierYesNo.paragraph = This is an alternative reference 
 locationOfGoods.addIdentifierYesNo.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
 locationOfGoods.addIdentifierYesNo.change.hidden = if you want to add another identifier for the location of goods
 locationOfGoods.addIdentifierYesNo.error.required = Select yes if you want to add an additional identifier for the location of goods
+
+# Location of goods - Contact
+
+locationOfGoods.addContact.title = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.heading = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.paragraph = This is additional contact information for if Customs have any queries.
+locationOfGoods.addContact.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.error.required = Select yes if you want to add a contact for the location of goods
+locationOfGoods.addContact.change.hidden = if you want to add a contact for the location of goods
+
+locationOfGoods.contact.name.title = Who is the contact for the location of goods?
+locationOfGoods.contact.name.heading = Who is the contact for the location of goods?
+locationOfGoods.contact.name.checkYourAnswersLabel = Who is the contact for the location of goods?
+locationOfGoods.contact.name.hint = Enter the full name of the individual or organisation.
+locationOfGoods.contact.name.change.hidden = the contact for the location of goods
+locationOfGoods.contact.name.error.required = Enter the contact for the location of goods
+locationOfGoods.contact.name.error.invalid = The contact must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+locationOfGoods.contact.name.error.length = The contact must be 70 characters or less
+
+transitOperation.addArrivalDateYesNo.title = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.heading = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
+transitOperation.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
+transitOperation.addArrivalDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
+
