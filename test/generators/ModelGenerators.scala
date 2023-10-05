@@ -87,12 +87,11 @@ trait ModelGenerators {
       } yield Country(code, name)
     }
 
-  implicit lazy val arbitraryUnLocode: Arbitrary[UnLocode] =
+  implicit lazy val arbitraryUnLocode: Arbitrary[String] =
     Arbitrary {
       for {
-        id   <- nonEmptyString
-        name <- nonEmptyString
-      } yield UnLocode(id, name)
+        id <- nonEmptyString
+      } yield id
     }
 
   implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =

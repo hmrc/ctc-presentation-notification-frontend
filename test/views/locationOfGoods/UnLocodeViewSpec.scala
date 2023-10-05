@@ -16,27 +16,22 @@
 
 package views.locationOfGoods
 
-import forms.behaviours.InputSelectViewBehaviours
-import forms.SelectableFormProvider
-import models.reference.UnLocode
-import models.{NormalMode, SelectableList}
+import forms.UnLocodeFormProvider
+import models.NormalMode
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.InputTextViewBehaviours
 import views.html.locationOfGoods.UnLocodeView
 
-class UnLocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
+class UnLocodeViewSpec extends InputTextViewBehaviours[String] {
 
-  private val unLocode1                                        = UnLocode("ABC", "val 1")
-  private val unLocode2                                        = UnLocode("DEF", "val 2")
-  private val unLocodeSelectableList: SelectableList[UnLocode] = SelectableList.apply(Seq(unLocode1, unLocode2))
+  override def form: Form[String] = new UnLocodeFormProvider()(prefix)
 
-  override def form: Form[UnLocode] = new SelectableFormProvider()(prefix, unLocodeSelectableList)
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[UnLocodeView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
 
-  override def applyView(form: Form[UnLocode]): HtmlFormat.Appendable =
-    injector.instanceOf[UnLocodeView].apply(form, unLocodeSelectableList.values, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
-
-  implicit override val arbitraryT: Arbitrary[UnLocode] = arbitraryUnLocode
+  implicit override val arbitraryT: Arbitrary[String] = arbitraryUnLocode
 
   override val prefix: String = "locationOfGoods.unLocode"
 
@@ -48,7 +43,10 @@ class UnLocodeViewSpec extends InputSelectViewBehaviours[UnLocode] {
 
   behave like pageWithHint("Enter the code, like DEBER or ESMAD.")
 
-  behave like pageWithSectionCaption("Location of goods")
+  behave like pageWithContent(
+    "p",
+    "This is a 5-character code used to identify a transit-related location, like a port or clearance depot."
+  )
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

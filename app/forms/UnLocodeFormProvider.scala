@@ -16,15 +16,22 @@
 
 package forms
 
+import forms.Constants.exactUnLocodeLength
 import forms.mappings.Mappings
-import models.SelectableList
-import models.reference.UnLocode
+import models.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
 class UnLocodeFormProvider extends Mappings {
 
-  def apply(prefix: String, unLocodeSeq: SelectableList[UnLocode]): Form[UnLocode] =
+  def apply(prefix: String): Form[String] =
     Form(
-      "value" -> selectable[UnLocode](unLocodeSeq, s"$prefix.error.required")
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(exactUnLocodeLength, s"$prefix.error.length"),
+            minLength(exactUnLocodeLength, s"$prefix.error.length"),
+            regexp(alphaNumericRegex, s"$prefix.error.invalid")
+          )
+        )
     )
 }

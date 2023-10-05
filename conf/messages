@@ -90,6 +90,9 @@ locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goo
 locationOfGoods.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
 locationOfGoods.unLocode.hint = Enter the code, like DEBER or ESMAD.
 locationOfGoods.unLocode.error.required = Enter the UN/LOCODE for the location of goods
+locationOfGoods.unLocode.error.length = The UN/LOCODE must be 5 characters long
+locationOfGoods.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
+locationOfGoods.unLocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
 
 locationOfGoods.postalCode.title = What is the address for the location of goods?
 locationOfGoods.postalCode.heading = What is the address for the location of goods?
