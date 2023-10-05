@@ -16,11 +16,12 @@
 
 package models.messages
 
+import base.TestMessageData.{jsonValue, messageData}
 import base.{SpecBase, TestMessageData}
 import models.departureP5.DepartureMessageType
 import play.api.libs.json.Json
 
-class DataSpec extends SpecBase with TestMessageData {
+class DataSpec extends SpecBase {
   "must serialise" - {
     "when IE015" in {
       val jsonIE015 = Json.parse(s"""

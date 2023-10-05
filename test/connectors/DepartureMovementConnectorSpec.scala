@@ -16,6 +16,7 @@
 
 package connectors
 
+import base.TestMessageData.{jsonValue, messageData}
 import base.{SpecBase, TestMessageData}
 import com.github.tomakehurst.wiremock.client.WireMock.{containing, get, okJson, urlEqualTo}
 import generators.Generators
@@ -33,13 +34,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DepartureMovementConnectorSpec
-    extends SpecBase
-    with WireMockServerHandler
-    with ScalaCheckPropertyChecks
-    with Generators
-    with TestMessageData
-    with EitherValues {
+class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators with EitherValues {
 
   private lazy val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
 

@@ -54,7 +54,8 @@ class IndexController @Inject() (
                       request.eoriNumber,
                       lrn.value,
                       JsObject.empty,
-                      timeMachine.now()
+                      timeMachine.now(),
+                      departureData.data
                     )
                   )
                 )

@@ -28,10 +28,10 @@ class LocationTypeService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  def getLocationTypes(procedureType: ProcedureType)(implicit hc: HeaderCarrier): Future[Seq[LocationType]] = {
-    def filter(typesOfLocation: Seq[LocationType]): Seq[LocationType] = procedureType match {
-      case ProcedureType.Normal     => typesOfLocation.filterNot(_.code == AuthorisedPlace)
-      case ProcedureType.Simplified => typesOfLocation.filter(_.code == AuthorisedPlace)
+  def getLocationTypes(isSimplified: Boolean)(implicit hc: HeaderCarrier): Future[Seq[LocationType]] = {
+    def filter(typesOfLocation: Seq[LocationType]): Seq[LocationType] = isSimplified match {
+      case true  => typesOfLocation.filter(_.code == AuthorisedPlace)
+      case false => typesOfLocation.filterNot(_.code == AuthorisedPlace)
     }
 
     referenceDataConnector

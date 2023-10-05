@@ -46,21 +46,21 @@ class LocationTypeServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "getLocationTypes" - {
       "must return a list of sorted location types" - {
-        "when normal procedure type" in {
+        "when is not simplified" in {
           when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
             .thenReturn(Future.successful(lts))
 
-          service.getLocationTypes(ProcedureType.Normal).futureValue mustBe
+          service.getLocationTypes(isSimplified = false).futureValue mustBe
             Seq(lt4, lt2, lt1)
 
           verify(mockRefDataConnector).getTypesOfLocation()(any(), any())
         }
 
-        "when simplified procedure type" in {
+        "when is simplified" in {
           when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
             .thenReturn(Future.successful(lts))
 
-          service.getLocationTypes(ProcedureType.Simplified).futureValue mustBe
+          service.getLocationTypes(isSimplified = true).futureValue mustBe
             Seq(lt3)
 
           verify(mockRefDataConnector).getTypesOfLocation()(any(), any())

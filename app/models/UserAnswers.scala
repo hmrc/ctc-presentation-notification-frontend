@@ -16,6 +16,7 @@
 
 package models
 
+import models.messages.{Data, MessageData}
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -29,7 +30,8 @@ final case class UserAnswers(
   eoriNumber: EoriNumber,
   lrn: String,
   data: JsObject,
-  lastUpdated: Instant
+  lastUpdated: Instant,
+  departureData: MessageData
 ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
@@ -70,7 +72,8 @@ object UserAnswers {
       (__ \ "eoriNumber").read[EoriNumber] and
       (__ \ "lrn").read[String] and
       (__ \ "data").read[JsObject] and
-      (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
+      (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads) and
+      (__ \ "departureData").read[MessageData]
   )(UserAnswers.apply _)
 
   implicit lazy val writes: OWrites[UserAnswers] = (
@@ -78,7 +81,8 @@ object UserAnswers {
       (__ \ "eoriNumber").write[EoriNumber] and
       (__ \ "lrn").write[String] and
       (__ \ "data").write[JsObject] and
-      (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
+      (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites) and
+      (__ \ "departureData").write[MessageData]
   )(unlift(UserAnswers.unapply))
 
   implicit lazy val format: Format[UserAnswers] = Format(reads, writes)

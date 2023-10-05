@@ -54,8 +54,9 @@ class LocationTypeController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        // TODO get procedure type from request
-        locationTypeService.getLocationTypes(Normal).flatMap {
+        val isSimplified = request.userAnswers.departureData.isSimplified
+
+        locationTypeService.getLocationTypes(isSimplified).flatMap {
           case locationType :: Nil =>
             redirect(mode, InferredLocationTypePage, locationType, departureId)
           case locationTypes =>
@@ -71,8 +72,9 @@ class LocationTypeController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        // TODO get procedure type from request
-        locationTypeService.getLocationTypes(Normal).flatMap {
+        val isSimplified = request.userAnswers.departureData.isSimplified
+
+        locationTypeService.getLocationTypes(isSimplified).flatMap {
           locationTypes =>
             form(locationTypes)
               .bindFromRequest()
