@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.locationOfGoods
+package views.locationOfGoods.contact
 
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
@@ -22,9 +22,9 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.TelephoneNumberViewBehaviours
-import views.html.locationOfGoods.ContactPhoneNumberView
+import views.html.locationOfGoods.contact.PhoneNumberView
 
-class ContactPhoneNumberViewSpec extends TelephoneNumberViewBehaviours {
+class PhoneNumberViewSpec extends TelephoneNumberViewBehaviours {
 
   override val prefix: String = "locationOfGoods.contactPhoneNumber"
 
@@ -33,7 +33,7 @@ class ContactPhoneNumberViewSpec extends TelephoneNumberViewBehaviours {
   override def form: Form[String] = new TelephoneNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ContactPhoneNumberView].apply(form, departureId, lrn.toString, name, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[PhoneNumberView].apply(form, departureId, lrn.toString, name, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
