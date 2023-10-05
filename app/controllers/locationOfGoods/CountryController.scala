@@ -75,9 +75,7 @@ class CountryController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, countryList.values, mode))),
-              value => {
-                redirect(mode, CountryPage, value, departureId)
-              }
+              value => redirect(mode, CountryPage, value, departureId)
             )
       }
   }
