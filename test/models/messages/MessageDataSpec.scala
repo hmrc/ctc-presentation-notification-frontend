@@ -49,7 +49,7 @@ class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues {
 
       "must return true when authorisations contain C521" in {
 
-        val updatedMessageData: MessageData = messageData.copy(Authorisations =
+        val updatedMessageData: MessageData = messageData.copy(Authorisation =
           Some(
             Seq(
               Authorisation(C521, "AB123"),
@@ -65,14 +65,14 @@ class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues {
 
         "when authorisations are not defined" in {
 
-          val updatedMessageData = messageData.copy(Authorisations = None)
+          val updatedMessageData = messageData.copy(Authorisation = None)
 
           updatedMessageData.isSimplified mustBe false
         }
 
         "when authorisations are defined but without C521" in {
 
-          val updatedMessageData: MessageData = messageData.copy(Authorisations =
+          val updatedMessageData: MessageData = messageData.copy(Authorisation =
             Some(
               Seq(Authorisation(Other("otherValue"), "AB123"))
             )

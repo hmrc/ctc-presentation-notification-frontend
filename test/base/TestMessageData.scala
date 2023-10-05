@@ -82,12 +82,12 @@ object TestMessageData {
     Some(placeOfLoading)
   )
 
-  val authorisations: Seq[Authorisation] = Seq(
+  val authorisation: Seq[Authorisation] = Seq(
     Authorisation(C521, "AB123"),
     Authorisation(Other("SomethingElse"), "CD123")
   )
 
-  val messageData: MessageData = MessageData(transitOperation, Some(authorisations), consignment)
+  val messageData: MessageData = MessageData(transitOperation, Some(authorisation), consignment)
 
   val jsonValue: JsValue = Json.parse(
     s"""
@@ -95,7 +95,7 @@ object TestMessageData {
        |   "TransitOperation" : {
        |       "limitDate" : "2023-06-09"
        |   },
-       |   "Authorisations" : [
+       |   "Authorisation" : [
        |     {
        |       "type" : "C521",
        |       "referenceNumber": "AB123"

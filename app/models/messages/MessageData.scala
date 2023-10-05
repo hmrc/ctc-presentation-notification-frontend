@@ -24,11 +24,11 @@ import scala.annotation.unused
 
 case class MessageData(
   TransitOperation: TransitOperation,
-  Authorisations: Option[Seq[Authorisation]],
+  Authorisation: Option[Seq[Authorisation]],
   Consignment: Consignment
 ) {
 
-  val isSimplified: Boolean = Authorisations.flatMap(_.find(_.`type` == C521)).isDefined
+  val isSimplified: Boolean = Authorisation.flatMap(_.find(_.`type` == C521)).isDefined
 
   def isDataComplete: Boolean =
     List(
