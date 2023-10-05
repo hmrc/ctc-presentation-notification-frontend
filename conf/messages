@@ -64,9 +64,9 @@ locationOfGoods.authorisationNumber.title = What is the authorisation number for
 locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
 locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
 locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
-locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
-locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
-locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods
+locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less
+locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9
 locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.country.title = In which country is the location of goods?
@@ -78,15 +78,6 @@ checkInformation.title = Confirmation needed to complete declaration
 checkInformation.heading = Confirmation needed to complete declaration
 checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
 checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
-
-locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
-locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
-locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
-locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
-locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
-locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
-locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
-locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.unLocode.title = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goods?
@@ -143,3 +134,10 @@ locationOfGoods.contactPhoneNumber.error.invalidCharacters = {0}`s phone number 
 locationOfGoods.contactPhoneNumber.error.invalidFormat = {0}`s phone number must start with a plus sign
 locationOfGoods.contactPhoneNumber.error.maxLength = {0}`s phone number must be {1} characters or less
 locationOfGoods.contactPhoneNumber.error.minLength = {0}`s phone number must be {1} characters or more
+
+locationOfGoods.addIdentifierYesNo.title = Do you want to add an additional identifier for the location of goods?
+locationOfGoods.addIdentifierYesNo.heading = Do you want to add an additional identifier for the location of goods?
+locationOfGoods.addIdentifierYesNo.paragraph = This is an alternative reference number to identify the location.
+locationOfGoods.addIdentifierYesNo.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
+locationOfGoods.addIdentifierYesNo.change.hidden = if you want to add another identifier for the location of goods
+locationOfGoods.addIdentifierYesNo.error.required = Select yes if you want to add an additional identifier for the location of goods

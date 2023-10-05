@@ -16,39 +16,36 @@
 
 @import controllers.locationOfGoods.routes
 @import models.LocalReferenceNumber
-@import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText}
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputText: InputText,
+    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[String], departureId: String, lrn: String, contactName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId:String, lrn: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("locationOfGoods.contactPhoneNumber.title"),
+    title = messages("locationOfGoods.addIdentifierYesNo.title"),
     showBackLink = true,
     lrn = LocalReferenceNumber(lrn)
 ) {
 
-    @formHelper(action = routes.ContactPhoneNumberController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddIdentifierYesNoController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputText(
+        @inputYesNo(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages("locationOfGoods.contactPhoneNumber.heading", contactName),
-                caption = Some(messages("locationOfGoods.caption"))
-            ),
-            hint = Some(messages("locationOfGoods.contactPhoneNumber.hint")),
-            inputType = "tel",
-            autocomplete = Some("tel"),
-            inputClass = InputSize.Width20
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("locationOfGoods.addIdentifierYesNo.heading"),
+                caption = Some(messages("locationOfGoods.caption")),
+                additionalHtml = messages("locationOfGoods.addIdentifierYesNo.paragraph").toParagraph
+            )
         )
 
         @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))

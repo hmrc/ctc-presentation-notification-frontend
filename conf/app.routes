@@ -63,3 +63,8 @@ POST       /location-of-goods/address/:departureId                            co
 GET        /location-of-goods/change-address/:departureId                     controllers.locationOfGoods.AddressController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-address/:departureId                     controllers.locationOfGoods.AddressController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/add-identifier/:departureId                     controllers.locationOfGoods.AddIdentifierYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/add-identifier/:departureId                     controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
