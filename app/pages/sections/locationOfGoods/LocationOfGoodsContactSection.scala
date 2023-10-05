@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package pages.sections.locationOfGoods
 
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class AddArrivalDateYesNoPageSpec extends PageBehaviours {
+case object LocationOfGoodsContactSection extends Section[JsObject] {
 
-  "AddArrivalDateYesNoPage" - {
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-    beRetrievable[Boolean](AddArrivalDateYesNoPage)
-
-    beSettable[Boolean](AddArrivalDateYesNoPage)
-
-    beRemovable[Boolean](AddArrivalDateYesNoPage)
-  }
+  override def toString: String = "contact"
 }

@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package pages.locationOfGoods.contact
 
-import pages.behaviours.PageBehaviours
+import controllers.locationOfGoods.contact.routes
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.locationOfGoods.LocationOfGoodsContactSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class AddArrivalDateYesNoPageSpec extends PageBehaviours {
+case object NamePage extends QuestionPage[String] {
 
-  "AddArrivalDateYesNoPage" - {
+  override def path: JsPath = LocationOfGoodsContactSection.path \ toString
 
-    beRetrievable[Boolean](AddArrivalDateYesNoPage)
+  override def toString: String = "name"
 
-    beSettable[Boolean](AddArrivalDateYesNoPage)
-
-    beRemovable[Boolean](AddArrivalDateYesNoPage)
-  }
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.NameController.onPageLoad(departureId, mode))
 }

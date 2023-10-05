@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package pages.locationOfGoods.contact
 
 import pages.behaviours.PageBehaviours
 
-class AddArrivalDateYesNoPageSpec extends PageBehaviours {
+class NamePageSpec extends PageBehaviours {
 
-  "AddArrivalDateYesNoPage" - {
+  "LocationOfGoodsContactNamePage" - {
 
-    beRetrievable[Boolean](AddArrivalDateYesNoPage)
+    beRetrievable[String](NamePage)
 
-    beSettable[Boolean](AddArrivalDateYesNoPage)
+    beSettable[String](NamePage)
 
-    beRemovable[Boolean](AddArrivalDateYesNoPage)
+    beRemovable[String](NamePage)
   }
 }

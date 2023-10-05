@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package pages.locationOfGoods
 
+import models.Coordinates
 import pages.behaviours.PageBehaviours
 
-class AddArrivalDateYesNoPageSpec extends PageBehaviours {
+class CoordinatesPageSpec extends PageBehaviours {
 
-  "AddArrivalDateYesNoPage" - {
+  "CoordinatesPage" - {
 
-    beRetrievable[Boolean](AddArrivalDateYesNoPage)
+    beRetrievable[Coordinates](CoordinatesPage)
 
-    beSettable[Boolean](AddArrivalDateYesNoPage)
+    beSettable[Coordinates](CoordinatesPage)
 
-    beRemovable[Boolean](AddArrivalDateYesNoPage)
+    beRemovable[Coordinates](CoordinatesPage)
   }
 }

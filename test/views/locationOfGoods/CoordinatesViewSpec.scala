@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.locationOfGoods
 
 import forms.behaviours.CoordinatesViewBehaviours
 import forms.locationOfGoods.CoordinatesFormProvider
@@ -22,7 +22,7 @@ import generators.Generators
 import models.{Coordinates, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.html.CoordinatesView
+import views.html.locationOfGoods.CoordinatesView
 
 class CoordinatesViewSpec extends CoordinatesViewBehaviours with Generators {
 
