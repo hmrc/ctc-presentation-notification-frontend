@@ -31,7 +31,7 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
 
   val eccEnrolmentSplashPage: String = config.get[String]("urls.eccEnrolmentSplashPage")
 
-  lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customsReferenceData")
+  lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customs-reference-data")
 
   lazy val legacyEnrolmentKey: String           = config.get[String]("microservice.services.auth.legacy.enrolmentKey")
   lazy val legacyEnrolmentIdentifierKey: String = config.get[String]("microservice.services.auth.legacy.enrolmentIdentifierKey")
