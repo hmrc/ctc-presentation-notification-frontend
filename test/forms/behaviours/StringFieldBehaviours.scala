@@ -85,4 +85,15 @@ trait StringFieldBehaviours extends FieldBehaviours {
       val result   = form.bind(Map(fieldName -> testCase.toString)).apply(fieldName)
       result.errors mustEqual Seq(expectedError)
     }
+
+  def mandatoryTrimmedField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+
+    mandatoryField(form, fieldName, requiredError)
+
+    "must not bind values that trim to empty" in {
+
+      val result = form.bind(Map(fieldName -> "   ")).apply(fieldName)
+      result.errors mustEqual Seq(requiredError)
+    }
+  }
 }
