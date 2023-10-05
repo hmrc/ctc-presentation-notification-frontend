@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package pages.behaviours.locationOfGoods
 
+import models.DynamicAddress
 import pages.behaviours.PageBehaviours
+import pages.locationOfGoods.AddressPage
 
-class AddArrivalDateYesNoPageSpec extends PageBehaviours {
+class AddressPageSpec extends PageBehaviours {
 
-  "AddArrivalDateYesNoPage" - {
+  "AddressPage" - {
 
-    beRetrievable[Boolean](AddArrivalDateYesNoPage)
+    beRetrievable[DynamicAddress](AddressPage)
 
-    beSettable[Boolean](AddArrivalDateYesNoPage)
+    beSettable[DynamicAddress](AddressPage)
 
-    beRemovable[Boolean](AddArrivalDateYesNoPage)
+    beRemovable[DynamicAddress](AddressPage)
   }
 }

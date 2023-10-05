@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.transitOperation
+package models
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
 
-class AddArrivalDateYesNoPageSpec extends PageBehaviours {
+case class DynamicAddress(
+  numberAndStreet: String,
+  city: String,
+  postalCode: Option[String]
+) {
 
-  "AddArrivalDateYesNoPage" - {
+  override def toString: String = Seq(Some(numberAndStreet), Some(city), postalCode).flatten.mkString("<br>")
+}
 
-    beRetrievable[Boolean](AddArrivalDateYesNoPage)
-
-    beSettable[Boolean](AddArrivalDateYesNoPage)
-
-    beRemovable[Boolean](AddArrivalDateYesNoPage)
-  }
+object DynamicAddress {
+  implicit val format: OFormat[DynamicAddress] = Json.format[DynamicAddress]
 }

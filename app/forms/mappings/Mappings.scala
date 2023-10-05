@@ -55,4 +55,7 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[T] =
     of(selectableFormatter[T](selectableList, errorKey, args))
 
+  protected def trimmedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
+    of(trimmedStringFormatter(errorKey, args))
+
 }

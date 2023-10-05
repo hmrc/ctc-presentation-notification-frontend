@@ -16,7 +16,6 @@
 
 package pages.locationOfGoods
 
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddContactYesNoPageSpec extends PageBehaviours {

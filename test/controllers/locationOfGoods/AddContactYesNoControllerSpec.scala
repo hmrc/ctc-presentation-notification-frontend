@@ -21,7 +21,7 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.locationOfGoods.{AddContactYesNoPage, AuthorisationNumberPage}
+import pages.locationOfGoods.AddContactYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

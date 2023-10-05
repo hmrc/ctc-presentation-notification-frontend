@@ -39,7 +39,7 @@
     lrn = LocalReferenceNumber(lrn)
 ) {
 
-    @formHelper(action = routes.CountryController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.CountryController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

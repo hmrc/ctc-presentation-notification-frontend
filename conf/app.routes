@@ -53,3 +53,8 @@ POST       /office-of-destination/add-arrival-date/:departureId               co
 GET        /office-of-destination/change-add-arrival-date/:departureId        controllers.transitOperation.AddArrivalDateYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /office-of-destination/change-add-arrival-date/:departureId        controllers.transitOperation.AddArrivalDateYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/address/:departureId                            controllers.locationOfGoods.AddressController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/address/:departureId                            controllers.locationOfGoods.AddressController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-address/:departureId                     controllers.locationOfGoods.AddressController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-address/:departureId                     controllers.locationOfGoods.AddressController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
