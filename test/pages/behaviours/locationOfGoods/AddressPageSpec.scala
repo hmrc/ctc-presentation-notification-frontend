@@ -24,10 +24,10 @@ class AddressPageSpec extends PageBehaviours {
 
   "AddressPage" - {
 
-    beRetrievable[DynamicAddress](AddressPage())
+    beRetrievable[DynamicAddress](AddressPage)
 
-    beSettable[DynamicAddress](AddressPage())
+    beSettable[DynamicAddress](AddressPage)
 
-    beRemovable[DynamicAddress](AddressPage())
+    beRemovable[DynamicAddress](AddressPage)
   }
 }

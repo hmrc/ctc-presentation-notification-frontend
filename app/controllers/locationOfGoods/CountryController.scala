@@ -67,20 +67,15 @@ class CountryController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      println("\n\n\n************got here1")
-
       val lrn = request.userAnswers.lrn
       service.getCountries().flatMap {
         countryList =>
-          println("\n\n\n************got here")
-
           val form = formProvider(prefix, countryList)
           form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, countryList.values, mode))),
               value => {
-                println("\n\n\n************")
                 redirect(mode, CountryPage, value, departureId)
               }
             )

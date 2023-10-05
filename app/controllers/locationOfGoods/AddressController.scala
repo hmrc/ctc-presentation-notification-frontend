@@ -64,7 +64,7 @@ class AddressController @Inject() (
         val lrn = request.userAnswers.lrn
         countriesService.doesCountryRequireZip(country).map {
           isPostalCodeRequired =>
-            val preparedForm = request.userAnswers.get(AddressPage()) match {
+            val preparedForm = request.userAnswers.get(AddressPage) match {
               case None        => form(isPostalCodeRequired)
               case Some(value) => form(isPostalCodeRequired).fill(value)
             }
@@ -81,15 +81,11 @@ class AddressController @Inject() (
         val lrn = request.userAnswers.lrn
         countriesService.doesCountryRequireZip(country).flatMap {
           isPostalCodeRequired =>
-            val preparedForm = request.userAnswers.get(AddressPage()) match {
-              case None        => form(isPostalCodeRequired)
-              case Some(value) => form(isPostalCodeRequired).fill(value)
-            }
-            preparedForm
+            form(isPostalCodeRequired)
               .bindFromRequest()
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, mode, isPostalCodeRequired))),
-                value => redirect(mode, AddressPage.apply(), value, departureId)
+                value => redirect(mode, AddressPage, value, departureId)
               )
         }
     }

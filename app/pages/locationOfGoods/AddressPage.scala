@@ -23,7 +23,7 @@ import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddressPage() extends QuestionPage[DynamicAddress] {
+case object AddressPage extends QuestionPage[DynamicAddress] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
 

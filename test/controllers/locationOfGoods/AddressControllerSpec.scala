@@ -22,7 +22,7 @@ import generators.Generators
 import models.reference.Country
 import models.{DynamicAddress, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.CountryPage
 import pages.locationOfGoods.AddressPage
@@ -109,7 +109,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-          .setValue(AddressPage(), testAddress)
+          .setValue(AddressPage, testAddress)
 
         setExistingUserAnswers(userAnswers)
 
@@ -142,7 +142,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-          .setValue(AddressPage(), testAddress)
+          .setValue(AddressPage, testAddress)
 
         setExistingUserAnswers(userAnswers)
 
