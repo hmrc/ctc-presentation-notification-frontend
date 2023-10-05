@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.locationOfGoods
 
-import models.Coordinates
-import pages.CoordinatesPage
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class CoordinatesPageSpec extends PageBehaviours {
+case object LocationOfGoodsContactSection extends Section[JsObject] {
 
-  "CoordinatesPage" - {
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-    beRetrievable[Coordinates](CoordinatesPage)
-
-    beSettable[Coordinates](CoordinatesPage)
-
-    beRemovable[Coordinates](CoordinatesPage)
-  }
+  override def toString: String = "contact"
 }

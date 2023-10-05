@@ -22,10 +22,10 @@ import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.CoordinatesPage
+import pages.locationOfGoods.CoordinatesPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.CoordinatesView
+import views.html.locationOfGoods.CoordinatesView
 
 import scala.concurrent.Future
 

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.locationOfGoods
 
 import controllers.locationOfGoods.routes
 import models.{Coordinates, Mode, UserAnswers}
+import pages.QuestionPage
 import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.locationOfGoods
+package controllers.locationOfGoods.contact
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.locationOfGoods.{AuthorisationNumberPage, ContactPhoneNumberPage}
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -29,13 +29,13 @@ import views.html.locationOfGoods.ContactPhoneNumberView
 
 import scala.concurrent.Future
 
-class ContactPhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider              = new TelephoneNumberFormProvider()
   private val contactName               = "Contact"
   private val form                      = formProvider("locationOfGoods.contactPhoneNumber", contactName)
   private val mode                      = NormalMode
-  private lazy val telephoneNumberRoute = routes.ContactPhoneNumberController.onPageLoad(departureId, mode).url
+  private lazy val telephoneNumberRoute = routes.PhoneNumberController.onPageLoad(departureId, mode).url
   private val validAnswer: String       = "+123123"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -45,7 +45,7 @@ class ContactPhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockF
   "TelephoneNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.setValue(AuthorisationNumberPage, contactName) //todo change to contact name page once merged in
+      val userAnswers = emptyUserAnswers.setValue(NamePage, contactName)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, telephoneNumberRoute)
@@ -63,8 +63,8 @@ class ContactPhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockF
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationNumberPage, contactName) //todo change to contact name page once merged in
-        .setValue(ContactPhoneNumberPage, validAnswer)
+        .setValue(NamePage, contactName)
+        .setValue(PhoneNumberPage, validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, telephoneNumberRoute)
@@ -84,7 +84,7 @@ class ContactPhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockF
     "must redirect to the next page when valid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationNumberPage, contactName) //todo change to contact name page once merged in
+        .setValue(NamePage, contactName)
       setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -102,7 +102,7 @@ class ContactPhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockF
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationNumberPage, contactName) //todo change to contact name page once merged in
+        .setValue(NamePage, contactName)
       setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""

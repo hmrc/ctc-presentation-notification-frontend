@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.locationOfGoods
+package controllers.locationOfGoods.contact
 
 import controllers.actions._
 import forms.TelephoneNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.locationOfGoods.{AuthorisationNumberPage, ContactPhoneNumberPage}
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -31,7 +31,7 @@ import views.html.locationOfGoods.ContactPhoneNumberView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactPhoneNumberController @Inject() (
+class PhoneNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -46,11 +46,11 @@ class ContactPhoneNumberController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(AuthorisationNumberPage)) { //todo change to contact name page once merged in
+    .andThen(getMandatoryPage(NamePage)) {
       implicit request =>
         val contactName = request.arg
         val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-        val preparedForm = request.userAnswers.get(AuthorisationNumberPage) match { //todo change to contact name page once merged in
+        val preparedForm = request.userAnswers.get(PhoneNumberPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -59,7 +59,7 @@ class ContactPhoneNumberController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(AuthorisationNumberPage)) //todo change to contact name page once merged in
+    .andThen(getMandatoryPage(NamePage))
     .async {
       implicit request =>
         val contactName = request.arg
@@ -79,7 +79,7 @@ class ContactPhoneNumberController @Inject() (
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactPhoneNumberPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(PhoneNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(ContactPhoneNumberPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(PhoneNumberPage, updatedAnswers, departureId, mode))
 }

@@ -1,16 +1,3 @@
-# microservice specific routes
-
-->         /                                                                  app.locationOfGoods.Routes
-->         /                                                                  app.transitOperation.Routes
-
-->         /hmrc-frontend                                                     hmrcfrontend.Routes
-GET        /assets/*file                                                      controllers.Assets.versioned(path = "/public", file: Asset)
-
-GET        /complete-declaration/more-information/:departureId                controllers.MoreInformationController.onPageLoad(departureId: String)
-GET        /complete-declaration/check-information/:departureId               controllers.CheckInformationController.onPageLoad(departureId: String)
-
-GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
-
 GET        /location-of-goods/type/:departureId                               controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /location-of-goods/type/:departureId                               controllers.locationOfGoods.LocationTypeController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-type/:departureId                        controllers.locationOfGoods.LocationTypeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
@@ -46,15 +33,20 @@ POST       /location-of-goods/un-locode/:departureId                          co
 GET        /location-of-goods/change-un-locode/:departureId                   controllers.locationOfGoods.UnLocodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-un-locode/:departureId                   controllers.locationOfGoods.UnLocodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/contact-name/:departureId                       controllers.locationOfGoods.contact.NameController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/contact-name/:departureId                       controllers.locationOfGoods.contact.NameController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-contact-name/:departureId                controllers.locationOfGoods.contact.NameController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-contact-name/:departureId                controllers.locationOfGoods.contact.NameController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /location-of-goods/contact-phone-number/:departureId               controllers.locationOfGoods.contact.PhoneNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/contact-phone-number/:departureId               controllers.locationOfGoods.contact.PhoneNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-contact-phone-number/:departureId        controllers.locationOfGoods.contact.PhoneNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-contact-phone-number/:departureId        controllers.locationOfGoods.contact.PhoneNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 GET        /location-of-goods/add-contact/:departureId                        controllers.locationOfGoods.AddContactYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /location-of-goods/add-contact/:departureId                        controllers.locationOfGoods.AddContactYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-add-contact/:departureId                 controllers.locationOfGoods.AddContactYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-add-contact/:departureId                 controllers.locationOfGoods.AddContactYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
-
-GET        /office-of-destination/add-arrival-date/:departureId               controllers.transitOperation.AddArrivalDateYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /office-of-destination/add-arrival-date/:departureId               controllers.transitOperation.AddArrivalDateYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /office-of-destination/change-add-arrival-date/:departureId        controllers.transitOperation.AddArrivalDateYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /office-of-destination/change-add-arrival-date/:departureId        controllers.transitOperation.AddArrivalDateYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
 GET        /location-of-goods/address/:departureId                            controllers.locationOfGoods.AddressController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /location-of-goods/address/:departureId                            controllers.locationOfGoods.AddressController.onSubmit(departureId: String, mode: Mode = NormalMode)
@@ -65,4 +57,3 @@ GET        /location-of-goods/add-identifier/:departureId                     co
 POST       /location-of-goods/add-identifier/:departureId                     controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
-

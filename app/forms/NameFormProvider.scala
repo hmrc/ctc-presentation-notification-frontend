@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package forms
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.Constants.maxNameLength
+import forms.mappings.Mappings
+import models.StringFieldRegex.stringFieldRegex
+import play.api.data.Form
 
-case object ContactPhoneNumberPage extends QuestionPage[String] {
+import javax.inject.Inject
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+class NameFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "telephoneNumber"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.ContactPhoneNumberController.onPageLoad(userAnswers.lrn, mode))
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxNameLength, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid")
+          )
+        )
+    )
 }
