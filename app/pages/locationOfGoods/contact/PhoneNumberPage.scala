@@ -29,5 +29,5 @@ case object PhoneNumberPage extends QuestionPage[String] {
   override def toString: String = "telephoneNumber"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(userAnswers.lrn, mode))
+    Some(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode))
 }

@@ -57,3 +57,4 @@ GET        /location-of-goods/add-identifier/:departureId                     co
 POST       /location-of-goods/add-identifier/:departureId                     controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
