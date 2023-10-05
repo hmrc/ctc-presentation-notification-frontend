@@ -38,6 +38,11 @@ POST       /location-of-goods/contact-name/:departureId                       co
 GET        /location-of-goods/change-contact-name/:departureId                controllers.locationOfGoods.contact.NameController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-contact-name/:departureId                controllers.locationOfGoods.contact.NameController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/contact-phone-number/:departureId               controllers.locationOfGoods.contact.PhoneNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/contact-phone-number/:departureId               controllers.locationOfGoods.contact.PhoneNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-contact-phone-number/:departureId        controllers.locationOfGoods.contact.PhoneNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-contact-phone-number/:departureId        controllers.locationOfGoods.contact.PhoneNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 GET        /location-of-goods/add-contact/:departureId                        controllers.locationOfGoods.AddContactYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /location-of-goods/add-contact/:departureId                        controllers.locationOfGoods.AddContactYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-add-contact/:departureId                 controllers.locationOfGoods.AddContactYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
@@ -52,3 +57,4 @@ GET        /location-of-goods/add-identifier/:departureId                     co
 POST       /location-of-goods/add-identifier/:departureId                     controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-add-identifier/:departureId              controllers.locationOfGoods.AddIdentifierYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages.locationOfGoods.contact
 
-import pages.behaviours.PageBehaviours
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.locationOfGoods.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class AddIdentifierYesNoPageSpec extends PageBehaviours {
+case object PhoneNumberPage extends QuestionPage[String] {
 
-  "AddIdentifierYesNoPage" - {
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-    beRetrievable[Boolean](AddIdentifierYesNoPage)
+  override def toString: String = "telephoneNumber"
 
-    beSettable[Boolean](AddIdentifierYesNoPage)
-
-    beRemovable[Boolean](AddIdentifierYesNoPage)
-
-  }
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode))
 }
