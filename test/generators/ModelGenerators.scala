@@ -45,7 +45,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {
-        lrn <- stringsWithMaxLength(22: Int, Gen.alphaNumChar)
+        lrn <- stringsWithMaxLength(22)
       } yield new LocalReferenceNumber(lrn)
     }
 

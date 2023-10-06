@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package models.reference
+package forms
 
-import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import config.Constants.maxEoriNumberLength
+import forms.mappings.Mappings
+import models.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
 
-case class CustomsOffice(id: String, name: String, phoneNumber: Option[String]) extends Selectable {
-  override def toString: String = s"$name ($id)"
+import javax.inject.Inject
 
-  val countryCode: String = id.take(2)
+class EoriNumberFormProvider @Inject() extends Mappings {
 
-  override val value: String = id
-}
-
-object CustomsOffice {
-  implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
+            maxLength(maxEoriNumberLength, s"$prefix.error.length")
+          )
+        )
+    )
 }

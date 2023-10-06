@@ -30,8 +30,7 @@ class MoreInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: MoreInformationView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {

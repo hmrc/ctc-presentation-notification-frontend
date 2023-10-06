@@ -152,7 +152,6 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       contentAsString(result) mustEqual
         view(boundForm, departureId, lrn.value, lts, mode)(request, messages).toString
-      view(boundForm, departureId, lrn.value, lts, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.locationOfGoods
 
-import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import pages.EoriPage
+import pages.behaviours.PageBehaviours
 
-case class CustomsOffice(id: String, name: String, phoneNumber: Option[String]) extends Selectable {
-  override def toString: String = s"$name ($id)"
+class EoriPageSpec extends PageBehaviours {
 
-  val countryCode: String = id.take(2)
+  "EoriPage" - {
 
-  override val value: String = id
-}
+    beRetrievable[String](EoriPage)
 
-object CustomsOffice {
-  implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
+    beSettable[String](EoriPage)
+
+    beRemovable[String](EoriPage)
+  }
 }

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages
 
-import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import models.{Mode, UserAnswers}
+import pages.sections.locationOfGoods.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case class CustomsOffice(id: String, name: String, phoneNumber: Option[String]) extends Selectable {
-  override def toString: String = s"$name ($id)"
+case object EoriPage extends QuestionPage[String] {
 
-  val countryCode: String = id.take(2)
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-  override val value: String = id
-}
+  override def toString: String = "eori"
 
-object CustomsOffice {
-  implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
+
 }

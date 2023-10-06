@@ -21,7 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.data.{Form, FormError}
 
-trait FormSpec extends AnyFreeSpec with OptionValues with Matchers {
+trait FormSpec extends AnyFreeSpec with Matchers with OptionValues {
 
   def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) =
     form
