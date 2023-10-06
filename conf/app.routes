@@ -9,8 +9,6 @@ GET        /assets/*file                                                      co
 GET        /complete-declaration/more-information/:departureId                controllers.MoreInformationController.onPageLoad(departureId: String)
 GET        /complete-declaration/check-information/:departureId               controllers.CheckInformationController.onPageLoad(departureId: String)
 
-GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
-
 GET        /keep-alive                                                        controllers.KeepAliveController.keepAlive(departureId: Option[String] = None)
 GET        /:departureId/keep-alive                                           controllers.KeepAliveController.keepAlive(departureId: Option[String])
 
@@ -24,3 +22,5 @@ POST       /this-service-has-been-reset                                       co
 
 GET        /error/cannot-use-service-no-eori                                  controllers.UnauthorisedController.onPageLoad()
 GET        /unauthorised-group-access                                         controllers.UnauthorisedWithGroupAccessController.onPageLoad()
+
+GET        /:departureId                                                      controllers.IndexController.index(departureId: String)

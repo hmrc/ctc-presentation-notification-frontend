@@ -38,17 +38,17 @@ class EoriViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithTitle()
 
-//  behave like pageWithBackLink()
-//
-//  behave like pageWithSectionCaption("Location of goods")
-//
-//  behave like pageWithHeading()
-//
-//  behave like pageWithHint(
-//    "This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000."
-//  )
+  behave like pageWithBackLink()
 
-//  behave like pageWithInputText(Some(InputSize.Width20))
-//
-//  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSectionCaption("Location of goods")
+
+  behave like pageWithHeading()
+
+  behave like pageWithHint(
+    "This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000."
+  )
+
+  behave like pageWithInputText(Some(InputSize.Width20))
+
+  behave like pageWithSubmitButton("Save and continue")
 }
