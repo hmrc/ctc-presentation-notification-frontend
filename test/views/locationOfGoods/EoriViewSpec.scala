@@ -16,37 +16,39 @@
 
 package views.locationOfGoods
 
-import forms.UnLocodeFormProvider
+import forms.EoriNumberFormProvider
 import models.NormalMode
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.locationOfGoods.UnLocodeView
+import views.html.locationOfGoods.EoriView
 
-class UnLocodeViewSpec extends InputTextViewBehaviours[String] {
+class EoriViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new UnLocodeFormProvider()(prefix)
+  override def form: Form[String] = new EoriNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[UnLocodeView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[EoriView].apply(form, lrn.toString, departureId, NormalMode)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[String] = arbitraryUnLocode
+  override val prefix: String = "locationOfGoods.eori"
 
-  override val prefix: String = "locationOfGoods.unLocode"
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaNumStr)
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Location of goods")
+
   behave like pageWithHeading()
 
-  behave like pageWithHint("Enter the code, like DEBER or ESMAD.")
-
-  behave like pageWithContent(
-    "p",
-    "This is a 5-character code used to identify a transit-related location, like a port or clearance depot."
+  behave like pageWithHint(
+    "This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000."
   )
+
+  behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
 }

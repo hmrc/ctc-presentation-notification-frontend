@@ -16,46 +16,43 @@
 
 package controllers.locationOfGoods
 
-import controllers.actions._
-import forms.UnLocodeFormProvider
+import controllers.actions.Actions
+import forms.EoriNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.UnLocodePage
-import play.api.data.FormError
+import pages.{EoriPage, QuestionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.UnLocodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.UnLocodeView
+import views.html.locationOfGoods.EoriView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnLocodeController @Inject() (
+class EoriController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  formProvider: UnLocodeFormProvider,
   actions: Actions,
+  formProvider: EoriNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  navigator: Navigator,
-  view: UnLocodeView,
-  service: UnLocodeService
+  view: EoriView,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "locationOfGoods.unLocode"
-  private val form   = formProvider(prefix)
+  private val form = formProvider("locationOfGoods.eori")
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UnLocodePage) match {
+      val preparedForm = request.userAnswers.get(EoriPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Future.successful(Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode)))
+
+      Ok(view(preparedForm, request.userAnswers.lrn, departureId, mode))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
@@ -63,25 +60,19 @@ class UnLocodeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode))),
-          value =>
-            service.doesUnLocodeExist(value).flatMap {
-              case true =>
-                redirect(mode, value, departureId)
-              case false =>
-                val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
-                Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode)))
-            }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.lrn, departureId, mode))),
+          value => redirect(mode, EoriPage, value, departureId)
         )
   }
 
   private def redirect(
     mode: Mode,
+    page: QuestionPage[String],
     value: String,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(UnLocodePage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(UnLocodePage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 }

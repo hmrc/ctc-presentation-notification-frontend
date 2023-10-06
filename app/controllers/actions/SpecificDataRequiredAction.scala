@@ -17,8 +17,8 @@
 package controllers.actions
 
 import config.FrontendAppConfig
-import models.requests._
 import models.UserAnswers
+import models.requests._
 import play.api.Logging
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect

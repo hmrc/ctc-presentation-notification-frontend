@@ -16,12 +16,11 @@
 
 package forms.locationOfGoods
 
-import forms.{UnLocodeFormProvider}
+import forms.Constants.exactUnLocodeLength
+import forms.UnLocodeFormProvider
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
-import models.SelectableList
-import models.reference.UnLocode
-import org.scalacheck.Arbitrary.arbitrary
+import models.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -29,12 +28,12 @@ class UnLocodeFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
+  private val lengthKey   = s"$prefix.error.length"
+  private val invalidKey  = s"$prefix.error.invalid"
 
-  private val selectable1    = arbitrary[UnLocode].sample.value
-  private val selectable2    = arbitrary[UnLocode].sample.value
-  private val selectableList = SelectableList(Seq(selectable1, selectable2))
+  val invalidUnLocodeOverLength: Gen[String] = stringsLongerThan(exactUnLocodeLength + 1)
 
-  private val form = new UnLocodeFormProvider()(prefix, selectableList)
+  private val form = new UnLocodeFormProvider()(prefix)
 
   ".value" - {
 
@@ -52,16 +51,26 @@ class UnLocodeFormProviderSpec extends StringFieldBehaviours with Generators {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if value does not exist in the list" in {
-      val boundForm = form.bind(Map("value" -> "foobar"))
-      val field     = boundForm("value")
-      field.errors mustNot be(empty)
-    }
+    behave like fieldWithMaxLength(
+      form = form,
+      fieldName = fieldName,
+      maxLength = exactUnLocodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(exactUnLocodeLength)),
+      gen = invalidUnLocodeOverLength
+    )
 
-    "bind a value which is in the list" in {
-      val boundForm = form.bind(Map("value" -> selectable1.value))
-      val field     = boundForm("value")
-      field.errors must be(empty)
-    }
+    behave like fieldWithMinLength(
+      form = form,
+      fieldName = fieldName,
+      minLength = exactUnLocodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(exactUnLocodeLength))
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form = form,
+      fieldName = fieldName,
+      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+      length = exactUnLocodeLength
+    )
   }
 }

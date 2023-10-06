@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package services
+package forms
 
-import connectors.ReferenceDataConnector
-import uk.gov.hmrc.http.HeaderCarrier
+import config.Constants.maxEoriNumberLength
+import forms.mappings.Mappings
+import models.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-class UnLocodeService @Inject() (
-  referenceDataConnector: ReferenceDataConnector
-)(implicit ec: ExecutionContext) {
+class EoriNumberFormProvider @Inject() extends Mappings {
 
-  def doesUnLocodeExist(unLocode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
-    referenceDataConnector
-      .getUnLocode(unLocode)
-      .map(_.nonEmpty)
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
+            maxLength(maxEoriNumberLength, s"$prefix.error.length")
+          )
+        )
+    )
 }

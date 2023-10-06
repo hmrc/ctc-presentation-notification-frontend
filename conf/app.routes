@@ -10,3 +10,7 @@ GET        /complete-declaration/more-information/:departureId                co
 GET        /complete-declaration/check-information/:departureId               controllers.CheckInformationController.onPageLoad(departureId: String)
 
 GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
+
+
+
+

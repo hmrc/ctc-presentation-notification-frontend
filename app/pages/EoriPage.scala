@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package services
+package pages
 
-import connectors.ReferenceDataConnector
-import uk.gov.hmrc.http.HeaderCarrier
+import models.{Mode, UserAnswers}
+import pages.sections.locationOfGoods.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+case object EoriPage extends QuestionPage[String] {
 
-class UnLocodeService @Inject() (
-  referenceDataConnector: ReferenceDataConnector
-)(implicit ec: ExecutionContext) {
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-  def doesUnLocodeExist(unLocode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
-    referenceDataConnector
-      .getUnLocode(unLocode)
-      .map(_.nonEmpty)
+  override def toString: String = "eori"
+
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
+
 }

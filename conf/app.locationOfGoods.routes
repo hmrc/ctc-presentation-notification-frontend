@@ -63,3 +63,7 @@ POST       /location-of-goods/additional-identifier/:departureId              co
 GET        /location-of-goods/change-additional-identifier/:departureId       controllers.locationOfGoods.AdditionalIdentifierController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /location-of-goods/change-additional-identifier/:departureId       controllers.locationOfGoods.AdditionalIdentifierController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /location-of-goods/eori-tin/:departureId                           controllers.locationOfGoods.EoriController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /location-of-goods/eori-tin/:departureId                           controllers.locationOfGoods.EoriController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /location-of-goods/change-eori-tin/:departureId                    controllers.locationOfGoods.EoriController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /location-of-goods/change-eori-tin/:departureId                    controllers.locationOfGoods.EoriController.onSubmit(departureId: String, mode: Mode = CheckMode)

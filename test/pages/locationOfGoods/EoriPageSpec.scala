@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package services
+package pages.locationOfGoods
 
-import connectors.ReferenceDataConnector
-import uk.gov.hmrc.http.HeaderCarrier
+import pages.EoriPage
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+class EoriPageSpec extends PageBehaviours {
 
-class UnLocodeService @Inject() (
-  referenceDataConnector: ReferenceDataConnector
-)(implicit ec: ExecutionContext) {
+  "EoriPage" - {
 
-  def doesUnLocodeExist(unLocode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
-    referenceDataConnector
-      .getUnLocode(unLocode)
-      .map(_.nonEmpty)
+    beRetrievable[String](EoriPage)
+
+    beSettable[String](EoriPage)
+
+    beRemovable[String](EoriPage)
+  }
 }

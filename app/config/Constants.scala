@@ -47,4 +47,6 @@ object Constants {
   val ApprovedPlace      = "C"
   val Other              = "D"
 
+  lazy val maxEoriNumberLength: Int = 17
+
 }

@@ -16,8 +16,8 @@
 
 package models.reference
 
-import play.api.libs.json.{Json, OFormat}
 import models.Selectable
+import play.api.libs.json.{Json, OFormat}
 
 case class CustomsOffice(id: String, name: String, phoneNumber: Option[String]) extends Selectable {
   override def toString: String = s"$name ($id)"
