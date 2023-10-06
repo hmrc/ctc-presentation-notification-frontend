@@ -17,6 +17,8 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
+import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import forms.locationOfGoods.PostalCodeFormProvider
 import generators.Generators
 import models.reference.Country
@@ -44,7 +46,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
   private val form         = formProvider("locationOfGoods.postalCode", countryList)
 
   private val mode                 = NormalMode
-  private lazy val postalCodeRoute = routes.PostalCodeController.onPageLoad(departureId, mode).url
+  private lazy val postalCodeRoute = locationOfGoodsRoutes.PostalCodeController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -149,7 +151,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -167,7 +169,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

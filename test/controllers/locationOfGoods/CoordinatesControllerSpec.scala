@@ -17,6 +17,8 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
+import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import forms.locationOfGoods.CoordinatesFormProvider
 import generators.Generators
 import models.NormalMode
@@ -37,7 +39,7 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val form         = formProvider("locationOfGoods.coordinates")
 
   private val mode                  = NormalMode
-  private lazy val coordinatesRoute = routes.CoordinatesController.onPageLoad(departureId, mode).url
+  private lazy val coordinatesRoute = locationOfGoodsRoutes.CoordinatesController.onPageLoad(departureId, mode).url
 
   "Coordinates Controller" - {
 
@@ -128,7 +130,7 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -145,7 +147,7 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

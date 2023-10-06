@@ -17,10 +17,12 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
+import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import forms.EoriNumberFormProvider
 import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EoriPage
+import pages.locationOfGoods.EoriPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,7 +33,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
   private val formProvider                  = new EoriNumberFormProvider()
   private val form                          = formProvider("locationOfGoods.eori")
   private val mode                          = NormalMode
-  private lazy val locationOfGoodsEoriRoute = routes.EoriController.onPageLoad(departureId, mode).url
+  private lazy val locationOfGoodsEoriRoute = locationOfGoodsRoutes.EoriController.onPageLoad(departureId, mode).url
 
   private lazy val validAnswer = eoriNumber.value
 
@@ -123,7 +125,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -138,7 +140,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
     }
   }

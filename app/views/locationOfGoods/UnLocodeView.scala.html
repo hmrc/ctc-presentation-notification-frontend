@@ -35,8 +35,7 @@ button: Button
 
 @mainTemplate(
    title = messages("locationOfGoods.unLocode.title"),
-   showBackLink = true,
-   lrn = LocalReferenceNumber(lrn)
+   showBackLink = true
 ) {
 
    @formHelper(action = routes.UnLocodeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {

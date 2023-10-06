@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package pages
+package views
 
-import controllers.locationOfGoods.routes
-import models.reference.Country
-import models.{Mode, UserAnswers}
-import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.twirl.api.HtmlFormat
+import views.behaviours.ViewBehaviours
+import views.html.UnauthorisedView
 
-case object CountryPage extends QuestionPage[Country] {
+class UnauthorisedViewSpec extends ViewBehaviours {
 
-  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
+  override def view: HtmlFormat.Appendable =
+    app.injector.instanceOf[UnauthorisedView].apply()(fakeRequest, messages)
 
-  override def toString: String = "country"
+  override val prefix: String = "unauthorised"
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.CountryController.onPageLoad(departureId, mode))
+  behave like pageWithoutBackLink()
 
+  behave like pageWithHeading()
+
+  behave like pageWithContent("p", "You must have an account with an activated EORI number.")
 }

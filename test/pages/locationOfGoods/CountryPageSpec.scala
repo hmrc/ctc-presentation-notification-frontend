@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages
+package pages.locationOfGoods
 
 import models.reference.Country
 import pages.behaviours.PageBehaviours

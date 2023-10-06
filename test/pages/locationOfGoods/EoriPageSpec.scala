@@ -16,7 +16,6 @@
 
 package pages.locationOfGoods
 
-import pages.EoriPage
 import pages.behaviours.PageBehaviours
 
 class EoriPageSpec extends PageBehaviours {

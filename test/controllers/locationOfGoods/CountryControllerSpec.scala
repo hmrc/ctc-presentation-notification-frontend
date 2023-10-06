@@ -17,18 +17,20 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
+import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.CountryPage
+import pages.locationOfGoods.CountryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CountriesService
-import views.html.CountryView
+import views.html.locationOfGoods.CountryView
 
 import scala.concurrent.Future
 
@@ -42,7 +44,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val form         = formProvider("locationOfGoods.country", countryList)
   private val mode         = NormalMode
 
-  private lazy val countryRoute = routes.CountryController.onPageLoad(departureId, mode).url
+  private lazy val countryRoute = locationOfGoodsRoutes.CountryController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -131,7 +133,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -145,7 +147,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

@@ -37,8 +37,7 @@
 
 @mainTemplate(
     title = messages("locationOfGoods.postalCode.title"),
-    showBackLink = true,
-    lrn = LocalReferenceNumber(lrn)
+    showBackLink = true
 ) {
 
    @formHelper(action = routes.PostalCodeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {

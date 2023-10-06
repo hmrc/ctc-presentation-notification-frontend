@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.{RenderConfig, FrontendAppConfig}
+@import config.{FrontendAppConfig, RenderConfig}
+@import resources._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.{Footer, FooterItem, Meta}
-@import resources._
-@import models.LocalReferenceNumber
+@import views.utils.ViewUtils._
 
 @this(
     renderConfig: RenderConfig,
@@ -39,7 +38,7 @@
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
     showBackLink: Boolean = false,
-    lrn: LocalReferenceNumber
+    departureId: Option[String] = None
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
@@ -47,8 +46,8 @@
         @hmrcTimeoutDialog(TimeoutDialog(
             timeout = Some(renderConfig.timeoutSeconds),
             countdown = Some(renderConfig.countdownSeconds),
-            keepAliveUrl = Some(appConfig.keepAliveUrl(lrn)),
-            signOutUrl = Some(appConfig.signOutUrl(lrn))
+            keepAliveUrl = Some(routes.KeepAliveController.keepAlive(departureId).url),
+            signOutUrl = Some(appConfig.signOutUrl)
         ))
     }
 
@@ -61,14 +60,15 @@
     @mainContent
     @hmrcReportTechnicalIssueHelper()
 }
-
 @hmrcLayout(
     pageTitle = Some(breadCrumbTitle(title, mainContent)),
-    additionalHeadBlock = Some(headScripts),
+    additionalHeadBlock = Some(hmrcInternalHead(
+        headBlock = Some(headScripts)
+    )),
     userResearchBannerUrl = if (renderConfig.showUserResearchBanner) Some(renderConfig.userResearchUrl) else None,
     serviceName = Some(messages("site.service_name")),
     serviceUrl = Some(appConfig.serviceUrl),
-    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl(lrn)) else None,
+    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None,
     phaseBanner = Some(standardBetaBanner(url = renderConfig.feedbackUrl)),
     backLinkUrl = if (showBackLink) Some("#") else None, // This is overridden in ctc.js
     additionalScriptsBlock = Some(javascripts())

@@ -17,6 +17,8 @@
 package controllers.locationOfGoods.contact
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
+import controllers.locationOfGoods.contact.{routes => contactRoutes}
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +37,7 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val contactName               = "Contact"
   private val form                      = formProvider("locationOfGoods.contactPhoneNumber", contactName)
   private val mode                      = NormalMode
-  private lazy val telephoneNumberRoute = routes.PhoneNumberController.onPageLoad(departureId, mode).url
+  private lazy val telephoneNumberRoute = contactRoutes.PhoneNumberController.onPageLoad(departureId, mode).url
   private val validAnswer: String       = "+123123"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -130,7 +132,7 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -144,7 +146,7 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

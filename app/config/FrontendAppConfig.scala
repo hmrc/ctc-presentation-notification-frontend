@@ -16,7 +16,6 @@
 
 package config
 
-import models.LocalReferenceNumber
 import play.api.Configuration
 
 import javax.inject.{Inject, Singleton}
@@ -27,9 +26,12 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   val loginUrl: String         = config.get[String]("urls.login")
   val loginContinueUrl: String = config.get[String]("urls.loginContinue")
 
+  lazy val contactHost: String = config.get[String]("contact-frontend.host")
+
   lazy val commonTransitConventionTradersUrl: String = config.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl
 
   val eccEnrolmentSplashPage: String = config.get[String]("urls.eccEnrolmentSplashPage")
+  lazy val nctsHelpdeskUrl: String   = config.get[String]("urls.nctsHelpdesk")
 
   lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customs-reference-data")
 
@@ -41,22 +43,11 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
 
   lazy val enrolmentProxyUrl: String = config.get[Service]("microservice.services.enrolment-store-proxy").fullServiceUrl
 
-  val departureHubUrl: String = config.get[String]("urls.manageTransitMovementsDepartureFrontend") // TODO: Cleanup usage of departureHub URL
-
-  val unauthorisedUrl: String                = s"$departureHubUrl/error/cannot-use-service-no-eori"
-  val unauthorisedWithGroupAccessUrl: String = s"$departureHubUrl/unauthorised-group-access"
-
-  val notFoundUrl: String              = s"$departureHubUrl/not-found"
-  val technicalDifficultiesUrl: String = s"$departureHubUrl/technical-difficulties"
-  val sessionExpiredUrl: String        = s"$departureHubUrl/this-service-has-been-reset"
-
   val hubUrl: String     = config.get[String]("urls.manageTransitMovementsFrontend")
   val serviceUrl: String = s"$hubUrl/what-do-you-want-to-do"
 
   lazy val cacheTtl: Int           = config.get[Int]("mongodb.timeToLiveInSeconds")
   lazy val replaceIndexes: Boolean = config.get[Boolean]("feature-flags.replace-indexes")
 
-  def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive" // TODO: Build KeepAliveCOntroller for this service
-
-  def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
+  val signOutUrl: String = config.get[String]("urls.logoutContinue") + config.get[String]("urls.feedback")
 }

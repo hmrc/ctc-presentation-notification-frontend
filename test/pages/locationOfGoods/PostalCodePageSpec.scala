@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.locationOfGoods
 
-import models.{Mode, UserAnswers}
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.PostalCodeAddress
+import pages.behaviours.PageBehaviours
 
-case object EoriPage extends QuestionPage[String] {
+class PostalCodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  "PostalCodePage" - {
 
-  override def toString: String = "eori"
+    beRetrievable[PostalCodeAddress](PostalCodePage)
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
+    beSettable[PostalCodeAddress](PostalCodePage)
 
+    beRemovable[PostalCodeAddress](PostalCodePage)
+  }
 }

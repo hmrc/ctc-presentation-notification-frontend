@@ -22,7 +22,7 @@ import models._
 import navigation.Navigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

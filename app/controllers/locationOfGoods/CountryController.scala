@@ -22,13 +22,14 @@ import models.Mode
 import models.reference.Country
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.{CountryPage, QuestionPage}
+import pages.QuestionPage
+import pages.locationOfGoods.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.CountryView
+import views.html.locationOfGoods.CountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

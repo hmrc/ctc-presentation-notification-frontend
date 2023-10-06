@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.locationOfGoods
 
 import forms.SelectableFormProvider
 import forms.behaviours.InputSelectViewBehaviours
@@ -23,7 +23,7 @@ import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.html.CountryView
+import views.html.locationOfGoods.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 

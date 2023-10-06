@@ -17,6 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
+import controllers.routes
 import models.UserAnswers
 import models.requests._
 import org.scalacheck.Arbitrary.arbitrary
@@ -85,7 +86,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
               r =>
                 val result = Future.successful(r.left.value)
                 status(result) mustEqual SEE_OTHER
-                redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+                redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
             }
           }
         }
@@ -160,7 +161,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
               r =>
                 val result = Future.successful(r.left.value)
                 status(result) mustEqual SEE_OTHER
-                redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+                redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
             }
           }
         }
@@ -185,7 +186,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
                 r =>
                   val result = Future.successful(r.left.value)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+                  redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
               }
           }
         }
@@ -234,7 +235,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
                 r =>
                   val result = Future.successful(r.left.value)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+                  redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
               }
           }
         }

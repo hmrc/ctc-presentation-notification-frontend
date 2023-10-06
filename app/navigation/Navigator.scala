@@ -19,7 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
-import pages.locationOfGoods.CoordinatesPage
+import pages.locationOfGoods.{CoordinatesPage, EoriPage, IdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.mvc.Call
 
 @Singleton

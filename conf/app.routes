@@ -9,8 +9,18 @@ GET        /assets/*file                                                      co
 GET        /complete-declaration/more-information/:departureId                controllers.MoreInformationController.onPageLoad(departureId: String)
 GET        /complete-declaration/check-information/:departureId               controllers.CheckInformationController.onPageLoad(departureId: String)
 
+GET        /keep-alive                                                        controllers.KeepAliveController.keepAlive(departureId: Option[String] = None)
+GET        /:departureId/keep-alive                                           controllers.KeepAliveController.keepAlive(departureId: Option[String])
+
+GET        /error/bad-request                                                 controllers.ErrorController.badRequest()
+GET        /error/not-found                                                   controllers.ErrorController.notFound()
+GET        /error/technical-difficulties                                      controllers.ErrorController.technicalDifficulties()
+GET        /error/internal-server-error                                       controllers.ErrorController.internalServerError()
+
+GET        /this-service-has-been-reset                                       controllers.SessionExpiredController.onPageLoad()
+POST       /this-service-has-been-reset                                       controllers.SessionExpiredController.onSubmit()
+
+GET        /error/cannot-use-service-no-eori                                  controllers.UnauthorisedController.onPageLoad()
+GET        /unauthorised-group-access                                         controllers.UnauthorisedWithGroupAccessController.onPageLoad()
+
 GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
-
-
-
-

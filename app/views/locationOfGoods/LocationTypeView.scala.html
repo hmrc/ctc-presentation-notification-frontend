@@ -31,8 +31,7 @@
 
 @mainTemplate(
     title = messages("locationOfGoods.locationType.title"),
-    showBackLink = true,
-    lrn = LocalReferenceNumber(lrn)
+    showBackLink = true
 ) {
 
     @formHelper(action = routes.LocationTypeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
