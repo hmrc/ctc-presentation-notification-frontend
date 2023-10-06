@@ -14,34 +14,28 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading, HeadingCaption}
-@import models.LocalReferenceNumber
-@import play.api.mvc.Call
+@import views.html.components.{Button, Heading}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
-    button: Button,
-    headingCaption: HeadingCaption
+    button: Button
 )
 
-@(lrn: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("moreInformation.title"),
-    showBackLink = true
+    title = messages("session_expired.title"),
+    showBackLink = false,
+    canSignOut = false
 ) {
 
-    @headingCaption(lrn)
-    @heading(
-        heading = messages("moreInformation.heading")
-    )
+    @formHelper(action = routes.SessionExpiredController.onSubmit(), Symbol("autoComplete") -> "off") {
+        @heading(messages("session_expired.heading"))
 
-    <p class="govuk-body">@messages("moreInformation.paragraph1")</p>
-    <p class="govuk-body">@messages("moreInformation.paragraph2")</p>
+        <p class="govuk-body">@messages("session_expired.guidance")</p>
 
-    @formHelper(action = Call("GET", "#"), Symbol("autoComplete") -> "off") {
-        @button(attributes = Map("id" -> "submit"))
+        @button(messageKey = "session_expired.button", attributes = Map("id" -> "submit"))
     }
 }

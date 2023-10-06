@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.locationOfGoods
 
 import config.Constants._
 import forms.EnumerableFormProvider
@@ -23,7 +23,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.EnumerableViewBehaviours
-import views.html.IdentificationView
+import views.html.locationOfGoods.IdentificationView
 
 class IdentificationViewSpec extends EnumerableViewBehaviours[LocationOfGoodsIdentification] {
 

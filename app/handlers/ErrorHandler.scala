@@ -16,7 +16,6 @@
 
 package handlers
 
-import config.FrontendAppConfig
 import play.api.http.HttpErrorHandler
 import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,8 +30,7 @@ import scala.concurrent.Future
 // NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
 class ErrorHandler @Inject() (
-  val messagesApi: MessagesApi,
-  config: FrontendAppConfig
+  val messagesApi: MessagesApi
 ) extends HttpErrorHandler
     with I18nSupport
     with Logging {
@@ -40,21 +38,22 @@ class ErrorHandler @Inject() (
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] =
     statusCode match {
       case NOT_FOUND =>
-        Future.successful(Redirect(config.notFoundUrl))
+        Future.successful(Redirect(controllers.routes.ErrorController.notFound()))
       case result if isClientError(result) =>
-        Future.successful(Redirect(s"${config.departureHubUrl}/bad-request"))
+        Future.successful(Redirect(controllers.routes.ErrorController.badRequest()))
       case _ =>
-        Future.successful(Redirect(config.technicalDifficultiesUrl))
+        Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
     }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+
     logError(request, exception)
 
     exception match {
       case ApplicationException(result, _) =>
         Future.successful(result)
       case _ =>
-        Future.successful(Redirect(s"${config.departureHubUrl}/internal-server-error"))
+        Future.successful(Redirect(controllers.routes.ErrorController.internalServerError()))
     }
   }
 

@@ -17,6 +17,8 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
+import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import forms.DynamicAddressFormProvider
 import generators.Generators
 import models.reference.Country
@@ -24,8 +26,7 @@ import models.{DynamicAddress, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.CountryPage
-import pages.locationOfGoods.AddressPage
+import pages.locationOfGoods.{AddressPage, CountryPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -44,7 +45,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private def form(isPostalCodeRequired: Boolean) = formProvider("locationOfGoods.address", isPostalCodeRequired)
 
   private val mode              = NormalMode
-  private lazy val addressRoute = routes.AddressController.onPageLoad(departureId, mode).url
+  private lazy val addressRoute = locationOfGoodsRoutes.AddressController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -253,7 +254,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -271,7 +272,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

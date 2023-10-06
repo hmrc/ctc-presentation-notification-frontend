@@ -16,7 +16,7 @@ lazy val root = Project(appName, file("."))
         majorVersion := 0,
         scalaVersion := "2.13.8",
         name := appName,
-        RoutesKeys.routesImport ++= Seq("models._"),
+        RoutesKeys.routesImport ++= Seq("models._", "models.OptionBinder._"),
         TwirlKeys.templateImports ++= Seq(
               "play.twirl.api.HtmlFormat",
               "play.twirl.api.HtmlFormat._",

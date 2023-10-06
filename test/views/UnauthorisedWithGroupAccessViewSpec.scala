@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package views
 
-import pages.behaviours.PageBehaviours
+import play.twirl.api.HtmlFormat
+import views.behaviours.ViewBehaviours
+import views.html.UnauthorisedWithGroupAccessView
 
-class EoriPageSpec extends PageBehaviours {
+class UnauthorisedWithGroupAccessViewSpec extends ViewBehaviours {
 
-  "EoriPage" - {
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[UnauthorisedWithGroupAccessView].apply()(fakeRequest, messages)
 
-    beRetrievable[String](EoriPage)
+  override val prefix: String = "unauthorisedWithGroupAccess"
 
-    beSettable[String](EoriPage)
+  behave like pageWithBackLink()
 
-    beRemovable[String](EoriPage)
-  }
+  behave like pageWithHeading()
+
+  behave like pageWithContent("p", "If you already have access, you must contact your group administrator to update your access rights.")
+
 }

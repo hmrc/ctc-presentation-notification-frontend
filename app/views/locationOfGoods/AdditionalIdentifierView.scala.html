@@ -30,8 +30,7 @@
 
 @mainTemplate(
     title = messages("locationOfGoods.additionalIdentifier.title"),
-    showBackLink = true,
-    lrn = LocalReferenceNumber(lrn)
+    showBackLink = true
 ) {
 
     @formHelper(action = routes.AdditionalIdentifierController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {

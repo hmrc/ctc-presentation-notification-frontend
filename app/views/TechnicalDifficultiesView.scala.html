@@ -14,34 +14,28 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading, HeadingCaption}
-@import models.LocalReferenceNumber
-@import play.api.mvc.Call
+@import views.html.components.Heading
+@import config.FrontendAppConfig
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
     heading: Heading,
-    button: Button,
-    headingCaption: HeadingCaption
+    config: FrontendAppConfig
 )
 
-@(lrn: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("moreInformation.title"),
+    title = messages("technicalDifficulties.title"),
     showBackLink = true
 ) {
 
-    @headingCaption(lrn)
-    @heading(
-        heading = messages("moreInformation.heading")
-    )
+    @heading(messages("technicalDifficulties.heading"))
 
-    <p class="govuk-body">@messages("moreInformation.paragraph1")</p>
-    <p class="govuk-body">@messages("moreInformation.paragraph2")</p>
+    <p class="govuk-body">@messages("technicalDifficulties.tryAgain")</p>
 
-    @formHelper(action = Call("GET", "#"), Symbol("autoComplete") -> "off") {
-        @button(attributes = Map("id" -> "submit"))
-    }
+    <p class="govuk-body">@messages("technicalDifficulties.contact")
+        <a class="govuk-link" rel="noreferrer noopener" href=@config.contactHost target="_blank" id="contact">@messages("technicalDifficulties.contact.link")</a>.
+    </p>
+
 }

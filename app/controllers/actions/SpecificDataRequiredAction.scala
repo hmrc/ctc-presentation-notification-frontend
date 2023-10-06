@@ -84,8 +84,7 @@ trait SpecificDataRequiredActionProvider {
 
 trait SpecificDataRequiredAction extends Logging {
 
-  def defaultRedirect(implicit config: FrontendAppConfig): Result =
-    Redirect(config.sessionExpiredUrl)
+  lazy val defaultRedirect: Result = Redirect(controllers.routes.SessionExpiredController.onPageLoad())
 
   def getPage[T, R](userAnswers: UserAnswers, page: Gettable[T])(block: T => R)(implicit rds: Reads[T], config: FrontendAppConfig): Future[Either[Result, R]] =
     Future.successful {

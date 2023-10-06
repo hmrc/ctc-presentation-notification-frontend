@@ -22,13 +22,14 @@ import models.requests.SpecificDataRequestProvider1
 import models.{LocationOfGoodsIdentification, LocationType, Mode}
 import navigation.Navigator
 import pages._
+import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.LocationOfGoodsIdentificationTypeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.IdentificationView
+import views.html.locationOfGoods.IdentificationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

@@ -151,6 +151,26 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
         userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
       }
+
+      "must redirect to the technical difficulties route when there is an issue retrieving the data" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, indexRoute)
+
+        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(
+          None
+        )
+
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+      }
     }
   }
 }

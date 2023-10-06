@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package controllers
 
-import pages.behaviours.PageBehaviours
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.UnauthorisedWithGroupAccessView
 
-class EoriPageSpec extends PageBehaviours {
+import javax.inject.Inject
 
-  "EoriPage" - {
+class UnauthorisedWithGroupAccessController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  view: UnauthorisedWithGroupAccessView
+) extends FrontendBaseController
+    with I18nSupport {
 
-    beRetrievable[String](EoriPage)
-
-    beSettable[String](EoriPage)
-
-    beRemovable[String](EoriPage)
+  def onPageLoad(): Action[AnyContent] = Action {
+    implicit request =>
+      Ok(view())
   }
 }

@@ -22,8 +22,8 @@ import models.reference.Country
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{DynamicAddress, Mode}
 import navigation.Navigator
-import pages.locationOfGoods.AddressPage
-import pages.{CountryPage, QuestionPage}
+import pages.locationOfGoods.{AddressPage, CountryPage}
+import pages.QuestionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

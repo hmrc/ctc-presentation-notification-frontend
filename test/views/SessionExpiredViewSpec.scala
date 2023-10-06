@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-package pages
+package views
 
-import models.{Mode, UserAnswers}
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.twirl.api.HtmlFormat
+import views.behaviours.ViewBehaviours
+import views.html.SessionExpiredView
 
-case object UnLocodePage extends QuestionPage[String] {
+class SessionExpiredViewSpec extends ViewBehaviours {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[SessionExpiredView].apply()(fakeRequest, messages)
 
-  override def toString: String = "unLocode"
+  override val prefix: String = "session_expired"
 
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
+  override val hasSignOutLink: Boolean = false
+
+  behave like pageWithTitle()
+
+  behave like pageWithoutBackLink()
+
+  behave like pageWithHeading()
+
+  behave like pageWithContent("p", "We did not save your answers.")
+
+  behave like pageWithSubmitButton("Sign in")
 }

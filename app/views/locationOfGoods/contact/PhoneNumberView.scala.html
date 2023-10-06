@@ -31,8 +31,7 @@
 
 @mainTemplate(
     title = messages("locationOfGoods.contactPhoneNumber.title"),
-    showBackLink = true,
-    lrn = LocalReferenceNumber(lrn)
+    showBackLink = true
 ) {
 
     @formHelper(action = routes.PhoneNumberController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {

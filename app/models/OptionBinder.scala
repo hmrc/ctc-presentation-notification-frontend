@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models
 
-import pages.behaviours.PageBehaviours
+import play.api.mvc._
 
-class EoriPageSpec extends PageBehaviours {
+object OptionBinder {
 
-  "EoriPage" - {
+  implicit def optionBindable[T: PathBindable]: PathBindable[Option[T]] = new PathBindable[Option[T]] {
 
-    beRetrievable[String](EoriPage)
+    def bind(key: String, value: String): Either[String, Option[T]] =
+      implicitly[PathBindable[T]]
+        .bind(key, value)
+        .fold(
+          left => Left(left),
+          right => Right(Some(right))
+        )
 
-    beSettable[String](EoriPage)
-
-    beRemovable[String](EoriPage)
+    def unbind(key: String, value: Option[T]): String = value map (_.toString) getOrElse ""
   }
 }

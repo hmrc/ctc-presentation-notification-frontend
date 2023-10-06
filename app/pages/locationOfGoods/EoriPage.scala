@@ -16,16 +16,19 @@
 
 package pages.locationOfGoods
 
-import pages.behaviours.PageBehaviours
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.locationOfGoods.LocationOfGoodsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class EoriPageSpec extends PageBehaviours {
+case object EoriPage extends QuestionPage[String] {
 
-  "EoriPage" - {
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-    beRetrievable[String](EoriPage)
+  override def toString: String = "eori"
 
-    beSettable[String](EoriPage)
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
 
-    beRemovable[String](EoriPage)
-  }
 }
