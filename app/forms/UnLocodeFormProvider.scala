@@ -28,8 +28,7 @@ class UnLocodeFormProvider extends Mappings {
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(exactUnLocodeLength, s"$prefix.error.length"),
-            minLength(exactUnLocodeLength, s"$prefix.error.length"),
+            exactLength(exactUnLocodeLength, s"$prefix.error.length"),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
