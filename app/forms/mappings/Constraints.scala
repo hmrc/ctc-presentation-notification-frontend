@@ -46,6 +46,9 @@ trait Constraints {
   protected def minLength(minimum: Int, errorKey: String, args: Seq[Any], trim: Boolean = false): Constraint[String] =
     lengthConstraint(errorKey, x => (if (trim) x.replaceAll("\\s", "").length else x.length) >= minimum, args)
 
+  protected def exactLength(exact: Int, errorKey: String): Constraint[String] =
+    lengthConstraint(errorKey, _.length == exact, Seq(exact))
+
   private def lengthConstraint(errorKey: String, predicate: String => Boolean, args: Seq[Any]): Constraint[String] =
     Constraint {
       case str if predicate(str) =>

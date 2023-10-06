@@ -16,13 +16,12 @@
 
 package pages
 
-import models.reference.UnLocode
 import models.{Mode, UserAnswers}
 import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnLocodePage extends QuestionPage[UnLocode] {
+case object UnLocodePage extends QuestionPage[String] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
 

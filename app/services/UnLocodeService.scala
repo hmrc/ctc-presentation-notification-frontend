@@ -17,8 +17,6 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.SelectableList
-import models.reference.UnLocode
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,11 +26,8 @@ class UnLocodeService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  def getUnLocodeList(implicit hc: HeaderCarrier): Future[SelectableList[UnLocode]] =
+  def doesUnLocodeExist(unLocode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
-      .getUnLocodes()
-      .map(
-        unLocodes => SelectableList(unLocodes.sortBy(_.name.toLowerCase))
-      )
-
+      .getUnLocode(unLocode)
+      .map(_.nonEmpty)
 }
