@@ -59,8 +59,8 @@ checkInformation.paragraph2 = Check your answers and confirm if these details ar
 
 locationOfGoods.caption = Location of goods
 
-locationOfGoods.locationType.title = Which type of location is it?
-locationOfGoods.locationType.heading = Which type of location is it?
+locationOfGoods.locationType.title = Which type of location are the goods in?
+locationOfGoods.locationType.heading = Which type of location are the goods in?
 locationOfGoods.locationType.checkYourAnswersLabel = Location type
 locationOfGoods.locationType.change.hidden = location type
 locationOfGoods.locationType.error.required = Select which type of location it is
