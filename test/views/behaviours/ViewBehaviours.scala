@@ -156,6 +156,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   private def pageWithButton(doc: Document, expectedText: String)(additionalAssertions: Element => Assertion*): Unit =
     s"must render $expectedText button" in {
       val button = doc.getElementsByClass("govuk-button").toList.find(_.text() == expectedText).value
+      println(button)
       additionalAssertions.map(_(button))
     }
 
