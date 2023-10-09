@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages.sections.locationOfGoods
 
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class UnLocodePageSpec extends PageBehaviours {
+case object LocationOfGoodsIdentifierSection extends Section[JsObject] {
 
-  "UnLocodePage" - {
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
-    beRetrievable[String](UnLocodePage)
-
-    beSettable[String](UnLocodePage)
-
-    beRemovable[String](UnLocodePage)
-  }
+  override def toString: String = "identifier"
 }

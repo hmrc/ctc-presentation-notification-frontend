@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import models.UserAnswers
+import pages.CustomsOfficeOfDeparturePage
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,8 +49,8 @@ class IndexController @Inject() (
             lrn =>
               sessionRepository
                 .set(
-                  request.userAnswers.getOrElse(
-                    UserAnswers(
+                  request.userAnswers.getOrElse {
+                    val userAnswers = UserAnswers(
                       departureId,
                       request.eoriNumber,
                       lrn.value,
@@ -57,7 +58,8 @@ class IndexController @Inject() (
                       timeMachine.now(),
                       departureData.data
                     )
-                  )
+                    userAnswers.set(CustomsOfficeOfDeparturePage, departureData.data.CustomsOfficeOfDeparture).getOrElse(userAnswers)
+                  }
                 )
                 .map {
                   _ =>

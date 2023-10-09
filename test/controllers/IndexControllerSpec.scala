@@ -17,7 +17,7 @@
 package controllers
 
 import base.TestMessageData.{incompleteJsonValue, jsonValue}
-import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.UserAnswers
 import models.messages.{Data, MessageData}
@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsObject
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.DepartureMessageService
@@ -72,7 +72,11 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         redirectLocation(result).value mustEqual withCompleteDataNextPage
 
-        val expectedData = JsObject.empty
+        val expectedData = Json.parse("""
+            |{
+            |  "customsOfficeOfDeparture" : "GB000011"
+            |}
+            |""".stripMargin)
 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
 

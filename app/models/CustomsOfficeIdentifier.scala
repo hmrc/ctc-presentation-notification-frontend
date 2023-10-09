@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package models
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Format, Json}
 
-class UnLocodePageSpec extends PageBehaviours {
+case class CustomsOfficeIdentifier(`type`: String, description: String) extends Radioable[CustomsOfficeIdentifier] {
+  override val messageKeyPrefix: String = LocationType.messageKeyPrefix
+  override def toString: String         = s"$description"
 
-  "UnLocodePage" - {
+  override val code: String = `type`
+}
 
-    beRetrievable[String](UnLocodePage)
+object CustomsOfficeIdentifier extends DynamicEnumerableType[CustomsOfficeIdentifier] {
+  implicit val format: Format[CustomsOfficeIdentifier] = Json.format[CustomsOfficeIdentifier]
 
-    beSettable[String](UnLocodePage)
-
-    beRemovable[String](UnLocodePage)
-  }
+  val messageKeyPrefix = "locationOfGoods.customsOfficeIdentifier"
 }

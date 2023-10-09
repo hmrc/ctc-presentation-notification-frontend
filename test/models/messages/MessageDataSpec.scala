@@ -16,22 +16,15 @@
 
 package models.messages
 
-import base.TestMessageData
 import base.TestMessageData.{incompleteJsonValue, jsonValue, messageData}
 import models.messages.AuthorisationType.{C521, Other}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import play.api.libs.json.Json
 
 class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues {
 
   "MessageDataSpec" - {
-
-    "must serialize" in {
-      val ie015Data = Data(messageData)
-      Json.toJsObject(ie015Data.data) mustBe jsonValue
-    }
 
     "must deserialize" in {
       jsonValue.as[MessageData] mustBe messageData

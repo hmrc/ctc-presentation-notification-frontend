@@ -17,7 +17,7 @@
 package models.messages
 
 import models.departureP5.DepartureMessageType
-import play.api.libs.json.{__, Json, OWrites, Reads}
+import play.api.libs.json.{__, Reads}
 
 case class Data(data: MessageData)
 
@@ -26,5 +26,4 @@ object Data {
   def reads(messageType: DepartureMessageType): Reads[Data] =
     (__ \ "body" \ s"n1:${messageType.dataPath}").read[MessageData].map(Data.apply)
 
-  implicit val writes: OWrites[Data] = Json.writes[Data]
 }

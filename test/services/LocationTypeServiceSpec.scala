@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.{LocationType, ProcedureType}
+import models.LocationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach

@@ -17,7 +17,7 @@
 package models.messages
 
 import base.TestMessageData.{jsonValue, messageData}
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
 import models.departureP5.DepartureMessageType
 import play.api.libs.json.Json
 

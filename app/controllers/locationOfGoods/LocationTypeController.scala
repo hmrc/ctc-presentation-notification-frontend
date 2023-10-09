@@ -18,7 +18,6 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.ProcedureType.Normal
 import models.requests.MandatoryDataRequest
 import models.{LocationType, Mode}
 import navigation.Navigator

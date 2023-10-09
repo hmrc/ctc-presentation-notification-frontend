@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
 
-class UnLocodePageSpec extends PageBehaviours {
+case object CustomsOfficeOfDeparturePage extends QuestionPage[String] {
 
-  "UnLocodePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](UnLocodePage)
+  override def toString: String = "customsOfficeOfDeparture"
 
-    beSettable[String](UnLocodePage)
-
-    beRemovable[String](UnLocodePage)
-  }
 }

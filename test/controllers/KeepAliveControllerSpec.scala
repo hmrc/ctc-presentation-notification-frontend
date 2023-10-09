@@ -17,7 +17,6 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.LocalReferenceNumber
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import play.api.test.FakeRequest

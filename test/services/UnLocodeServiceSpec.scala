@@ -19,7 +19,6 @@ package services
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import models.reference.UnLocode
-import models.SelectableList
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
