@@ -23,15 +23,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CheckInformationView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CheckInformationView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {

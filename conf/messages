@@ -12,6 +12,32 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+unauthorised.title = You cannot use this service
+unauthorised.heading = You cannot use this service
+unauthorised.paragraph1 = You must have an account with an activated EORI number.
+
+unauthorisedWithGroupAccess.title = You cannot use this service
+unauthorisedWithGroupAccess.heading = You cannot use this service
+unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
+
+session_expired.title = For your security, we signed you out
+session_expired.heading = For your security, we signed you out
+session_expired.guidance = We did not save your answers.
+session_expired.button = Sign in
+
+pageNotFound.title = Page not found
+pageNotFound.heading = Page not found
+pageNotFound.paragraph1 = If you typed the web address, check it is correct.
+pageNotFound.paragraph2 = If you pasted the web address, check you copied the entire address.
+pageNotFound.paragraph3Start = If the web address is correct or you selected a link or button,
+pageNotFound.contactLink = contact the New Computerised Transit System(NCTS) helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
+
+technicalDifficulties.title = Sorry, there is a problem with the service
+technicalDifficulties.heading = Sorry, there is a problem with the service
+technicalDifficulties.tryAgain = Try again later.
+technicalDifficulties.contact = You can
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).
+
 address.postalCode = postal code
 address.country = country
 address.numberAndStreet = number and street name
@@ -31,6 +57,8 @@ checkInformation.heading = Confirmation needed to complete declaration
 checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
 checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
 
+locationOfGoods.caption = Location of goods
+
 locationOfGoods.locationType.title = Which type of location is it?
 locationOfGoods.locationType.heading = Which type of location is it?
 locationOfGoods.locationType.checkYourAnswersLabel = Location type
@@ -46,6 +74,15 @@ locationOfGoods.identification.p1 = This needs to be precise enough for Customs 
 locationOfGoods.identification.checkYourAnswersLabel = Identifier type for the location of goods
 locationOfGoods.identification.change.hidden = identifier type for the location of goods
 locationOfGoods.identification.error.required = Select how you want to identify the location of goods
+
+locationOfGoods.eori.title = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
+locationOfGoods.eori.heading = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
+locationOfGoods.eori.checkYourAnswersLabel = EORI number or TIN for the location of goods
+locationOfGoods.eori.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
+locationOfGoods.eori.error.required = Enter the EORI number or Trader Identification Number (TIN) for the location of goods
+locationOfGoods.eori.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
+locationOfGoods.eori.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
+locationOfGoods.eori.change.hidden = the EORI number or TIN for the location of goods
 
 locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
 locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?
@@ -64,9 +101,9 @@ locationOfGoods.authorisationNumber.title = What is the authorisation number for
 locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
 locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
 locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
-locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
-locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
-locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
+locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods
+locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less
+locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9
 locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.country.title = In which country is the location of goods?
@@ -79,20 +116,14 @@ checkInformation.heading = Confirmation needed to complete declaration
 checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
 checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
 
-locationOfGoods.authorisationNumber.title = What is the authorisation number for the location of goods?
-locationOfGoods.authorisationNumber.heading = What is the authorisation number for the location of goods?
-locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
-locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
-locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods.
-locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less.
-locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9.
-locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-
 locationOfGoods.unLocode.title = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
 locationOfGoods.unLocode.hint = Enter the code, like DEBER or ESMAD.
 locationOfGoods.unLocode.error.required = Enter the UN/LOCODE for the location of goods
+locationOfGoods.unLocode.error.length = The UN/LOCODE must be 5 characters long
+locationOfGoods.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
+locationOfGoods.unLocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
 
 locationOfGoods.postalCode.title = What is the address for the location of goods?
 locationOfGoods.postalCode.heading = What is the address for the location of goods?
@@ -106,22 +137,6 @@ locationOfGoods.postalCode.error.postalCode.invalid = The postal code must only 
 locationOfGoods.postalCode.error.length = The {0} must be {1} characters or less
 locationOfGoods.postalCode.error.required = Enter the {0} for the location of goods
 
-transitOperation.addArrivalDateYesNo.title = Do you want to add the arrival date at the office of destination?
-transitOperation.addArrivalDateYesNo.heading = Do you want to add the arrival date at the office of destination?
-transitOperation.addArrivalDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
-transitOperation.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
-transitOperation.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
-transitOperation.addArrivalDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
-
-locationOfGoods.addContact.title = Do you want to add a contact for the location of goods?
-locationOfGoods.addContact.heading = Do you want to add a contact for the location of goods?
-locationOfGoods.addContact.paragraph = This is additional contact information for if Customs have any queries.
-locationOfGoods.addContact.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
-locationOfGoods.addContact.error.required = Select yes if you want to add a contact for the location of goods
-locationOfGoods.addContact.change.hidden = if you want to add a contact for the location of goods
-
-
-
 locationOfGoods.address.title = What is the address for the location of goods?
 locationOfGoods.address.heading = What is the address for the location of goods?
 locationOfGoods.address.numberAndStreet = Number and street name
@@ -134,3 +149,56 @@ locationOfGoods.address.error.postalCode.invalid = The postal code must only inc
 locationOfGoods.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 locationOfGoods.address.error.required = Enter the {0} for the location of goods
 locationOfGoods.address.error.length = The {0} must be {1} characters or less
+
+locationOfGoods.contactPhoneNumber.title = What is the phone number for the location of goods` contact?
+locationOfGoods.contactPhoneNumber.heading = What is {0}’s phone number?
+locationOfGoods.contactPhoneNumber.hint = Include the country code, for example +44 808 157 0192.
+locationOfGoods.contactPhoneNumber.checkYourAnswersLabel = Contact`s phone number
+locationOfGoods.contactPhoneNumber.change.hidden = contact’s phone number for the location of goods
+locationOfGoods.contactPhoneNumber.error.required = Enter {0}`s phone number.
+locationOfGoods.contactPhoneNumber.error.invalidCharacters = {0}`s phone number must only include numbers 0 to 9 and a plus sign
+locationOfGoods.contactPhoneNumber.error.invalidFormat = {0}`s phone number must start with a plus sign
+locationOfGoods.contactPhoneNumber.error.maxLength = {0}`s phone number must be {1} characters or less
+locationOfGoods.contactPhoneNumber.error.minLength = {0}`s phone number must be {1} characters or more
+
+locationOfGoods.addIdentifierYesNo.title = Do you want to add an additional identifier for the location of goods?
+locationOfGoods.addIdentifierYesNo.heading = Do you want to add an additional identifier for the location of goods?
+locationOfGoods.addIdentifierYesNo.paragraph = This is an alternative reference number to identify the location.
+locationOfGoods.addIdentifierYesNo.checkYourAnswersLabel = Do you want to add another identifier for the location of goods?
+locationOfGoods.addIdentifierYesNo.change.hidden = if you want to add another identifier for the location of goods
+locationOfGoods.addIdentifierYesNo.error.required = Select yes if you want to add an additional identifier for the location of goods
+
+locationOfGoods.additionalIdentifier.title = What is the additional identifier for the location of goods?
+locationOfGoods.additionalIdentifier.heading = What is the additional identifier for the location of goods?
+locationOfGoods.additionalIdentifier.hint = This can be up to 4 characters long and include both letters and numbers, for example 0000 or X9X9.
+locationOfGoods.additionalIdentifier.checkYourAnswersLabel = Additional identifier
+locationOfGoods.additionalIdentifier.change.hidden = additional identifier
+locationOfGoods.additionalIdentifier.error.required = Enter the additional identifier for the location of goods
+locationOfGoods.additionalIdentifier.error.invalid = The additional identifier must only include the letters a to z and numbers 0 to 9
+locationOfGoods.additionalIdentifier.error.length = The additional identifier must be no more than 4 characters long
+
+# Location of goods - Contact
+
+locationOfGoods.addContact.title = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.heading = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.paragraph = This is additional contact information for if Customs have any queries.
+locationOfGoods.addContact.checkYourAnswersLabel = Do you want to add a contact for the location of goods?
+locationOfGoods.addContact.error.required = Select yes if you want to add a contact for the location of goods
+locationOfGoods.addContact.change.hidden = if you want to add a contact for the location of goods
+
+locationOfGoods.contact.name.title = Who is the contact for the location of goods?
+locationOfGoods.contact.name.heading = Who is the contact for the location of goods?
+locationOfGoods.contact.name.checkYourAnswersLabel = Who is the contact for the location of goods?
+locationOfGoods.contact.name.hint = Enter the full name of the individual or organisation.
+locationOfGoods.contact.name.change.hidden = the contact for the location of goods
+locationOfGoods.contact.name.error.required = Enter the contact for the location of goods
+locationOfGoods.contact.name.error.invalid = The contact must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+locationOfGoods.contact.name.error.length = The contact must be 70 characters or less
+
+transitOperation.addArrivalDateYesNo.title = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.heading = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
+transitOperation.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
+transitOperation.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
+transitOperation.addArrivalDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
+

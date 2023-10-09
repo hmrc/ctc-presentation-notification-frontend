@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.EnrolmentStoreConnector
+import controllers.routes
 import controllers.actions.AuthActionSpec._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
@@ -142,7 +143,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -167,7 +168,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -192,7 +193,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -217,7 +218,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -242,7 +243,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -268,7 +269,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad().url
       }
 
       "must redirect to unauthorised page when given new enrolments without eori" in {
@@ -292,7 +293,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad().url
       }
 
       "must redirect to unauthorised page with group access when given user has no active legacy enrolments but new group has" in {
@@ -317,7 +318,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedWithGroupAccessUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page with group access when given user has no active legacy enrolments but legacy group has" in {
@@ -342,7 +343,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedWithGroupAccessUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page with group access when given user has no active new enrolments but new group has" in {
@@ -360,7 +361,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedWithGroupAccessUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page with group access when given user has no active new enrolments but legacy group has" in {
@@ -385,7 +386,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedWithGroupAccessUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page with group access when given user has no enrolments but group has" in {
@@ -403,7 +404,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedWithGroupAccessUrl
+        redirectLocation(result).value mustBe routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page without group access when given both user and group has no enrolments" in {

@@ -17,8 +17,8 @@
 package controllers.actions
 
 import config.FrontendAppConfig
-import models.requests._
 import models.UserAnswers
+import models.requests._
 import play.api.Logging
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
@@ -84,8 +84,7 @@ trait SpecificDataRequiredActionProvider {
 
 trait SpecificDataRequiredAction extends Logging {
 
-  def defaultRedirect(implicit config: FrontendAppConfig): Result =
-    Redirect(config.sessionExpiredUrl)
+  lazy val defaultRedirect: Result = Redirect(controllers.routes.SessionExpiredController.onPageLoad())
 
   def getPage[T, R](userAnswers: UserAnswers, page: Gettable[T])(block: T => R)(implicit rds: Reads[T], config: FrontendAppConfig): Future[Either[Result, R]] =
     Future.successful {

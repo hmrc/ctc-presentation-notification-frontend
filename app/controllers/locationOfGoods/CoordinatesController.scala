@@ -21,12 +21,13 @@ import forms.locationOfGoods.CoordinatesFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Coordinates, Mode}
 import navigation.Navigator
-import pages.{CoordinatesPage, QuestionPage}
+import pages.QuestionPage
+import pages.locationOfGoods.CoordinatesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.CoordinatesView
+import views.html.locationOfGoods.CoordinatesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

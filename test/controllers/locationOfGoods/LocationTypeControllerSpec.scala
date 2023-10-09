@@ -17,6 +17,7 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.{LocationType, NormalMode, UserAnswers}
@@ -26,6 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.{InferredLocationTypePage, LocationTypePage}
+import pages.locationOfGoods.LocationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -152,7 +154,6 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       contentAsString(result) mustEqual
         view(boundForm, departureId, lrn.value, lts, mode)(request, messages).toString
-      view(boundForm, departureId, lrn.value, lts, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -164,7 +165,7 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -178,7 +179,7 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

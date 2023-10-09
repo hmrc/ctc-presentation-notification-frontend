@@ -22,7 +22,8 @@ import models.ProcedureType.Normal
 import models.requests.MandatoryDataRequest
 import models.{LocationType, Mode}
 import navigation.Navigator
-import pages.{InferredLocationTypePage, LocationTypePage, QuestionPage}
+import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
+import pages.QuestionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

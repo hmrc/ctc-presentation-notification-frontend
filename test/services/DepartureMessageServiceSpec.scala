@@ -16,22 +16,35 @@
 
 package services
 
-import base.SpecBase
+import base.{SpecBase, TestMessageData}
 import connectors.DepartureMovementConnector
 import generators.Generators
+import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}
+import models.departureP5.{DepartureMessageMetaData, DepartureMessages}
+import models.messages.Data
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAndAfterEach {
+class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAndAfterEach with TestMessageData {
 
   private val mockConnector = mock[DepartureMovementConnector]
   private val service       = new DepartureMessageService(mockConnector)
+
+  private val departureMessageMetaData1: DepartureMessageMetaData = DepartureMessageMetaData(LocalDateTime.now(), DepartureNotification, "path/url")
+
+  private val departureMessageMetaData2: DepartureMessageMetaData =
+    DepartureMessageMetaData(LocalDateTime.now().minusDays(1), AmendmentSubmitted, "path/url")
+
+  private val departureMessages: DepartureMessages = DepartureMessages(List(departureMessageMetaData1, departureMessageMetaData2))
+
+  private val ie015Data = Data(messageData)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -49,6 +62,14 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
       when(mockConnector.getLRN(any())(any())).thenReturn(Future.successful(lrn))
       service.getLRN(departureId).futureValue mustBe lrn
       verify(mockConnector).getLRN(any())(any())
+    }
+
+    "getDepartureData success" in {
+      when(mockConnector.getMessageMetaData(any())(any(), any())).thenReturn(Future.successful(departureMessages))
+      when(mockConnector.getData(any(), any())(any())).thenReturn(Future.successful(ie015Data))
+      service.getDepartureData(departureId).futureValue mustBe Some(ie015Data)
+      verify(mockConnector).getData(any(), any())(any())
+      verify(mockConnector).getMessageMetaData(any())(any(), any())
     }
   }
 }

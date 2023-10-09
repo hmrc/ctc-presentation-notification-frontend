@@ -20,7 +20,8 @@ import base.SpecBase
 import connectors.ReferenceDataConnector
 import models.reference.UnLocode
 import models.SelectableList
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -32,12 +33,6 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new UnLocodeService(mockRefDataConnector)
 
-  private val unLocode1    = UnLocode("D", "Place D")
-  private val unLocode2    = UnLocode("C", "Place C")
-  private val unLocode3    = UnLocode("B", "Place B")
-  private val unLocode4    = UnLocode("A", "Place A")
-  private val unLocodeList = Seq(unLocode1, unLocode2, unLocode3, unLocode4)
-
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
     super.beforeEach()
@@ -45,15 +40,30 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   "UnLocodeService" - {
     "getUnLocodeList" - {
-      "must return a list of sorted location codes" in {
-        when(mockRefDataConnector.getUnLocodes()(any(), any()))
+      "must return true when unLocode exists" in {
+
+        val unLocodeItem = UnLocode("DEAAL", "Place D")
+        val unLocodeList = Seq(unLocodeItem)
+
+        val unLocode = "DEAAL"
+
+        when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
           .thenReturn(Future.successful(unLocodeList))
 
-        service.getUnLocodeList.futureValue mustBe
-          SelectableList(Seq(unLocode4, unLocode3, unLocode2, unLocode1))
-
-        verify(mockRefDataConnector).getUnLocodes()(any(), any())
+        service.doesUnLocodeExist(unLocode).futureValue mustBe true
+        verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())
       }
+    }
+
+    "must return false when unLocode does not exist" in {
+
+      val unLocode = "ABCDE"
+
+      when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
+        .thenReturn(Future.successful(Nil))
+
+      service.doesUnLocodeExist(unLocode).futureValue mustBe false
+      verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())
     }
   }
 }

@@ -18,7 +18,7 @@ package repositories
 
 import config.FrontendAppConfig
 import models.UserAnswers
-import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, IndexModel, IndexOptions, Indexes, ReplaceOptions, Updates}
+import org.mongodb.scala.model._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import utils.TimeMachine

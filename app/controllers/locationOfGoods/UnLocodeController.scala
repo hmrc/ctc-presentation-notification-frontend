@@ -18,12 +18,11 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.UnLocodeFormProvider
-import models.reference.UnLocode
-import models.{Mode, SelectableList}
+import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.UnLocodePage
-import play.api.data.Form
+import pages.locationOfGoods.UnLocodePage
+import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -47,38 +46,38 @@ class UnLocodeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(unLocodeSeq: SelectableList[UnLocode]): Form[UnLocode] = formProvider("locationOfGoods.unLocode", unLocodeSeq)
+  private val prefix = "locationOfGoods.unLocode"
+  private val form   = formProvider(prefix)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      service.getUnLocodeList.flatMap {
-        unLocodeSeq =>
-          val preparedForm = request.userAnswers.get(UnLocodePage) match {
-            case None        => form(unLocodeSeq)
-            case Some(value) => form(unLocodeSeq).fill(value)
-          }
-          Future.successful(Ok(view(preparedForm, unLocodeSeq.values, departureId, request.userAnswers.lrn, mode)))
+      val preparedForm = request.userAnswers.get(UnLocodePage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
+      Future.successful(Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode)))
   }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId)
-    .async {
-      implicit request =>
-        service.getUnLocodeList.flatMap {
-          unLocodeSeq =>
-            form(unLocodeSeq)
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, unLocodeSeq.values, departureId, request.userAnswers.lrn, mode))),
-                value => redirect(mode, value, departureId)
-              )
-        }
-    }
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode))),
+          value =>
+            service.doesUnLocodeExist(value).flatMap {
+              case true =>
+                redirect(mode, value, departureId)
+              case false =>
+                val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
+                Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode)))
+            }
+        )
+  }
 
   private def redirect(
     mode: Mode,
-    value: UnLocode,
+    value: String,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {

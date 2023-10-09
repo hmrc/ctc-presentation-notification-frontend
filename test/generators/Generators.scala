@@ -148,12 +148,6 @@ trait Generators extends UserAnswersGenerator with ModelGenerators {
       chars <- listOfN(length, charGen)
     } yield chars.mkString
 
-  def stringsLongerThan(minLength: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] = for {
-    maxLength <- (minLength * 2).max(100)
-    length    <- Gen.chooseNum(minLength + 1, maxLength)
-    chars     <- listOfN(length, charGen)
-  } yield chars.mkString
-
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString retryUntil (!excluded.contains(_))
 
@@ -209,14 +203,7 @@ trait Generators extends UserAnswersGenerator with ModelGenerators {
       tail     <- Gen.listOfN(tailSize, gen)
     } yield NonEmptyList(head, tail)
 
-  implicit lazy val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary {
-    dateTimesBetween(
-      LocalDateTime.of(1900, 1, 1, 0, 0, 0),
-      LocalDateTime.of(2100, 1, 1, 0, 0, 0)
-    ).map(
-      result => result.toLocalTime.minusSeconds(result.getSecond).minusNanos(result.getNano)
-    )
-  }
+  val localDateGen: Gen[LocalDate] = datesBetween(LocalDate.of(1900, 1, 1), LocalDate.now)
 
   implicit lazy val arbitraryAny: Arbitrary[Any] = Arbitrary {
     Gen.oneOf[Any](Gen.alphaNumStr, arbitrary[Int])
@@ -230,5 +217,13 @@ trait Generators extends UserAnswersGenerator with ModelGenerators {
       x => x.withNano(0).withSecond(0)
     )
   }
+
+  def stringsLongerThan(minLength: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] = for {
+    maxLength <- (minLength * 2).max(100)
+    length    <- Gen.chooseNum(minLength + 1, maxLength)
+    chars     <- listOfN(length, charGen)
+  } yield chars.mkString
+
 }
+
 // scalastyle:on number.of.methods
