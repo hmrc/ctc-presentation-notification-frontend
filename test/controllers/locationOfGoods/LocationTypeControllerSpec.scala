@@ -26,8 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.{InferredLocationTypePage, LocationTypePage}
-import pages.locationOfGoods.LocationTypePage
+import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

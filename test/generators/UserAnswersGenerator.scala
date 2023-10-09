@@ -49,7 +49,7 @@ trait UserAnswersGenerator extends TryValues {
             obj.setObject(path.path, value).get
         },
         lastUpdated = Instant.now(),
-        departureData = messageData // TODO should add an actual generated value here
+        departureData = messageData
       )
     }
   }
