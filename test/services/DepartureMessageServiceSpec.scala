@@ -16,6 +16,7 @@
 
 package services
 
+import base.TestMessageData.messageData
 import base.{SpecBase, TestMessageData}
 import connectors.DepartureMovementConnector
 import generators.Generators
@@ -32,7 +33,7 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAndAfterEach with TestMessageData {
+class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
   private val mockConnector = mock[DepartureMovementConnector]
   private val service       = new DepartureMessageService(mockConnector)

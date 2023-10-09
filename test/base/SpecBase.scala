@@ -16,6 +16,7 @@
 
 package base
 
+import base.TestMessageData.messageData
 import config.FrontendAppConfig
 import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -46,7 +47,7 @@ trait SpecBase
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val eoriNumber: EoriNumber     = EoriNumber("eoriNumber")
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now())
+  def emptyUserAnswers: UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
 
   val departureId: String = "651431d7e3b05b21"
 

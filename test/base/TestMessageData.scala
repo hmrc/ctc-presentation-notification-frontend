@@ -16,11 +16,12 @@
 
 package base
 
+import models.messages.AuthorisationType.{C521, Other}
 import models.messages._
 import models.messages.MessageData
 import play.api.libs.json.{JsValue, Json}
 
-trait TestMessageData {
+object TestMessageData {
 
   val transitOperation: TransitOperation =
     TransitOperation(Some("2023-06-09"))
@@ -81,7 +82,12 @@ trait TestMessageData {
     Some(placeOfLoading)
   )
 
-  val messageData: MessageData = MessageData(transitOperation, consignment)
+  val authorisation: Seq[Authorisation] = Seq(
+    Authorisation(C521, "AB123"),
+    Authorisation(Other("SomethingElse"), "CD123")
+  )
+
+  val messageData: MessageData = MessageData(transitOperation, Some(authorisation), consignment)
 
   val jsonValue: JsValue = Json.parse(
     s"""
@@ -89,6 +95,16 @@ trait TestMessageData {
        |   "TransitOperation" : {
        |       "limitDate" : "2023-06-09"
        |   },
+       |   "Authorisation" : [
+       |     {
+       |       "type" : "C521",
+       |       "referenceNumber": "AB123"
+       |     },
+       |     {
+       |       "type": "SomethingElse",
+       |       "referenceNumber": "CD123"
+       |     }
+       |   ],
        |   "Consignment" : {
        |       "containerIndicator" : "1",
        |       "modeOfTransportAtTheBorder": "2",

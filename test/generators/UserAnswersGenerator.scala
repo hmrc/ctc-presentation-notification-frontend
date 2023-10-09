@@ -16,6 +16,8 @@
 
 package generators
 
+import base.TestMessageData
+import base.TestMessageData.messageData
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -46,7 +48,8 @@ trait UserAnswersGenerator extends TryValues {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get
         },
-        lastUpdated = Instant.now()
+        lastUpdated = Instant.now(),
+        departureData = messageData
       )
     }
   }

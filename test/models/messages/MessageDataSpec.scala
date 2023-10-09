@@ -17,12 +17,14 @@
 package models.messages
 
 import base.TestMessageData
+import base.TestMessageData.{incompleteJsonValue, jsonValue, messageData}
+import models.messages.AuthorisationType.{C521, Other}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.Json
 
-class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues with TestMessageData {
+class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues {
 
   "MessageDataSpec" - {
 
@@ -41,6 +43,44 @@ class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues with T
 
     "must return false when incomplete data sent through" in {
       incompleteJsonValue.as[MessageData].isDataComplete mustBe false
+    }
+
+    "isSimplified" - {
+
+      "must return true when authorisations contain C521" in {
+
+        val updatedMessageData: MessageData = messageData.copy(Authorisation =
+          Some(
+            Seq(
+              Authorisation(C521, "AB123"),
+              Authorisation(Other("otherValue"), "CD123")
+            )
+          )
+        )
+
+        updatedMessageData.isSimplified mustBe true
+      }
+
+      "must return false" - {
+
+        "when authorisations are not defined" in {
+
+          val updatedMessageData = messageData.copy(Authorisation = None)
+
+          updatedMessageData.isSimplified mustBe false
+        }
+
+        "when authorisations are defined but without C521" in {
+
+          val updatedMessageData: MessageData = messageData.copy(Authorisation =
+            Some(
+              Seq(Authorisation(Other("otherValue"), "AB123"))
+            )
+          )
+
+          updatedMessageData.isSimplified mustBe false
+        }
+      }
     }
   }
 }

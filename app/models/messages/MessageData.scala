@@ -17,12 +17,18 @@
 package models.messages
 
 import cats.implicits._
+import models.messages.AuthorisationType.C521
 import play.api.libs.json.{Json, OFormat}
+
+import scala.annotation.unused
 
 case class MessageData(
   TransitOperation: TransitOperation,
+  Authorisation: Option[Seq[Authorisation]],
   Consignment: Consignment
 ) {
+
+  val isSimplified: Boolean = Authorisation.flatMap(_.find(_.`type` == C521)).isDefined
 
   def isDataComplete: Boolean =
     List(

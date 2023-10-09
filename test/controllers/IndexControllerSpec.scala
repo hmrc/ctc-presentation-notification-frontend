@@ -16,6 +16,7 @@
 
 package controllers
 
+import base.TestMessageData.{incompleteJsonValue, jsonValue}
 import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import generators.Generators
 import models.UserAnswers
@@ -32,7 +33,7 @@ import services.DepartureMessageService
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with TestMessageData {
+class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private lazy val indexRoute = routes.IndexController.index(departureId).url
 

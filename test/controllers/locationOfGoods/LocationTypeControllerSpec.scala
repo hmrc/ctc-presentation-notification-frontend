@@ -20,12 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.{LocationType, NormalMode}
+import models.{LocationType, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.locationOfGoods.LocationTypePage
+import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -77,25 +78,24 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
         view(form, departureId, lrn.toString, lts, mode)(request, messages).toString
     }
 
-//    "must redirect to the next page and infer LocationType when only one location type" in {
-//
-//      when(mockLocationTypeService.getLocationTypes(any())(any())).thenReturn(Future.successful(Seq(lt)))
-//
-//      val userAnswers = emptyUserAnswers.setValue(em, Simplified)
-//      setExistingUserAnswers(emptyUserAnswers)
-//
-//      val request = FakeRequest(GET, locationTypeRoute)
-//
-//      val result = route(app, request).value
-//
-//      status(result) mustEqual SEE_OTHER
-//
-//      redirectLocation(result).value mustEqual onwardRoute.url
-//
-//      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-//      verify(mockSessionRepository).set(userAnswersCaptor.capture())
-//      userAnswersCaptor.getValue.getValue(InferredLocationTypePage) mustBe lt
-//    }
+    "must redirect to the next page and infer LocationType when only one location type" in {
+
+      when(mockLocationTypeService.getLocationTypes(any())(any())).thenReturn(Future.successful(Seq(lt)))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, locationTypeRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.getValue(InferredLocationTypePage) mustBe lt
+    }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 

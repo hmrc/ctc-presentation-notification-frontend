@@ -16,6 +16,7 @@
 
 package controllers.actions
 
+import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
@@ -64,7 +65,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
       "when there are existing answers for this departureId" in {
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(
-          Some(UserAnswers(departureId, eoriNumber, lrn.value, JsObject.empty, Instant.now()))
+          Some(UserAnswers(departureId, eoriNumber, lrn.value, JsObject.empty, Instant.now(), messageData))
         )
 
         harness(departureId) {
