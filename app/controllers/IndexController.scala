@@ -49,17 +49,20 @@ class IndexController @Inject() (
             lrn =>
               sessionRepository
                 .set(
-                  request.userAnswers.getOrElse {
-                    val userAnswers = UserAnswers(
-                      departureId,
-                      request.eoriNumber,
-                      lrn.value,
-                      JsObject.empty,
-                      timeMachine.now(),
-                      departureData.data
-                    )
-                    userAnswers.set(CustomsOfficeOfDeparturePage, departureData.data.CustomsOfficeOfDeparture).getOrElse(userAnswers)
-                  }
+                  request.userAnswers
+                    .flatMap {
+                      _.set(CustomsOfficeOfDeparturePage, departureData.data.CustomsOfficeOfDeparture).toOption
+                    }
+                    .getOrElse {
+                      UserAnswers(
+                        departureId,
+                        request.eoriNumber,
+                        lrn.value,
+                        JsObject.empty,
+                        timeMachine.now(),
+                        departureData.data
+                      )
+                    }
                 )
                 .map {
                   _ =>

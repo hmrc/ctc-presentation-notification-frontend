@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.DepartureMessageService
@@ -42,6 +42,12 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
   private lazy val withCompleteDataNextPage = routes.CheckInformationController.onPageLoad(departureId).url
 
   private val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
+
+  private val expectedDataForCustomsOfficeOfDeparture: JsValue = Json.parse("""
+      |{
+      |  "customsOfficeOfDeparture" : "GB000011"
+      |}
+      |""".stripMargin)
 
   override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -72,15 +78,8 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         redirectLocation(result).value mustEqual withCompleteDataNextPage
 
-        val expectedData = Json.parse("""
-            |{
-            |  "customsOfficeOfDeparture" : "GB000011"
-            |}
-            |""".stripMargin)
-
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-
-        userAnswersCaptor.getValue.data mustBe expectedData
+        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
       }
 
       "must redirect to onward route when there are UserAnswers" in {
@@ -104,7 +103,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.lrn mustBe lrn.value
         userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+        userAnswersCaptor.getValue.data mustBe expectedDataForCustomsOfficeOfDeparture
       }
 
       "must redirect to the correct onward route when there are UserAnswers and complete message data" in {
@@ -128,7 +127,8 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.lrn mustBe lrn.value
         userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+        userAnswersCaptor.getValue.data mustBe expectedDataForCustomsOfficeOfDeparture
+
       }
 
       "must redirect to the correct onward route when there are UserAnswers and incomplete message data" in {
@@ -154,7 +154,8 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.lrn mustBe lrn.value
         userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+        userAnswersCaptor.getValue.data mustBe expectedDataForCustomsOfficeOfDeparture
+
       }
 
       "must redirect to the technical difficulties route when there is an issue retrieving the data" in {
