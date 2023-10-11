@@ -16,7 +16,6 @@
 
 package generators
 
-import base.TestMessageData
 import base.TestMessageData.messageData
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary

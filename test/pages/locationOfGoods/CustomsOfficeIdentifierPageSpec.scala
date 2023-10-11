@@ -16,16 +16,17 @@
 
 package pages.locationOfGoods
 
+import models.reference.CustomsOffice
 import pages.behaviours.PageBehaviours
 
-class UnLocodePageSpec extends PageBehaviours {
+class CustomsOfficeIdentifierPageSpec extends PageBehaviours {
 
-  "UnLocodePage" - {
+  "CustomsOfficeIdentifierPage" - {
 
-    beRetrievable[String](UnLocodePage)
+    beRetrievable[CustomsOffice](CustomsOfficeIdentifierPage)
 
-    beSettable[String](UnLocodePage)
+    beSettable[CustomsOffice](CustomsOfficeIdentifierPage)
 
-    beRemovable[String](UnLocodePage)
+    beRemovable[CustomsOffice](CustomsOfficeIdentifierPage)
   }
 }

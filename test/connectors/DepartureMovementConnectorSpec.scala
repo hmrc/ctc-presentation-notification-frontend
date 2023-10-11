@@ -17,7 +17,7 @@
 package connectors
 
 import base.TestMessageData.{jsonValue, messageData}
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{containing, get, okJson, urlEqualTo}
 import generators.Generators
 import helper.WireMockServerHandler

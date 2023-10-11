@@ -17,7 +17,7 @@
 package controllers
 
 import base.TestMessageData.{incompleteJsonValue, jsonValue}
-import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.UserAnswers
 import models.messages.{Data, MessageData}
@@ -26,7 +26,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.DepartureMessageService
@@ -72,11 +71,8 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         redirectLocation(result).value mustEqual withCompleteDataNextPage
 
-        val expectedData = JsObject.empty
-
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-
-        userAnswersCaptor.getValue.data mustBe expectedData
+        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
       }
 
       "must redirect to onward route when there are UserAnswers" in {
@@ -125,6 +121,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         userAnswersCaptor.getValue.lrn mustBe lrn.value
         userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
         userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+
       }
 
       "must redirect to the correct onward route when there are UserAnswers and incomplete message data" in {
@@ -151,6 +148,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         userAnswersCaptor.getValue.lrn mustBe lrn.value
         userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
         userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+
       }
 
       "must redirect to the technical difficulties route when there is an issue retrieving the data" in {

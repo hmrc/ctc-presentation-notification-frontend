@@ -17,7 +17,7 @@
 package services
 
 import base.TestMessageData.messageData
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
 import connectors.DepartureMovementConnector
 import generators.Generators
 import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}

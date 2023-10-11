@@ -16,7 +16,7 @@
 
 package models
 
-import models.messages.{Data, MessageData}
+import models.messages.MessageData
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable

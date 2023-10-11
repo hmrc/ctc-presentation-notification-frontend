@@ -18,11 +18,11 @@ package models.messages
 
 import cats.implicits._
 import models.messages.AuthorisationType.C521
-import play.api.libs.json.{Json, OFormat}
-
-import scala.annotation.unused
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 case class MessageData(
+  CustomsOfficeOfDeparture: String,
   TransitOperation: TransitOperation,
   Authorisation: Option[Seq[Authorisation]],
   Consignment: Consignment
@@ -41,8 +41,23 @@ case class MessageData(
       Consignment.PlaceOfLoading
     ).sequence.isDefined
 
+  def countryOfDeparture: String = CustomsOfficeOfDeparture.take(2)
+
 }
 
 object MessageData {
-  implicit val formats: OFormat[MessageData] = Json.format[MessageData]
+
+  implicit val reads: Reads[MessageData] = (
+    (__ \ "CustomsOfficeOfDeparture" \ "referenceNumber").read[String] and
+      (__ \ "TransitOperation").read[TransitOperation] and
+      (__ \ "Authorisation").readNullable[Seq[Authorisation]] and
+      (__ \ "Consignment").read[Consignment]
+  )(MessageData.apply _)
+
+  implicit val writes: Writes[MessageData] = (
+    (__ \ "CustomsOfficeOfDeparture" \ "referenceNumber").write[String] and
+      (__ \ "TransitOperation").write[TransitOperation] and
+      (__ \ "Authorisation").writeNullable[Seq[Authorisation]] and
+      (__ \ "Consignment").write[Consignment]
+  )(unlift(MessageData.unapply))
 }

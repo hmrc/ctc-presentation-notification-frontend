@@ -19,7 +19,7 @@ package generators
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
-import models.reference.{Country, CountryCode}
+import models.reference.{Country, CountryCode, CustomsOffice}
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
 import org.scalacheck.Arbitrary.arbitrary
@@ -45,7 +45,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {
-        lrn <- stringsWithMaxLength(22)
+        lrn <- stringsWithMaxLength(22: Int, Gen.alphaNumChar)
       } yield new LocalReferenceNumber(lrn)
     }
 
@@ -120,6 +120,15 @@ trait ModelGenerators {
         city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
         postalCode      <- Gen.option(stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar))
       } yield DynamicAddress(numberAndStreet, city, postalCode)
+    }
+
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- nonEmptyString
+        name        <- nonEmptyString
+        phoneNumber <- Gen.option(Gen.alphaNumStr)
+      } yield CustomsOffice(id, name, phoneNumber)
     }
 
 }

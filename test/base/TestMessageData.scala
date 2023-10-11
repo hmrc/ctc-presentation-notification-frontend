@@ -18,7 +18,6 @@ package base
 
 import models.messages.AuthorisationType.{C521, Other}
 import models.messages._
-import models.messages.MessageData
 import play.api.libs.json.{JsValue, Json}
 
 object TestMessageData {
@@ -87,11 +86,16 @@ object TestMessageData {
     Authorisation(Other("SomethingElse"), "CD123")
   )
 
-  val messageData: MessageData = MessageData(transitOperation, Some(authorisation), consignment)
+  val customsOfficeOfDeparture: String = "GB000011"
+
+  val messageData: MessageData = MessageData(customsOfficeOfDeparture, transitOperation, Some(authorisation), consignment)
 
   val jsonValue: JsValue = Json.parse(
     s"""
        |{
+       |   "CustomsOfficeOfDeparture":{
+       |        "referenceNumber":"GB000011"
+       |    },
        |   "TransitOperation" : {
        |       "limitDate" : "2023-06-09"
        |   },
@@ -187,6 +191,10 @@ object TestMessageData {
   val incompleteJsonValue: JsValue = Json.parse(
     s"""
        |{
+       |
+       |   "CustomsOfficeOfDeparture":{
+       |        "referenceNumber":"GB000011"
+       |    },
        |   "TransitOperation" : {
        |       "limitDate" : "2023-06-09"
        |   },
