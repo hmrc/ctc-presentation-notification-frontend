@@ -16,13 +16,14 @@
 
 package controllers.locationOfGoods
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import forms.SelectableFormProvider
 import generators.Generators
+import models.reference.CountryCode
 import models.{NormalMode, SelectableList}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import pages.CustomsOfficeOfDeparturePage
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -51,11 +52,20 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
       .guiceApplicationBuilder()
       .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficesService))
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockCustomsOfficesService)
+  }
+
+  private val countryCode   = arbitrary[CountryCode].sample.value
+  private val departureData = TestMessageData.messageData.copy(CustomsOfficeOfDeparture = s"${countryCode.code}00001")
+  private val baseAnswers   = emptyUserAnswers.copy(departureData = departureData)
+
   "CustomsOfficeIdentifier Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDeparturePage, customsOffice1.value))
+      setExistingUserAnswers(baseAnswers)
 
       when(mockCustomsOfficesService.getCustomsOfficesOfDepartureForCountry(any())(any())).thenReturn(Future.successful(customsOfficeList))
 
@@ -69,14 +79,15 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
 
       contentAsString(result) mustEqual
         view(form, lrn.toString, departureId, customsOfficeList.values, mode)(request, messages).toString
+
+      verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
     }
   }
   "must populate the view correctly on a GET when the question has previously been answered" in {
 
     when(mockCustomsOfficesService.getCustomsOfficesOfDepartureForCountry(any())(any())).thenReturn(Future.successful(customsOfficeList))
-    val userAnswers = emptyUserAnswers
-      .setValue(CustomsOfficeOfDeparturePage, customsOffice1.value)
-      .setValue(CustomsOfficeIdentifierPage, customsOffice1)
+
+    val userAnswers = baseAnswers.setValue(CustomsOfficeIdentifierPage, customsOffice1)
 
     setExistingUserAnswers(userAnswers)
 
@@ -92,15 +103,16 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
 
     contentAsString(result) mustEqual
       view(filledForm, lrn.toString, departureId, customsOfficeList.values, mode)(request, messages).toString
+
+    verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
   }
 
   "must redirect to the next page when valid data is submitted" in {
 
-    val userAnswers = emptyUserAnswers.setValue(CustomsOfficeOfDeparturePage, customsOffice1.value)
     when(mockCustomsOfficesService.getCustomsOfficesOfDepartureForCountry(any())(any())).thenReturn(Future.successful(customsOfficeList))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-    setExistingUserAnswers(userAnswers)
+    setExistingUserAnswers(baseAnswers)
 
     val request = FakeRequest(POST, customsOfficeIdentifierRoute)
       .withFormUrlEncodedBody(("value", customsOffice1.id))
@@ -110,13 +122,15 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
     status(result) mustEqual SEE_OTHER
 
     redirectLocation(result).value mustEqual onwardRoute.url
+
+    verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
   }
 
   "must return a Bad Request and errors when invalid data is submitted" in {
 
-    val userAnswers = emptyUserAnswers.setValue(CustomsOfficeOfDeparturePage, customsOffice1.value)
     when(mockCustomsOfficesService.getCustomsOfficesOfDepartureForCountry(any())(any())).thenReturn(Future.successful(customsOfficeList))
-    setExistingUserAnswers(userAnswers)
+
+    setExistingUserAnswers(baseAnswers)
 
     val request   = FakeRequest(POST, customsOfficeIdentifierRoute).withFormUrlEncodedBody(("value", "invalid value"))
     val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -129,6 +143,8 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
 
     contentAsString(result) mustEqual
       view(boundForm, lrn.toString, departureId, customsOfficeList.values, mode)(request, messages).toString
+
+    verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
   }
 
   "must redirect to Session Expired for a GET if no existing data is found" in {

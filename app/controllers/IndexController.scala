@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import models.UserAnswers
-import pages.CustomsOfficeOfDeparturePage
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,20 +48,16 @@ class IndexController @Inject() (
             lrn =>
               sessionRepository
                 .set(
-                  request.userAnswers
-                    .flatMap {
-                      _.set(CustomsOfficeOfDeparturePage, departureData.data.CustomsOfficeOfDeparture).toOption
-                    }
-                    .getOrElse {
-                      UserAnswers(
-                        departureId,
-                        request.eoriNumber,
-                        lrn.value,
-                        JsObject.empty,
-                        timeMachine.now(),
-                        departureData.data
-                      )
-                    }
+                  request.userAnswers.getOrElse(
+                    UserAnswers(
+                      departureId,
+                      request.eoriNumber,
+                      lrn.value,
+                      JsObject.empty,
+                      timeMachine.now(),
+                      departureData.data
+                    )
+                  )
                 )
                 .map {
                   _ =>

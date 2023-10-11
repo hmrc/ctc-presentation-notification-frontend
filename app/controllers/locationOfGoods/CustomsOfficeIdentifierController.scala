@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.{CustomsOfficeIdentifierPage, CustomsOfficeOfDeparturePage}
+import pages.CustomsOfficeIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -38,7 +38,6 @@ class CustomsOfficeIdentifierController @Inject() (
   actions: Actions,
   formProvider: SelectableFormProvider,
   customsOfficesService: CustomsOfficesService,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsOfficeIdentifierView
 )(implicit ec: ExecutionContext)
@@ -47,11 +46,9 @@ class CustomsOfficeIdentifierController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(CustomsOfficeOfDeparturePage))
     .async {
       implicit request =>
-        val office = request.arg
-        customsOfficesService.getCustomsOfficesOfDepartureForCountry(office.take(2)).map {
+        customsOfficesService.getCustomsOfficesOfDepartureForCountry(request.userAnswers.departureData.countryOfDeparture).map {
           customsOfficeList =>
             val form = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
             val preparedForm = request.userAnswers.get(CustomsOfficeIdentifierPage) match {
@@ -65,11 +62,9 @@ class CustomsOfficeIdentifierController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(CustomsOfficeOfDeparturePage))
     .async {
       implicit request =>
-        val office = request.arg
-        customsOfficesService.getCustomsOfficesOfDepartureForCountry(office.take(2)).flatMap {
+        customsOfficesService.getCustomsOfficesOfDepartureForCountry(request.userAnswers.departureData.countryOfDeparture).flatMap {
           customsOfficeList =>
             val form = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
             form
