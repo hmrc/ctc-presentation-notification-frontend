@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.CustomsOfficeIdentifierPage
+import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
