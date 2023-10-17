@@ -20,8 +20,6 @@ import com.google.inject.Singleton
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,11 +42,9 @@ class DataRetrievalAction(
 )(implicit val executionContext: ExecutionContext)
     extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
     sessionRepository.get(departureId).map {
       userAnswers =>
         OptionalDataRequest(request.request, request.eoriNumber, userAnswers)
     }
-  }
 }

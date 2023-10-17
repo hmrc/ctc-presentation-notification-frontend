@@ -55,6 +55,6 @@ class DepartureMessageService @Inject() (departureMovementP5Connector: Departure
       getData         <- OptionT.liftF(departureMovementP5Connector.getData(messageMetaData.path, messageMetaData.messageType))
     } yield getData).value
 
-  def getLRN(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[LocalReferenceNumber] =
+  def getLRN(departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] =
     departureMovementP5Connector.getLRN(departureId)
 }

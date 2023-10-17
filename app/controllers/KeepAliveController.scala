@@ -34,20 +34,19 @@ class KeepAliveController @Inject() (
     with I18nSupport {
 
   def keepAlive(departureId: Option[String]): Action[AnyContent] = identify.async {
-    implicit request =>
-      departureId match {
-        case Some(id) =>
-          sessionRepository.get(id) flatMap {
-            case Some(ua) =>
-              sessionRepository
-                .set(ua)
-                .map(
-                  _ => NoContent
-                )
-            case _ =>
-              Future.successful(NoContent)
-          }
-        case _ => Future.successful(NoContent)
-      }
+    departureId match {
+      case Some(id) =>
+        sessionRepository.get(id) flatMap {
+          case Some(ua) =>
+            sessionRepository
+              .set(ua)
+              .map(
+                _ => NoContent
+              )
+          case _ =>
+            Future.successful(NoContent)
+        }
+      case _ => Future.successful(NoContent)
+    }
   }
 }

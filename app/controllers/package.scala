@@ -23,7 +23,6 @@ import play.api.libs.json._
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,7 +68,7 @@ package object controllers {
 
     def writeToSession(
       userAnswers: UserAnswers
-    )(implicit sessionRepository: SessionRepository, executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
+    )(implicit sessionRepository: SessionRepository, executionContext: ExecutionContext): Future[Write[A]] =
       userAnswersWriter.run(userAnswers) match {
         case Left(opsError) => Future.failed(new Exception(s"${opsError.toString}"))
         case Right(value) =>
@@ -84,8 +83,7 @@ package object controllers {
     def writeToSession()(implicit
       dataRequest: MandatoryDataRequest[_],
       sessionRepository: SessionRepository,
-      ex: ExecutionContext,
-      hc: HeaderCarrier
+      ex: ExecutionContext
     ): Future[Write[A]] = writeToSession(dataRequest.userAnswers)
   }
 
