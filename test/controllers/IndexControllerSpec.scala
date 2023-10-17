@@ -57,7 +57,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         setNoExistingUserAnswers()
 
-        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
         when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
@@ -81,7 +81,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         val request = FakeRequest(GET, indexRoute)
 
-        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
         when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
@@ -105,7 +105,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         val request = FakeRequest(GET, indexRoute)
 
-        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
         when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
@@ -130,7 +130,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         val request = FakeRequest(GET, indexRoute)
 
-        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
         when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(
           Some(Data(incompleteJsonValue.as[MessageData]))
         )
@@ -157,7 +157,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         val request = FakeRequest(GET, indexRoute)
 
-        when(mockDepartureMessageService.getLRN(any())(any(), any())) thenReturn Future.successful(lrn)
+        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
         when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(
           None
         )
