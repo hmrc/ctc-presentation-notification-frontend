@@ -23,27 +23,27 @@
 @import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 @this(
-        renderConfig: RenderConfig,
-        appConfig: FrontendAppConfig,
-        hmrcStandardPage: HmrcStandardPage,
-        hmrcInternalHead: HmrcInternalHead,
-        hmrcTimeoutDialog: HmrcTimeoutDialog,
-        standardBetaBanner: StandardBetaBanner,
-        stylesheets: Stylesheets,
-        javascripts: Javascripts,
-        govukBackLink: GovukBackLink,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+    renderConfig: RenderConfig,
+    appConfig: FrontendAppConfig,
+    hmrcStandardPage: HmrcStandardPage,
+    hmrcInternalHead: HmrcInternalHead,
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    standardBetaBanner: StandardBetaBanner,
+    stylesheets: Stylesheets,
+    javascripts: Javascripts,
+    govukBackLink: GovukBackLink,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )(implicit cfConfig: ContactFrontendConfig)
 
 @(
-        title: String,
-        timeoutEnabled: Boolean = true,
-        canSignOut: Boolean = true,
-        showBackLink: Boolean = false,
-        departureId: Option[String] = None
+    title: String,
+    timeoutEnabled: Boolean = true,
+    canSignOut: Boolean = true,
+    showBackLink: Boolean = false,
+    departureId: Option[String] = None
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
-    @headScripts = {
+@headScripts = {
     @if(canSignOut) {
         @hmrcTimeoutDialog(TimeoutDialog(
             timeout = Some(renderConfig.timeoutSeconds),
@@ -53,33 +53,32 @@
         ))
     }
 
-        <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="telephone=no" />
 
     @stylesheets()
+}
 
-    }
+@mainContentWithGetHelp = {
+    @mainContent
+    @hmrcReportTechnicalIssueHelper()
+}
 
-    @mainContentWithGetHelp = {
-        @mainContent
-        @hmrcReportTechnicalIssueHelper()
-    }
-
-    @hmrcStandardPage(
-        HmrcStandardPageParams(
-            serviceURLs = ServiceURLs(
-                serviceUrl = Some(appConfig.serviceUrl),
-                signOutUrl = if(canSignOut) Some(appConfig.signOutUrl) else None
-            ),
-            banners = Banners(
-                phaseBanner = Some(standardBetaBanner()),
-                userResearchBanner = if(renderConfig.showUserResearchBanner) Some(UserResearchBanner(url = renderConfig.userResearchUrl)) else None
-            ),
-            templateOverrides = TemplateOverrides(
-                additionalHeadBlock = Some(headScripts),
-                additionalScriptsBlock = Some(javascripts())
-            ),
-            pageTitle = Some(breadCrumbTitle(title, mainContent)),
-            serviceName = Some(messages("site.service_name")),
-            backLink = if(showBackLink) Some(BackLink.withDefaultText(href = "#")) else None, // This is overridden in ctc.js
-        )
-    )(mainContentWithGetHelp)
+@hmrcStandardPage(
+    HmrcStandardPageParams(
+        serviceURLs = ServiceURLs(
+            serviceUrl = Some(appConfig.serviceUrl),
+            signOutUrl = if(canSignOut) Some(appConfig.signOutUrl) else None
+        ),
+        banners = Banners(
+            phaseBanner = Some(standardBetaBanner()),
+            userResearchBanner = if(renderConfig.showUserResearchBanner) Some(UserResearchBanner(url = renderConfig.userResearchUrl)) else None
+        ),
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Some(headScripts),
+            additionalScriptsBlock = Some(javascripts())
+        ),
+        pageTitle = Some(breadCrumbTitle(title, mainContent)),
+        serviceName = Some(messages("site.service_name")),
+        backLink = if(showBackLink) Some(BackLink.withDefaultText(href = "#")) else None, // This is overridden in ctc.js
+    )
+)(mainContentWithGetHelp)
