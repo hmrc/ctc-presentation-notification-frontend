@@ -30,6 +30,6 @@ case object AddContactYesNoPage extends QuestionPage[Boolean] {
   override def toString: String = "addContact"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddContactYesNoController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AddContactYesNoController.onPageLoad(departureId, mode))
 
 }

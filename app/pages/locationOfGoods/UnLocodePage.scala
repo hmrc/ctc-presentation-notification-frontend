@@ -28,6 +28,6 @@ case object UnLocodePage extends QuestionPage[String] {
 
   override def toString: String = "unLocode"
 
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode))
 }

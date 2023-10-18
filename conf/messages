@@ -46,6 +46,7 @@ address.streetNumber = street number
 
 locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
+placeOfLoading.caption = Place of loading
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
@@ -202,7 +203,6 @@ transitOperation.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add 
 transitOperation.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
 transitOperation.addArrivalDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
 
-
 locationOfGoods.customsOfficeIdentifier.title = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOfficeIdentifier.heading = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOfficeIdentifier.hint = Enter the office location or code, like Dover or GB000060.
@@ -210,3 +210,8 @@ locationOfGoods.customsOfficeIdentifier.placeholder = Select a customs office id
 locationOfGoods.customsOfficeIdentifier.change.hidden = the customs office identifier for the location of goods
 locationOfGoods.customsOfficeIdentifier.checkYourAnswersLabel = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOfficeIdentifier.error.required = Enter the customs office identifier for the location of goods
+
+addPlaceOfLoadingYesNo.title = Do you want to add a place of loading?
+addPlaceOfLoadingYesNo.heading = Do you want to add a place of loading?
+addPlaceOfLoadingYesNo.paragraph = This is where the goods are loaded.
+addPlaceOfLoadingYesNo.error.required = Select yes if you want to add a place of loading

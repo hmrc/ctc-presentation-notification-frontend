@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages
 
-import controllers.locationOfGoods.routes
-import models.{DynamicAddress, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object AddressPage extends QuestionPage[DynamicAddress] {
+class AddPlaceOfLoadingYesNoPageSpec extends PageBehaviours {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  "AddPlaceOfLoadingYesNoPage" - {
 
-  override def toString: String = "address"
+    beRetrievable[Boolean](AddPlaceOfLoadingYesNoPage)
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddressController.onPageLoad(departureId, mode))
+    beSettable[Boolean](AddPlaceOfLoadingYesNoPage)
+
+    beRemovable[Boolean](AddPlaceOfLoadingYesNoPage)
+
+//    "cleanup" - {}
+  }
 }
