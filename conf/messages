@@ -46,7 +46,7 @@ address.streetNumber = street number
 
 locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
-loading.caption = Place of loading
+placeOfLoading.caption = Place of loading
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
