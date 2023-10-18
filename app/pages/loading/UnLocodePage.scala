@@ -16,7 +16,7 @@
 
 package pages.loading
 
-import models.Mode
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.loading.LoadingSection
 import play.api.libs.json.JsPath
@@ -29,6 +29,6 @@ case object UnLocodePage extends QuestionPage[String] {
 
   override def toString: String = "unLocode"
 
-  override def route(departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.loading.routes.UnLocodeController.onPageLoad(departureId, mode))
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.UnLocodeController.onPageLoad(departureId, mode))
 }

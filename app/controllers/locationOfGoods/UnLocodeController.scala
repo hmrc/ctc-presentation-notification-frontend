@@ -46,7 +46,7 @@ class UnLocodeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "locatioOfGoods.unLocode"
+  private val prefix = "locationOfGoods.unLocode"
   private val form   = formProvider(prefix)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {

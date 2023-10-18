@@ -21,8 +21,6 @@ import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
-
 case object AddPlaceOfLoadingYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString

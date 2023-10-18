@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import controllers.loading.routes
+import controllers.locationOfGoods.routes
 
 case object UnLocodePage extends QuestionPage[String] {
 
