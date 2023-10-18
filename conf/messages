@@ -216,6 +216,14 @@ addPlaceOfLoadingYesNo.heading = Do you want to add a place of loading?
 addPlaceOfLoadingYesNo.paragraph = This is where the goods are loaded.
 addPlaceOfLoadingYesNo.error.required = Select yes if you want to add a place of loading
 
+loading.addUnLocodeYesNo.title = Do you want to add a UN/LOCODE for the place of loading?
+loading.addUnLocodeYesNo.heading = Do you want to add a UN/LOCODE for the place of loading?
+loading.addUnLocodeYesNo.checkYourAnswersLabel = Do you want to add a UN/LOCODE for the place of loading?
+loading.addUnLocodeYesNo.change.hidden = if you want a UN/LOCODE for the place of loading
+loading.addUnLocodeYesNo.error.required = Select yes if you want to add a UN/LOCODE for the place of loading
+loading.addUnLocodeYesNo.paragraph = This is a 5-character code used to identify where the goods are loaded, such as a port or clearance depot.
+
+
 loading.unLocode.title = What is the UN/LOCODE for the place of loading?
 loading.unLocode.heading = What is the UN/LOCODE for the place of loading?
 loading.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
