@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                         = new UnLocodeFormProvider()
-  private val form                                 = formProvider("locationOfGoods.unLocode")
+  private val form                                 = formProvider("loading.unLocode")
   private val mode                                 = NormalMode
   private lazy val unLocodeRoute                   = controllers.loading.routes.UnLocodeController.onPageLoad(departureId, mode).url
   private val mockUnLocodeService: UnLocodeService = mock[UnLocodeService]
