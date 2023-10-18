@@ -22,7 +22,7 @@ import forms.loading.LoadingLocationFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.loading.LocationPage
+import pages.loading.{CountryPage, LocationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -46,9 +46,10 @@ class LocationController @Inject() (
     with I18nSupport {
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId) {
+    .requireData(departureId)
+    .andThen(getMandatoryPage(CountryPage)) {
       implicit request =>
-        val countryName = "Free"
+        val countryName = request.arg.toString
         val form        = formProvider("loading.location", countryName)
         val preparedForm = request.userAnswers.get(LocationPage) match {
           case None        => form
@@ -59,9 +60,10 @@ class LocationController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
+    .andThen(getMandatoryPage(CountryPage))
     .async {
       implicit request =>
-        val countryName = "Dom"
+        val countryName = request.arg.toString
         val form        = formProvider("loading.location", countryName)
         form
           .bindFromRequest()

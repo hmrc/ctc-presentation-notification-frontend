@@ -19,6 +19,9 @@ package controllers.loading
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.loading.{routes => loadingRoutes}
 import controllers.routes
+import forms.Constants.loadingLocationMaxLength
+import forms.loading.LoadingLocationFormProvider
+import pages.loading.{CountryPage, LocationPage}
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
@@ -28,6 +31,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.loading.LocationView
 
 import scala.concurrent.Future
 
@@ -38,7 +42,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
   private val formProvider       = new LoadingLocationFormProvider()
   private val form               = formProvider("loading.location", countryName)
   private val mode               = NormalMode
-  private lazy val locationRoute = loadingRoutes.LocationController.onPageLoad(lrn, mode).url
+  private lazy val locationRoute = loadingRoutes.LocationController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -59,7 +63,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, country.description, mode)(request, messages).toString
+        view(form, departureId, country.description, loadingLocationMaxLength, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -81,7 +85,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, country.description, mode)(request, messages).toString
+        view(filledForm, departureId, country.description, loadingLocationMaxLength, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -89,7 +93,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, locationRoute)
         .withFormUrlEncodedBody(("value", "Test"))
@@ -118,7 +122,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       val view = injector.instanceOf[LocationView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, countryName, mode)(request, messages).toString
+        view(filledForm, departureId, countryName, loadingLocationMaxLength, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

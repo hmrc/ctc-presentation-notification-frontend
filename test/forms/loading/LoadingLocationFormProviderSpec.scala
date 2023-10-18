@@ -17,7 +17,9 @@
 package forms.loading
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.Constants.loadingLocationMaxLength
 import forms.behaviours.StringFieldBehaviours
+import models.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
@@ -37,7 +39,7 @@ class LoadingLocationFormProviderSpec extends StringFieldBehaviours with SpecBas
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(locationMaxLength)
+      stringsWithMaxLength(loadingLocationMaxLength)
     )
 
     behave like mandatoryField(
@@ -50,14 +52,14 @@ class LoadingLocationFormProviderSpec extends StringFieldBehaviours with SpecBas
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
-      locationMaxLength
+      loadingLocationMaxLength
     )
 
     "must not bind valid strings over max length" in {
-      val expectedError = FormError(fieldName, lengthKey, Seq(locationMaxLength))
+      val expectedError = FormError(fieldName, lengthKey, Seq(loadingLocationMaxLength))
 
       val gen = for {
-        str <- stringsLongerThan(locationMaxLength, Gen.alphaNumChar)
+        str <- stringsLongerThan(loadingLocationMaxLength, Gen.alphaNumChar)
       } yield str
 
       forAll(gen) {

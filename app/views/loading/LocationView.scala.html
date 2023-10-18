@@ -42,12 +42,12 @@
             field = form("value"),
             inputTextType = OrdinaryTextInput(
                 heading = messages("loading.location.heading", loadingCountry),
-                caption = Some(messages("loading.caption"))
+                caption = Some(messages("placeOfLoading.caption"))
             ),
             hint = Some(messages("loading.location.hint", maxLength)),
             inputClass = InputSize.Width20
         )
 
-        @button(attributes = Map("id" -> "submit"))
+        @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
 }

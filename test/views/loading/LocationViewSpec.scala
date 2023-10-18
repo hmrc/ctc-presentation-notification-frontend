@@ -17,14 +17,15 @@
 package views.loading
 
 import base.AppWithDefaultMockFixtures
+import forms.Constants.loadingLocationMaxLength
+import forms.loading.LoadingLocationFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
-import play.api.Application
 import play.api.data.Form
-import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
+import views.html.loading.LocationView
 
 class LocationViewSpec extends InputTextViewBehaviours[String] with AppWithDefaultMockFixtures {
 
@@ -37,7 +38,7 @@ class LocationViewSpec extends InputTextViewBehaviours[String] with AppWithDefau
   override def form: Form[String] = formProvider(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[LocationView].apply(form, departureId, countryName, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[LocationView].apply(form, departureId, countryName, loadingLocationMaxLength, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
