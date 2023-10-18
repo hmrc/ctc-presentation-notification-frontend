@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages.sections.loading
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.loading.LoadingSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case object UnLocodePage extends QuestionPage[String] {
+case object LoadingSection extends Section[JsObject] {
 
-  override def path: JsPath = LoadingSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "unLocode"
-
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.loading.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
+  override def toString: String = "loading"
 }

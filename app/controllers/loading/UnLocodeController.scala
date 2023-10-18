@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.locationOfGoods
+package controllers.loading
 
 import controllers.actions._
 import forms.UnLocodeFormProvider
@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.UnLocodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.locationOfGoods.UnLocodeView
+import views.html.loading.UnLocodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

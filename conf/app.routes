@@ -1,6 +1,7 @@
 # microservice specific routes
 
 ->         /                                                                  app.locationOfGoods.Routes
+->         /                                                                  app.loading.Routes
 ->         /                                                                  app.transitOperation.Routes
 
 ->         /hmrc-frontend                                                     hmrcfrontend.Routes

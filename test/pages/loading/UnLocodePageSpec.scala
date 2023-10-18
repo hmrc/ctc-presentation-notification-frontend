@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages.loading
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.loading.LoadingSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object UnLocodePage extends QuestionPage[String] {
+class UnLocodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = LoadingSection.path \ toString
+  "UnLocodePage" - {
 
-  override def toString: String = "unLocode"
+    beRetrievable[String](UnLocodePage)
 
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.loading.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
+    beSettable[String](UnLocodePage)
+
+    beRemovable[String](UnLocodePage)
+  }
 }

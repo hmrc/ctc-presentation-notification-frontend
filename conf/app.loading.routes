@@ -1,0 +1,5 @@
+GET        /place-of-loading/un-locode/:departureId                          controllers.loading.UnLocodeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /place-of-loading/un-locode/:departureId                          controllers.loading.UnLocodeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /place-of-loading/change-un-locode/:departureId                   controllers.loading.UnLocodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /place-of-loading/change-un-locode/:departureId                   controllers.loading.UnLocodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+

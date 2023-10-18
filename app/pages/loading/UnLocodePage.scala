@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages.loading
 
 import models.{Mode, UserAnswers}
 import pages.QuestionPage

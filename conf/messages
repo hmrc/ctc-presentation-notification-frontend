@@ -210,3 +210,12 @@ locationOfGoods.customsOfficeIdentifier.placeholder = Select a customs office id
 locationOfGoods.customsOfficeIdentifier.change.hidden = the customs office identifier for the location of goods
 locationOfGoods.customsOfficeIdentifier.checkYourAnswersLabel = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOfficeIdentifier.error.required = Enter the customs office identifier for the location of goods
+
+loading.unLocode.title = What is the UN/LOCODE for the place of loading?
+loading.unLocode.heading = What is the UN/LOCODE for the place of loading?
+loading.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+loading.unLocode.hint = Enter the code,  like GBBRS or GBMNC.
+loading.unLocode.error.required = Enter the UN/LOCODE for the place of loading
+loading.unLocode.error.length = The UN/LOCODE must be 5 characters long
+loading.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
+loading.unLocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
