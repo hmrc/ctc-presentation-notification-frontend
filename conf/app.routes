@@ -2,6 +2,7 @@
 
 ->         /                                                                  app.locationOfGoods.Routes
 ->         /                                                                  app.transitOperation.Routes
+->         /                                                                  app.loading.Routes
 
 ->         /hmrc-frontend                                                     hmrcfrontend.Routes
 GET        /assets/*file                                                      controllers.Assets.versioned(path = "/public", file: Asset)
