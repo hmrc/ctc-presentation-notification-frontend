@@ -23,13 +23,13 @@
 @import views.html.components.{Button, ErrorSummary, InputText, Paragraph}
 
 @this(
-mainTemplate: MainTemplate,
-formHelper: FormWithCSRF,
-inputText: InputText,
-paragraph: Paragraph,
-errorSummary: ErrorSummary,
-button: Button
-)
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        inputText: InputText,
+        paragraph: Paragraph,
+        errorSummary: ErrorSummary,
+        button: Button
+    )
 
 @(form: Form[String], departureId: String, lrn: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
