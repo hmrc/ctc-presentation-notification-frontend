@@ -8,3 +8,8 @@ POST       /place-of-loading/un-locode/:departureId                          con
 GET        /place-of-loading/change-un-locode/:departureId                   controllers.loading.UnLocodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /place-of-loading/change-un-locode/:departureId                   controllers.loading.UnLocodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+
+GET        /place-of-loading/add-extra-information/:departureId                controllers.loading.AddExtraInformationYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /place-of-loading/add-extra-information/:departureId                controllers.loading.AddExtraInformationYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /place-of-loading/change-add-extra-information/:departureId         controllers.loading.AddExtraInformationYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /place-of-loading/change-add-extra-information/:departureId         controllers.loading.AddExtraInformationYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
