@@ -14,68 +14,67 @@
  * limitations under the License.
  */
 
-package controllers.locationOfGoods
+package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.locationOfGoods.AddContactYesNoPage
+import pages.AddPlaceOfLoadingYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.locationOfGoods.AddContactYesNoView
+import views.html.AddPlaceOfLoadingYesNoView
 
 import scala.concurrent.Future
 
-class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddPlaceOfLoadingYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider              = new YesNoFormProvider()
-  private val form                      = formProvider("locationOfGoods.addContact")
-  private val mode                      = NormalMode
-  private lazy val addContactYesNoRoute = controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, mode).url
+  private val formProvider                = new YesNoFormProvider()
+  private val form                        = formProvider("addPlaceOfLoadingYesNo")
+  private val mode                        = NormalMode
+  private lazy val addPlaceOfLoadingRoute = routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "AddContactLocationOfGoods Controller" - {
+  "AddPlaceOfLoadingYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addContactYesNoRoute)
+      val request = FakeRequest(GET, addPlaceOfLoadingRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddContactYesNoView]
+      val view = injector.instanceOf[AddPlaceOfLoadingYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.toString, mode)(request, messages).toString
+        view(form, departureId, lrn.value, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddPlaceOfLoadingYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addContactYesNoRoute)
+      val request = FakeRequest(GET, addPlaceOfLoadingRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddContactYesNoView]
+      val view = injector.instanceOf[AddPlaceOfLoadingYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(filledForm, departureId, lrn.value, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -84,7 +83,7 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, addContactYesNoRoute)
+      val request = FakeRequest(POST, addPlaceOfLoadingRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -100,14 +99,14 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, addContactYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addPlaceOfLoadingRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddContactYesNoView]
+      val view = injector.instanceOf[AddPlaceOfLoadingYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, departureId, lrn.toString, mode)(request, messages).toString
@@ -117,7 +116,7 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addContactYesNoRoute)
+      val request = FakeRequest(GET, addPlaceOfLoadingRoute)
 
       val result = route(app, request).value
 
@@ -130,7 +129,7 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addContactYesNoRoute)
+      val request = FakeRequest(POST, addPlaceOfLoadingRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

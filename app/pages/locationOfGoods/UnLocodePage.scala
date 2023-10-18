@@ -18,16 +18,17 @@ package pages.locationOfGoods
 
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.loading.LoadingSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import controllers.loading.routes
 
 case object UnLocodePage extends QuestionPage[String] {
 
-  override def path: JsPath = LoadingSection.path \ toString
+  override def path: JsPath = LocationOfGoodsSection.path \ toString
 
   override def toString: String = "unLocode"
 
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(controllers.loading.routes.UnLocodeController.onPageLoad(userAnswers.lrn, mode))
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.UnLocodeController.onPageLoad(departureId, mode))
 }
