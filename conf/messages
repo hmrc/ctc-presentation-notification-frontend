@@ -223,7 +223,6 @@ loading.addUnLocodeYesNo.change.hidden = if you want a UN/LOCODE for the place o
 loading.addUnLocodeYesNo.error.required = Select yes if you want to add a UN/LOCODE for the place of loading
 loading.addUnLocodeYesNo.paragraph = This is a 5-character code used to identify where the goods are loaded, such as a port or clearance depot.
 
-
 loading.unLocode.title = What is the UN/LOCODE for the place of loading?
 loading.unLocode.heading = What is the UN/LOCODE for the place of loading?
 loading.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
@@ -232,3 +231,10 @@ loading.unLocode.error.required = Enter the UN/LOCODE for the place of loading
 loading.unLocode.error.length = The UN/LOCODE must be 5 characters long
 loading.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
 loading.unLocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
+
+loading.location.title = Where in {0} is the place of loading?
+loading.location.heading = Where in {0} is the place of loading?
+loading.location.hint = Enter the specific location, such as the warehouse, shed or wharf, where the goods are being loaded. This can be up to 35 characters long.
+loading.location.error.required = Enter the place of loading in {0}
+loading.location.error.length = The place of loading must be {0} characters or less
+loading.location.error.invalid = The place of loading must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces

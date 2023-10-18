@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package pages.loading
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int  = 35
-  lazy val exactUnLocodeLength: Int           = 5
-  lazy val maxNameLength: Int                 = 70
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val maxAdditionalIdentifierLength: Int = 4
-  lazy val loadingLocationMaxLength: Int      = 35
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.loading.LoadingSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+import controllers.loading.routes
+
+case object LocationPage extends QuestionPage[String] {
+
+  override def path: JsPath = LoadingSection.path \ toString
+
+  override def toString: String = "location"
+
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.LocationController.onPageLoad(departureId, mode))
 }
