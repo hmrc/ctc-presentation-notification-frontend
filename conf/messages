@@ -46,6 +46,7 @@ address.streetNumber = street number
 
 locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
+loading.caption = Place of loading
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
@@ -210,3 +211,10 @@ locationOfGoods.customsOfficeIdentifier.placeholder = Select a customs office id
 locationOfGoods.customsOfficeIdentifier.change.hidden = the customs office identifier for the location of goods
 locationOfGoods.customsOfficeIdentifier.checkYourAnswersLabel = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOfficeIdentifier.error.required = Enter the customs office identifier for the location of goods
+
+loading.addUnLocodeYesNo.title = Do you want to add a UN/LOCODE for the place of loading?
+loading.addUnLocodeYesNo.heading = Do you want to add a UN/LOCODE for the place of loading?
+loading.addUnLocodeYesNo.checkYourAnswersLabel = Do you want to add a UN/LOCODE for the place of loading?
+loading.addUnLocodeYesNo.change.hidden = if you want a UN/LOCODE for the place of loading
+loading.addUnLocodeYesNo.error.required = Select yes if you want to add a UN/LOCODE for the place of loading
+loading.addUnLocodeYesNo.paragraph = This is a 5-character code used to identify where the goods are loaded, such as a port or clearance depot.
