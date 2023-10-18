@@ -2,3 +2,9 @@ GET        /place-of-loading/add-un-locode/:departureId                        c
 POST       /place-of-loading/add-un-locode/:departureId                        controllers.loading.AddUnLocodeYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /place-of-loading/change-add-un-locode/:departureId                 controllers.loading.AddUnLocodeYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /place-of-loading/change-add-un-locode/:departureId                 controllers.loading.AddUnLocodeYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /place-of-loading/un-locode/:departureId                          controllers.loading.UnLocodeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /place-of-loading/un-locode/:departureId                          controllers.loading.UnLocodeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /place-of-loading/change-un-locode/:departureId                   controllers.loading.UnLocodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /place-of-loading/change-un-locode/:departureId                   controllers.loading.UnLocodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+

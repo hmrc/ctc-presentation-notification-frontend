@@ -222,3 +222,13 @@ loading.addUnLocodeYesNo.checkYourAnswersLabel = Do you want to add a UN/LOCODE 
 loading.addUnLocodeYesNo.change.hidden = if you want a UN/LOCODE for the place of loading
 loading.addUnLocodeYesNo.error.required = Select yes if you want to add a UN/LOCODE for the place of loading
 loading.addUnLocodeYesNo.paragraph = This is a 5-character code used to identify where the goods are loaded, such as a port or clearance depot.
+
+
+loading.unLocode.title = What is the UN/LOCODE for the place of loading?
+loading.unLocode.heading = What is the UN/LOCODE for the place of loading?
+loading.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+loading.unLocode.hint = Enter the code,  like GBBRS or GBMNC.
+loading.unLocode.error.required = Enter the UN/LOCODE for the place of loading
+loading.unLocode.error.length = The UN/LOCODE must be 5 characters long
+loading.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
+loading.unLocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.

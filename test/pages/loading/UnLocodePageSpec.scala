@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.loading
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object AddPlaceOfLoadingYesNoPage extends QuestionPage[Boolean] {
+class UnLocodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "UnLocodePage" - {
 
-  override def toString: String = "addPlaceOfLoadingYesNo"
+    beRetrievable[String](UnLocodePage)
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode))
+    beSettable[String](UnLocodePage)
 
-//  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
+    beRemovable[String](UnLocodePage)
+  }
 }
