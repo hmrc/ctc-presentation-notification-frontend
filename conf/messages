@@ -232,6 +232,21 @@ loading.unLocode.error.length = The UN/LOCODE must be 5 characters long
 loading.unLocode.error.invalid = The UN/LOCODE must only include letters a to z and numbers 0 to 9
 loading.unLocode.error.not.exists = Please enter a valid UN/LOCODE. This is a 5-character code used to identify a transit-related location, like DEBER.
 
+loading.addExtraInformationYesNo.title = Do you want to add extra information for the place of loading?
+loading.addExtraInformationYesNo.heading = Do you want to add extra information for the place of loading?
+loading.addExtraInformationYesNo.paragraph = This includes the country and location of loading.
+loading.addExtraInformationYesNo.checkYourAnswersLabel = Do you want to add extra information for the place of loading?
+loading.addExtraInformationYesNo.change.hidden = if you want to add extra information for the place of loading
+loading.addExtraInformationYesNo.error.required = Select yes if you want to add extra information for the place of loading
+
+loading.country.title = In which country is the place of loading?
+loading.country.heading = In which country is the place of loading?
+loading.country.hint = Enter the country, like Italy or Spain.
+loading.country.placeholder = Select a country
+loading.country.change.hidden = country for the place of loading
+loading.country.checkYourAnswersLabel = Country
+loading.country.error.required = Enter which country the place of loading is in
+
 loading.location.title = Where in {0} is the place of loading?
 loading.location.heading = Where in {0} is the place of loading?
 loading.location.hint = Enter the specific location, such as the warehouse, shed or wharf, where the goods are being loaded. This can be up to 35 characters long.

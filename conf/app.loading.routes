@@ -8,6 +8,16 @@ POST       /place-of-loading/un-locode/:departureId                            c
 GET        /place-of-loading/change-un-locode/:departureId                     controllers.loading.UnLocodeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /place-of-loading/change-un-locode/:departureId                     controllers.loading.UnLocodeController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /place-of-loading/add-extra-information/:departureId                controllers.loading.AddExtraInformationYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /place-of-loading/add-extra-information/:departureId                controllers.loading.AddExtraInformationYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /place-of-loading/change-add-extra-information/:departureId         controllers.loading.AddExtraInformationYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /place-of-loading/change-add-extra-information/:departureId         controllers.loading.AddExtraInformationYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /place-of-loading/country/:departureId                              controllers.loading.CountryController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /place-of-loading/country/:departureId                              controllers.loading.CountryController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /place-of-loading/change-country/:departureId                       controllers.loading.CountryController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /place-of-loading/change-country/:departureId                       controllers.loading.CountryController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 GET        /place-of-loading/location/:departureId                             controllers.loading.LocationController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /place-of-loading/location/:departureId                             controllers.loading.LocationController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /place-of-loading/change-location/:departureId                      controllers.loading.LocationController.onPageLoad(departureId: String, mode: Mode = CheckMode)
