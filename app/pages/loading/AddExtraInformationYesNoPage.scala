@@ -19,6 +19,7 @@ package pages.loading
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.loading.LoadingSection
+import controllers.loading.routes
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,6 +30,6 @@ case object AddExtraInformationYesNoPage extends QuestionPage[Boolean] {
   override def toString: String = "addExtraInformationYesNo"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.loading.routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode))
+    Some(routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode))
 
 }
