@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import forms.SelectableFormProvider
+package forms
+
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
 import models.SelectableList

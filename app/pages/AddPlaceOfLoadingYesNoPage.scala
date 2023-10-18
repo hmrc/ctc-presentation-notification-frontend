@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods
+package pages
 
-import controllers.locationOfGoods.routes
-import models.{DynamicAddress, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
+import controllers.routes
+import models.{Mode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddressPage extends QuestionPage[DynamicAddress] {
+import scala.util.Try
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+case object AddPlaceOfLoadingYesNoPage extends QuestionPage[Boolean] {
 
-  override def toString: String = "address"
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "addPlaceOfLoadingYesNo"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddressController.onPageLoad(departureId, mode))
+    Some(routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode))
+
+//  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
 }
