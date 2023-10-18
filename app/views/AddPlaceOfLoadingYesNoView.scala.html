@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.loading.routes
+@import controllers.routes
+@import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 
@@ -26,23 +27,23 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId:String, lrn: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("loading.addUnLocodeYesNo.title"),
+    title = messages("addPlaceOfLoadingYesNo.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AddUnLocodeYesNoController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddPlaceOfLoadingYesNoController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("loading.addUnLocodeYesNo.heading"),
+                heading = messages("addPlaceOfLoadingYesNo.heading"),
                 caption = Some(messages("placeOfLoading.caption")),
-                additionalHtml = messages("loading.addUnLocodeYesNo.paragraph").toParagraph
+                additionalHtml = messages("addPlaceOfLoadingYesNo.paragraph").toParagraph
             )
         )
 
