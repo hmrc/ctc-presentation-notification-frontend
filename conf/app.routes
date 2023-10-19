@@ -9,6 +9,7 @@
 GET        /assets/*file                                                      controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET        /complete-declaration/more-information/:departureId                controllers.MoreInformationController.onPageLoad(departureId: String)
+POST       /complete-declaration/more-information/:departureId                controllers.MoreInformationController.onSubmit(departureId: String)
 GET        /complete-declaration/check-information/:departureId               controllers.CheckInformationController.onPageLoad(departureId: String)
 
 GET        /keep-alive                                                        controllers.KeepAliveController.keepAlive(departureId: Option[String] = None)

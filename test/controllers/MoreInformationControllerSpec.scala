@@ -18,11 +18,12 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
+import pages.behaviours.PageBehaviours
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.MoreInformationView
 
-class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with PageBehaviours {
 
   "MoreInformation Controller" - {
     "return OK and the correct view for a GET" in {
@@ -37,7 +38,19 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(lrn.value)(request, messages).toString
+      contentAsString(result) mustEqual view(lrn.value, departureId)(request, messages).toString
+    }
+
+    "redirect successfully when calling onSubmit" in {
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, routes.MoreInformationController.onSubmit(departureId).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
   }
 }
