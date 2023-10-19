@@ -17,12 +17,13 @@
 package navigator
 
 import base.SpecBase
+import config.Constants.PostalCodeIdentifier
 import generators.Generators
 import models._
 import navigation.Navigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationOfGoodsPage, LocationTypePage}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -53,6 +54,18 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             .mustBe(IdentificationPage.route(userAnswers, departureId, mode).value)
         }
       }
+
+      "must go from IdentificationPage to LocationOfGoodsPage" - {
+        "when value is PostalCodeIdentifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(PostalCodeIdentifier, "postal code")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(LocationOfGoodsPage.route(userAnswers, departureId, mode).value)
+        }
+      }
+
     }
   }
 }

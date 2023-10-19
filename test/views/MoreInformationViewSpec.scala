@@ -23,7 +23,7 @@ import views.html.MoreInformationView
 class MoreInformationViewSpec extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[MoreInformationView].apply(lrn.value)(fakeRequest, messages)
+    injector.instanceOf[MoreInformationView].apply(lrn.value, departureId)(fakeRequest, messages)
 
   override val prefix: String = "moreInformation"
 

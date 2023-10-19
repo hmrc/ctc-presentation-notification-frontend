@@ -18,30 +18,19 @@
 @import models.LocalReferenceNumber
 @import play.api.mvc.Call
 
-@this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    heading: Heading,
-    button: Button,
-    headingCaption: HeadingCaption
-)
+@this(mainTemplate: MainTemplate, formHelper: FormWithCSRF, heading: Heading, button: Button, headingCaption: HeadingCaption)
 
-@(lrn: String)(implicit request: Request[_], messages: Messages)
+@(lrn: String, departureId: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(
-    title = messages("moreInformation.title"),
-    showBackLink = true
-) {
+@mainTemplate(title = messages("moreInformation.title"), showBackLink = true) {
 
-    @headingCaption(lrn)
-    @heading(
-        heading = messages("moreInformation.heading")
-    )
+    @formHelper(action = routes.MoreInformationController.onSubmit(departureId), Symbol("autoComplete") -> "off") {
+        @headingCaption(lrn)
+        @heading(heading = messages("moreInformation.heading"))
 
-    <p class="govuk-body">@messages("moreInformation.paragraph1")</p>
-    <p class="govuk-body">@messages("moreInformation.paragraph2")</p>
+        <p class="govuk-body">@messages("moreInformation.paragraph1")</p>
+        <p class="govuk-body">@messages("moreInformation.paragraph2")</p>
 
-    @formHelper(action = Call("GET", "#"), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 }

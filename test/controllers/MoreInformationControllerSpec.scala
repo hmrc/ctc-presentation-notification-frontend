@@ -18,11 +18,14 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
+import models.messages.MessageData
+import models.NormalMode
+import pages.behaviours.PageBehaviours
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.MoreInformationView
 
-class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with PageBehaviours {
 
   "MoreInformation Controller" - {
     "return OK and the correct view for a GET" in {
@@ -37,7 +40,39 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(lrn.value)(request, messages).toString
+      contentAsString(result) mustEqual view(lrn.value, departureId)(request, messages).toString
+    }
+
+    "redirect to LocationTypeController when locationOfGoods is None and not simplified" in {
+
+      val userAnswers                = arbitraryUserData.arbitrary.sample.value
+      val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
+      val departureData: MessageData = userAnswers.departureData.copy(Authorisation = None, Consignment = consignment)
+      val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
+      setExistingUserAnswers(simplifiedUserAnswers)
+
+      val request = FakeRequest(POST, routes.MoreInformationController.onSubmit(departureId).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, NormalMode).url)
+    }
+
+    "redirect to AuthorisationNumberController when locationOfGoods is None and is simplified" in {
+
+      val userAnswers                = arbitraryUserData.arbitrary.sample.value
+      val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
+      val departureData: MessageData = userAnswers.departureData.copy(Consignment = consignment)
+      val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
+      setExistingUserAnswers(simplifiedUserAnswers)
+
+      val request = FakeRequest(POST, routes.MoreInformationController.onSubmit(departureId).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, NormalMode).url)
     }
   }
 }
