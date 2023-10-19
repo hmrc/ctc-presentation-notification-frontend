@@ -23,7 +23,7 @@ import models._
 import navigation.Navigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationOfGoodsPage, LocationTypePage}
+import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -62,7 +62,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
           navigator
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(LocationOfGoodsPage.route(userAnswers, departureId, mode).value)
+            .mustBe(navigator.routeIdentificationPageNavigation(userAnswers, departureId, mode).value)
         }
       }
 

@@ -16,37 +16,16 @@
 
 package pages.locationOfGoods
 
-import config.Constants.{
-  AddressIdentifier,
-  AuthorisationNumberIdentifier,
-  CoordinatesIdentifier,
-  CustomsOfficeIdentifier,
-  EoriNumberIdentifier,
-  PostalCodeIdentifier,
-  UnlocodeIdentifier
-}
-import models.{LocationOfGoodsIdentification, Mode, UserAnswers}
+import models.{LocationOfGoodsIdentification, UserAnswers}
 import pages.QuestionPage
 import pages.sections.locationOfGoods.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 import scala.util.Try
 
 trait BaseLocationOfGoodsPage extends QuestionPage[LocationOfGoodsIdentification] {
 
   override def path: JsPath = LocationOfGoodsSection.path \ toString
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(IdentificationPage).map {
-      case ltp if ltp.code == CustomsOfficeIdentifier       => controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == EoriNumberIdentifier          => controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AuthorisationNumberIdentifier => controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == CoordinatesIdentifier         => controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == UnlocodeIdentifier            => controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AddressIdentifier             => controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == PostalCodeIdentifier          => controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode)
-    }
 
   def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
 

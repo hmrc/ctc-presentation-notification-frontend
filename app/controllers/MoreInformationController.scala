@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import models.NormalMode
+import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -29,6 +29,7 @@ import javax.inject.{Inject, Singleton}
 class MoreInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  navigator: Navigator,
   view: MoreInformationView
 ) extends FrontendBaseController
     with I18nSupport {
@@ -41,14 +42,11 @@ class MoreInformationController @Inject() (
 
   def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val locationOfGoods = request.userAnswers.departureData.Consignment.LocationOfGoods
-      val isSimplified    = request.userAnswers.departureData.isSimplified
-
-      val nextPage = locationOfGoods match {
-        case None if !isSimplified => controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode = NormalMode)
-        case None                  => controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode = NormalMode)
-      }
-
-      Redirect(nextPage)
+      Redirect(
+        navigator.locationOfGoodsNavigation(departureId,
+                                            request.userAnswers.departureData.Consignment.LocationOfGoods,
+                                            request.userAnswers.departureData.isSimplified
+        )
+      )
   }
 }
