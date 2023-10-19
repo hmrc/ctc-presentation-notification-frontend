@@ -20,7 +20,8 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
+import navigation.annotations.LocationOfGoods
 import pages.locationOfGoods.AddContactYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddContactYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  @LocationOfGoods navigator: LocationOfGoodsNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
