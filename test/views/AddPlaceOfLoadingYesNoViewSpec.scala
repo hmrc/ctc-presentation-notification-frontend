@@ -25,7 +25,7 @@ import views.html.AddPlaceOfLoadingYesNoView
 class AddPlaceOfLoadingYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddPlaceOfLoadingYesNoView].apply(form, departureId, lrn.value, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddPlaceOfLoadingYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "addPlaceOfLoadingYesNo"
 

@@ -14,77 +14,89 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.loading
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.YesNoFormProvider
+import controllers.loading.{routes => loadingRoutes}
+import controllers.routes
+import forms.Constants.loadingLocationMaxLength
+import forms.loading.LoadingLocationFormProvider
+import pages.loading.{CountryPage, LocationPage}
+import generators.Generators
 import models.NormalMode
+import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AddPlaceOfLoadingYesNoPage
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.AddPlaceOfLoadingYesNoView
+import views.html.loading.LocationView
 
 import scala.concurrent.Future
 
-class AddPlaceOfLoadingYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                = new YesNoFormProvider()
-  private val form                        = formProvider("addPlaceOfLoadingYesNo")
-  private val mode                        = NormalMode
-  private lazy val addPlaceOfLoadingRoute = routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode).url
+  private val country            = arbitrary[Country].sample.value
+  private val countryName        = country.description
+  private val formProvider       = new LoadingLocationFormProvider()
+  private val form               = formProvider("loading.location", countryName)
+  private val mode               = NormalMode
+  private lazy val locationRoute = loadingRoutes.LocationController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "AddPlaceOfLoadingYesNo Controller" - {
+  "Location Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
+      setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, addPlaceOfLoadingRoute)
+      val request = FakeRequest(GET, locationRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddPlaceOfLoadingYesNoView]
+      val view = injector.instanceOf[LocationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode)(request, messages).toString
+        view(form, departureId, country.description, loadingLocationMaxLength, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddPlaceOfLoadingYesNoPage, true)
+      val userAnswers = emptyUserAnswers
+        .setValue(CountryPage, country)
+        .setValue(LocationPage, "Test")
+
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addPlaceOfLoadingRoute)
+      val request = FakeRequest(GET, locationRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "Test"))
 
-      val view = injector.instanceOf[AddPlaceOfLoadingYesNoView]
+      val view = injector.instanceOf[LocationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, country.description, loadingLocationMaxLength, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, addPlaceOfLoadingRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, locationRoute)
+        .withFormUrlEncodedBody(("value", "Test"))
 
       val result = route(app, request).value
 
@@ -95,28 +107,29 @@ class AddPlaceOfLoadingYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
+      setExistingUserAnswers(userAnswers)
 
-      val invalidAnswer = ""
+      val invalidAnswer = ">"
 
-      val request    = FakeRequest(POST, addPlaceOfLoadingRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, locationRoute).withFormUrlEncodedBody(("value", invalidAnswer))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddPlaceOfLoadingYesNoView]
+      val view = injector.instanceOf[LocationView]
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, countryName, loadingLocationMaxLength, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addPlaceOfLoadingRoute)
+      val request = FakeRequest(GET, locationRoute)
 
       val result = route(app, request).value
 
@@ -129,8 +142,8 @@ class AddPlaceOfLoadingYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addPlaceOfLoadingRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, locationRoute)
+        .withFormUrlEncodedBody(("value", "test"))
 
       val result = route(app, request).value
 

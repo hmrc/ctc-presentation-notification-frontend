@@ -246,3 +246,10 @@ loading.country.placeholder = Select a country
 loading.country.change.hidden = country for the place of loading
 loading.country.checkYourAnswersLabel = Country
 loading.country.error.required = Enter which country the place of loading is in
+
+loading.location.title = Where in {0} is the place of loading?
+loading.location.heading = Where in {0} is the place of loading?
+loading.location.hint = Enter the specific location, such as the warehouse, shed or wharf, where the goods are being loaded. This can be up to 35 characters long.
+loading.location.error.required = Enter the place of loading in {0}
+loading.location.error.length = The place of loading must be {0} characters or less
+loading.location.error.invalid = The place of loading must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
