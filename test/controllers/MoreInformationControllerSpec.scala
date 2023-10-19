@@ -50,6 +50,7 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val result = route(app, request).value
 
       status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
   }
 }
