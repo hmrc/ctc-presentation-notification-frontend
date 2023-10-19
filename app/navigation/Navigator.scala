@@ -19,7 +19,6 @@ package navigation
 import com.google.inject.Singleton
 import config.Constants._
 import models._
-import models.messages.LocationOfGoods
 import pages._
 import pages.locationOfGoods._
 import play.api.mvc.Call
@@ -31,6 +30,7 @@ class Navigator {
     case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
     case IdentificationPage                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
     case CountryPage                                 => ua => AddressPage.route(ua, departureId, mode)
+    case MoreInformationPage                         => ua => locationOfGoodsNavigation(ua, departureId, mode)
     case CoordinatesPage                             => ua => ???
     case EoriPage                                    => ua => ???
   }
@@ -58,10 +58,10 @@ class Navigator {
       case ltp if ltp.code == PostalCodeIdentifier          => controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode)
     }
 
-  def locationOfGoodsNavigation(departureId: String, locationOfGoods: Option[LocationOfGoods], isSimplified: Boolean) = {
-    val nextPage = locationOfGoods match {
-      case None if !isSimplified => controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode = NormalMode)
-      case None                  => controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode = NormalMode)
+  private def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
+    val nextPage = ua.departureData.Consignment.LocationOfGoods match {
+      case None if !ua.departureData.isSimplified => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+      case None                                   => Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
     }
     nextPage
   }

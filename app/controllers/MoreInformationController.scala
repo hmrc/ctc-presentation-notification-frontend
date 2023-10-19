@@ -17,7 +17,9 @@
 package controllers
 
 import controllers.actions._
+import models.NormalMode
 import navigation.Navigator
+import pages.MoreInformationPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,11 +44,6 @@ class MoreInformationController @Inject() (
 
   def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      Redirect(
-        navigator.locationOfGoodsNavigation(departureId,
-                                            request.userAnswers.departureData.Consignment.LocationOfGoods,
-                                            request.userAnswers.departureData.isSimplified
-        )
-      )
+      Redirect(navigator.nextPage(MoreInformationPage, request.userAnswers, departureId, NormalMode))
   }
 }

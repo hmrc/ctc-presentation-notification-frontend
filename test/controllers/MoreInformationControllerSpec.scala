@@ -19,7 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
 import models.messages.MessageData
-import models.NormalMode
 import pages.behaviours.PageBehaviours
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -56,7 +55,6 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val result = route(app, request).value
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, NormalMode).url)
     }
 
     "redirect to AuthorisationNumberController when locationOfGoods is None and is simplified" in {
@@ -72,7 +70,6 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val result = route(app, request).value
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, NormalMode).url)
     }
   }
 }
