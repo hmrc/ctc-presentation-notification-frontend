@@ -18,7 +18,6 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
-import models.messages.MessageData
 import pages.behaviours.PageBehaviours
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,28 +41,9 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
       contentAsString(result) mustEqual view(lrn.value, departureId)(request, messages).toString
     }
 
-    "redirect to LocationTypeController when locationOfGoods is None and not simplified" in {
+    "redirect successfully when calling onSubmit" in {
 
-      val userAnswers                = arbitraryUserData.arbitrary.sample.value
-      val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
-      val departureData: MessageData = userAnswers.departureData.copy(Authorisation = None, Consignment = consignment)
-      val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
-      setExistingUserAnswers(simplifiedUserAnswers)
-
-      val request = FakeRequest(POST, routes.MoreInformationController.onSubmit(departureId).url)
-
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-    }
-
-    "redirect to AuthorisationNumberController when locationOfGoods is None and is simplified" in {
-
-      val userAnswers                = arbitraryUserData.arbitrary.sample.value
-      val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
-      val departureData: MessageData = userAnswers.departureData.copy(Consignment = consignment)
-      val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
-      setExistingUserAnswers(simplifiedUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, routes.MoreInformationController.onSubmit(departureId).url)
 

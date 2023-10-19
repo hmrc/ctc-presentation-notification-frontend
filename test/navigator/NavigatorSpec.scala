@@ -17,9 +17,10 @@
 package navigator
 
 import base.SpecBase
-import config.Constants.PostalCodeIdentifier
+import config.Constants._
 import generators.Generators
 import models._
+import models.messages.MessageData
 import navigation.Navigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -55,17 +56,49 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
 
-      "must go from IdentificationPage to LocationOfGoodsPage" - {
-        "when value is PostalCodeIdentifier" in {
-          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(PostalCodeIdentifier, "postal code")
+      "must go from IdentificationPage to next page" - {
+        Seq[String](
+          CustomsOfficeIdentifier,
+          EoriNumberIdentifier,
+          AuthorisationNumberIdentifier,
+          UnlocodeIdentifier,
+          CoordinatesIdentifier,
+          AddressIdentifier,
+          PostalCodeIdentifier
+        ) foreach (
+          identifier =>
+            s"when value is $identifier" in {
+              val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(identifier, "identifier")
 
-          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
-          navigator
-            .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(navigator.routeIdentificationPageNavigation(userAnswers, departureId, mode).value)
-        }
+              val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+              navigator
+                .nextPage(IdentificationPage, userAnswers, departureId, mode)
+                .mustBe(navigator.routeIdentificationPageNavigation(userAnswers, departureId, mode).value)
+            }
+        )
       }
 
+      "redirect to LocationTypeController when locationOfGoods is None and not simplified" in {
+
+        val userAnswers                = arbitraryUserData.arbitrary.sample.value
+        val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
+        val departureData: MessageData = userAnswers.departureData.copy(Authorisation = None, Consignment = consignment)
+        val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
+
+        val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
+        result.mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+      }
+
+      "redirect to AuthorisationNumberController when locationOfGoods is None and is simplified" in {
+
+        val userAnswers                = arbitraryUserData.arbitrary.sample.value
+        val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
+        val departureData: MessageData = userAnswers.departureData.copy(Consignment = consignment)
+        val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
+
+        val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
+        result.mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+      }
     }
   }
 }
