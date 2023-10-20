@@ -27,4 +27,7 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
 
 }
 
-class FakeLoadingNavigator(desiredRoute: Call) extends LoadingNavigator
+class FakeLoadingNavigator(desiredRoute: Call) extends LoadingNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+
+}
