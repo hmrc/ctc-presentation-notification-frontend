@@ -52,11 +52,11 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
       }
 
-      "must go from UnLocodePage to CountryPage" - {
+      "must go from UnLocodePage to AddExtraInformationYesNoPage" - {
         val userAnswers = emptyUserAnswers.setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
         navigator
           .nextPage(UnLocodePage, userAnswers, departureId, mode)
-          .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
+          .mustBe(AddExtraInformationYesNoPage.route(userAnswers, departureId, mode).value)
       }
 
       "must go from AddExtraInformationYesNoPage" - {

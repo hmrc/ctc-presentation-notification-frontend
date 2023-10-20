@@ -27,7 +27,7 @@ class LoadingNavigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddUnLocodeYesNoPage         => ua => addUnlocodeNormalRoute(ua, departureId)
-    case UnLocodePage                 => ua => CountryPage.route(ua, departureId, NormalMode)
+    case UnLocodePage                 => ua => AddExtraInformationYesNoPage.route(ua, departureId, NormalMode)
     case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoNormalRoute(ua, departureId)
     case CountryPage                  => ua => LocationPage.route(ua, departureId, NormalMode)
   }
