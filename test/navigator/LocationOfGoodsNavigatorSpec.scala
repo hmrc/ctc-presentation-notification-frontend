@@ -24,7 +24,9 @@ import models.messages.MessageData
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, EoriPage, IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.{Page, QuestionPage}
+import pages.locationOfGoods._
+import pages.locationOfGoods.contact.NamePage
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -121,7 +123,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from Add AdditionalIdentifierYesNo page to AdditionalIdentifier page when user selects Yes" in {
-
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
@@ -130,7 +131,57 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
               .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, NormalMode))
         }
+      }
 
+      "must go from Add AdditionalIdentifierYesNo page to AddContactYesNo page when user selects No" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddIdentifierYesNoPage, false)
+            navigator
+              .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go to AddContact next page" - {
+        Seq[Page](
+          AdditionalIdentifierPage,
+          CoordinatesPage,
+          UnLocodePage,
+          AddressPage,
+          PostalCodePage
+        ) foreach (
+          page =>
+            s"when page is $page" in {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  navigator
+                    .nextPage(page, answers, departureId, NormalMode)
+                    .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+              }
+            }
+        )
+      }
+
+      "must go from Add AddContactYesNo page to ContactName page when user selects Yes" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, true)
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go from ContactName page to Contact phone number page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(NamePage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, NormalMode))
+        }
       }
     }
   }
