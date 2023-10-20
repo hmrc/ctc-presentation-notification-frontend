@@ -20,7 +20,7 @@ import controllers.actions.Actions
 import forms.EoriNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.LocationOfGoodsNavigator
+import navigation.{LocationOfGoodsNavigator, Navigator}
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.EoriPage
@@ -40,7 +40,7 @@ class EoriController @Inject() (
   formProvider: EoriNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: EoriView,
-  @LocationOfGoods navigator: LocationOfGoodsNavigator
+  @LocationOfGoods navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

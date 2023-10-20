@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.Mode
 import models.reference.Country
 import models.requests.MandatoryDataRequest
-import navigation.LocationOfGoodsNavigator
+import navigation.{LocationOfGoodsNavigator, Navigator}
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.CountryPage
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CountryController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods navigator: LocationOfGoodsNavigator,
+  @LocationOfGoods navigator: Navigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: CountriesService,

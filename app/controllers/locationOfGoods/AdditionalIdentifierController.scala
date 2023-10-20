@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.AdditionalIdentifierFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.LocationOfGoodsNavigator
+import navigation.{LocationOfGoodsNavigator, Navigator}
 import navigation.annotations.LocationOfGoods
 import pages.locationOfGoods.AdditionalIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalIdentifierController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods navigator: LocationOfGoodsNavigator,
+  @LocationOfGoods navigator: Navigator,
   actions: Actions,
   formProvider: AdditionalIdentifierFormProvider,
   val controllerComponents: MessagesControllerComponents,

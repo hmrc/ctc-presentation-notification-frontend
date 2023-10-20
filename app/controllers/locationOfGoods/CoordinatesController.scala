@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.CoordinatesFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Coordinates, Mode}
-import navigation.LocationOfGoodsNavigator
+import navigation.{LocationOfGoodsNavigator, Navigator}
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.CoordinatesPage
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CoordinatesController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods navigator: LocationOfGoodsNavigator,
+  @LocationOfGoods navigator: Navigator,
   actions: Actions,
   formProvider: CoordinatesFormProvider,
   val controllerComponents: MessagesControllerComponents,
