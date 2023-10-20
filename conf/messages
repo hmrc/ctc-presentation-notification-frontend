@@ -75,6 +75,7 @@ locationOfGoods.identification.p1 = This needs to be precise enough for Customs 
 locationOfGoods.identification.checkYourAnswersLabel = Identifier type for the location of goods
 locationOfGoods.identification.change.hidden = identifier type for the location of goods
 locationOfGoods.identification.error.required = Select how you want to identify the location of goods
+locationOfGoods.identification.Z = Address
 
 locationOfGoods.eori.title = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
 locationOfGoods.eori.heading = What is the EORI number or Trader Identification Number (TIN) for the location of goods?
