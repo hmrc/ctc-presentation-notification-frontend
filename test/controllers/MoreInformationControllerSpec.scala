@@ -18,12 +18,22 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
+import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import pages.behaviours.PageBehaviours
+import play.api.inject
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.MoreInformationView
 
 class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with PageBehaviours {
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      //TODO: Change binding when navigator added
+      .overrides(inject.bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   "MoreInformation Controller" - {
     "return OK and the correct view for a GET" in {

@@ -25,9 +25,12 @@ import pages.loading.{CountryPage, LocationPage}
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
+import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import play.api.inject
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -47,6 +50,8 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      //TODO: Change binding when navigator added
+      .overrides(inject.bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   "Location Controller" - {
 
