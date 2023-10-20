@@ -20,13 +20,13 @@ import controllers.locationOfGoods.routes
 import models.reference.CustomsOffice
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsIdentifierSection
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object CustomsOfficeIdentifierPage extends QuestionPage[CustomsOffice] {
 
-  override def path: JsPath = LocationOfGoodsIdentifierSection.path \ toString
+  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
   override def toString: String = "customsOffice"
 
