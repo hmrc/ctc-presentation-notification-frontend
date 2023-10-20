@@ -20,7 +20,7 @@ import controllers.actions.Actions
 import forms.EoriNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.EoriPage

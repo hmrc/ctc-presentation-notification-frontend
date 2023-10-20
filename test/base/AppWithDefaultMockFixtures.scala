@@ -17,8 +17,8 @@
 package base
 
 import controllers.actions._
-import models.{Mode, UserAnswers}
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import models.UserAnswers
+import navigation.Navigator
 import navigator.FakeNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

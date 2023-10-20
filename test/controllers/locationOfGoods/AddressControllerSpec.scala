@@ -17,15 +17,14 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
+import controllers.routes
 import forms.DynamicAddressFormProvider
 import generators.Generators
 import models.reference.Country
 import models.{DynamicAddress, NormalMode}
 import navigation.Navigator
 import navigation.annotations.LocationOfGoods
-import navigator.FakeNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

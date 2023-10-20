@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddExtraInformationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-                                                   //TODO: Change annotation when loading navigator added
+  //TODO: Change annotation when loading navigator added
   @LocationOfGoods navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,

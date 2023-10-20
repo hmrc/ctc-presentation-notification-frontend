@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.SpecificDataRequestProvider1
 import models.{LocationOfGoodsIdentification, LocationType, Mode}
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages._
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}

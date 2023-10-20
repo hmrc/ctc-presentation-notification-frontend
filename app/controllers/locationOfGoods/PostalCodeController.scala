@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.PostalCodeFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Mode, PostalCodeAddress}
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.locationOfGoods.PostalCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}

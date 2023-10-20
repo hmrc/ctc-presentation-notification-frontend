@@ -22,7 +22,6 @@ import forms.locationOfGoods.AdditionalIdentifierFormProvider
 import models.NormalMode
 import navigation.Navigator
 import navigation.annotations.LocationOfGoods
-import navigator.FakeNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.AdditionalIdentifierPage
