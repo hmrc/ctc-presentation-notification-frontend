@@ -32,12 +32,12 @@ class LoadingNavigator {
     case CountryPage                  => ua => LocationPage.route(ua, departureId, NormalMode)
   }
 
-//  protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
-//    case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
-//    case UnLocodePage                 => ua => ??? //todo will go back to CYA
-//    case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoCheckRoute(ua, departureId)
-//    case CountryPage                  => ua => ??? //todo will go back to CYA
-//  }
+  protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
+    case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
+    case UnLocodePage                 => ua => ??? //todo will go back to CYA
+    case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoCheckRoute(ua, departureId)
+    case CountryPage                  => ua => ??? //todo will go back to CYA
+  }
 
   def addUnlocodeNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddUnLocodeYesNoPage) match {
@@ -81,9 +81,17 @@ class LoadingNavigator {
     }
 
   def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
-    normalRoutes(departureId, mode).lift(page) match {
-      case None       => controllers.routes.IndexController.index(departureId)
-      case Some(call) => handleCall(userAnswers, call)
+    mode match {
+      case NormalMode =>
+        normalRoutes(departureId, mode).lift(page) match {
+          case None       => controllers.routes.IndexController.index(departureId)
+          case Some(call) => handleCall(userAnswers, call)
+        }
+      case CheckMode =>
+        checkRoutes(departureId, mode).lift(page) match {
+          case None       => controllers.routes.IndexController.index(departureId)
+          case Some(call) => handleCall(userAnswers, call)
+        }
     }
 
 }
