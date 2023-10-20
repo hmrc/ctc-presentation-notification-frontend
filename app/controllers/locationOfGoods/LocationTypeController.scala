@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.MandatoryDataRequest
 import models.{LocationType, Mode}
-import navigation.LocationOfGoodsNavigator
+import navigation.{LocationOfGoodsNavigator, Navigator}
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
@@ -43,7 +43,7 @@ class LocationTypeController @Inject() (
   locationTypeService: LocationTypeService,
   val controllerComponents: MessagesControllerComponents,
   view: LocationTypeView,
-  @LocationOfGoods navigator: LocationOfGoodsNavigator
+  @LocationOfGoods navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

@@ -27,6 +27,8 @@ import java.time.{Clock, ZoneOffset}
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
+    bind(classOf[Navigator]).annotatedWith(classOf[LocationOfGoods]).to(classOf[LocationOfGoodsNavigator])
+
     bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
@@ -35,8 +37,6 @@ class Module extends AbstractModule {
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
     bind(classOf[TimeMachine]).to(classOf[DefaultTimeMachine]).asEagerSingleton()
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
-
-    bind(classOf[Navigator]).annotatedWith(classOf[LocationOfGoods]).to(classOf[LocationOfGoodsNavigator])
 
   }
 }

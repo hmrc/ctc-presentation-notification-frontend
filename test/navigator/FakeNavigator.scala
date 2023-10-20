@@ -35,12 +35,4 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
       _ => Some(desiredRoute)
   }
 
-  class FakeLocationOfGoodsNavigator(desiredRoute: Call, mode: Mode)
-    extends LocationOfGoodsNavigator {
-    override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
-  }
-
-
-
-
 }

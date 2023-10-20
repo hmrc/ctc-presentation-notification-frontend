@@ -24,7 +24,7 @@ import models.messages.MessageData
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{EoriPage, IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, EoriPage, IdentificationPage, InferredLocationTypePage, LocationTypePage}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -108,6 +108,29 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .nextPage(EoriPage, answers, departureId, NormalMode)
               .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
         }
+      }
+
+      "must go from Authorisation Number Page to Add Additional Identifier Yes No page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AuthorisationNumberPage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go from Add AdditionalIdentifierYesNo page to AdditionalIdentifier page when user selects Yes" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddIdentifierYesNoPage, true)
+            navigator
+              .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, NormalMode))
+        }
+
       }
     }
   }

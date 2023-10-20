@@ -62,11 +62,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
-  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator=
-    (mode: Mode) => new FakeLocationOfGoodsNavigator(onwardRoute, mode)
-
-
-
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
