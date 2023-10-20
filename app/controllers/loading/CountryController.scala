@@ -22,6 +22,7 @@ import models.Mode
 import models.reference.Country
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import pages.loading.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class CountryController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  //TODO: Change annotation when loading navigator added
+  @LocationOfGoods navigator: Navigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   countriesService: CountriesService,
