@@ -17,8 +17,8 @@
 package base
 
 import controllers.actions._
-import models.UserAnswers
-import navigation.Navigator
+import models.{Mode, UserAnswers}
+import navigation.{LocationOfGoodsNavigator, Navigator}
 import navigator.FakeNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -61,6 +61,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val onwardRoute: Call = Call("GET", "/foo")
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
+
+  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator=
+    (mode: Mode) => new FakeLocationOfGoodsNavigator(onwardRoute, mode)
+
+
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()

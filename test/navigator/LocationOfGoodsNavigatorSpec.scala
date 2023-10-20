@@ -21,14 +21,14 @@ import config.Constants._
 import generators.Generators
 import models._
 import models.messages.MessageData
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.locationOfGoods.{EoriPage, IdentificationPage, InferredLocationTypePage, LocationTypePage}
 
-class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new Navigator
+  val navigator = new LocationOfGoodsNavigator
 
   "Navigator" - {
 
@@ -98,6 +98,16 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
         val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
         result.mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+      }
+
+      "must go from EORI Page to Add Additional Identifier Yes No page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(EoriPage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+        }
       }
     }
   }

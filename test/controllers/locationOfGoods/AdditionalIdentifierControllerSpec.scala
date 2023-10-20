@@ -20,9 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.locationOfGoods.AdditionalIdentifierFormProvider
 import models.NormalMode
+import navigation.Navigator
+import navigation.annotations.LocationOfGoods
+import navigator.FakeNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.AdditionalIdentifierPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -40,6 +44,7 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   "AdditionalIdentifier Controller" - {
 

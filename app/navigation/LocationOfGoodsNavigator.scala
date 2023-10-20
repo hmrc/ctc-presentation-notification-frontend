@@ -27,7 +27,7 @@ import play.api.mvc.Call
 import javax.inject.Inject
 
 @Singleton
-class LocationOfGoodsNavigator @Inject() extends Navigator {
+class LocationOfGoodsNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
@@ -70,7 +70,7 @@ class LocationOfGoodsNavigator @Inject() extends Navigator {
     val nextPage = ua.departureData.Consignment.LocationOfGoods match {
       case None if !ua.departureData.isSimplified => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       case None                                   => Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
-      case Some(_) => ???
+      case Some(_)                                => ???
     }
     nextPage
   }

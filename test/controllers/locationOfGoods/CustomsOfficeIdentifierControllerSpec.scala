@@ -21,6 +21,9 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.CountryCode
 import models.{NormalMode, SelectableList}
+import navigation.Navigator
+import navigation.annotations.LocationOfGoods
+import navigator.FakeNavigator
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -50,6 +53,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
       .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficesService))
 
   override def beforeEach(): Unit = {
