@@ -30,27 +30,15 @@ import javax.inject.Inject
 class LocationOfGoodsNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
-    case IdentificationPage                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
-    case CountryPage                                 => ua => AddressPage.route(ua, departureId, mode)
-    case MoreInformationPage                         => ua => locationOfGoodsNavigation(ua, departureId, mode)
-    case EoriPage | AuthorisationNumberPage          => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
-    case AddIdentifierYesNoPage =>
-      ua =>
-        ua.get(AddIdentifierYesNoPage) match {
-          case Some(true)  => AdditionalIdentifierPage.route(ua, departureId, mode)
-          case Some(false) => AddContactYesNoPage.route(ua, departureId, mode)
-          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
-        }
+    case InferredLocationTypePage | LocationTypePage                                              => ua => IdentificationPage.route(ua, departureId, mode)
+    case IdentificationPage                                                                       => ua => routeIdentificationPageNavigation(ua, departureId, mode)
+    case CountryPage                                                                              => ua => AddressPage.route(ua, departureId, mode)
+    case MoreInformationPage                                                                      => ua => locationOfGoodsNavigation(ua, departureId, mode)
+    case EoriPage | AuthorisationNumberPage                                                       => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
+    case AddIdentifierYesNoPage                                                                   => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)
-    case AddContactYesNoPage =>
-      ua =>
-        ua.get(AddContactYesNoPage) match {
-          case Some(true)  => NamePage.route(ua, departureId, mode)
-          case Some(false) => ???
-          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
-        }
-    case NamePage => ua => PhoneNumberPage.route(ua, departureId, mode)
+    case AddContactYesNoPage                                                                      => ua => addContactYesNoNavigation(ua, departureId, mode)
+    case NamePage                                                                                 => ua => PhoneNumberPage.route(ua, departureId, mode)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
@@ -74,4 +62,19 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     }
     nextPage
   }
+
+  def addIdentifierYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    userAnswers.get(AddIdentifierYesNoPage) match {
+      case Some(true)  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
+      case Some(false) => AddContactYesNoPage.route(userAnswers, departureId, mode)
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
+  def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    userAnswers.get(AddContactYesNoPage) match {
+      case Some(true)  => NamePage.route(userAnswers, departureId, mode)
+      case Some(false) => ???
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
 }

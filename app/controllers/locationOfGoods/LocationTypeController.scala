@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.MandatoryDataRequest
 import models.{LocationType, Mode}
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}

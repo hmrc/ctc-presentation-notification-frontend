@@ -21,7 +21,7 @@ import forms.DynamicAddressFormProvider
 import models.reference.Country
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{DynamicAddress, Mode}
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.{AddressPage, CountryPage}

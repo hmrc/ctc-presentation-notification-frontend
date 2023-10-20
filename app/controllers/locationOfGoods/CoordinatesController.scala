@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.CoordinatesFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Coordinates, Mode}
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.CoordinatesPage

@@ -24,7 +24,7 @@ import models.messages.MessageData
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{Page, QuestionPage}
+import pages.Page
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.NamePage
 

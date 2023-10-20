@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.Mode
 import models.reference.Country
 import models.requests.MandatoryDataRequest
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.CountryPage

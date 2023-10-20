@@ -17,14 +17,13 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
+import controllers.routes
 import forms.locationOfGoods.CoordinatesFormProvider
 import generators.Generators
 import models.NormalMode
 import navigation.Navigator
 import navigation.annotations.LocationOfGoods
-import navigator.FakeNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.CoordinatesPage

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.locationOfGoods.AddIdentifierYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}

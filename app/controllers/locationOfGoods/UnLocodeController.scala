@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.UnLocodeFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import navigation.annotations.LocationOfGoods
 import pages.locationOfGoods.UnLocodePage
 import play.api.data.FormError
