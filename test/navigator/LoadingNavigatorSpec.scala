@@ -17,88 +17,97 @@
 package navigator
 
 import base.SpecBase
-import config.Constants._
 import generators.Generators
 import models._
-import models.messages.MessageData
-import navigation.Navigator
-import org.scalacheck.Arbitrary.arbitrary
+import navigation.LoadingNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.loading._
 
 class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new Navigator
+  val navigator = new LoadingNavigator
 
-  "Navigator" - {
+  "LoadingNavigator" - {
 
     "in Normal mode" - {
-
       val mode = NormalMode
-      "must go from LocationTypePage to IdentificationPage" - {
+      "must go from AddUnLocodeYesNoPage" - {
 
-        "when value is inferred" in {
-          val value = arbitrary[LocationType].sample.value
+        "to Unlocode page when answer is Yes" in {
 
-          val userAnswers = emptyUserAnswers.setValue(InferredLocationTypePage, value)
+          val userAnswers = emptyUserAnswers.setValue(AddUnLocodeYesNoPage, true)
           navigator
-            .nextPage(InferredLocationTypePage, userAnswers, departureId, mode)
-            .mustBe(IdentificationPage.route(userAnswers, departureId, mode).value)
+            .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
+            .mustBe(UnLocodePage.route(userAnswers, departureId, mode).value)
         }
 
-        "when value is not inferred" in {
-          val value = arbitrary[LocationType].sample.value
+        "to Country page when answer is No" in {
 
-          val userAnswers = emptyUserAnswers.setValue(LocationTypePage, value)
+          val userAnswers = emptyUserAnswers.setValue(AddUnLocodeYesNoPage, false)
           navigator
-            .nextPage(LocationTypePage, userAnswers, departureId, mode)
-            .mustBe(IdentificationPage.route(userAnswers, departureId, mode).value)
+            .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
+            .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
         }
+
       }
 
-      "must go from IdentificationPage to next page" - {
-        Seq[String](
-          CustomsOfficeIdentifier,
-          EoriNumberIdentifier,
-          AuthorisationNumberIdentifier,
-          UnlocodeIdentifier,
-          CoordinatesIdentifier,
-          AddressIdentifier,
-          PostalCodeIdentifier
-        ) foreach (
-          identifier =>
-            s"when value is $identifier" in {
-              val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(identifier, "identifier")
-
-              val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
-              navigator
-                .nextPage(IdentificationPage, userAnswers, departureId, mode)
-                .mustBe(navigator.routeIdentificationPageNavigation(userAnswers, departureId, mode).value)
-            }
-        )
+      "must go from UnLocodePage to CountryPage" - {
+        val userAnswers = emptyUserAnswers.setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+        navigator
+          .nextPage(UnLocodePage, userAnswers, departureId, mode)
+          .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
       }
 
-      "redirect to LocationTypeController when locationOfGoods is None and not simplified" in {
+      "must go from AddExtraInformationYesNoPage" - {
 
-        val userAnswers                = arbitraryUserData.arbitrary.sample.value
-        val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
-        val departureData: MessageData = userAnswers.departureData.copy(Authorisation = None, Consignment = consignment)
-        val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
+        "to Country page when answer is Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, true)
+          navigator
+            .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
+            .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
+        }
 
-        val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
-        result.mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+        "to Location page when answer is No" in {
+          val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, false)
+          navigator
+            .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
+            .mustBe(LocationPage.route(userAnswers, departureId, mode).value)
+        }
+
+        "must go from CountryPage to LocationPage" - {
+          val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+          navigator
+            .nextPage(CountryPage, userAnswers, departureId, mode)
+            .mustBe(LocationPage.route(userAnswers, departureId, mode).value)
+        }
+
       }
 
-      "redirect to AuthorisationNumberController when locationOfGoods is None and is simplified" in {
-
-        val userAnswers                = arbitraryUserData.arbitrary.sample.value
-        val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
-        val departureData: MessageData = userAnswers.departureData.copy(Consignment = consignment)
-        val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
-
-        val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
-        result.mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
-      }
     }
+// todo update when CYA page built
+//    "in Check mode" - {
+//      val mode = CheckMode
+//      "must go from AddUnLocodeYesNoPage" - {
+//
+//        "to Unlocode page when answer is Yes and there is no existing UnLocode" in {
+//
+//          val userAnswers = emptyUserAnswers.setValue(AddUnLocodeYesNoPage, true)
+//          navigator
+//            .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
+//            .mustBe(UnLocodePage.route(userAnswers, departureId, mode).value)
+//        }
+//
+//        "to Country page when answer is No" in {
+//
+//          val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, false)
+//          navigator
+//            .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
+//            .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
+//        }
+//
+//      }
+//
+//    }
+
   }
 }

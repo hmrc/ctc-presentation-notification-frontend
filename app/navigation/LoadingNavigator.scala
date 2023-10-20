@@ -17,28 +17,67 @@
 package navigation
 
 import com.google.inject.Singleton
-import config.Constants._
 import models._
-import pages._
-import pages.locationOfGoods._
+import pages.Page
+import pages.loading._
 import play.api.mvc.Call
 
 @Singleton
-class Navigator {
+class LoadingNavigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
-    case IdentificationPage                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
-    case CountryPage                                 => ua => AddressPage.route(ua, departureId, mode)
-    case MoreInformationPage                         => ua => locationOfGoodsNavigation(ua, departureId, mode)
-    case CoordinatesPage                             => ua => ???
-    case EoriPage                                    => ua => ???
+    case AddUnLocodeYesNoPage         => ua => addUnlocodeNormalRoute(ua, departureId)
+    case UnLocodePage                 => ua => CountryPage.route(ua, departureId, NormalMode)
+    case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoNormalRoute(ua, departureId)
+    case CountryPage                  => ua => LocationPage.route(ua, departureId, NormalMode)
   }
+
+//  protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
+//    case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
+//    case UnLocodePage                 => ua => ??? //todo will go back to CYA
+//    case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoCheckRoute(ua, departureId)
+//    case CountryPage                  => ua => ??? //todo will go back to CYA
+//  }
+
+  def addUnlocodeNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
+    ua.get(AddUnLocodeYesNoPage) match {
+      case Some(true) =>
+        UnLocodePage.route(ua, departureId, NormalMode)
+      case _ => CountryPage.route(ua, departureId, NormalMode)
+    }
+
+  def addUnlocodeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
+    ua.get(AddUnLocodeYesNoPage) match {
+      case Some(true) =>
+        ua.get(UnLocodePage) match {
+          case Some(_) => ??? //todo go to cya
+          case _       => UnLocodePage.route(ua, departureId, CheckMode)
+        }
+
+      case _ => ??? // todo will go to CYA page
+    }
+
+  def addExtraInformationYesNoNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
+    ua.get(AddExtraInformationYesNoPage) match {
+      case Some(true) =>
+        CountryPage.route(ua, departureId, NormalMode)
+      case _ => LocationPage.route(ua, departureId, NormalMode)
+    }
+
+  def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
+    ua.get(AddExtraInformationYesNoPage) match {
+      case Some(true) =>
+        ua.get(CountryPage) match {
+          case Some(_) => ??? //todo  will go to cya
+          case _       => CountryPage.route(ua, departureId, CheckMode)
+        }
+      case _ => ??? // todo will go to CYA page
+    }
 
   private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
     call(userAnswers) match {
       case Some(onwardRoute) => onwardRoute
-      case None              => ??? //TODO add error page
+      case _                 => ??? //TODO add error page
     }
 
   def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
@@ -47,22 +86,4 @@ class Navigator {
       case Some(call) => handleCall(userAnswers, call)
     }
 
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(IdentificationPage).map {
-      case ltp if ltp.code == CustomsOfficeIdentifier       => controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == EoriNumberIdentifier          => controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AuthorisationNumberIdentifier => controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == CoordinatesIdentifier         => controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == UnlocodeIdentifier            => controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AddressIdentifier             => controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == PostalCodeIdentifier          => controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode)
-    }
-
-  def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-    val nextPage = ua.departureData.Consignment.LocationOfGoods match {
-      case None if !ua.departureData.isSimplified => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
-      case None                                   => Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
-    }
-    nextPage
-  }
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.LoadingNavigator
 import pages.loading.AddUnLocodeYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddUnLocodeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LoadingNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
