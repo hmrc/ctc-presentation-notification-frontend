@@ -23,8 +23,6 @@ import forms.locationOfGoods.PostalCodeFormProvider
 import generators.Generators
 import models.reference.Country
 import models.{NormalMode, PostalCodeAddress, SelectableList}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -53,7 +51,6 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
 
   "PostalCode Controller" - {

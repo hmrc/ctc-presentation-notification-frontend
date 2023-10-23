@@ -17,7 +17,7 @@
 package navigator
 
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.{LocationOfGoodsNavigator, Navigator}
 import pages._
 import play.api.mvc.Call
 
@@ -34,5 +34,10 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
     case _ =>
       _ => Some(desiredRoute)
   }
+
+}
+
+class FakeLocationOfGoodsNavigator(desiredRoute: Call) extends LocationOfGoodsNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 
 }

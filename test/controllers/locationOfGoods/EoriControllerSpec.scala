@@ -21,11 +21,8 @@ import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.EoriNumberFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
 import org.scalatestplus.mockito.MockitoSugar
 import pages.locationOfGoods.EoriPage
-import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,7 +40,6 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
   override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   override def beforeEach(): Unit =
     super.beforeEach()
