@@ -48,14 +48,14 @@ class Navigator {
     }
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(IdentificationPage).map {
-      case ltp if ltp.code == CustomsOfficeIdentifier       => controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == EoriNumberIdentifier          => controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AuthorisationNumberIdentifier => controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == CoordinatesIdentifier         => controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == UnlocodeIdentifier            => controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AddressIdentifier             => controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == PostalCodeIdentifier          => controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode)
+    userAnswers.get(IdentificationPage).flatMap {
+      case ltp if ltp.code == CustomsOfficeIdentifier       => CustomsOfficeIdentifierPage.route(userAnswers, departureId, mode)
+      case ltp if ltp.code == EoriNumberIdentifier          => EoriPage.route(userAnswers, departureId, mode)
+      case ltp if ltp.code == AuthorisationNumberIdentifier => AuthorisationNumberPage.route(userAnswers, departureId, mode)
+      case ltp if ltp.code == CoordinatesIdentifier         => CoordinatesPage.route(userAnswers, departureId, mode)
+      case ltp if ltp.code == UnlocodeIdentifier            => UnLocodePage.route(userAnswers, departureId, mode)
+      case ltp if ltp.code == AddressIdentifier             => CountryPage.route(userAnswers, departureId, mode)
+      case ltp if ltp.code == PostalCodeIdentifier          => PostalCodePage.route(userAnswers, departureId, mode)
     }
 
   def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
