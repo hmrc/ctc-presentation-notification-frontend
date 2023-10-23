@@ -52,8 +52,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      //TODO: Change binding when navigator added
-      .overrides(inject.bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
 
   "Country Controller" - {

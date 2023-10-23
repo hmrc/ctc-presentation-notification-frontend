@@ -45,8 +45,6 @@ class AddUnLocodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      //TODO: Change binding when navigator added
-      .overrides(inject.bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   "AddUnLocodeYesNo Controller" - {
 

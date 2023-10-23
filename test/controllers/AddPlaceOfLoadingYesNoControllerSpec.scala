@@ -42,8 +42,6 @@ class AddPlaceOfLoadingYesNoControllerSpec extends SpecBase with AppWithDefaultM
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      //TODO: Change binding when navigator added
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   "AddPlaceOfLoadingYesNo Controller" - {
 

@@ -44,8 +44,6 @@ class AddArrivalDateYesNoControllerSpec extends SpecBase with AppWithDefaultMock
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      //TODO: Change binding when navigator added
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   "AddContactLocationOfGoods Controller" - {
 
