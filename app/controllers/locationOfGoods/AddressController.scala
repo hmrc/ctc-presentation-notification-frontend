@@ -21,9 +21,9 @@ import forms.DynamicAddressFormProvider
 import models.reference.Country
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{DynamicAddress, Mode}
-import navigation.Navigator
-import pages.locationOfGoods.{AddressPage, CountryPage}
+import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
+import pages.locationOfGoods.{AddressPage, CountryPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddressController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DynamicAddressFormProvider,

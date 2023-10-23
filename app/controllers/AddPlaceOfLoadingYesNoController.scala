@@ -21,6 +21,7 @@ import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
+
 import pages.AddPlaceOfLoadingYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
