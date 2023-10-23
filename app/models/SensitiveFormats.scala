@@ -16,6 +16,7 @@
 
 package models
 
+import models.messages.MessageData
 import play.api.libs.json._
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
@@ -32,5 +33,15 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter wi
       JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap(_.encrypt)
     } else {
       implicitly[Writes[JsObject]]
+    }
+
+  val messageDataReads: Reads[MessageData] =
+    jsObjectReads.map(_.as[MessageData])
+
+  val messageDataWrites: Writes[MessageData] =
+    if (encryptionEnabled) {
+      JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap(_.encrypt)
+    } else {
+      implicitly[Writes[MessageData]]
     }
 }

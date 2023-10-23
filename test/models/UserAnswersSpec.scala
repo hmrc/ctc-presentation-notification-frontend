@@ -118,13 +118,13 @@ class UserAnswersSpec extends SpecBase {
                |  "_id" : "$departureId",
                |  "eoriNumber" : "${eoriNumber.value}",
                |  "lrn" : "$lrn",
-               |  "data" : "T+FWrvLPJMKyRZ1aoW8rdZmETyL89CdpWxaog0joG6B/hxCF",
+               |  "data" : ${Json.toJson(Json.obj())(sensitiveFormats.jsObjectWrites)},
                |  "lastUpdated" : {
                |    "$$date" : {
                |      "$$numberLong" : "1662546803472"
                |    }
                |  },
-               |  "departureData" : ${Json.toJson(messageData)}
+               |  "departureData" : ${Json.toJson(messageData)(sensitiveFormats.messageDataWrites)}
                |}
                |""".stripMargin)
 
@@ -154,13 +154,13 @@ class UserAnswersSpec extends SpecBase {
                |  "_id" : "$departureId",
                |  "eoriNumber" : "${eoriNumber.value}",
                |  "lrn" : "$lrn",
-               |  "data" : {},
+               |  "data" : ${Json.toJson(Json.obj())(sensitiveFormats.jsObjectWrites)},
                |  "lastUpdated" : {
                |    "$$date" : {
                |      "$$numberLong" : "1662546803472"
                |    }
                |  },
-               |  "departureData" : ${Json.toJson(messageData)}
+               |  "departureData" : ${Json.toJson(messageData)(sensitiveFormats.messageDataWrites)}
                |}
                |""".stripMargin)
 

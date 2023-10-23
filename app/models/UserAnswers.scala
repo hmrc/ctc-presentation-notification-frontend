@@ -73,7 +73,7 @@ object UserAnswers {
       (__ \ "lrn").read[String] and
       (__ \ "data").read[JsObject](sensitiveFormats.jsObjectReads) and
       (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads) and
-      (__ \ "departureData").read[MessageData]
+      (__ \ "departureData").read[MessageData](sensitiveFormats.messageDataReads)
   )(UserAnswers.apply _)
 
   implicit def writes(implicit sensitiveFormats: SensitiveFormats): OWrites[UserAnswers] = (
@@ -82,7 +82,7 @@ object UserAnswers {
       (__ \ "lrn").write[String] and
       (__ \ "data").write[JsObject](sensitiveFormats.jsObjectWrites) and
       (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites) and
-      (__ \ "departureData").write[MessageData]
+      (__ \ "departureData").write[MessageData](sensitiveFormats.messageDataWrites)
   )(unlift(UserAnswers.unapply))
 
   implicit def format(implicit sensitiveFormats: SensitiveFormats): Format[UserAnswers] =

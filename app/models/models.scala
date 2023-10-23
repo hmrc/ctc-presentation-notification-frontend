@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import models.messages.MessageData
 import play.api.libs.json._
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
@@ -34,6 +35,10 @@ package object models {
       jsObject.remove(path).flatMap(_.validate[JsObject])
 
     def encrypt: SensitiveString = SensitiveString(Json.stringify(jsObject))
+  }
+
+  implicit class RichMessageData(messageData: MessageData) {
+    def encrypt: SensitiveString = Json.toJson(messageData).as[JsObject].encrypt
   }
 
   implicit class RichJsValue(jsValue: JsValue) {
