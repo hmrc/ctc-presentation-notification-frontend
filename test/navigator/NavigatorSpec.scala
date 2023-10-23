@@ -20,11 +20,13 @@ import base.SpecBase
 import config.Constants._
 import generators.Generators
 import models._
-import models.messages.MessageData
+import models.messages.{MessageData, PlaceOfLoading}
+import models.reference.CustomsOffice
 import navigation.Navigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.locationOfGoods.contact.PhoneNumberPage
+import pages.locationOfGoods.{AddContactYesNoPage, AddUnLocodePage, CustomsOfficeIdentifierPage, IdentificationPage, InferredLocationTypePage, LocationTypePage}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -98,6 +100,31 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
         val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
         result.mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+      }
+
+      "must go from CustomsOfficeIdentifierPage to AddUnLocodePage" in {
+
+        val customsOffice = CustomsOffice("id", "Name", None)
+
+        val userAnswers = emptyUserAnswers.setValue(CustomsOfficeIdentifierPage, customsOffice)
+        navigator
+          .nextPage(CustomsOfficeIdentifierPage, userAnswers, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+      }
+
+      "must go from AddContactYesNoPage to AddUnLocodePage when 'addContact' is false" in {
+        val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, false)
+        navigator
+          .nextPage(AddContactYesNoPage, userAnswers, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+      }
+
+      "must go from PhoneNumberPage to AddUnLocodePage when 'placeOfLoading' exists" in {
+
+        val userAnswers = arbitraryUserData.arbitrary.sample.value
+        navigator
+          .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
       }
     }
   }

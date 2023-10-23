@@ -21,6 +21,7 @@ import config.Constants._
 import models._
 import pages._
 import pages.locationOfGoods._
+import pages.locationOfGoods.contact.PhoneNumberPage
 import play.api.mvc.Call
 
 @Singleton
@@ -31,6 +32,9 @@ class Navigator {
     case IdentificationPage                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
     case CountryPage                                 => ua => AddressPage.route(ua, departureId, mode)
     case MoreInformationPage                         => ua => locationOfGoodsNavigation(ua, departureId, mode)
+    case CustomsOfficeIdentifierPage                 => ua => AddUnLocodePage.route(ua, departureId, mode)
+    case AddContactYesNoPage                         => ua => addContactYesNoPageNavigation(ua, departureId, mode)
+    case PhoneNumberPage                             => ua => phoneNumberPageNavigation(ua, departureId, mode)
     case CoordinatesPage                             => ua => ???
     case EoriPage                                    => ua => ???
   }
@@ -58,11 +62,21 @@ class Navigator {
       case ltp if ltp.code == PostalCodeIdentifier          => PostalCodePage.route(userAnswers, departureId, mode)
     }
 
-  def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-    val nextPage = ua.departureData.Consignment.LocationOfGoods match {
-      case None if !ua.departureData.isSimplified => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
-      case None                                   => Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
-    }
-    nextPage
+  def addContactYesNoPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = userAnswers.get(AddContactYesNoPage).flatMap {
+    addContact =>
+      if (addContact) ??? else AddUnLocodePage.route(userAnswers, departureId, mode)
   }
+
+  def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    userAnswers.departureData.Consignment.PlaceOfLoading match {
+      case Some(_) => AddUnLocodePage.route(userAnswers, departureId, mode)
+      case None    => ???
+    }
+
+  def locationOfGoodsNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    userAnswers.departureData.Consignment.LocationOfGoods match {
+      case None if !userAnswers.departureData.isSimplified => LocationTypePage.route(userAnswers, departureId, mode)
+      case None                                            => AuthorisationNumberPage.route(userAnswers, departureId, mode)
+      case Some(_)                                         => AddUnLocodePage.route(userAnswers, departureId, mode)
+    }
 }
