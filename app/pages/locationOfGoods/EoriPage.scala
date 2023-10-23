@@ -18,13 +18,13 @@ package pages.locationOfGoods
 
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object EoriPage extends QuestionPage[String] {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
   override def toString: String = "eori"
 
