@@ -67,7 +67,7 @@ class IdentificationController @Inject() (
               case Some(value) => form(identifiers).fill(value)
             }
 
-            Future.successful(Ok(view(preparedForm, departureId, request.userAnswers.lrn, identifiers, mode)))
+            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
         }
     }
 
@@ -81,8 +81,7 @@ class IdentificationController @Inject() (
             form(locationOfGoodsIdentificationTypes)
               .bindFromRequest()
               .fold(
-                formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, locationOfGoodsIdentificationTypes, mode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, locationOfGoodsIdentificationTypes, mode))),
                 value => redirect(mode, IdentificationPage, value, departureId)
               )
         }

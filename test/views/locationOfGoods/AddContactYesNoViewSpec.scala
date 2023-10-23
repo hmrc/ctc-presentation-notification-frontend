@@ -25,7 +25,7 @@ import views.html.locationOfGoods.AddContactYesNoView
 class AddContactYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddContactYesNoView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddContactYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.addContact"
 

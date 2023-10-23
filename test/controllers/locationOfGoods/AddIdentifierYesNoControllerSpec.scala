@@ -57,7 +57,7 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.toString, mode)(request, messages).toString
+        view(form, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -76,7 +76,7 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -109,7 +109,7 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       val view = injector.instanceOf[AddIdentifierYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(boundForm, departureId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

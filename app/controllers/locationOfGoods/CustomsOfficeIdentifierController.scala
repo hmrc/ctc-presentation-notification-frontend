@@ -56,7 +56,7 @@ class CustomsOfficeIdentifierController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, request.userAnswers.lrn, departureId, customsOfficeList.values, mode))
+            Ok(view(preparedForm, departureId, customsOfficeList.values, mode))
         }
     }
 
@@ -70,7 +70,7 @@ class CustomsOfficeIdentifierController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.lrn, departureId, customsOfficeList.values, mode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, customsOfficeList.values, mode))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeIdentifierPage, value))

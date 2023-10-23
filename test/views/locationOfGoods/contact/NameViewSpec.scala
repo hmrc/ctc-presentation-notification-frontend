@@ -32,7 +32,7 @@ class NameViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new NameFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NameView].apply(form, departureId, lrn.value, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NameView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

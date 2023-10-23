@@ -47,25 +47,23 @@ class CoordinatesController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId) {
       implicit request =>
-        val lrn  = request.userAnswers.lrn
         val form = formProvider("locationOfGoods.coordinates")
         val preparedForm = request.userAnswers.get(CoordinatesPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, departureId, lrn, mode))
+        Ok(view(preparedForm, departureId, mode))
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
-        val lrn  = request.userAnswers.lrn
         val form = formProvider("locationOfGoods.coordinates")
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
             value => redirect(mode, CoordinatesPage, value, departureId)
           )
 

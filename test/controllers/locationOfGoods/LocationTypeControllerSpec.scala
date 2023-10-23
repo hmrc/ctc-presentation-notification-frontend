@@ -75,7 +75,7 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.toString, lts, mode)(request, messages).toString
+        view(form, departureId, lts, mode)(request, messages).toString
     }
 
     "must redirect to the next page and infer LocationType when only one location type" in {
@@ -117,7 +117,7 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.value, lts, mode)(request, messages).toString
+        view(filledForm, departureId, lts, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -152,7 +152,7 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, lrn.value, lts, mode)(request, messages).toString
+        view(boundForm, departureId, lts, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

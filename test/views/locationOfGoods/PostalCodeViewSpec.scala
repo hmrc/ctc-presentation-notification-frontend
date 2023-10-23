@@ -37,7 +37,7 @@ class PostalCodeViewSpec extends PostalCodeAddressViewBehaviours with Generators
   override def form: Form[PostalCodeAddress] = formProvider(prefix, countryList)
 
   def applyView(form: Form[PostalCodeAddress]): HtmlFormat.Appendable =
-    injector.instanceOf[PostalCodeView].apply(form, departureId, lrn.toString, NormalMode, countryList.values)(fakeRequest, messages)
+    injector.instanceOf[PostalCodeView].apply(form, departureId, NormalMode, countryList.values)(fakeRequest, messages)
 
   behave like pageWithTitle()
 

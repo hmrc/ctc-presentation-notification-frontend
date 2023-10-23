@@ -51,7 +51,7 @@ class NameController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode))
+      Ok(view(preparedForm, departureId, mode))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
@@ -59,7 +59,7 @@ class NameController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
           value => redirect(mode, value, departureId)
         )
   }

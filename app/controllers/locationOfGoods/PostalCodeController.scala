@@ -59,7 +59,7 @@ class PostalCodeController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode, countryList.values))
+            Ok(view(preparedForm, departureId, mode, countryList.values))
         }
     }
 
@@ -73,7 +73,7 @@ class PostalCodeController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode, countryList.values))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, countryList.values))),
                 value => redirect(mode, value, departureId)
               )
 

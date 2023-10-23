@@ -33,7 +33,7 @@ class PhoneNumberViewSpec extends TelephoneNumberViewBehaviours {
   override def form: Form[String] = new TelephoneNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[PhoneNumberView].apply(form, departureId, lrn.toString, name, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[PhoneNumberView].apply(form, departureId, name, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

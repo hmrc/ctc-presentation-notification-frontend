@@ -53,7 +53,7 @@ class EoriController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.lrn, departureId, mode))
+      Ok(view(preparedForm, departureId, mode))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
@@ -61,7 +61,7 @@ class EoriController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.lrn, departureId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
           value => redirect(mode, EoriPage, value, departureId)
         )
   }
