@@ -17,8 +17,8 @@
 package controllers.loading
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.loading.{routes => loadingRoutes}
+import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.Navigator

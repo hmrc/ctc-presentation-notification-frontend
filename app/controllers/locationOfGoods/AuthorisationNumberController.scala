@@ -20,8 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.AuthorisationNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
+import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.AuthorisationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +37,7 @@ class AuthorisationNumberController @Inject() (
   formProvider: AuthorisationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  @LocationOfGoods navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   view: AuthorisationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

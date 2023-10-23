@@ -17,8 +17,8 @@
 package controllers.loading
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.loading.{routes => loadingRoutes}
+import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}

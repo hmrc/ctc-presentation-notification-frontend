@@ -20,8 +20,7 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.SpecificDataRequestProvider1
 import models.{LocationOfGoodsIdentification, LocationType, Mode}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
+import navigation.LocationOfGoodsNavigator
 import pages._
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.data.Form
@@ -38,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  @LocationOfGoods navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,

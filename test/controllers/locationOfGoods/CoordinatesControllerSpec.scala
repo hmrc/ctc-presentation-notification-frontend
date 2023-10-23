@@ -22,12 +22,9 @@ import controllers.routes
 import forms.locationOfGoods.CoordinatesFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.CoordinatesPage
-import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -48,7 +45,6 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
 
   "Coordinates Controller" - {
 
