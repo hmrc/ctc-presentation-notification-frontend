@@ -26,6 +26,10 @@ package object models {
     def decrypt: JsObject = Json.parse(sensitiveString.decryptedValue).as[JsObject]
   }
 
+  implicit class RichMessageData(messageData: MessageData) {
+    def encrypt: SensitiveString = Json.toJson(messageData).encrypt
+  }
+
   implicit class RichJsObject(jsObject: JsObject) {
 
     def setObject(path: JsPath, value: JsValue): JsResult[JsObject] =
@@ -33,15 +37,11 @@ package object models {
 
     def removeObject(path: JsPath): JsResult[JsObject] =
       jsObject.remove(path).flatMap(_.validate[JsObject])
-
-    def encrypt: SensitiveString = SensitiveString(Json.stringify(jsObject))
-  }
-
-  implicit class RichMessageData(messageData: MessageData) {
-    def encrypt: SensitiveString = Json.toJson(messageData).as[JsObject].encrypt
   }
 
   implicit class RichJsValue(jsValue: JsValue) {
+
+    def encrypt: SensitiveString = SensitiveString(Json.stringify(jsValue))
 
     def set(path: JsPath, value: JsValue): JsResult[JsValue] =
       (path.path, jsValue) match {
