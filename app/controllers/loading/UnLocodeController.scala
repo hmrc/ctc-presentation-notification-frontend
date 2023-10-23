@@ -21,6 +21,7 @@ import forms.UnLocodeFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import pages.loading.UnLocodePage
 import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +40,8 @@ class UnLocodeController @Inject() (
   formProvider: UnLocodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  navigator: Navigator,
+  //TODO: Change annotation when loading navigator added
+  @LocationOfGoods navigator: Navigator,
   view: UnLocodeView,
   service: UnLocodeService
 )(implicit ec: ExecutionContext)

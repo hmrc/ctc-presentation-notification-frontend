@@ -21,6 +21,8 @@ import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.{LocationOfGoodsIdentification, LocationType, NormalMode, UserAnswers}
+import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -51,6 +53,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
       .overrides(bind(classOf[LocationOfGoodsIdentificationTypeService]).toInstance(mockLocationIdentifierService))
 
   override def beforeEach(): Unit = {

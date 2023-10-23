@@ -21,16 +21,16 @@ import config.Constants._
 import generators.Generators
 import models._
 import models.messages.MessageData
-import models.reference.CustomsOffice
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.contact.PhoneNumberPage
-import pages.locationOfGoods.{AddContactYesNoPage, AddUnLocodePage, CustomsOfficeIdentifierPage, IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.Page
+import pages.locationOfGoods._
+import pages.locationOfGoods.contact.NamePage
 
-class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new Navigator
+  val navigator = new LocationOfGoodsNavigator
 
   "Navigator" - {
 
@@ -102,29 +102,86 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         result.mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
       }
 
-      "must go from CustomsOfficeIdentifierPage to AddUnLocodePage" in {
+      "must go from EORI Page to Add Additional Identifier Yes No page" in {
 
-        val customsOffice = CustomsOffice("id", "Name", None)
-
-        val userAnswers = emptyUserAnswers.setValue(CustomsOfficeIdentifierPage, customsOffice)
-        navigator
-          .nextPage(CustomsOfficeIdentifierPage, userAnswers, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(EoriPage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+        }
       }
 
-      "must go from AddContactYesNoPage to AddUnLocodePage when 'addContact' is false" in {
-        val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, false)
-        navigator
-          .nextPage(AddContactYesNoPage, userAnswers, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+      "must go from Authorisation Number Page to Add Additional Identifier Yes No page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AuthorisationNumberPage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+        }
       }
 
-      "must go from PhoneNumberPage to AddUnLocodePage when 'placeOfLoading' exists" in {
+      "must go from Add AdditionalIdentifierYesNo page to AdditionalIdentifier page when user selects Yes" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddIdentifierYesNoPage, true)
+            navigator
+              .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, NormalMode))
+        }
+      }
 
-        val userAnswers = arbitraryUserData.arbitrary.sample.value
-        navigator
-          .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+      "must go from Add AdditionalIdentifierYesNo page to AddContactYesNo page when user selects No" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddIdentifierYesNoPage, false)
+            navigator
+              .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go to AddContact next page" - {
+        Seq[Page](
+          AdditionalIdentifierPage,
+          CoordinatesPage,
+          UnLocodePage,
+          AddressPage,
+          PostalCodePage
+        ) foreach (
+          page =>
+            s"when page is $page" in {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  navigator
+                    .nextPage(page, answers, departureId, NormalMode)
+                    .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+              }
+            }
+        )
+      }
+
+      "must go from Add AddContactYesNo page to ContactName page when user selects Yes" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, true)
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go from ContactName page to Contact phone number page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(NamePage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, NormalMode))
+        }
       }
     }
   }

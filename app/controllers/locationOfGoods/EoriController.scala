@@ -21,6 +21,7 @@ import forms.EoriNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import pages.QuestionPage
 import pages.locationOfGoods.EoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +40,7 @@ class EoriController @Inject() (
   formProvider: EoriNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: EoriView,
-  navigator: Navigator
+  @LocationOfGoods navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

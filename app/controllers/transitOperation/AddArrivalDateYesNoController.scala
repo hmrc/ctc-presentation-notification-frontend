@@ -21,6 +21,7 @@ import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import pages.transitOperation.AddArrivalDateYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddArrivalDateYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  //TODO: Change annotation when transitOperation navigator added
+  @LocationOfGoods navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

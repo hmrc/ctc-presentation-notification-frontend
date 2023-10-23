@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.UnLocodeFormProvider
 import models.NormalMode
+import navigation.Navigator
+import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.loading.UnLocodePage
+import play.api.inject
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -43,6 +46,8 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      //TODO: Change binding when navigator added
+      .overrides(inject.bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
       .overrides(bind(classOf[UnLocodeService]).toInstance(mockUnLocodeService))
 
   override def beforeEach(): Unit = {
