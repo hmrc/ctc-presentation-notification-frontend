@@ -19,12 +19,9 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.AddPlaceOfLoadingYesNoPage
-import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

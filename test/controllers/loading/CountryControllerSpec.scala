@@ -22,12 +22,9 @@ import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.loading.CountryPage
-import play.api.inject
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

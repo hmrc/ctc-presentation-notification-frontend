@@ -22,8 +22,6 @@ import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.Navigator
-import navigation.annotations.LocationOfGoods
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.CountryPage
@@ -51,7 +49,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[LocationOfGoods]).toInstance(fakeNavigator))
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
 
   "Country Controller" - {
