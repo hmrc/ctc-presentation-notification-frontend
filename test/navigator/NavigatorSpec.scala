@@ -20,7 +20,7 @@ import base.SpecBase
 import config.Constants._
 import generators.Generators
 import models._
-import models.messages.{MessageData, PlaceOfLoading}
+import models.messages.MessageData
 import models.reference.CustomsOffice
 import navigation.Navigator
 import org.scalacheck.Arbitrary.arbitrary
