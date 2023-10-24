@@ -17,14 +17,15 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
+import controllers.routes
 import forms.locationOfGoods.CoordinatesFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.CoordinatesPage
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.CoordinatesView
@@ -40,6 +41,10 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val mode                  = NormalMode
   private lazy val coordinatesRoute = locationOfGoodsRoutes.CoordinatesController.onPageLoad(departureId, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
 
   "Coordinates Controller" - {
 

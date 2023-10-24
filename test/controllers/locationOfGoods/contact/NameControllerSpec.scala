@@ -17,8 +17,8 @@
 package controllers.locationOfGoods.contact
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.contact.{routes => contactRoutes}
+import controllers.routes
 import forms.NameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any

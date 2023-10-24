@@ -17,12 +17,32 @@
 package navigator
 
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.{LoadingNavigator, LocationOfGoodsNavigator, Navigator}
 import pages._
 import play.api.mvc.Call
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
 
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+
+  override protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ =>
+      _ => Some(desiredRoute)
+  }
+
+  override protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ =>
+      _ => Some(desiredRoute)
+  }
+
+}
+
+class FakeLocationOfGoodsNavigator(desiredRoute: Call) extends LocationOfGoodsNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+
+}
+
+class FakeLoadingNavigator(desiredRoute: Call) extends LoadingNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 
 }

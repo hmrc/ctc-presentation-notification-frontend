@@ -22,13 +22,12 @@ import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EoriPage extends QuestionPage[String] {
+case object AddUnLocodePage extends QuestionPage[Boolean] {
 
   override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
-  override def toString: String = "eori"
+  override def toString: String = "addUnLocode"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
-
+    Some(controllers.loading.routes.AddUnLocodeYesNoController.onPageLoad(departureId, mode))
 }

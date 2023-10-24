@@ -20,9 +20,9 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.MandatoryDataRequest
 import models.{LocationType, Mode}
-import navigation.Navigator
-import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
+import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
+import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -42,7 +42,7 @@ class LocationTypeController @Inject() (
   locationTypeService: LocationTypeService,
   val controllerComponents: MessagesControllerComponents,
   view: LocationTypeView,
-  navigator: Navigator
+  navigator: LocationOfGoodsNavigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

@@ -16,24 +16,20 @@
 
 package navigation
 
-import com.google.inject.Singleton
-import config.Constants._
-import models._
-import pages._
-import pages.locationOfGoods._
+import controllers.routes
+import models.{Mode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
-@Singleton
-class Navigator {
+trait Navigator {
+  private type RouteMapping = PartialFunction[Page, UserAnswers => Option[Call]]
 
-  protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case InferredLocationTypePage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
-    case IdentificationPage                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
-    case CountryPage                                 => ua => AddressPage.route(ua, departureId, mode)
-    case MoreInformationPage                         => ua => locationOfGoodsNavigation(ua, departureId, mode)
-    case CoordinatesPage                             => ua => ???
-    case EoriPage                                    => ua => ???
-  }
+  protected def normalRoutes(departureId: String, mode: Mode): RouteMapping
+
+  protected def checkRoutes(departureId: String, mode: Mode): RouteMapping
+
+  protected def checkModeDefaultPage(userAnswers: UserAnswers): Call =
+    routes.SessionExpiredController.onPageLoad()
 
   private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
     call(userAnswers) match {
@@ -46,23 +42,4 @@ class Navigator {
       case None       => controllers.routes.IndexController.index(departureId)
       case Some(call) => handleCall(userAnswers, call)
     }
-
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(IdentificationPage).map {
-      case ltp if ltp.code == CustomsOfficeIdentifier       => controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == EoriNumberIdentifier          => controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AuthorisationNumberIdentifier => controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == CoordinatesIdentifier         => controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == UnlocodeIdentifier            => controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == AddressIdentifier             => controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode)
-      case ltp if ltp.code == PostalCodeIdentifier          => controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode)
-    }
-
-  def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-    val nextPage = ua.departureData.Consignment.LocationOfGoods match {
-      case None if !ua.departureData.isSimplified => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
-      case None                                   => Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
-    }
-    nextPage
-  }
 }
