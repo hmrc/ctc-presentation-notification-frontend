@@ -78,7 +78,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     }
 
   def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.departureData.Consignment.PlaceOfLoading match {
+    userAnswers.get(IdentificationPage) match {
       case Some(_) => AddUnLocodePage.route(userAnswers, departureId, mode)
       case None    => ???
     }
