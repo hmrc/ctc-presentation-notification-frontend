@@ -204,7 +204,8 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       "must go from PhoneNumberPage to AddUnLocodePage when 'placeOfLoading' exists" in {
 
-        val userAnswers = arbitraryUserData.arbitrary.sample.value
+        val identifier: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnlocodeIdentifier, "identifier")
+        val userAnswers                               = emptyUserAnswers.setValue(IdentificationPage, identifier)
         navigator
           .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
           .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
