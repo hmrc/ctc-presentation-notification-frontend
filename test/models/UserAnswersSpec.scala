@@ -17,9 +17,12 @@
 package models
 
 import base.SpecBase
+import base.TestMessageData.messageData
 import pages.QuestionPage
-import play.api.libs.json.{JsPath, Json}
+import play.api.libs.json.{Format, JsPath, JsValue, Json}
+import play.api.test.Helpers.running
 
+import java.time.Instant
 import scala.util.Try
 
 class UserAnswersSpec extends SpecBase {
@@ -87,6 +90,90 @@ class UserAnswersSpec extends SpecBase {
         )
 
         result.data mustBe expectedData
+      }
+    }
+
+    "formats" - {
+
+      val userAnswers = UserAnswers(
+        id = departureId,
+        eoriNumber = eoriNumber,
+        lrn = lrn.value,
+        data = Json.obj(),
+        lastUpdated = Instant.ofEpochMilli(1662546803472L),
+        departureData = messageData
+      )
+
+      "when encryption enabled" - {
+        val app = guiceApplicationBuilder()
+          .configure("encryption.enabled" -> true)
+          .build()
+
+        running(app) {
+          val sensitiveFormats                     = app.injector.instanceOf[SensitiveFormats]
+          implicit val format: Format[UserAnswers] = UserAnswers.format(sensitiveFormats)
+
+          val json: JsValue = Json.parse(s"""
+               |{
+               |  "_id" : "$departureId",
+               |  "eoriNumber" : "${eoriNumber.value}",
+               |  "lrn" : "$lrn",
+               |  "data" : ${Json.toJson(Json.obj())(sensitiveFormats.jsObjectWrites)},
+               |  "lastUpdated" : {
+               |    "$$date" : {
+               |      "$$numberLong" : "1662546803472"
+               |    }
+               |  },
+               |  "departureData" : ${Json.toJson(messageData)(sensitiveFormats.messageDataWrites)}
+               |}
+               |""".stripMargin)
+
+          "read correctly" in {
+            val result = json.as[UserAnswers]
+            result mustBe userAnswers
+          }
+
+          "write and read correctly" in {
+            val result = Json.toJson(userAnswers).as[UserAnswers]
+            result mustBe userAnswers
+          }
+        }
+      }
+
+      "when encryption disabled" - {
+        val app = guiceApplicationBuilder()
+          .configure("encryption.enabled" -> false)
+          .build()
+
+        running(app) {
+          val sensitiveFormats                     = app.injector.instanceOf[SensitiveFormats]
+          implicit val format: Format[UserAnswers] = UserAnswers.format(sensitiveFormats)
+
+          val json: JsValue = Json.parse(s"""
+               |{
+               |  "_id" : "$departureId",
+               |  "eoriNumber" : "${eoriNumber.value}",
+               |  "lrn" : "$lrn",
+               |  "data" : ${Json.toJson(Json.obj())(sensitiveFormats.jsObjectWrites)},
+               |  "lastUpdated" : {
+               |    "$$date" : {
+               |      "$$numberLong" : "1662546803472"
+               |    }
+               |  },
+               |  "departureData" : ${Json.toJson(messageData)(sensitiveFormats.messageDataWrites)}
+               |}
+               |""".stripMargin)
+
+          "must read correctly" in {
+            val result = json.as[UserAnswers]
+            result mustBe userAnswers
+          }
+
+          "write correctly" in {
+            val result = Json.toJson(userAnswers)
+            result mustBe json
+          }
+        }
       }
     }
   }

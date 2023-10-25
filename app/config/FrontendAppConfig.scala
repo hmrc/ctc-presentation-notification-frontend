@@ -50,4 +50,7 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   lazy val replaceIndexes: Boolean = config.get[Boolean]("feature-flags.replace-indexes")
 
   val signOutUrl: String = config.get[String]("urls.logoutContinue") + config.get[String]("urls.feedback")
+
+  val encryptionKey: String      = config.get[String]("encryption.key")
+  val encryptionEnabled: Boolean = config.get[Boolean]("encryption.enabled")
 }

@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
+import models.messages.MessageData
 import play.api.libs.json._
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
 import scala.annotation.nowarn
 
 package object models {
+
+  implicit class RichSensitiveString(sensitiveString: SensitiveString) {
+    def decrypt: JsObject = Json.parse(sensitiveString.decryptedValue).as[JsObject]
+  }
+
+  implicit class RichMessageData(messageData: MessageData) {
+    def encrypt: SensitiveString = Json.toJson(messageData).encrypt
+  }
 
   implicit class RichJsObject(jsObject: JsObject) {
 
@@ -30,6 +40,8 @@ package object models {
   }
 
   implicit class RichJsValue(jsValue: JsValue) {
+
+    def encrypt: SensitiveString = SensitiveString(Json.stringify(jsValue))
 
     def set(path: JsPath, value: JsValue): JsResult[JsValue] =
       (path.path, jsValue) match {
