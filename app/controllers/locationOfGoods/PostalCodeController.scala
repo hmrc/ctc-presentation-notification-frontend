@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.PostalCodeFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Mode, PostalCodeAddress}
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.PostalCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PostalCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   formProvider: PostalCodeFormProvider,
   countriesService: CountriesService,

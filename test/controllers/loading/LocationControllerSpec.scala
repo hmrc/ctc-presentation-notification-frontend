@@ -21,13 +21,13 @@ import controllers.loading.{routes => loadingRoutes}
 import controllers.routes
 import forms.Constants.loadingLocationMaxLength
 import forms.loading.LoadingLocationFormProvider
-import pages.loading.{CountryPage, LocationPage}
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import pages.loading.{CountryPage, LocationPage}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

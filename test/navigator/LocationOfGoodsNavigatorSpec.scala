@@ -21,14 +21,16 @@ import config.Constants._
 import generators.Generators
 import models._
 import models.messages.MessageData
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{IdentificationPage, InferredLocationTypePage, LocationTypePage}
+import pages.Page
+import pages.locationOfGoods._
+import pages.locationOfGoods.contact.NamePage
 
-class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new Navigator
+  val navigator = new LocationOfGoodsNavigator
 
   "Navigator" - {
 
@@ -98,6 +100,88 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
         val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
         result.mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+      }
+
+      "must go from EORI Page to Add Additional Identifier Yes No page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(EoriPage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go from Authorisation Number Page to Add Additional Identifier Yes No page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AuthorisationNumberPage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go from Add AdditionalIdentifierYesNo page to AdditionalIdentifier page when user selects Yes" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddIdentifierYesNoPage, true)
+            navigator
+              .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go from Add AdditionalIdentifierYesNo page to AddContactYesNo page when user selects No" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddIdentifierYesNoPage, false)
+            navigator
+              .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go to AddContact next page" - {
+        Seq[Page](
+          AdditionalIdentifierPage,
+          CoordinatesPage,
+          UnLocodePage,
+          AddressPage,
+          PostalCodePage
+        ) foreach (
+          page =>
+            s"when page is $page" in {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  navigator
+                    .nextPage(page, answers, departureId, NormalMode)
+                    .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+              }
+            }
+        )
+      }
+
+      "must go from Add AddContactYesNo page to ContactName page when user selects Yes" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, true)
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, NormalMode))
+        }
+      }
+
+      "must go from ContactName page to Contact phone number page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(NamePage, answers, departureId, NormalMode)
+              .mustBe(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, NormalMode))
+        }
       }
     }
   }

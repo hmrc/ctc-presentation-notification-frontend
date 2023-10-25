@@ -17,8 +17,8 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
+import controllers.routes
 import forms.DynamicAddressFormProvider
 import generators.Generators
 import models.reference.Country

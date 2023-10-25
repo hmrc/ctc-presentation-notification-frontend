@@ -18,6 +18,8 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
+import navigation.{LocationOfGoodsNavigator, Navigator}
+
 import utils.{DefaultTimeMachine, TimeMachine}
 
 import java.time.{Clock, ZoneOffset}
@@ -25,6 +27,8 @@ import java.time.{Clock, ZoneOffset}
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
+    bind(classOf[Navigator]).to(classOf[LocationOfGoodsNavigator])
+
     bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
