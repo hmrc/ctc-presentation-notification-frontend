@@ -72,8 +72,9 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
 
   def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.get(AddContactYesNoPage) match {
-      case Some(true)  => NamePage.route(userAnswers, departureId, mode)
-      case Some(false) => ???
+      case Some(true) => NamePage.route(userAnswers, departureId, mode)
+      //TODO: Change false route to different page once nav added
+      case Some(false) => MoreInformationPage.route(userAnswers, departureId, mode)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
