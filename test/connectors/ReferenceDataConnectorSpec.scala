@@ -269,6 +269,47 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)).futureValue mustBe expectedResult
       }
 
+      "getCustomsOfficesForId" - {
+        def url(officeId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=$officeId"
+
+        "must return a successful future response with a sequence of CustomsOffices" in {
+          val id = "GB1"
+
+          server.stubFor(
+            get(urlEqualTo(url(id)))
+              .willReturn(okJson(customsOfficesResponseJson))
+          )
+
+          val expectedResult = Seq(
+            CustomsOffice("GB1", "testName1", None),
+            CustomsOffice("GB2", "testName2", None)
+          )
+
+          connector.getCustomsOfficesForId(id).futureValue mustBe expectedResult
+        }
+
+        "must return a successful future response when CustomsOffice returns no data" in {
+          val id = "GB1"
+
+          server.stubFor(
+            get(urlEqualTo(url(id))).willReturn(
+              aResponse()
+                .withStatus(NO_CONTENT)
+                .withHeader(CONTENT_TYPE, JSON)
+            )
+          )
+
+          val expectedResult = Nil
+
+          connector.getCustomsOfficesForId(id).futureValue mustBe expectedResult
+        }
+
+        "must return an exception when an error response is returned" in {
+          val id = "GB1"
+          checkErrorResponse(url(id), connector.getCustomsOfficesForId(id))
+        }
+      }
+
       "must return an exception when an error response is returned" in {
         val countryId = "GB"
         checkErrorResponse(url(countryId), connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)))

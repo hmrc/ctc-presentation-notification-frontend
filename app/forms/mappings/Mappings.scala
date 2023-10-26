@@ -21,6 +21,8 @@ import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
 
+import java.time.LocalDate
+
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
@@ -28,9 +30,6 @@ trait Mappings extends Formatters with Constraints {
 
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
     of(spacelessStringFormatter(errorKey))
-
-  protected def mandatoryIfBoolean(errorKey: String = "error.required", condition: Boolean, defaultValue: Boolean): FieldMapping[Boolean] =
-    if (condition) boolean(errorKey) else of(ignoredFormat(defaultValue))
 
   protected def int(
     requiredKey: String = "error.required",
@@ -55,7 +54,13 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[T] =
     of(selectableFormatter[T](selectableList, errorKey, args))
 
-  protected def trimmedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
-    of(trimmedStringFormatter(errorKey, args))
+  protected def localDate(
+    invalidKey: String,
+    allRequiredKey: String,
+    twoRequiredKey: String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[LocalDate] =
+    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
 }
