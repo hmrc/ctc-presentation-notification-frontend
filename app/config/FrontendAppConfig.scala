@@ -35,11 +35,8 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
 
   lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customs-reference-data")
 
-  lazy val legacyEnrolmentKey: String           = config.get[String]("microservice.services.auth.legacy.enrolmentKey")
-  lazy val legacyEnrolmentIdentifierKey: String = config.get[String]("microservice.services.auth.legacy.enrolmentIdentifierKey")
-
-  lazy val newEnrolmentKey: String           = config.get[String]("microservice.services.auth.enrolmentKey")
-  lazy val newEnrolmentIdentifierKey: String = config.get[String]("microservice.services.auth.enrolmentIdentifierKey")
+  lazy val enrolmentKey: String           = config.get[String]("enrolment.key")
+  lazy val enrolmentIdentifierKey: String = config.get[String]("enrolment.identifierKey")
 
   lazy val enrolmentProxyUrl: String = config.get[Service]("microservice.services.enrolment-store-proxy").fullServiceUrl
 
@@ -50,4 +47,7 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   lazy val replaceIndexes: Boolean = config.get[Boolean]("feature-flags.replace-indexes")
 
   val signOutUrl: String = config.get[String]("urls.logoutContinue") + config.get[String]("urls.feedback")
+
+  val encryptionKey: String      = config.get[String]("encryption.key")
+  val encryptionEnabled: Boolean = config.get[Boolean]("encryption.enabled")
 }
