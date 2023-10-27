@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.LocationOfGoodsNavigator
+import navigation.ContainerNavigator
 import pages.containers.ContainerIndicatorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ContainerIndicatorController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: LocationOfGoodsNavigator, // TODO: update to container's navigator after it's been implemented
+  navigator: ContainerNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

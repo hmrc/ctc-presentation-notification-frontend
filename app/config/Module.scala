@@ -18,8 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.{LocationOfGoodsNavigator, Navigator}
-
+import navigation.{ContainerNavigator, LocationOfGoodsNavigator, Navigator}
 import utils.{DefaultTimeMachine, TimeMachine}
 
 import java.time.{Clock, ZoneOffset}
