@@ -40,7 +40,7 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[LocationOfGoodsIde
   override def form: Form[LocationOfGoodsIdentification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[LocationOfGoodsIdentification]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationView].apply(form, departureId, lrn.value, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IdentificationView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.identification"
 

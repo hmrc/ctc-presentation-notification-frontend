@@ -78,7 +78,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn.toString, departureId, customsOfficeList.values, mode)(request, messages).toString
+        view(form, departureId, customsOfficeList.values, mode)(request, messages).toString
 
       verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
     }
@@ -102,7 +102,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
     status(result) mustEqual OK
 
     contentAsString(result) mustEqual
-      view(filledForm, lrn.toString, departureId, customsOfficeList.values, mode)(request, messages).toString
+      view(filledForm, departureId, customsOfficeList.values, mode)(request, messages).toString
 
     verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
   }
@@ -142,7 +142,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
     status(result) mustEqual BAD_REQUEST
 
     contentAsString(result) mustEqual
-      view(boundForm, lrn.toString, departureId, customsOfficeList.values, mode)(request, messages).toString
+      view(boundForm, departureId, customsOfficeList.values, mode)(request, messages).toString
 
     verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
   }

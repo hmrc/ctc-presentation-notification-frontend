@@ -25,7 +25,7 @@ import views.html.locationOfGoods.AddIdentifierYesNoView
 class AddIdentifierYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddIdentifierYesNoView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddIdentifierYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.addIdentifierYesNo"
 

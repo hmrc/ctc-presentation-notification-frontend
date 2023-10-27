@@ -25,7 +25,7 @@ import views.html.transitOperation.AddArrivalDateYesNoView
 class AddArrivalDateYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddArrivalDateYesNoView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddArrivalDateYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transitOperation.addArrivalDateYesNo"
 

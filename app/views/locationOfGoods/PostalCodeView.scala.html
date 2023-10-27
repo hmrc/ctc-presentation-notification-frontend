@@ -15,7 +15,6 @@
  *@
 
 @import controllers.locationOfGoods.routes
-@import models.LocalReferenceNumber
 @import models.reference.Country
 @import views.html.components.{Button, ErrorSummary, InputPostalCodeAddress}
 
@@ -30,7 +29,6 @@
 @(
     form: Form[PostalCodeAddress],
     departureId: String,
-    lrn: String,
     mode: Mode,
     countries: Seq[Country]
 )(implicit request: Request[_], messages: Messages)

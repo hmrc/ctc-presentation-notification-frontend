@@ -30,7 +30,7 @@ class LocationTypeViewSpec extends EnumerableViewBehaviours[LocationType] {
   override def form: Form[LocationType] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[LocationType]): HtmlFormat.Appendable =
-    injector.instanceOf[LocationTypeView].apply(form, departureId, lrn.toString, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[LocationTypeView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.locationType"
 

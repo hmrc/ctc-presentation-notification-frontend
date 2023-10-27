@@ -58,7 +58,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn.toString, departureId, mode)(request, messages).toString
+        view(form, departureId, mode)(request, messages).toString
 
     }
 
@@ -78,7 +78,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn.toString, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
 
     }
 
@@ -111,7 +111,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
       val view = injector.instanceOf[EoriView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn.toString, departureId, mode)(request, messages).toString
+        view(boundForm, departureId, mode)(request, messages).toString
 
     }
 

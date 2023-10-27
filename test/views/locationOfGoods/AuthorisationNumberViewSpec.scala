@@ -32,7 +32,7 @@ class AuthorisationNumberViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new AuthorisationNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AuthorisationNumberView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AuthorisationNumberView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

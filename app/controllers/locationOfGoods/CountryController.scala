@@ -55,27 +55,25 @@ class CountryController @Inject() (
       implicit request =>
         service.getCountries().map {
           countryList =>
-            val lrn: String = request.userAnswers.lrn
-            val form        = formProvider(prefix, countryList)
+            val form = formProvider(prefix, countryList)
             val preparedForm = request.userAnswers.get(CountryPage) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, departureId, lrn, countryList.values, mode))
+            Ok(view(preparedForm, departureId, countryList.values, mode))
         }
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val lrn = request.userAnswers.lrn
       service.getCountries().flatMap {
         countryList =>
           val form = formProvider(prefix, countryList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, countryList.values, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, countryList.values, mode))),
               value => redirect(mode, CountryPage, value, departureId)
             )
       }

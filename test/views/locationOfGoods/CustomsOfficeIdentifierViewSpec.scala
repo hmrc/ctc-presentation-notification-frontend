@@ -30,7 +30,7 @@ class CustomsOfficeIdentifierViewSpec extends InputSelectViewBehaviours[CustomsO
   override def form: Form[CustomsOffice] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
-    injector.instanceOf[CustomsOfficeIdentifierView].apply(form, lrn.toString, departureId, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CustomsOfficeIdentifierView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[CustomsOffice] = arbitraryCustomsOffice
 

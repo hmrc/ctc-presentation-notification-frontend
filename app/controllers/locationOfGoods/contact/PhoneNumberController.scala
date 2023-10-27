@@ -54,7 +54,7 @@ class PhoneNumberController @Inject() (
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, departureId, request.userAnswers.lrn, contactName, mode))
+        Ok(view(preparedForm, departureId, contactName, mode))
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
@@ -67,7 +67,7 @@ class PhoneNumberController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, contactName, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
             value => redirect(mode, value, departureId)
           )
 

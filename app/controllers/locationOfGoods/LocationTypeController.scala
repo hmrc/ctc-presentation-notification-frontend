@@ -64,7 +64,7 @@ class LocationTypeController @Inject() (
               case None        => form(locationTypes)
               case Some(value) => form(locationTypes).fill(value)
             }
-            Future.successful(Ok(view(preparedForm, departureId, request.userAnswers.lrn, locationTypes, mode)))
+            Future.successful(Ok(view(preparedForm, departureId, locationTypes, mode)))
         }
     }
 
@@ -79,7 +79,7 @@ class LocationTypeController @Inject() (
             form(locationTypes)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, locationTypes, mode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, locationTypes, mode))),
                 value => redirect(mode, LocationTypePage, value, departureId)
               )
 
