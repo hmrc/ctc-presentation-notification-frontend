@@ -17,7 +17,7 @@
 package navigator
 
 import models.{Mode, UserAnswers}
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.{LoadingNavigator, LocationOfGoodsNavigator, Navigator}
 import pages._
 import play.api.mvc.Call
 
@@ -38,6 +38,11 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
 }
 
 class FakeLocationOfGoodsNavigator(desiredRoute: Call) extends LocationOfGoodsNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+
+}
+
+class FakeLoadingNavigator(desiredRoute: Call) extends LoadingNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 
 }

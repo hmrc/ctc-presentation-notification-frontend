@@ -21,12 +21,13 @@ import config.Constants._
 import generators.Generators
 import models._
 import models.messages.MessageData
+import models.reference.CustomsOffice
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.Page
 import pages.locationOfGoods._
-import pages.locationOfGoods.contact.NamePage
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -182,6 +183,32 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .nextPage(NamePage, answers, departureId, NormalMode)
               .mustBe(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, NormalMode))
         }
+      }
+
+      "must go from CustomsOfficeIdentifierPage to AddUnLocodePage" in {
+
+        val customsOffice = CustomsOffice("id", "Name", None)
+
+        val userAnswers = emptyUserAnswers.setValue(CustomsOfficeIdentifierPage, customsOffice)
+        navigator
+          .nextPage(CustomsOfficeIdentifierPage, userAnswers, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+      }
+
+      "must go from AddContactYesNoPage to AddUnLocodePage when 'addContact' is false" in {
+        val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, false)
+        navigator
+          .nextPage(AddContactYesNoPage, userAnswers, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+      }
+
+      "must go from PhoneNumberPage to AddUnLocodePage when 'placeOfLoading' exists" in {
+
+        val identifier: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnlocodeIdentifier, "identifier")
+        val userAnswers                               = emptyUserAnswers.setValue(IdentificationPage, identifier)
+        navigator
+          .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
       }
     }
   }
