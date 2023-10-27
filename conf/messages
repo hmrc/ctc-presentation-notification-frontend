@@ -264,3 +264,10 @@ transport.limit.date.error.required = The arrival date must include a {0}
 transport.limit.date.error.invalid = Enter a real arrival date at the office of destination
 transport.limit.date.error.min.date = The arrival date must be today or in the future
 transport.limit.date.error.max.date = The arrival date must be before {0}
+
+containers.containerIndicator.title = Are you using any shipping containers to transport the goods?
+containers.containerIndicator.heading = Are you using any shipping containers to transport the goods?
+containers.containerIndicator.subheading = Shipping containers
+containers.containerIndicator.checkYourAnswersLabel = Are you using any shipping containers to transport the goods?
+containers.containerIndicator.change.hidden = if you are using any shipping containers to transport the goods
+containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
