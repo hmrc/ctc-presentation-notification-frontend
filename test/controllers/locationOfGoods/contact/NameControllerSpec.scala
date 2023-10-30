@@ -17,8 +17,8 @@
 package controllers.locationOfGoods.contact
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.contact.{routes => contactRoutes}
+import controllers.routes
 import forms.NameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -57,7 +57,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.value, mode)(request, messages).toString
+        view(form, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -76,7 +76,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.value, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -111,7 +111,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       val view = injector.instanceOf[NameView]
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.value, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

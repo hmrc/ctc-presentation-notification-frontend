@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.PostalCodeFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Mode, PostalCodeAddress}
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.PostalCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PostalCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   formProvider: PostalCodeFormProvider,
   countriesService: CountriesService,
@@ -59,7 +59,7 @@ class PostalCodeController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode, countryList.values))
+            Ok(view(preparedForm, departureId, mode, countryList.values))
         }
     }
 
@@ -73,7 +73,7 @@ class PostalCodeController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode, countryList.values))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, countryList.values))),
                 value => redirect(mode, value, departureId)
               )
 

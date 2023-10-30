@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.locationOfGoods.CoordinatesFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Coordinates, Mode}
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
 import pages.locationOfGoods.CoordinatesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CoordinatesController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   formProvider: CoordinatesFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -47,25 +47,23 @@ class CoordinatesController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId) {
       implicit request =>
-        val lrn  = request.userAnswers.lrn
         val form = formProvider("locationOfGoods.coordinates")
         val preparedForm = request.userAnswers.get(CoordinatesPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, departureId, lrn, mode))
+        Ok(view(preparedForm, departureId, mode))
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
-        val lrn  = request.userAnswers.lrn
         val form = formProvider("locationOfGoods.coordinates")
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
             value => redirect(mode, CoordinatesPage, value, departureId)
           )
 

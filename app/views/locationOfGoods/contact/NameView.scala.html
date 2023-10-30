@@ -15,7 +15,6 @@
  *@
 
 @import controllers.locationOfGoods.contact.routes
-@import models.LocalReferenceNumber
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
 
@@ -27,7 +26,7 @@
     button: Button
 )
 
-@(form: Form[String], departureId: String, lrn: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("locationOfGoods.contact.name.title"),

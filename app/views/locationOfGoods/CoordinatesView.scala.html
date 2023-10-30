@@ -15,7 +15,6 @@
  *@
 
 @import controllers.locationOfGoods.routes
-@import models.LocalReferenceNumber
 @import views.html.components.{Button, ErrorSummary, InputCoordinates}
 
 @this(
@@ -29,7 +28,6 @@
 @(
     form: Form[Coordinates],
     departureId: String,
-    lrn: String,
     mode: Mode
 )(implicit request: Request[_], messages: Messages)
 

@@ -20,7 +20,7 @@ import controllers.actions.Actions
 import forms.EoriNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
 import pages.locationOfGoods.EoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +39,7 @@ class EoriController @Inject() (
   formProvider: EoriNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: EoriView,
-  navigator: Navigator
+  navigator: LocationOfGoodsNavigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -53,7 +53,7 @@ class EoriController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.lrn, departureId, mode))
+      Ok(view(preparedForm, departureId, mode))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
@@ -61,7 +61,7 @@ class EoriController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.lrn, departureId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
           value => redirect(mode, EoriPage, value, departureId)
         )
   }

@@ -29,7 +29,7 @@ class CoordinatesViewSpec extends CoordinatesViewBehaviours with Generators {
   override def form: Form[Coordinates] = new CoordinatesFormProvider()(prefix)
 
   override def applyView(form: Form[Coordinates]): HtmlFormat.Appendable =
-    injector.instanceOf[CoordinatesView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CoordinatesView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.coordinates"
 

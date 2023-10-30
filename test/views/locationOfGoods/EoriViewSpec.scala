@@ -30,7 +30,7 @@ class EoriViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new EoriNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[EoriView].apply(form, lrn.toString, departureId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[EoriView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "locationOfGoods.eori"
 

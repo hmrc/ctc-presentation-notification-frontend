@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.SpecificDataRequestProvider1
 import models.{LocationOfGoodsIdentification, LocationType, Mode}
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import pages._
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.data.Form
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,
@@ -67,7 +67,7 @@ class IdentificationController @Inject() (
               case Some(value) => form(identifiers).fill(value)
             }
 
-            Future.successful(Ok(view(preparedForm, departureId, request.userAnswers.lrn, identifiers, mode)))
+            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
         }
     }
 
@@ -81,8 +81,7 @@ class IdentificationController @Inject() (
             form(locationOfGoodsIdentificationTypes)
               .bindFromRequest()
               .fold(
-                formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, locationOfGoodsIdentificationTypes, mode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, locationOfGoodsIdentificationTypes, mode))),
                 value => redirect(mode, IdentificationPage, value, departureId)
               )
         }

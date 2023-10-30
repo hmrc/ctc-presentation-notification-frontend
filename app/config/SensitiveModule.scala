@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods.contact
+package config
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsContactSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import com.google.inject.{AbstractModule, Provides, Singleton}
+import models.SensitiveFormats
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter, SymmetricCryptoFactory}
 
-case object PhoneNumberPage extends QuestionPage[String] {
+class SensitiveModule extends AbstractModule {
 
-  override def path: JsPath = LocationOfGoodsContactSection.path \ toString
+  override def configure(): Unit = super.configure()
 
-  override def toString: String = "telephoneNumber"
+  @Provides
+  @Singleton
+  def provideSensitiveFormats(appConfig: FrontendAppConfig): SensitiveFormats = {
+    implicit val crypto: Encrypter with Decrypter = SymmetricCryptoFactory.aesGcmCrypto(appConfig.encryptionKey)
+    new SensitiveFormats(appConfig.encryptionEnabled)
+  }
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode))
 }

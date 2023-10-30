@@ -21,6 +21,7 @@ import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
+
 import pages.transitOperation.AddArrivalDateYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -52,7 +53,7 @@ class AddArrivalDateYesNoController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode))
+      Ok(view(preparedForm, departureId, mode))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
@@ -60,7 +61,7 @@ class AddArrivalDateYesNoController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
           value => redirect(mode, value, departureId)
         )
   }

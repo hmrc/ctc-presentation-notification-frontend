@@ -21,9 +21,9 @@ import forms.DynamicAddressFormProvider
 import models.reference.Country
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{DynamicAddress, Mode}
-import navigation.Navigator
-import pages.locationOfGoods.{AddressPage, CountryPage}
+import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
+import pages.locationOfGoods.{AddressPage, CountryPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddressController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DynamicAddressFormProvider,
@@ -61,7 +61,6 @@ class AddressController @Inject() (
     .andThen(getMandatoryPage(CountryPage))
     .async {
       implicit request =>
-        val lrn = request.userAnswers.lrn
         countriesService.doesCountryRequireZip(country).map {
           isPostalCodeRequired =>
             val preparedForm = request.userAnswers.get(AddressPage) match {
@@ -69,7 +68,7 @@ class AddressController @Inject() (
               case Some(value) => form(isPostalCodeRequired).fill(value)
             }
 
-            Ok(view(preparedForm, departureId, lrn, mode, isPostalCodeRequired))
+            Ok(view(preparedForm, departureId, mode, isPostalCodeRequired))
         }
     }
 
@@ -78,13 +77,12 @@ class AddressController @Inject() (
     .andThen(getMandatoryPage(CountryPage))
     .async {
       implicit request =>
-        val lrn = request.userAnswers.lrn
         countriesService.doesCountryRequireZip(country).flatMap {
           isPostalCodeRequired =>
             form(isPostalCodeRequired)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, lrn, mode, isPostalCodeRequired))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, isPostalCodeRequired))),
                 value => redirect(mode, AddressPage, value, departureId)
               )
         }

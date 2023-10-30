@@ -17,14 +17,15 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
+import controllers.routes
 import forms.locationOfGoods.CoordinatesFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.CoordinatesPage
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.CoordinatesView
@@ -41,6 +42,10 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val mode                  = NormalMode
   private lazy val coordinatesRoute = locationOfGoodsRoutes.CoordinatesController.onPageLoad(departureId, mode).url
 
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+
   "Coordinates Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -55,7 +60,7 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.toString, mode)(request, messages).toString
+        view(form, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -81,7 +86,7 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -117,7 +122,7 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[CoordinatesView]
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, lrn.toString, mode)(request, messages).toString
+        view(boundForm, departureId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

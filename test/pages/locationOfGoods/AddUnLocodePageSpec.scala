@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages.locationOfGoods.contact
+package pages.locationOfGoods
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsContactSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object PhoneNumberPage extends QuestionPage[String] {
+class AddUnLocodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = LocationOfGoodsContactSection.path \ toString
+  "AddUnLocodePage" - {
 
-  override def toString: String = "telephoneNumber"
+    beRetrievable[Boolean](AddUnLocodePage)
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode))
+    beSettable[Boolean](AddUnLocodePage)
+
+    beRemovable[Boolean](AddUnLocodePage)
+  }
 }

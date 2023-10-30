@@ -32,7 +32,7 @@ class AdditionalIdentifierViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new AdditionalIdentifierFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AdditionalIdentifierView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AdditionalIdentifierView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

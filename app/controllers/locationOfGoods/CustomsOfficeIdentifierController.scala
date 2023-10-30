@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.Mode
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsOfficeIdentifierController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   customsOfficesService: CustomsOfficesService,
@@ -56,7 +56,7 @@ class CustomsOfficeIdentifierController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, request.userAnswers.lrn, departureId, customsOfficeList.values, mode))
+            Ok(view(preparedForm, departureId, customsOfficeList.values, mode))
         }
     }
 
@@ -70,7 +70,7 @@ class CustomsOfficeIdentifierController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.lrn, departureId, customsOfficeList.values, mode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, customsOfficeList.values, mode))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeIdentifierPage, value))

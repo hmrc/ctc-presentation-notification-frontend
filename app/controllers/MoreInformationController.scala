@@ -19,6 +19,7 @@ package controllers
 import controllers.actions._
 import models.NormalMode
 import navigation.Navigator
+
 import pages.MoreInformationPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

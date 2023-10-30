@@ -15,7 +15,6 @@
  *@
 
 @import controllers.loading.routes
-@import models.LocalReferenceNumber
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -31,7 +30,7 @@
         button: Button
     )
 
-@(form: Form[String], departureId: String, lrn: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
    title = messages("loading.unLocode.title"),

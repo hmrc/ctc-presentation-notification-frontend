@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.TelephoneNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PhoneNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: LocationOfGoodsNavigator,
   formProvider: TelephoneNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -54,7 +54,7 @@ class PhoneNumberController @Inject() (
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, departureId, request.userAnswers.lrn, contactName, mode))
+        Ok(view(preparedForm, departureId, contactName, mode))
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
@@ -67,7 +67,7 @@ class PhoneNumberController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, contactName, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
             value => redirect(mode, value, departureId)
           )
 

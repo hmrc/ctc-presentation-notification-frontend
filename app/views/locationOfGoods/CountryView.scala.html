@@ -15,7 +15,6 @@
  *@
 
 @import controllers.locationOfGoods.routes
-@import models.LocalReferenceNumber
 @import models.reference.Country
 @import models.Selectable
 @import models.Selectable._
@@ -31,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[Country], departureId: String, lrn: String, countryList: Seq[Country], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], departureId: String, countryList: Seq[Country], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("locationOfGoods.country.title"),

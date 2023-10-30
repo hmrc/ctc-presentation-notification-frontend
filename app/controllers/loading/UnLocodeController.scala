@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.UnLocodeFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.LoadingNavigator
 import pages.loading.UnLocodePage
 import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +39,7 @@ class UnLocodeController @Inject() (
   formProvider: UnLocodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  navigator: Navigator,
+  navigator: LoadingNavigator,
   view: UnLocodeView,
   service: UnLocodeService
 )(implicit ec: ExecutionContext)
@@ -55,7 +55,7 @@ class UnLocodeController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Future.successful(Ok(view(preparedForm, departureId, request.userAnswers.lrn, mode)))
+      Future.successful(Ok(view(preparedForm, departureId, mode)))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
@@ -63,14 +63,14 @@ class UnLocodeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
           value =>
             service.doesUnLocodeExist(value).flatMap {
               case true =>
                 redirect(mode, value, departureId)
               case false =>
                 val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
-                Future.successful(BadRequest(view(formWithErrors, departureId, request.userAnswers.lrn, mode)))
+                Future.successful(BadRequest(view(formWithErrors, departureId, mode)))
             }
         )
   }

@@ -17,8 +17,8 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
+import controllers.routes
 import forms.DynamicAddressFormProvider
 import generators.Generators
 import models.reference.Country
@@ -74,7 +74,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(isPostalCodeRequired), departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(form(isPostalCodeRequired), departureId, mode, isPostalCodeRequired)(request, messages).toString
       }
 
       "when postcode is optional" in {
@@ -95,7 +95,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(isPostalCodeRequired), departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(form(isPostalCodeRequired), departureId, mode, isPostalCodeRequired)(request, messages).toString
       }
     }
 
@@ -131,7 +131,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(filledForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
       }
 
       "when postcode is optional" in {
@@ -164,7 +164,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(filledForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
       }
     }
 
@@ -213,7 +213,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val view = injector.instanceOf[AddressView]
 
         contentAsString(result) mustEqual
-          view(boundForm, departureId, lrn.toString, mode, isPostalCodeRequired)(request, messages).toString
+          view(boundForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
 
       }
 
@@ -236,7 +236,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val view = injector.instanceOf[AddressView]
         contentAsString(result) mustEqual
-          view(boundForm, departureId, lrn.value, mode, isPostalCodeRequired)(request, messages).toString
+          view(boundForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
       }
     }
 

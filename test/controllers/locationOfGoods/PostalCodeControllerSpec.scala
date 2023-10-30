@@ -17,8 +17,8 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
+import controllers.routes
 import forms.locationOfGoods.PostalCodeFormProvider
 import generators.Generators
 import models.reference.Country
@@ -69,7 +69,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, lrn.toString, mode, countryList.values)(request, messages).toString
+        view(form, departureId, mode, countryList.values)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -98,7 +98,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, lrn.toString, mode, countryList.values)(request, messages).toString
+        view(filledForm, departureId, mode, countryList.values)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -138,7 +138,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       val view = injector.instanceOf[PostalCodeView]
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, lrn.toString, mode, countryList.values)(request, messages).toString
+        view(boundForm, departureId, mode, countryList.values)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

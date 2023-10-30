@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.loading.AddExtraInformationYesNoPage
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.loading.AddExtraInformationYesNoView
@@ -36,6 +37,10 @@ class AddExtraInformationYesNoControllerSpec extends SpecBase with AppWithDefaul
   private val form                               = formProvider("loading.addExtraInformationYesNo")
   private val mode                               = NormalMode
   private lazy val addExtraInformationYesNoRoute = controllers.loading.routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
 
   "AddExtraInformationYesNo Controller" - {
 
