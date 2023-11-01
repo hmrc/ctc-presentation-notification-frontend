@@ -17,11 +17,11 @@
 package controllers.border
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.BorderMode
-import navigation.TransportMeansNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -37,15 +37,15 @@ import scala.concurrent.Future
 
 class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val border1: BorderMode = arbitrary[BorderMode].sample.value
-  val border2: BorderMode = arbitrary[BorderMode].sample.value
+  val border1: BorderMode = BorderMode("1", "A2GjAWj")
+  val border2: BorderMode = BorderMode("2", "jn58227")
 
   private val borderModes: Seq[BorderMode] = Seq(border1, border2)
 
   private val formProvider                    = new EnumerableFormProvider()
   private val form                            = formProvider[BorderMode]("transportMeans.borderModeOfTransport", borderModes)
   private val mode                            = NormalMode
-  private lazy val borderModeOfTransportRoute = routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
+  private lazy val borderModeOfTransportRoute = controllers.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
 
   private val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
 
@@ -130,30 +130,30 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
         view(boundForm, departureId, borderModes, mode)(request, messages).toString
     }
 
-//    "must redirect to Session Expired for a GET if no existing data is found" in {
-//
-//      setNoExistingUserAnswers()
-//
-//      val request = FakeRequest(GET, borderModeOfTransportRoute)
-//
-//      val result = route(app, request).value
-//
-//      status(result) mustEqual SEE_OTHER
-//      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-//    }
-//
-//    "must redirect to Session Expired for a POST if no existing data is found" in {
-//
-//      setNoExistingUserAnswers()
-//
-//      val request = FakeRequest(POST, borderModeOfTransportRoute)
-//        .withFormUrlEncodedBody(("value", borderModes.head.code))
-//
-//      val result = route(app, request).value
-//
-//      status(result) mustEqual SEE_OTHER
-//
-//      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-//    }
+    "must redirect to Session Expired for a GET if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(GET, borderModeOfTransportRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "must redirect to Session Expired for a POST if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(POST, borderModeOfTransportRoute)
+        .withFormUrlEncodedBody(("value", borderModes.head.code))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
   }
 }
