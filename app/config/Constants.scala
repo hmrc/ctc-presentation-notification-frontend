@@ -34,6 +34,14 @@ object Constants {
   val ExitSummaryDeclarationSecurityDetails         = "2"
   val EntryAndExitSummaryDeclarationSecurityDetails = "3"
 
+  val Maritime = "1"
+  val Rail     = "2"
+  val Road     = "3"
+  val Air      = "4"
+  val Mail     = "5"
+  val Fixed    = "7"
+  val Unknown  = "9"
+
   val CustomsOfficeIdentifier       = "V"
   val EoriNumberIdentifier          = "X"
   val AuthorisationNumberIdentifier = "Y"

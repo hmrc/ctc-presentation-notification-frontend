@@ -17,9 +17,9 @@
 package base
 
 import controllers.actions._
-import models.UserAnswers
-import navigation.{LoadingNavigator, LocationOfGoodsNavigator, Navigator}
-import navigator.{FakeLoadingNavigator, FakeLocationOfGoodsNavigator, FakeNavigator}
+import models.{Mode, UserAnswers}
+import navigation.{LoadingNavigator, LocationOfGoodsNavigator, Navigator, TransportMeansNavigator}
+import navigator.{FakeLoadingNavigator, FakeLocationOfGoodsNavigator, FakeNavigator, FakeTransportMeansNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -60,9 +60,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator                               = new FakeNavigator(onwardRoute)
-  protected val fakeLoadingNavigator: LoadingNavigator                 = new FakeLoadingNavigator(onwardRoute)
-  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator = new FakeLocationOfGoodsNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                                     = new FakeNavigator(onwardRoute)
+  protected val fakeLoadingNavigator: LoadingNavigator                       = new FakeLoadingNavigator(onwardRoute)
+  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator       = new FakeLocationOfGoodsNavigator(onwardRoute)
+  protected val fakeTransportMeansNavigatorProvider: TransportMeansNavigator = new FakeTransportMeansNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -73,7 +74,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
         bind[Navigator].toInstance(fakeNavigator),
         bind[LoadingNavigator].toInstance(fakeLoadingNavigator),
-        bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator)
+        bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
+        bind[TransportMeansNavigator].toInstance(fakeTransportMeansNavigatorProvider)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =

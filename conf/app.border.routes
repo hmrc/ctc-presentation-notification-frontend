@@ -1,0 +1,4 @@
+GET        /border-mode-of-transport/:departureId                        controllers.border.BorderModeOfTransportController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /border-mode-of-transport/:departureId                        controllers.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /change-border-mode-of-transport/:departureId                 controllers.border.BorderModeOfTransportController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-border-mode-of-transport/:departureId                 controllers.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = CheckMode)

@@ -97,6 +97,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[LocationOfGoodsIdentification]](serviceUrl, headers = version2Header)
   }
 
+  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[T]](url, headers = version2Header)
+  }
+
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
