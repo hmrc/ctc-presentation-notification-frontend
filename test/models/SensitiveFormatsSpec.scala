@@ -115,7 +115,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "MessageData" - {
     val encryptedValue =
-      "iKyG8d8pfk2WgiyMzWSx1hTLnDM7wFoAzsXI/9KCGAIcn7IIIpI6MzHCdasbsRExN6wVZQCmW78jCeKjWrwPvSbWGmcv35IdDiMmMq3yyVw2VS+MaTIzdTK+l+9fC/gSlN+ttyOl4wGibGYhSr5m7N/sKeyvwrAttq9vzX9Ya//dMWrpbrQ="
+      "5ILKD7bgqwoLb2RQD8zwpX62mJMkDixJVXdpJvpRUbs8rvkq772lmOO0bp0FAAieDR4RgGgspSj36cW322ZpnMBI5/Y1NAJMnNeHUG7BnlPRdGK7FdH9DxlSEnTMAki6DAD0Uo1Dgye1/rfhbNvlW33fzo0qYYjxcooJ05OUXa3tBKt5USIWl2T6FfoqpXe+Ijuh48oWECrPFy8cRKMljgzrRkNHMRnZxZLaig7JIxkwQ3hZTJNEoZgOdijyzLHdKzkhHOx2sEI="
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
@@ -128,7 +128,8 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         LocationOfGoods = None,
         ActiveBorderTransportMeans = None,
         PlaceOfLoading = None
-      )
+      ),
+      CustomsOfficeOfDestination = ""
     )
 
     "reads" - {
@@ -195,6 +196,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
           running(app) {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
             val result           = Json.toJson(decryptedValue)(sensitiveFormats.messageDataWrites)
+
             result mustBe a[JsString]
           }
         }

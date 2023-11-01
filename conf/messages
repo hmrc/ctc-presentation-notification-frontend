@@ -9,6 +9,10 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+date.day.capitalized = Day
+date.month.capitalized = Month
+date.year.capitalized = Year
+
 unauthorised.title = You cannot use this service
 unauthorised.heading = You cannot use this service
 unauthorised.paragraph1 = You must have an account with an activated EORI number.
@@ -249,3 +253,14 @@ loading.location.hint = Enter the specific location, such as the warehouse, shed
 loading.location.error.required = Enter the place of loading in {0}
 loading.location.error.length = The place of loading must be {0} characters or less
 loading.location.error.invalid = The place of loading must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+transport.limit.date.title = When do you expect the transit to arrive in {0}?
+transport.limit.date.heading = When do you expect the transit to arrive in {0}?
+transport.limit.date.paragraph = This has to be before {0}.
+transport.limit.date.caption = Estimated arrival date
+transport.limit.date.error.required.all = Enter the estimated arrival date at the office of destination
+transport.limit.date.error.required.two = The arrival date must include a {0} and {1}
+transport.limit.date.error.required = The arrival date must include a {0}
+transport.limit.date.error.invalid = Enter a real arrival date at the office of destination
+transport.limit.date.error.min.date = The arrival date must be today or in the future
+transport.limit.date.error.max.date = The arrival date must be before {0}

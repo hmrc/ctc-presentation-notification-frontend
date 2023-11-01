@@ -55,6 +55,28 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "getCustomsOfficeById" - {
+      "must return the head of the customs office list" in {
+
+        when(mockRefDataConnector.getCustomsOfficesForId(any())(any(), any()))
+          .thenReturn(Future.successful(gbCustomsOffices))
+
+        service.getCustomsOfficeById("GB1").futureValue mustBe Some(gbCustomsOffice1)
+
+        verify(mockRefDataConnector).getCustomsOfficesForId(any())(any(), any())
+      }
+
+      "must return None for empty list" in {
+
+        when(mockRefDataConnector.getCustomsOfficesForId(any())(any(), any()))
+          .thenReturn(Future.successful(Nil))
+
+        service.getCustomsOfficeById("GB1").futureValue mustBe None
+
+        verify(mockRefDataConnector).getCustomsOfficesForId(any())(any(), any())
+      }
+    }
+
     "getCustomsOfficesOfDestinationForCountry" - {
       "must return a list of sorted customs offices of destination for a given country" in {
 
