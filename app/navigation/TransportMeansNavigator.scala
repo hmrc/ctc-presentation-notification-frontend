@@ -19,6 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
+import pages.border.BorderModeOfTransportPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -26,7 +27,10 @@ import javax.inject.Inject
 @Singleton
 class TransportMeansNavigator @Inject() () extends Navigator {
 
-  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case BorderModeOfTransportPage => ua => ???
+
+  }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 

@@ -22,6 +22,7 @@ import models.Mode
 import models.reference.BorderMode
 import models.requests.MandatoryDataRequest
 import navigation.TransportMeansNavigator
+import pages.QuestionPage
 import pages.border.BorderModeOfTransportPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -70,19 +71,20 @@ class BorderModeOfTransportController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, borderModeCodes, mode))),
-              value => redirect(mode, value, departureId)
+              value => redirect(mode, BorderModeOfTransportPage, value, departureId)
             )
       }
   }
 
   private def redirect(
     mode: Mode,
+    page: QuestionPage[BorderMode],
     value: BorderMode,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(BorderModeOfTransportPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(BorderModeOfTransportPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 
 }

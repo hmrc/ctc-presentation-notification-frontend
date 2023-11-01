@@ -37,7 +37,10 @@ import scala.concurrent.Future
 
 class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val borderModes = arbitrary[Seq[BorderMode]].sample.value
+  val border1: BorderMode = arbitrary[BorderMode].sample.value
+  val border2: BorderMode = arbitrary[BorderMode].sample.value
+
+  private val borderModes: Seq[BorderMode] = Seq(border1, border2)
 
   private val formProvider                    = new EnumerableFormProvider()
   private val form                            = formProvider[BorderMode]("transportMeans.borderModeOfTransport", borderModes)
@@ -76,10 +79,10 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
       val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModes.head)
       setExistingUserAnswers(userAnswers)
 
+      when(mockTransportModeCodesService.getBorderModes()(any())).thenReturn(Future.successful(borderModes))
       val request = FakeRequest(GET, borderModeOfTransportRoute)
 
       val result = route(app, request).value
@@ -90,16 +93,8 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
       status(result) mustEqual OK
 
-      val ans      = contentAsString(result)
-      val expected = view(filledForm, departureId, borderModes, mode)(request, messages).toString
-//      println("beginansssss")
-//      println(ans)
-//      println("ansssssssssss")
-      println("expansssss")
-      println(expected)
-      println("expansssssssssss")
-//      ans mustEqual
-//        expected
+      contentAsString(result) mustEqual view(filledForm, departureId, borderModes, mode)(request, messages).toString
+
     }
 
     "must redirect to the next page when valid data is submitted" in {
