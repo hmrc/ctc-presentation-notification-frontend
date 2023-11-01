@@ -23,6 +23,7 @@ import play.api.libs.json._
 
 case class MessageData(
   CustomsOfficeOfDeparture: String,
+  CustomsOfficeOfDestination: String,
   TransitOperation: TransitOperation,
   Authorisation: Option[Seq[Authorisation]],
   Consignment: Consignment
@@ -49,6 +50,7 @@ object MessageData {
 
   implicit val reads: Reads[MessageData] = (
     (__ \ "CustomsOfficeOfDeparture" \ "referenceNumber").read[String] and
+      (__ \ "CustomsOfficeOfDestinationDeclared" \ "referenceNumber").read[String] and
       (__ \ "TransitOperation").read[TransitOperation] and
       (__ \ "Authorisation").readNullable[Seq[Authorisation]] and
       (__ \ "Consignment").read[Consignment]
@@ -56,6 +58,7 @@ object MessageData {
 
   implicit val writes: Writes[MessageData] = (
     (__ \ "CustomsOfficeOfDeparture" \ "referenceNumber").write[String] and
+      (__ \ "CustomsOfficeOfDestinationDeclared" \ "referenceNumber").write[String] and
       (__ \ "TransitOperation").write[TransitOperation] and
       (__ \ "Authorisation").writeNullable[Seq[Authorisation]] and
       (__ \ "Consignment").write[Consignment]

@@ -26,6 +26,9 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   val loginUrl: String         = config.get[String]("urls.login")
   val loginContinueUrl: String = config.get[String]("urls.loginContinue")
 
+  lazy val limitDateDaysBefore: Int = config.get[Int]("dates.limitDate.daysBefore")
+  lazy val limitDateDaysAfter: Int  = config.get[Int]("dates.limitDate.daysAfter")
+
   lazy val contactHost: String = config.get[String]("contact-frontend.host")
 
   lazy val commonTransitConventionTradersUrl: String = config.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl

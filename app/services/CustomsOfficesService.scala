@@ -35,6 +35,9 @@ class CustomsOfficesService @Inject() (
       .getCustomsOfficesOfTransitForCountry(countryCode)
       .map(sort)
 
+  def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[Option[CustomsOffice]] =
+    referenceDataConnector.getCustomsOfficesForId(id).map(_.headOption)
+
   def getCustomsOfficesOfDestinationForCountry(
     countryCode: CountryCode
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
