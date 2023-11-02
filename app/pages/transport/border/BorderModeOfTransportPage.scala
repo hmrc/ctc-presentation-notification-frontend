@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.transport.border
 
-import com.google.inject.Singleton
-import models._
-import pages._
-import pages.transport.border.BorderModeOfTransportPage
+import models.reference.BorderMode
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.transport.TransportSection
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import javax.inject.Inject
+case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
 
-@Singleton
-class BorderNavigator @Inject() () extends Navigator {
+  override def path: JsPath = TransportSection.path \ toString
 
-  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def toString: String = "borderModeOfTransport"
 
-  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
-
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
 
 }

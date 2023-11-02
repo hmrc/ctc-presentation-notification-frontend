@@ -35,7 +35,8 @@ import scala.collection.immutable
 
 trait A11ySpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with AccessibilityMatchers with OptionValues with Generators {
 
-  val lrn: LocalReferenceNumber = arbitrary[LocalReferenceNumber].sample.value
+  val lrn: LocalReferenceNumber   = arbitrary[LocalReferenceNumber].sample.value
+  val departureId: Option[String] = arbitrary[String].sample
 
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
