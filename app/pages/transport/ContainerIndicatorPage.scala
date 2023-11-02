@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.transport
 
-import com.google.inject.Singleton
-import models._
-import pages._
-import pages.transport.border.BorderModeOfTransportPage
+import controllers.transport.routes
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.containers.ContainerSection
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import javax.inject.Inject
+case object ContainerIndicatorPage extends QuestionPage[Boolean] {
 
-@Singleton
-class BorderNavigator @Inject() () extends Navigator {
+  override def path: JsPath = ContainerSection.path \ toString
 
-  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def toString: String = "containerIndicator"
 
-  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.ContainerIndicatorController.onPageLoad(departureId, mode))
 
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
+  // TODO: add clean up when subsequent page is built
 
 }

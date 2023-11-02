@@ -20,8 +20,6 @@ import controllers.actions._
 import models.UserAnswers
 import navigation._
 import navigator._
-import navigation.{ContainerNavigator, LoadingNavigator, LocationOfGoodsNavigator, Navigator, TransportMeansNavigator}
-import navigator.{FakeContainerNavigator, FakeLoadingNavigator, FakeLocationOfGoodsNavigator, FakeNavigator, FakeTransportMeansNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -65,9 +63,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeNavigator: Navigator                               = new FakeNavigator(onwardRoute)
   protected val fakeLoadingNavigator: LoadingNavigator                 = new FakeLoadingNavigator(onwardRoute)
   protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator = new FakeLocationOfGoodsNavigator(onwardRoute)
-  protected val fakeBorderNavigatorProvider: BorderNavigator           = new FakeBorderNavigatorProvider(onwardRoute)
+  protected val fakeBorderNavigatorProvider: BorderNavigator           = new FakeBorderNavigator(onwardRoute)
   protected val fakeContainerNavigator: ContainerNavigator             = new FakeContainerNavigator(onwardRoute)
-  protected val fakeTransportMeansNavigator: TransportMeansNavigator   = new FakeTransportMeansNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -80,8 +77,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LoadingNavigator].toInstance(fakeLoadingNavigator),
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
         bind[BorderNavigator].toInstance(fakeBorderNavigatorProvider),
-        bind[ContainerNavigator].toInstance(fakeContainerNavigator),
-        bind[TransportMeansNavigator].toInstance(fakeTransportMeansNavigator)
+        bind[ContainerNavigator].toInstance(fakeContainerNavigator)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
