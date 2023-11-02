@@ -273,7 +273,7 @@ containers.containerIndicator.checkYourAnswersLabel = Are you using any shipping
 containers.containerIndicator.change.hidden = if you are using any shipping containers to transport the goods
 containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
-transportMeans.caption = Transport details - Border means of transport
+transportMeans.subheading = Border means of transport
 
 transportMeans.addConveyanceReference.title = Do you want to add a conveyance reference number?
 transportMeans.addConveyanceReference.heading = Do you want to add a conveyance reference number?
@@ -281,3 +281,12 @@ transportMeans.addConveyanceReference.paragraph = This is a unique reference pro
 transportMeans.addConveyanceReference.checkYourAnswersLabel = Do you want to add a conveyance reference number?
 transportMeans.addConveyanceReference.error.required = Select yes if you want to add a conveyance reference number
 transportMeans.addConveyanceReference.change.hidden = if you want to add a conveyance reference number for the border means of transport
+
+transportMeans.conveyanceReferenceNumber.title = What is the conveyance reference number?
+transportMeans.conveyanceReferenceNumber.heading = What is the conveyance reference number?
+transportMeans.conveyanceReferenceNumber.hint = This can be up to 17 characters long and include both letters and numbers.
+transportMeans.conveyanceReferenceNumber.checkYourAnswersLabel = Conveyance reference number
+transportMeans.conveyanceReferenceNumber.error.required = Enter the conveyance reference number
+transportMeans.conveyanceReferenceNumber.error.length = The reference number must be 17 characters or less
+transportMeans.conveyanceReferenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
+transportMeans.conveyanceReferenceNumber.change.hidden = conveyance reference number for the border means of transport

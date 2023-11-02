@@ -23,20 +23,12 @@ import pages.sections.transportMeans.TransportMeansActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
-
-case class AddConveyanceReferenceYesNoPage(activeIndex: Index) extends QuestionPage[Boolean] {
+case class ConveyanceReferenceNumberPage(activeIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = TransportMeansActiveSection(activeIndex).path \ toString
 
-  override def toString: String = "addConveyanceReference"
+  override def toString: String = "conveyanceReferenceNumber"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(ConveyanceReferenceNumberPage(activeIndex))
-      case _           => super.cleanup(value, userAnswers)
-    }
+    Some(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
 }
