@@ -17,11 +17,8 @@
 package navigation
 
 import com.google.inject.Singleton
-import config.Constants._
 import models._
 import pages._
-import pages.locationOfGoods._
-import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.mvc.Call
 
 import javax.inject.Inject

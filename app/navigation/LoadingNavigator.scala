@@ -20,6 +20,7 @@ import com.google.inject.Singleton
 import models._
 import pages.Page
 import pages.loading._
+import pages.transport.LimitDatePage
 import play.api.mvc.Call
 
 @Singleton
@@ -29,7 +30,15 @@ class LoadingNavigator {
     case AddUnLocodeYesNoPage         => ua => addUnlocodeNormalRoute(ua, departureId)
     case UnLocodePage                 => ua => AddExtraInformationYesNoPage.route(ua, departureId, NormalMode)
     case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoNormalRoute(ua, departureId)
-    case CountryPage                  => ua => LocationPage.route(ua, departureId, NormalMode)
+    case CountryPage =>
+      ua =>
+        if (ua.departureData.isSimplified) {
+          ua.departureData.TransitOperation.limitDate match {
+            case Some(_) => LocationPage.route(ua, departureId, NormalMode)
+            case None    => LimitDatePage.route(ua, departureId, mode)
+          }
+        } else
+          LocationPage.route(ua, departureId, NormalMode)
   }
 
   protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built

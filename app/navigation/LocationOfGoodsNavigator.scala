@@ -22,6 +22,7 @@ import models._
 import pages._
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
+import pages.transport.LimitDatePage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)
     case AddContactYesNoPage                                                                      => ua => addContactYesNoNavigation(ua, departureId, mode)
     case NamePage                                                                                 => ua => PhoneNumberPage.route(ua, departureId, mode)
-    case CustomsOfficeIdentifierPage                                                              => ua => AddUnLocodePage.route(ua, departureId, mode)
+    case CustomsOfficeIdentifierPage                                                              => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
     case PhoneNumberPage                                                                          => ua => phoneNumberPageNavigation(ua, departureId, mode)
   }
 
@@ -60,7 +61,8 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     ua.departureData.Consignment.LocationOfGoods match {
       case None if !ua.departureData.isSimplified => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       case None                                   => Some(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
-      case Some(_)                                => AddUnLocodePage.route(ua, departureId, mode)
+      case Some(_) =>
+        placeOfLoadingExistsRedirect(ua, departureId, mode)
     }
 
   def addIdentifierYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
@@ -73,13 +75,20 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
   def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.get(AddContactYesNoPage) match {
       case Some(true)  => NamePage.route(userAnswers, departureId, mode)
-      case Some(false) => AddUnLocodePage.route(userAnswers, departureId, mode)
+      case Some(false) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.get(IdentificationPage) match {
-      case Some(_) => AddUnLocodePage.route(userAnswers, departureId, mode)
-      case None    => ???
+      case Some(_) =>
+        placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
+      case None => ???
+    }
+
+  private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode) =
+    userAnswers.departureData.Consignment.PlaceOfLoading match {
+      case Some(_) => LimitDatePage.route(userAnswers, departureId, mode)
+      case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
     }
 }
