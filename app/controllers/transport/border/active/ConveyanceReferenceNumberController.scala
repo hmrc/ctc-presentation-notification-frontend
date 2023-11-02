@@ -14,44 +14,43 @@
  * limitations under the License.
  */
 
-package controllers.transport.border
+package controllers.transport.border.active
 
 import controllers.actions._
-import forms.YesNoFormProvider
+import forms.transportMeans.ConveyanceReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.BorderNavigator
-import pages.transport.border.AddConveyanceReferenceYesNoPage
+import pages.transport.border.active.ConveyanceReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.border.AddConveyanceReferenceYesNoView
+import views.html.transport.border.active.ConveyanceReferenceNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddConveyanceReferenceYesNoController @Inject() (
+class ConveyanceReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigator: BorderNavigator,
   actions: Actions,
-  formProvider: YesNoFormProvider,
+  formProvider: ConveyanceReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddConveyanceReferenceYesNoView
+  view: ConveyanceReferenceNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.border.addConveyanceReference")
+  private val form = formProvider("transport.border.active.conveyanceReferenceNumber")
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddConveyanceReferenceYesNoPage(activeIndex)) match {
+      val preparedForm = request.userAnswers.get(ConveyanceReferenceNumberPage(activeIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-
       Ok(view(preparedForm, departureId, mode, activeIndex))
   }
 
@@ -67,13 +66,13 @@ class AddConveyanceReferenceYesNoController @Inject() (
 
   private def redirect(
     mode: Mode,
-    value: Boolean,
+    value: String,
     departureId: String,
     activeIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConveyanceReferenceYesNoPage(activeIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(ConveyanceReferenceNumberPage(activeIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, mode))
 
 }

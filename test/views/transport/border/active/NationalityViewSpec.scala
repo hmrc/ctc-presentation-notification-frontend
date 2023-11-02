@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.transport.border
+package views.transport.border.active
 
 import forms.SelectableFormProvider
 import forms.behaviours.InputSelectViewBehaviours
@@ -23,7 +23,7 @@ import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.html.transport.border.NationalityView
+import views.html.transport.border.active.NationalityView
 
 class NationalityViewSpec extends InputSelectViewBehaviours[Nationality] {
 
@@ -34,7 +34,7 @@ class NationalityViewSpec extends InputSelectViewBehaviours[Nationality] {
 
   implicit override val arbitraryT: Arbitrary[Nationality] = arbitraryNationality
 
-  override val prefix: String = "transport.border.nationality"
+  override val prefix: String = "transport.border.active.nationality"
 
   behave like pageWithTitle()
 

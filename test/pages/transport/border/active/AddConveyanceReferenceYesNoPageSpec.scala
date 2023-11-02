@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package pages.transport.border
+package pages.transport.border.active
 
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.transport.border.{AddConveyanceReferenceYesNoPage, ConveyanceReferenceNumberPage}
 
 class AddConveyanceReferenceYesNoPageSpec extends PageBehaviours {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.transport.border
+package views.transport.border.active
 
 import forms.transportMeans.ConveyanceReferenceNumberFormProvider
 import models.NormalMode
@@ -23,11 +23,11 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.transport.border.ConveyanceReferenceNumberView
+import views.html.transport.border.active.ConveyanceReferenceNumberView
 
 class ConveyanceReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "transport.border.conveyanceReferenceNumber"
+  override val prefix: String = "transport.border.active.conveyanceReferenceNumber"
 
   override def form: Form[String] = new ConveyanceReferenceNumberFormProvider()(prefix)
 

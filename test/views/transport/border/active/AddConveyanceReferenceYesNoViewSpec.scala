@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views.transport.border
+package views.transport.border.active
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.transport.border.AddConveyanceReferenceYesNoView
+import views.html.transport.border.active.AddConveyanceReferenceYesNoView
 
 class AddConveyanceReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddConveyanceReferenceYesNoView].apply(form, departureId, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "transport.border.addConveyanceReference"
+  override val prefix: String = "transport.border.active.addConveyanceReference"
 
   behave like pageWithTitle()
 

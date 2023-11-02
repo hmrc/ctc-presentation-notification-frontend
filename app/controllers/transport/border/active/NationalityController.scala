@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.border
+package controllers.transport.border.active
 
 import controllers.actions._
 import forms.SelectableFormProvider
@@ -22,13 +22,13 @@ import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.BorderNavigator
-import pages.transport.border.NationalityPage
+import pages.transport.border.active.NationalityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.NationalitiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.border.NationalityView
+import views.html.transport.border.active.NationalityView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,7 +50,7 @@ class NationalityController @Inject() (
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
-          val form = formProvider("transport.border.nationality", nationalityList)
+          val form = formProvider("transport.border.active.nationality", nationalityList)
           val preparedForm = request.userAnswers.get(NationalityPage(activeIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -64,7 +64,7 @@ class NationalityController @Inject() (
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
-          val form = formProvider("transport.border.nationality", nationalityList)
+          val form = formProvider("transport.border.active.nationality", nationalityList)
           form
             .bindFromRequest()
             .fold(

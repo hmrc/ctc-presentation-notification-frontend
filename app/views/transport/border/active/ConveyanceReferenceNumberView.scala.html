@@ -14,36 +14,37 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.border.routes
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import controllers.transport.border.active.routes
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
+    inputText: InputText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.border.addConveyanceReference.title"),
+    title = messages("transport.border.active.conveyanceReferenceNumber.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AddConveyanceReferenceYesNoController.onSubmit(departureId, mode, activeIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ConveyanceReferenceNumberController.onSubmit(departureId, mode, activeIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputYesNo(
+        @inputText(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("transport.border.addConveyanceReference.heading"),
+            inputTextType = OrdinaryTextInput(
+                heading = messages("transport.border.active.conveyanceReferenceNumber.heading"),
                 caption = Some(messages("transport.border.subheading")),
-                additionalHtml = messages("transport.border.addConveyanceReference.paragraph").toParagraph
-            )
+            ),
+            hint = Some(messages("transport.border.active.conveyanceReferenceNumber.hint")),
+            inputClass = InputSize.Width20
         )
 
         @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))

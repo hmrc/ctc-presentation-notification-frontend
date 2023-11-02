@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.border
+package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -22,22 +22,22 @@ import forms.transportMeans.ConveyanceReferenceNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.transport.border.ConveyanceReferenceNumberPage
+import pages.transport.border.active.ConveyanceReferenceNumberPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transport.border.ConveyanceReferenceNumberView
+import views.html.transport.border.active.ConveyanceReferenceNumberView
 
 import scala.concurrent.Future
 
 class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new ConveyanceReferenceNumberFormProvider()
-  private val form         = formProvider("transport.border.conveyanceReferenceNumber")
+  private val form         = formProvider("transport.border.active.conveyanceReferenceNumber")
   private val mode         = NormalMode
 
   private lazy val conveyanceReferenceNumberRoute =
-    controllers.transport.border.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, index).url
+    controllers.transport.border.active.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder = super.guiceApplicationBuilder()
 
