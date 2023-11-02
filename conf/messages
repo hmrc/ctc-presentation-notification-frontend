@@ -290,3 +290,12 @@ transportMeans.conveyanceReferenceNumber.error.required = Enter the conveyance r
 transportMeans.conveyanceReferenceNumber.error.length = The reference number must be 17 characters or less
 transportMeans.conveyanceReferenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
 transportMeans.conveyanceReferenceNumber.change.hidden = conveyance reference number for the border means of transport
+
+transportMeans.nationality.title = What country is this vehicle registered to?
+transportMeans.nationality.heading = What country is this vehicle registered to?
+transportMeans.nationality.hint = Enter the country or code, like Austria or AT.
+transportMeans.nationality.label = What country is this vehicle registered to?
+transportMeans.nationality.placeholder = Select a nationality
+transportMeans.nationality.change.hidden = registered country for the border means of transport
+transportMeans.nationality.checkYourAnswersLabel = Registered country
+transportMeans.nationality.error.required = Select the country the vehicle is registered to

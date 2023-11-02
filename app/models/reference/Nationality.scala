@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package navigation
+package models.reference
 
-import com.google.inject.Singleton
-import models._
-import pages._
-import play.api.mvc.Call
+import models.Selectable
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
+case class Nationality(code: String, description: String) extends Selectable {
 
-@Singleton
-class ContainerNavigator @Inject() () extends Navigator {
+  override def toString: String = s"$description - $code"
 
-  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override val value: String = code
+}
 
-  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
-
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
-
+object Nationality {
+  implicit val format: Format[Nationality] = Json.format[Nationality]
 }

@@ -7,3 +7,8 @@ GET         /border-means-of-transport/:activeIndex/conveyance-reference-number/
 POST        /border-means-of-transport/:activeIndex/conveyance-reference-number/:departureId                   controllers.transportMeans.ConveyanceReferenceNumberController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
 GET         /border-means-of-transport/:activeIndex/change-conveyance-reference-number/:departureId            controllers.transportMeans.ConveyanceReferenceNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
 POST        /border-means-of-transport/:activeIndex/change-conveyance-reference-number/:departureId            controllers.transportMeans.ConveyanceReferenceNumberController.onSubmit(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
+
+GET        /border-means-of-transport/:activeIndex/country/:departureId                                        controllers.transportMeans.NationalityController.onPageLoad(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/country/:departureId                                        controllers.transportMeans.NationalityController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
+GET        /border-means-of-transport/:activeIndex/change-country/:departureId                                 controllers.transportMeans.NationalityController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/change-country/:departureId                                 controllers.transportMeans.NationalityController.onSubmit(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
