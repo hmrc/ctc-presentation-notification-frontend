@@ -15,35 +15,36 @@
  *@
 
 @import controllers.transportMeans.routes
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
+    inputText: InputText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.addConveyanceReference.title"),
+    title = messages("transportMeans.conveyanceReferenceNumber.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AddConveyanceReferenceYesNoController.onSubmit(departureId, mode, activeIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ConveyanceReferenceNumberController.onSubmit(departureId, mode, activeIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputYesNo(
+        @inputText(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("transportMeans.addConveyanceReference.heading"),
+            inputTextType = OrdinaryTextInput(
+                heading = messages("transportMeans.conveyanceReferenceNumber.heading"),
                 caption = Some(messages("transportMeans.subheading")),
-                additionalHtml = messages("transportMeans.addConveyanceReference.paragraph").toParagraph
-            )
+            ),
+            hint = Some(messages("transportMeans.conveyanceReferenceNumber.hint")),
+            inputClass = InputSize.Width20
         )
 
         @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
