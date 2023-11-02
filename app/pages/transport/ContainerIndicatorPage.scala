@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages.containers
+package pages.transport
 
-import controllers.containers.routes
+import controllers.transport.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.containers.ContainerSection

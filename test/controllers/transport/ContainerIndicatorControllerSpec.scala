@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.containers
+package controllers.transport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -22,20 +22,20 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.containers.ContainerIndicatorPage
+import pages.transport.ContainerIndicatorPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.containers.ContainerIndicatorView
+import views.html.transport.ContainerIndicatorView
 
 import scala.concurrent.Future
 
 class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                 = new YesNoFormProvider()
-  private val form                         = formProvider("containers.containerIndicator")
+  private val form                         = formProvider("transport.containers.containerIndicator")
   private val mode                         = NormalMode
-  private lazy val containerIndicatorRoute = controllers.containers.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
+  private lazy val containerIndicatorRoute = controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

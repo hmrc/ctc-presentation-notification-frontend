@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.containers
+package controllers.transport
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.ContainerNavigator
-import pages.containers.ContainerIndicatorPage
+import pages.transport.ContainerIndicatorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.containers.ContainerIndicatorView
+import views.html.transport.ContainerIndicatorView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,7 +43,7 @@ class ContainerIndicatorController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("containers.containerIndicator")
+  private val form = formProvider("transport.containers.containerIndicator")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>

@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views.containers
+package views.transport
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.containers.ContainerIndicatorView
+import views.html.transport.ContainerIndicatorView
 
 class ContainerIndicatorViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[ContainerIndicatorView].apply(form, departureId, lrn.toString, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "containers.containerIndicator"
+  override val prefix: String = "transport.containers.containerIndicator"
 
   behave like pageWithTitle()
 

@@ -267,11 +267,11 @@ transport.limit.date.error.max.date = The arrival date must be before {0}
 
 containers.containerIndicator.subheading = Shipping containers
 
-containers.containerIndicator.title = Are you using any shipping containers to transport the goods?
-containers.containerIndicator.heading = Are you using any shipping containers to transport the goods?
-containers.containerIndicator.checkYourAnswersLabel = Are you using any shipping containers to transport the goods?
-containers.containerIndicator.change.hidden = if you are using any shipping containers to transport the goods
-containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
+transport.containers.containerIndicator.title = Are you using any shipping containers to transport the goods?
+transport.containers.containerIndicator.heading = Are you using any shipping containers to transport the goods?
+transport.containers.containerIndicator.checkYourAnswersLabel = Are you using any shipping containers to transport the goods?
+transport.containers.containerIndicator.change.hidden = if you are using any shipping containers to transport the goods
+transport.containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
 transport.border.subheading = Border means of transport
 

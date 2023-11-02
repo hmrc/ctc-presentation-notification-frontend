@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package pages.containers
+package pages.transport
 
 import pages.behaviours.PageBehaviours
-import pages.containers.ContainerIndicatorPage
 
 class ContainerIndicatorPageSpec extends PageBehaviours {
 
