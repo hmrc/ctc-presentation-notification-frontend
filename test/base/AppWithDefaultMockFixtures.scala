@@ -60,11 +60,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator                                     = new FakeNavigator(onwardRoute)
-  protected val fakeLoadingNavigator: LoadingNavigator                       = new FakeLoadingNavigator(onwardRoute)
-  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator       = new FakeLocationOfGoodsNavigator(onwardRoute)
-  protected val fakeTransportMeansNavigatorProvider: TransportMeansNavigator = new FakeTransportMeansNavigator(onwardRoute)
-  protected val fakeContainerNavigator: ContainerNavigator                   = new FakeContainerNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                               = new FakeNavigator(onwardRoute)
+  protected val fakeLoadingNavigator: LoadingNavigator                 = new FakeLoadingNavigator(onwardRoute)
+  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator = new FakeLocationOfGoodsNavigator(onwardRoute)
+  protected val fakeTransportMeansNavigatorProvider: BorderNavigator   = new FakeTransportMeansNavigator(onwardRoute)
+  protected val fakeContainerNavigator: ContainerNavigator             = new FakeContainerNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -76,7 +76,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[Navigator].toInstance(fakeNavigator),
         bind[LoadingNavigator].toInstance(fakeLoadingNavigator),
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
-        bind[TransportMeansNavigator].toInstance(fakeTransportMeansNavigatorProvider),
+        bind[BorderNavigator].toInstance(fakeTransportMeansNavigatorProvider),
         bind[ContainerNavigator].toInstance(fakeContainerNavigator)
       )
 

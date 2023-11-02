@@ -25,7 +25,7 @@ import play.api.mvc.Call
 import javax.inject.Inject
 
 @Singleton
-class TransportMeansNavigator @Inject() () extends Navigator {
+class BorderNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case BorderModeOfTransportPage => ua => ???

@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import models.Mode
 import models.reference.BorderMode
 import models.requests.MandatoryDataRequest
-import navigation.TransportMeansNavigator
+import navigation.BorderNavigator
 import pages.QuestionPage
 import pages.transport.border.BorderModeOfTransportPage
 import play.api.data.Form
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BorderModeOfTransportController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: TransportMeansNavigator,
+  navigator: BorderNavigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
