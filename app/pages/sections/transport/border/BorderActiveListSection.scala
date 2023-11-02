@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package pages.sections.transport.transportMeans
+package pages.sections.transport.border
 
 import pages.sections.Section
 import pages.sections.transport.TransportSection
 import play.api.libs.json.{JsArray, JsPath}
 
-case object TransportMeansActiveListSection extends Section[JsArray] {
+case object BorderActiveListSection extends Section[JsArray] {
 
   override def path: JsPath = TransportSection.path \ toString
 

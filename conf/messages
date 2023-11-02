@@ -254,10 +254,10 @@ loading.location.error.required = Enter the place of loading in {0}
 loading.location.error.length = The place of loading must be {0} characters or less
 loading.location.error.invalid = The place of loading must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
-border.borderModeOfTransport.title = How is the transit crossing the border?
-border.borderModeOfTransport.heading = How is the transit crossing the border?
-border.borderModeOfTransport.error.required = Select how the transit is crossing the border
-border.borderModeOfTransport.caption = Border mode of transport
+transport.border.borderModeOfTransport.title = How is the transit crossing the border?
+transport.border.borderModeOfTransport.heading = How is the transit crossing the border?
+transport.border.borderModeOfTransport.error.required = Select how the transit is crossing the border
+transport.border.borderModeOfTransport.caption = Border mode of transport
 
 transport.limit.date.title = When do you expect the transit to arrive in {0}?
 transport.limit.date.heading = When do you expect the transit to arrive in {0}?
@@ -304,3 +304,17 @@ transport.border.active.nationality.placeholder = Select a nationality
 transport.border.active.nationality.change.hidden = registered country for the border means of transport
 transport.border.active.nationality.checkYourAnswersLabel = Registered country
 transport.border.active.nationality.error.required = Select the country the vehicle is registered to
+
+transport.border.active.identification.title = Which identification do you want to use for this vehicle?
+transport.border.active.identification.heading = Which identification do you want to use for this vehicle?
+transport.border.active.identification.10 = IMO ship identification number
+transport.border.active.identification.11 = Name of a sea-going vessel
+transport.border.active.identification.21 = Train number
+transport.border.active.identification.30 = Registration number of a road vehicle
+transport.border.active.identification.40 = IATA flight number
+transport.border.active.identification.41 = Registration number of an aircraft
+transport.border.active.identification.80 = European vessel identification number (ENI code)
+transport.border.active.identification.81 = Name of an inland waterways vehicle
+transport.border.active.identification.checkYourAnswersLabel = Identification type
+transport.border.active.identification.change.hidden = identification type for the border means of transport
+transport.border.active.identification.error.required = Select which identification you want to use for this vehicle

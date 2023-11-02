@@ -21,8 +21,9 @@ import forms.EnumerableFormProvider
 import models.reference.transport.border.active.Identification
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.Navigator
+import navigation.BorderNavigator
 import pages.QuestionPage
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active.IdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: BorderNavigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -49,7 +50,7 @@ class IdentificationController @Inject() (
     with I18nSupport {
 
   private def form(identificationTypes: Seq[Identification]): Form[Identification] =
-    formProvider[Identification]("border.active.identification", identificationTypes)
+    formProvider[Identification]("transport.border.active.identification", identificationTypes)
 
   def onPageLoad(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions
     .requireData(departureId)

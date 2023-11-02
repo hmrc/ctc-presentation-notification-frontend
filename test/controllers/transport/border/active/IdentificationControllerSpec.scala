@@ -17,18 +17,23 @@
 package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.reference.Identification
-import models.{NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
+import models.NormalMode
+import models.reference.BorderMode
+import models.reference.transport.border.active.Identification
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border.active.IdentificationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.MeansOfTransportIdentificationTypesActiveService
+import views.html.transport.border.active.IdentificationView
 
 import scala.concurrent.Future
 
@@ -39,9 +44,9 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val identificationTypes = Seq(identificationType1, identificationType2)
 
   private val formProvider             = new EnumerableFormProvider()
-  private val form                     = formProvider[Identification]("transportMeans.active.identification", identificationTypes)
+  private val form                     = formProvider[Identification]("transport.border.active.identification", identificationTypes)
   private val mode                     = NormalMode
-  private lazy val identificationRoute = routes.IdentificationController.onPageLoad(lrn, mode, activeIndex).url
+  private lazy val identificationRoute = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url
 
   private val mockMeansOfTransportIdentificationTypesActiveService: MeansOfTransportIdentificationTypesActiveService =
     mock[MeansOfTransportIdentificationTypesActiveService]
@@ -54,33 +59,9 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportMeansActiveNavigatorProvider]).toInstance(fakeTransportMeansActiveNavigatorProvider))
       .overrides(bind(classOf[MeansOfTransportIdentificationTypesActiveService]).toInstance(mockMeansOfTransportIdentificationTypesActiveService))
 
   "Identification Controller" - {
-
-    "when value is inferred" - {
-      "must redirect to next page" in {
-        when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
-          .thenReturn(Future.successful(Seq(identificationType1)))
-
-        val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, identificationRoute)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual onwardRoute.url
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustBe identificationType1
-        userAnswersCaptor.getValue.get(IdentificationPage(activeIndex)) must not be defined
-      }
-    }
 
     "must return OK and the correct view for a GET" in {
       when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
@@ -99,7 +80,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, identificationTypes, mode, activeIndex)(request, messages).toString
+        view(form, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -108,7 +89,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val userAnswers = emptyUserAnswers
         .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
-        .setValue(IdentificationPage(activeIndex), identificationType1)
+        .setValue(IdentificationPage(index), identificationType1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)
@@ -122,11 +103,11 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, identificationTypes, mode, activeIndex)(request, messages).toString
+        view(filledForm, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
@@ -163,7 +144,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, identificationTypes, mode, activeIndex)(request, messages).toString
+        view(boundForm, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -175,7 +156,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -189,7 +170,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

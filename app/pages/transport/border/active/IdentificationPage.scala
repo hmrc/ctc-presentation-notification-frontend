@@ -20,13 +20,13 @@ import controllers.transport.border.active.routes
 import models.reference.transport.border.active.Identification
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.transportMeans.TransportMeansActiveSection
+import pages.sections.transport.border.BorderActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class IdentificationPage(index: Index) extends QuestionPage[Identification] {
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+  override def path: JsPath = BorderActiveSection(index).path \ toString
 
   override def toString: String = "identification"
 

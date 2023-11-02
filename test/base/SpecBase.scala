@@ -55,8 +55,6 @@ trait SpecBase
 
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123")
 
-  val index: Index = Index(0)
-
   def injector: Injector = app.injector
 
   implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]

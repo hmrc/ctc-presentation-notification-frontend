@@ -17,6 +17,7 @@
 package models.reference
 
 import base.SpecBase
+import models.reference.transport.border.active.Identification
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json

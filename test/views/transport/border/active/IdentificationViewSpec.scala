@@ -18,11 +18,12 @@ package views.transport.border.active
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.reference.Identification
+import models.reference.transport.border.active.Identification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.EnumerableViewBehaviours
+import views.html.transport.border.active.IdentificationView
 
 class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
 
@@ -31,7 +32,7 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationView].apply(form, departureId, values, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "transportMeans.active.identification"
+  override val prefix: String = "transport.border.active.identification"
 
   override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)

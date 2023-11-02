@@ -16,7 +16,7 @@
 
 package pages.transport.border.active
 
-import models.reference.Identification
+import models.reference.transport.border.active.Identification
 import pages.behaviours.PageBehaviours
 
 class IdentificationPageSpec extends PageBehaviours {

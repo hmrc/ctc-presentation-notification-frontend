@@ -32,7 +32,7 @@
 @(form: Form[Identification], departureId: String, identifiers: Seq[Identification], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("border.active.identification.title"),
+    title = messages("transport.border.active.identification.title"),
     showBackLink = true
 ) {
 
@@ -43,8 +43,8 @@
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = Some(messages("activeBorderMeansOfTransport.caption")),
-                heading = messages("border.active.identification.heading")
+                caption = Some(messages("transport.border.subheading")),
+                heading = messages("transport.border.active.identification.heading")
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )
