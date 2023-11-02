@@ -17,7 +17,6 @@
 package controllers.transport
 
 import config.FrontendAppConfig
-import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.transport.DateFormProvider
 import models.Mode

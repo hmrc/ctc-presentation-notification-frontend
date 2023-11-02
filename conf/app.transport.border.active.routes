@@ -1,0 +1,5 @@
+GET        /border-means-of-transport/:index/identification/:departureId                                 controllers.transport.border.active.IdentificationController.onPageLoad(departureId: String, mode: Mode = NormalMode, index: Index)
+POST       /border-means-of-transport/:index/identification/:departureId                                 controllers.transport.border.active.IdentificationController.onSubmit(departureId: String, mode: Mode = NormalMode, index: Index)
+GET        /border-means-of-transport/:index/change-identification/:departureId                          controllers.transport.border.active.IdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode, index: Index)
+POST       /border-means-of-transport/:index/change-identification/:departureId                          controllers.transport.border.active.IdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode, index: Index)
+

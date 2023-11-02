@@ -14,21 +14,30 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import base.SpecBase
 
-case object AddPlaceOfLoadingYesNoPage extends QuestionPage[Boolean] {
+class IndexSpec extends SpecBase {
 
-  override def path: JsPath = JsPath \ toString
+  "Index display must return correct Int" in {
+    Index(0).display mustEqual 1
+  }
 
-  override def toString: String = "addPlaceOfLoadingYesNo"
+  "indexPathBindable" - {
+    val binder = Index.indexPathBindable
+    val key    = "index"
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode))
+    "bind a valid index" in {
+      binder.bind(key, "1") mustBe Right(Index(0))
+    }
 
-// TODO  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
+    "fail to bind an index with negative value" in {
+      binder.bind(key, "-1") mustBe Left("Index binding failed")
+    }
+
+    "unbind an index" in {
+      binder.unbind(key, Index(0)) mustEqual "1"
+    }
+  }
 }

@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transport.border.active
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.reference.Identification
+import pages.behaviours.PageBehaviours
 
-case object AddPlaceOfLoadingYesNoPage extends QuestionPage[Boolean] {
+class IdentificationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "IdentificationPage" - {
 
-  override def toString: String = "addPlaceOfLoadingYesNo"
+    beRetrievable[Identification](IdentificationPage(index))
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode))
+    beSettable[Identification](IdentificationPage(index))
 
-// TODO  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
+    beRemovable[Identification](IdentificationPage(index))
+
+    "cleanup" - {
+      // TODO Add clean-up test
+    }
+  }
 }

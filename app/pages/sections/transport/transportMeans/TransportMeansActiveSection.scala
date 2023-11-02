@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.transport.transportMeans
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case object AddPlaceOfLoadingYesNoPage extends QuestionPage[Boolean] {
+case class TransportMeansActiveSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = TransportMeansActiveListSection.path \ index.position
 
-  override def toString: String = "addPlaceOfLoadingYesNo"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode))
-
-// TODO  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
 }
