@@ -20,11 +20,9 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.transportMeans.ConveyanceReferenceNumberFormProvider
 import models.NormalMode
-import navigation.TransportMeansNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transportMeans.ConveyanceReferenceNumberPage
-import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

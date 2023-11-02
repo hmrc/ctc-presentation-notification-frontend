@@ -45,13 +45,13 @@
             field = form("value"),
             selectType = OrdinarySelect(
                 heading = messages("transportMeans.nationality.heading"),
-                caption = Some(messages("activeBorderMeansOfTransport.caption"))
+                caption = Some(messages("transportMeans.subheading"))
             ),
             hint = Some(messages("transportMeans.nationality.hint")),
             selectItems = nationalities.toSelectItems(form.value),
             placeholder = messages("transportMeans.nationality.placeholder")
         )
 
-        @button(attributes = Map("id" -> "submit"))
+@button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
 }
