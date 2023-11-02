@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package navigation
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int  = 35
-  lazy val exactUnLocodeLength: Int           = 5
-  lazy val maxNameLength: Int                 = 70
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val maxAdditionalIdentifierLength: Int = 4
-  lazy val loadingLocationMaxLength: Int      = 35
-  lazy val conveyanceRefNumberLength: Int     = 17
+import com.google.inject.Singleton
+import models._
+import pages._
+import play.api.mvc.Call
+
+import javax.inject.Inject
+
+@Singleton
+class ContainerNavigator @Inject() () extends Navigator {
+
+  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+
+  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+
+  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
+
 }

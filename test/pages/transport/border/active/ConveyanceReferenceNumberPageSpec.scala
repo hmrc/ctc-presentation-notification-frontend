@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.transport.border.active
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int  = 35
-  lazy val exactUnLocodeLength: Int           = 5
-  lazy val maxNameLength: Int                 = 70
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val maxAdditionalIdentifierLength: Int = 4
-  lazy val loadingLocationMaxLength: Int      = 35
-  lazy val conveyanceRefNumberLength: Int     = 17
+import pages.behaviours.PageBehaviours
+
+class ConveyanceReferenceNumberPageSpec extends PageBehaviours {
+
+  "ConveyanceReferenceNumberPage" - {
+
+    beRetrievable[String](ConveyanceReferenceNumberPage(index))
+
+    beSettable[String](ConveyanceReferenceNumberPage(index))
+
+    beRemovable[String](ConveyanceReferenceNumberPage(index))
+  }
 }

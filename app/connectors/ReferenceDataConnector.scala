@@ -83,6 +83,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[UnLocode]](serviceUrl, headers = version2Header, queryParams = queryParams)
   }
 
+  def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Nationality]] = {
+    val url = s"${config.referenceDataUrl}/lists/Nationality"
+    http.GET[Seq[Nationality]](url, headers = version2Header)
+  }
+
   def getSpecificCircumstanceIndicators()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SpecificCircumstanceIndicator]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/SpecificCircumstanceIndicatorCode"
     http.GET[Seq[SpecificCircumstanceIndicator]](serviceUrl, headers = version2Header)
@@ -96,6 +101,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getQualifierOfTheIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[LocationOfGoodsIdentification]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/QualifierOfTheIdentification"
     http.GET[Seq[LocationOfGoodsIdentification]](serviceUrl, headers = version2Header)
+  }
+
+  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[T]](url, headers = version2Header)
   }
 
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Identification]] = {

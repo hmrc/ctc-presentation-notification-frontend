@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections.transportMeans
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int  = 35
-  lazy val exactUnLocodeLength: Int           = 5
-  lazy val maxNameLength: Int                 = 70
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val maxAdditionalIdentifierLength: Int = 4
-  lazy val loadingLocationMaxLength: Int      = 35
-  lazy val conveyanceRefNumberLength: Int     = 17
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
+
+case class TransportMeansActiveSection(index: Index) extends Section[JsObject] {
+
+  override def path: JsPath = TransportMeansActiveListSection.path \ index.position
+
 }

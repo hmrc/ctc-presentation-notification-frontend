@@ -357,6 +357,54 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getNationalities" - {
+      val url: String = s"/$baseUrl/lists/Nationality"
+
+      "must return Seq of Country when successful" in {
+        val nationalitiesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/Nationality"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "Nationality",
+            |  "data": [
+            |    {
+            |      "code":"AR",
+            |      "description":"Argentina"
+            |    },
+            |    {
+            |      "code":"AU",
+            |      "description":"Australia"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(nationalitiesResponseJson))
+        )
+
+        val expectedResult: Seq[Nationality] = Seq(
+          Nationality("AR", "Argentina"),
+          Nationality("AU", "Australia")
+        )
+
+        connector.getNationalities().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getNationalities())
+      }
+    }
+
     "getCustomsOfficesOfExitForCountry" - {
       def url(countryId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=$countryId&data.roles.role=EXT"
 

@@ -19,10 +19,10 @@ package generators
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
-import models.reference.{Country, CountryCode, CustomsOffice}
+import models.reference._
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
-import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
   self: Generators =>
@@ -104,6 +104,14 @@ trait ModelGenerators {
       } yield PostalCodeAddress(streetNumber, postalCode, country)
     }
 
+  implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield Nationality(code, desc)
+    }
+
   lazy val arbitraryDynamicAddressWithRequiredPostalCode: Arbitrary[DynamicAddress] =
     Arbitrary {
       for {
@@ -129,6 +137,30 @@ trait ModelGenerators {
         name        <- nonEmptyString
         phoneNumber <- Gen.option(Gen.alphaNumStr)
       } yield CustomsOffice(id, name, phoneNumber)
+    }
+
+  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderMode] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4")
+        description <- nonEmptyString
+      } yield BorderMode(code, description)
+    }
+
+  implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "3")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
+    }
+
+  lazy val arbitraryOptionalNonRailBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "3", "4")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
     }
 
 }

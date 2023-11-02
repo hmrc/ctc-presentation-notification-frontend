@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package models.reference
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int  = 35
-  lazy val exactUnLocodeLength: Int           = 5
-  lazy val maxNameLength: Int                 = 70
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val maxAdditionalIdentifierLength: Int = 4
-  lazy val loadingLocationMaxLength: Int      = 35
-  lazy val conveyanceRefNumberLength: Int     = 17
+import models.Selectable
+import play.api.libs.json.{Format, Json}
+
+case class Nationality(code: String, description: String) extends Selectable {
+
+  override def toString: String = s"$description - $code"
+
+  override val value: String = code
+}
+
+object Nationality {
+  implicit val format: Format[Nationality] = Json.format[Nationality]
 }
