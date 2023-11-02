@@ -18,7 +18,7 @@ package navigator
 
 import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
-import navigation.{BorderNavigator, ContainerNavigator, LoadingNavigator, LocationOfGoodsNavigator, Navigator}
+import navigation.{BorderNavigator, ContainerNavigator, LoadingNavigator, LocationOfGoodsNavigator, Navigator, TransportMeansNavigator}
 import pages._
 import play.api.mvc.Call
 
@@ -53,5 +53,8 @@ class FakeBorderNavigatorProvider(desiredRoute: Call) extends BorderNavigator() 
 
 class FakeLoadingNavigator(desiredRoute: Call) extends LoadingNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}
 
+class FakeTransportMeansNavigator(desiredRoute: Call) extends TransportMeansNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }

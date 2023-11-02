@@ -277,3 +277,12 @@ containers.containerIndicator.heading = Are you using any shipping containers to
 containers.containerIndicator.checkYourAnswersLabel = Are you using any shipping containers to transport the goods?
 containers.containerIndicator.change.hidden = if you are using any shipping containers to transport the goods
 containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
+
+transportMeans.caption = Transport details - Border means of transport
+
+transportMeans.addConveyanceReference.title = Do you want to add a conveyance reference number?
+transportMeans.addConveyanceReference.heading = Do you want to add a conveyance reference number?
+transportMeans.addConveyanceReference.paragraph = This is a unique reference provided by the carrier to identify the means of transport.
+transportMeans.addConveyanceReference.checkYourAnswersLabel = Do you want to add a conveyance reference number?
+transportMeans.addConveyanceReference.error.required = Select yes if you want to add a conveyance reference number
+transportMeans.addConveyanceReference.change.hidden = if you want to add a conveyance reference number for the border means of transport
