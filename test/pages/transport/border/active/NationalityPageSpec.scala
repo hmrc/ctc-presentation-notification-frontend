@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.transport.border.active
 
-import com.google.inject.Singleton
-import models._
-import pages._
-import play.api.mvc.Call
+import models.reference.Nationality
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class NationalityPageSpec extends PageBehaviours {
 
-@Singleton
-class ContainerNavigator @Inject() () extends Navigator {
+  "NationalityPage" - {
 
-  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+    beRetrievable[Nationality](NationalityPage(index))
 
-  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+    beSettable[Nationality](NationalityPage(index))
 
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
-
+    beRemovable[Nationality](NationalityPage(index))
+  }
 }

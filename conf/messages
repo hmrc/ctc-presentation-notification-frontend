@@ -267,26 +267,35 @@ transport.limit.date.error.max.date = The arrival date must be before {0}
 
 containers.containerIndicator.subheading = Shipping containers
 
-containers.containerIndicator.title = Are you using any shipping containers to transport the goods?
-containers.containerIndicator.heading = Are you using any shipping containers to transport the goods?
-containers.containerIndicator.checkYourAnswersLabel = Are you using any shipping containers to transport the goods?
-containers.containerIndicator.change.hidden = if you are using any shipping containers to transport the goods
-containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
+transport.containers.containerIndicator.title = Are you using any shipping containers to transport the goods?
+transport.containers.containerIndicator.heading = Are you using any shipping containers to transport the goods?
+transport.containers.containerIndicator.checkYourAnswersLabel = Are you using any shipping containers to transport the goods?
+transport.containers.containerIndicator.change.hidden = if you are using any shipping containers to transport the goods
+transport.containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
-transportMeans.subheading = Border means of transport
+transport.border.subheading = Border means of transport
 
-transportMeans.addConveyanceReference.title = Do you want to add a conveyance reference number?
-transportMeans.addConveyanceReference.heading = Do you want to add a conveyance reference number?
-transportMeans.addConveyanceReference.paragraph = This is a unique reference provided by the carrier to identify the means of transport.
-transportMeans.addConveyanceReference.checkYourAnswersLabel = Do you want to add a conveyance reference number?
-transportMeans.addConveyanceReference.error.required = Select yes if you want to add a conveyance reference number
-transportMeans.addConveyanceReference.change.hidden = if you want to add a conveyance reference number for the border means of transport
+transport.border.active.addConveyanceReference.title = Do you want to add a conveyance reference number?
+transport.border.active.addConveyanceReference.heading = Do you want to add a conveyance reference number?
+transport.border.active.addConveyanceReference.paragraph = This is a unique reference provided by the carrier to identify the means of transport.
+transport.border.active.addConveyanceReference.checkYourAnswersLabel = Do you want to add a conveyance reference number?
+transport.border.active.addConveyanceReference.error.required = Select yes if you want to add a conveyance reference number
+transport.border.active.addConveyanceReference.change.hidden = if you want to add a conveyance reference number for the border means of transport
 
-transportMeans.conveyanceReferenceNumber.title = What is the conveyance reference number?
-transportMeans.conveyanceReferenceNumber.heading = What is the conveyance reference number?
-transportMeans.conveyanceReferenceNumber.hint = This can be up to 17 characters long and include both letters and numbers.
-transportMeans.conveyanceReferenceNumber.checkYourAnswersLabel = Conveyance reference number
-transportMeans.conveyanceReferenceNumber.error.required = Enter the conveyance reference number
-transportMeans.conveyanceReferenceNumber.error.length = The reference number must be 17 characters or less
-transportMeans.conveyanceReferenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
-transportMeans.conveyanceReferenceNumber.change.hidden = conveyance reference number for the border means of transport
+transport.border.active.conveyanceReferenceNumber.title = What is the conveyance reference number?
+transport.border.active.conveyanceReferenceNumber.heading = What is the conveyance reference number?
+transport.border.active.conveyanceReferenceNumber.hint = This can be up to 17 characters long and include both letters and numbers.
+transport.border.active.conveyanceReferenceNumber.checkYourAnswersLabel = Conveyance reference number
+transport.border.active.conveyanceReferenceNumber.error.required = Enter the conveyance reference number
+transport.border.active.conveyanceReferenceNumber.error.length = The reference number must be 17 characters or less
+transport.border.active.conveyanceReferenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
+transport.border.active.conveyanceReferenceNumber.change.hidden = conveyance reference number for the border means of transport
+
+transport.border.active.nationality.title = What country is this vehicle registered to?
+transport.border.active.nationality.heading = What country is this vehicle registered to?
+transport.border.active.nationality.hint = Enter the country or code, like Austria or AT.
+transport.border.active.nationality.label = What country is this vehicle registered to?
+transport.border.active.nationality.placeholder = Select a nationality
+transport.border.active.nationality.change.hidden = registered country for the border means of transport
+transport.border.active.nationality.checkYourAnswersLabel = Registered country
+transport.border.active.nationality.error.required = Select the country the vehicle is registered to
