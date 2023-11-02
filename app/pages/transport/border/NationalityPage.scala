@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package pages.transportMeans
+package pages.transport.border
 
-import controllers.transportMeans.routes
+import models.reference.Nationality
 import models.{Index, Mode, UserAnswers}
+import controllers.transport.border.routes
 import pages.QuestionPage
 import pages.sections.transportMeans.TransportMeansActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConveyanceReferenceNumberPage(activeIndex: Index) extends QuestionPage[String] {
+case class NationalityPage(activeIndex: Index) extends QuestionPage[Nationality] {
 
   override def path: JsPath = TransportMeansActiveSection(activeIndex).path \ toString
 
-  override def toString: String = "conveyanceReferenceNumber"
+  override def toString: String = "nationality"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
+    Some(routes.NationalityController.onPageLoad(departureId, mode, activeIndex))
 }

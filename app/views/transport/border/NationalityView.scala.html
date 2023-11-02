@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.transportMeans.routes
+@import controllers.transport.border.routes
 @import models.reference.Nationality
 @import models.Selectable
 @import models.Selectable._
@@ -33,7 +33,7 @@
 @(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.nationality.title"),
+    title = messages("transport.border.nationality.title"),
     showBackLink = true
 ) {
 
@@ -44,12 +44,12 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("transportMeans.nationality.heading"),
-                caption = Some(messages("transportMeans.subheading"))
+                heading = messages("transport.border.nationality.heading"),
+                caption = Some(messages("transport.border.subheading"))
             ),
-            hint = Some(messages("transportMeans.nationality.hint")),
+            hint = Some(messages("transport.border.nationality.hint")),
             selectItems = nationalities.toSelectItems(form.value),
-            placeholder = messages("transportMeans.nationality.placeholder")
+            placeholder = messages("transport.border.nationality.placeholder")
         )
 
 @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages.transportMeans
+package pages.transport.border
 
 import pages.behaviours.PageBehaviours
+import pages.transport.border.ConveyanceReferenceNumberPage
 
 class ConveyanceReferenceNumberPageSpec extends PageBehaviours {
 

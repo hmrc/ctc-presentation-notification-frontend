@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.transportMeans.routes
+@import controllers.transport.border.routes
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
 
@@ -29,7 +29,7 @@
 @(form: Form[String], departureId: String, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.conveyanceReferenceNumber.title"),
+    title = messages("transport.border.conveyanceReferenceNumber.title"),
     showBackLink = true
 ) {
 
@@ -40,10 +40,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transportMeans.conveyanceReferenceNumber.heading"),
-                caption = Some(messages("transportMeans.subheading")),
+                heading = messages("transport.border.conveyanceReferenceNumber.heading"),
+                caption = Some(messages("transport.border.subheading")),
             ),
-            hint = Some(messages("transportMeans.conveyanceReferenceNumber.hint")),
+            hint = Some(messages("transport.border.conveyanceReferenceNumber.hint")),
             inputClass = InputSize.Width20
         )
 

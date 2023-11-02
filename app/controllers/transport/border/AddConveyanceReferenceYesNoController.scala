@@ -14,75 +14,66 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans
+package controllers.transport.border
 
 import controllers.actions._
-import forms.SelectableFormProvider
-import models.reference.Nationality
+import forms.YesNoFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.TransportMeansNavigator
-import pages.transportMeans.NationalityPage
+import navigation.BorderNavigator
+import pages.transport.border.AddConveyanceReferenceYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.NationalitiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.NationalityView
+import views.html.transport.border.AddConveyanceReferenceYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NationalityController @Inject() (
+class AddConveyanceReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: TransportMeansNavigator,
+  navigator: BorderNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
-  service: NationalitiesService,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: NationalityView
+  view: AddConveyanceReferenceYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
-    implicit request =>
-      service.getNationalities().map {
-        nationalityList =>
-          val form = formProvider("transportMeans.nationality", nationalityList)
-          val preparedForm = request.userAnswers.get(NationalityPage(activeIndex)) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  private val form = formProvider("transport.border.addConveyanceReference")
 
-          Ok(view(preparedForm, departureId, nationalityList.values, mode, activeIndex))
+  def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(AddConveyanceReferenceYesNoPage(activeIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
+
+      Ok(view(preparedForm, departureId, mode, activeIndex))
   }
 
   def onSubmit(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      service.getNationalities().flatMap {
-        nationalityList =>
-          val form = formProvider("transportMeans.nationality", nationalityList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode, activeIndex))),
-              value => redirect(mode, value, departureId, activeIndex)
-            )
-      }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, activeIndex))),
+          value => redirect(mode, value, departureId, activeIndex)
+        )
   }
 
   private def redirect(
     mode: Mode,
-    value: Nationality,
+    value: Boolean,
     departureId: String,
     activeIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityPage(activeIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConveyanceReferenceYesNoPage(activeIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(NationalityPage(activeIndex), updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, mode))
 
 }

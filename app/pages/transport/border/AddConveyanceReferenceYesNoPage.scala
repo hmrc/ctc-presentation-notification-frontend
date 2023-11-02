@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package pages.transportMeans
+package pages.transport.border
 
-import controllers.transportMeans.routes
 import models.{Index, Mode, UserAnswers}
+import controllers.transport.border.routes
 import pages.QuestionPage
 import pages.sections.transportMeans.TransportMeansActiveSection
 import play.api.libs.json.JsPath

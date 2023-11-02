@@ -14,44 +14,44 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans
+package controllers.transport.border
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.transportMeans.ConveyanceReferenceNumberFormProvider
+import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.transportMeans.ConveyanceReferenceNumberPage
+import pages.transport.border.AddConveyanceReferenceYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transportMeans.ConveyanceReferenceNumberView
+import views.html.transport.border.AddConveyanceReferenceYesNoView
 
 import scala.concurrent.Future
 
-class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddConveyanceReferenceYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new ConveyanceReferenceNumberFormProvider()
-  private val form         = formProvider("transportMeans.conveyanceReferenceNumber")
-  private val mode         = NormalMode
+  private val formProvider                  = new YesNoFormProvider()
+  private val form                          = formProvider("transport.border.addConveyanceReference")
+  private val mode                          = NormalMode
+  private lazy val conveyanceReferenceRoute = controllers.transport.border.routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, index).url
 
-  private lazy val conveyanceReferenceNumberRoute =
-    controllers.transportMeans.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, index).url
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder = super.guiceApplicationBuilder()
-
-  "ConveyanceReferenceNumber Controller" - {
+  "AddConveyanceReferenceYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, conveyanceReferenceNumberRoute)
+      val request = FakeRequest(GET, conveyanceReferenceRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[ConveyanceReferenceNumberView]
+      val view = injector.instanceOf[AddConveyanceReferenceYesNoView]
 
       status(result) mustEqual OK
 
@@ -61,16 +61,16 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(ConveyanceReferenceNumberPage(index), "testString")
+      val userAnswers = emptyUserAnswers.setValue(AddConveyanceReferenceYesNoPage(index), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, conveyanceReferenceNumberRoute)
+      val request = FakeRequest(GET, conveyanceReferenceRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "testString"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[ConveyanceReferenceNumberView]
+      val view = injector.instanceOf[AddConveyanceReferenceYesNoView]
 
       status(result) mustEqual OK
 
@@ -84,8 +84,8 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, conveyanceReferenceNumberRoute)
-        .withFormUrlEncodedBody(("value", "testString"))
+      val request = FakeRequest(POST, conveyanceReferenceRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -100,14 +100,14 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, conveyanceReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, conveyanceReferenceRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[ConveyanceReferenceNumberView]
+      val view = injector.instanceOf[AddConveyanceReferenceYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, departureId, mode, index)(request, messages).toString
@@ -117,7 +117,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, conveyanceReferenceNumberRoute)
+      val request = FakeRequest(GET, conveyanceReferenceRoute)
 
       val result = route(app, request).value
 
@@ -130,7 +130,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, conveyanceReferenceNumberRoute)
+      val request = FakeRequest(POST, conveyanceReferenceRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

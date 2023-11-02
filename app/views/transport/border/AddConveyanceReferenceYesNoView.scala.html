@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.transportMeans.routes
+@import controllers.transport.border.routes
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 
@@ -29,7 +29,7 @@
 @(form: Form[Boolean], departureId: String, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.addConveyanceReference.title"),
+    title = messages("transport.border.addConveyanceReference.title"),
     showBackLink = true
 ) {
 
@@ -40,9 +40,9 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("transportMeans.addConveyanceReference.heading"),
-                caption = Some(messages("transportMeans.subheading")),
-                additionalHtml = messages("transportMeans.addConveyanceReference.paragraph").toParagraph
+                heading = messages("transport.border.addConveyanceReference.heading"),
+                caption = Some(messages("transport.border.subheading")),
+                additionalHtml = messages("transport.border.addConveyanceReference.paragraph").toParagraph
             )
         )
 

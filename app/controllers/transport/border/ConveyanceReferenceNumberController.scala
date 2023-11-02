@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans
+package controllers.transport.border
 
 import controllers.actions._
 import forms.transportMeans.ConveyanceReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.TransportMeansNavigator
-import pages.transportMeans.ConveyanceReferenceNumberPage
+import navigation.BorderNavigator
+import pages.transport.border.ConveyanceReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.ConveyanceReferenceNumberView
+import views.html.transport.border.ConveyanceReferenceNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConveyanceReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: TransportMeansNavigator,
+  navigator: BorderNavigator,
   actions: Actions,
   formProvider: ConveyanceReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -43,7 +43,7 @@ class ConveyanceReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.conveyanceReferenceNumber")
+  private val form = formProvider("transport.border.conveyanceReferenceNumber")
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>

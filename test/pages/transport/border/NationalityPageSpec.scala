@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package pages.transportMeans
+package pages.transport.border
 
 import models.reference.Nationality
 import pages.behaviours.PageBehaviours
+import pages.transport.border.NationalityPage
 
 class NationalityPageSpec extends PageBehaviours {
 
