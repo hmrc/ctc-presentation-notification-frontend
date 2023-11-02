@@ -18,8 +18,8 @@ package base
 
 import controllers.actions._
 import models.{Mode, UserAnswers}
-import navigation.{LoadingNavigator, LocationOfGoodsNavigator, Navigator, TransportMeansNavigator}
-import navigator.{FakeLoadingNavigator, FakeLocationOfGoodsNavigator, FakeNavigator, FakeTransportMeansNavigator}
+import navigation.{ContainerNavigator, LoadingNavigator, LocationOfGoodsNavigator, Navigator, TransportMeansNavigator}
+import navigator.{FakeContainerNavigator, FakeLoadingNavigator, FakeLocationOfGoodsNavigator, FakeNavigator, FakeTransportMeansNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -64,6 +64,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeLoadingNavigator: LoadingNavigator                       = new FakeLoadingNavigator(onwardRoute)
   protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator       = new FakeLocationOfGoodsNavigator(onwardRoute)
   protected val fakeTransportMeansNavigatorProvider: TransportMeansNavigator = new FakeTransportMeansNavigator(onwardRoute)
+  protected val fakeContainerNavigator: ContainerNavigator             = new FakeContainerNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -75,7 +76,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[Navigator].toInstance(fakeNavigator),
         bind[LoadingNavigator].toInstance(fakeLoadingNavigator),
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
-        bind[TransportMeansNavigator].toInstance(fakeTransportMeansNavigatorProvider)
+        bind[TransportMeansNavigator].toInstance(fakeTransportMeansNavigatorProvider),
+        bind[ContainerNavigator].toInstance(fakeContainerNavigator)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =

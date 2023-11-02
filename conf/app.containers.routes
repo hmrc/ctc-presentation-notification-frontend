@@ -1,0 +1,4 @@
+GET        /containers/mandatory/:departureId                        controllers.containers.ContainerIndicatorController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /containers/mandatory/:departureId                        controllers.containers.ContainerIndicatorController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /containers/change-mandatory/:departureId                 controllers.containers.ContainerIndicatorController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /containers/change-mandatory/:departureId                 controllers.containers.ContainerIndicatorController.onSubmit(departureId: String, mode: Mode = CheckMode)
