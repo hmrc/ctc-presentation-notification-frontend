@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.transportMeans
+package controllers.transport.border
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -24,13 +24,13 @@ import models.NormalMode
 import models.reference.BorderMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import pages.transport.transportMeans.BorderModeOfTransportPage
+import pages.transport.border.BorderModeOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TransportModeCodesService
-import views.html.transport.transportMeans.BorderModeOfTransportView
+import views.html.transport.border.BorderModeOfTransportView
 
 import scala.concurrent.Future
 
@@ -44,7 +44,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
   private val formProvider                    = new EnumerableFormProvider()
   private val form                            = formProvider[BorderMode]("transportMeans.borderModeOfTransport", borderModes)
   private val mode                            = NormalMode
-  private lazy val borderModeOfTransportRoute = controllers.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
+  private lazy val borderModeOfTransportRoute = controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
 
   private val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
 

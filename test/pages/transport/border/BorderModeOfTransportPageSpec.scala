@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.transport.border
 
 import models.reference.BorderMode
 import pages.behaviours.PageBehaviours

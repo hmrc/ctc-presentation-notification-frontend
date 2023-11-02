@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.transport.transportMeans
+package views.transport.border
 
 import forms.EnumerableFormProvider
 import models.NormalMode
@@ -23,7 +23,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.EnumerableViewBehaviours
-import views.html.transport.transportMeans.BorderModeOfTransportView
+import views.html.transport.border.BorderModeOfTransportView
 
 class BorderModeOfTransportViewSpec extends EnumerableViewBehaviours[BorderMode] {
 

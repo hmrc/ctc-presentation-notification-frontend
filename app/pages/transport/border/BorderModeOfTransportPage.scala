@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.transport.border
 
 import models.reference.BorderMode
 import models.{Mode, UserAnswers}
@@ -30,6 +30,6 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
   override def toString: String = "borderModeOfTransport"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+    Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
 
 }
