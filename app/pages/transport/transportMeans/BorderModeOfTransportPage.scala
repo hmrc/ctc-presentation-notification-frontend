@@ -19,7 +19,7 @@ package pages.transport.transportMeans
 import models.reference.BorderMode
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.border.TransportSection
+import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

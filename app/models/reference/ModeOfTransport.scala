@@ -24,22 +24,6 @@ import play.api.libs.json.{Format, Json}
 sealed trait ModeOfTransport[T] extends Radioable[T] {
   val code: String
   val description: String
-
-  def isRail: Boolean = code == Rail
-  def isAir: Boolean  = code == Air
-}
-
-case class InlandMode(code: String, description: String) extends ModeOfTransport[InlandMode] {
-
-  override def toString: String = StringEscapeUtils.unescapeXml(description)
-
-  override val messageKeyPrefix: String = InlandMode.messageKeyPrefix
-}
-
-object InlandMode extends DynamicEnumerableType[InlandMode] {
-  implicit val format: Format[InlandMode] = Json.format[InlandMode]
-
-  val messageKeyPrefix = "transportMeans.inlandMode"
 }
 
 case class BorderMode(code: String, description: String) extends ModeOfTransport[BorderMode] {
