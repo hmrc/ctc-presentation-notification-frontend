@@ -23,14 +23,14 @@ import models.reference.BorderMode
 import models.requests.MandatoryDataRequest
 import navigation.TransportMeansNavigator
 import pages.QuestionPage
-import pages.border.BorderModeOfTransportPage
+import pages.transport.transportMeans.BorderModeOfTransportPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.TransportModeCodesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.border.BorderModeOfTransportView
+import views.html.transport.transportMeans.BorderModeOfTransportView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

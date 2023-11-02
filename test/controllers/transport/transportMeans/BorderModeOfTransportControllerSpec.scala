@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.border
+package controllers.transport.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -24,14 +24,13 @@ import models.NormalMode
 import models.reference.BorderMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Arbitrary.arbitrary
-import pages.border.BorderModeOfTransportPage
+import pages.transport.transportMeans.BorderModeOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TransportModeCodesService
-import views.html.border.BorderModeOfTransportView
+import views.html.transport.transportMeans.BorderModeOfTransportView
 
 import scala.concurrent.Future
 
