@@ -17,9 +17,9 @@
 package base
 
 import controllers.actions._
-import models.{Mode, UserAnswers}
-import navigation.{ContainerNavigator, LoadingNavigator, LocationOfGoodsNavigator, Navigator, TransportMeansNavigator}
-import navigator.{FakeContainerNavigator, FakeLoadingNavigator, FakeLocationOfGoodsNavigator, FakeNavigator, FakeTransportMeansNavigator}
+import models.UserAnswers
+import navigation._
+import navigator._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -64,7 +64,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeLoadingNavigator: LoadingNavigator                       = new FakeLoadingNavigator(onwardRoute)
   protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator       = new FakeLocationOfGoodsNavigator(onwardRoute)
   protected val fakeTransportMeansNavigatorProvider: TransportMeansNavigator = new FakeTransportMeansNavigator(onwardRoute)
-  protected val fakeContainerNavigator: ContainerNavigator             = new FakeContainerNavigator(onwardRoute)
+  protected val fakeContainerNavigator: ContainerNavigator                   = new FakeContainerNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
