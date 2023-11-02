@@ -33,7 +33,7 @@ class AddConveyanceReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Transport details - Border means of transport")
+  behave like pageWithSectionCaption("Border means of transport")
 
   behave like pageWithHeading()
 
