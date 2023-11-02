@@ -47,7 +47,7 @@ class FakeContainerNavigator(desiredRoute: Call) extends ContainerNavigator {
 
 }
 
-class FakeTransportMeansNavigator(desiredRoute: Call) extends BorderNavigator() {
+class FakeBorderNavigatorProvider(desiredRoute: Call) extends BorderNavigator() {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
