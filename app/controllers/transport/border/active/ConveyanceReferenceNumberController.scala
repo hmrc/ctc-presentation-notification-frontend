@@ -17,7 +17,7 @@
 package controllers.transport.border.active
 
 import controllers.actions._
-import forms.transportMeans.ConveyanceReferenceNumberFormProvider
+import forms.border.ConveyanceReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.BorderNavigator

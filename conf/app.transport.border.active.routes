@@ -3,6 +3,11 @@ POST       /border-means-of-transport/:activeIndex/identification/:departureId  
 GET        /border-means-of-transport/:activeIndex/change-identification/:departureId                         controllers.transport.border.active.IdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/change-identification/:departureId                         controllers.transport.border.active.IdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
 
+GET        /border-means-of-transport/:activeIndex/identification-number/:departureId                         controllers.transport.border.active.IdentificationNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/identification-number/:departureId                         controllers.transport.border.active.IdentificationNumberController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
+GET        /border-means-of-transport/:activeIndex/change-identification-number/:departureId                  controllers.transport.border.active.IdentificationNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/change-identification-number/:departureId                  controllers.transport.border.active.IdentificationNumberController.onSubmit(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
+
 GET        /border-means-of-transport/:activeIndex/add-conveyance-reference-number/:departureId               controllers.transport.border.active.AddConveyanceReferenceYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/add-conveyance-reference-number/:departureId               controllers.transport.border.active.AddConveyanceReferenceYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
 GET        /border-means-of-transport/:activeIndex/change-add-conveyance-reference-number/:departureId        controllers.transport.border.active.AddConveyanceReferenceYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
