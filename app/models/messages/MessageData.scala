@@ -27,13 +27,19 @@ object CustomsOfficeOfTransitDeclared {
   implicit val formats: OFormat[CustomsOfficeOfTransitDeclared] = Json.format[CustomsOfficeOfTransitDeclared]
 }
 
+case class CustomsOfficeOfExitForTransitDeclared(referenceNumber: String)
+
+object CustomsOfficeOfExitForTransitDeclared {
+  implicit val formats: OFormat[CustomsOfficeOfExitForTransitDeclared] = Json.format[CustomsOfficeOfExitForTransitDeclared]
+}
+
 case class MessageData(
   CustomsOfficeOfDeparture: String,
   CustomsOfficeOfDestination: String,
   TransitOperation: TransitOperation,
   Authorisation: Option[Seq[Authorisation]],
   CustomsOfficeOfTransitDeclared: Option[Seq[CustomsOfficeOfTransitDeclared]],
-  CustomsOfficeOfExitForTransitDeclared: Option[Seq[String]],
+  CustomsOfficeOfExitForTransitDeclared: Option[Seq[CustomsOfficeOfExitForTransitDeclared]],
   Consignment: Consignment
 ) {
 
@@ -55,7 +61,10 @@ case class MessageData(
   def customsOffices: Seq[String] =
     Seq(CustomsOfficeOfDestination) ++ CustomsOfficeOfTransitDeclared
       .map(_.map(_.referenceNumber))
-      .getOrElse(Seq.empty) ++ CustomsOfficeOfExitForTransitDeclared.getOrElse(Seq.empty)
+      .getOrElse(Seq.empty) ++
+      CustomsOfficeOfExitForTransitDeclared
+        .map(_.map(_.referenceNumber))
+        .getOrElse(Seq.empty)
 
 }
 
@@ -67,7 +76,7 @@ object MessageData {
       (__ \ "TransitOperation").read[TransitOperation] and
       (__ \ "Authorisation").readNullable[Seq[Authorisation]] and
       (__ \ "CustomsOfficeOfTransitDeclared").readNullable[Seq[CustomsOfficeOfTransitDeclared]] and
-      (__ \ "CustomsOfficeOfExitForTransitDeclared" \ "referenceNumber").readNullable[Seq[String]] and
+      (__ \ "CustomsOfficeOfExitForTransitDeclared").readNullable[Seq[CustomsOfficeOfExitForTransitDeclared]] and
       (__ \ "Consignment").read[Consignment]
   )(MessageData.apply _)
 
@@ -77,7 +86,7 @@ object MessageData {
       (__ \ "TransitOperation").write[TransitOperation] and
       (__ \ "Authorisation").writeNullable[Seq[Authorisation]] and
       (__ \ "CustomsOfficeOfTransitDeclared").writeNullable[Seq[CustomsOfficeOfTransitDeclared]] and
-      (__ \ "CustomsOfficeOfExitForTransitDeclared" \ "referenceNumber").writeNullable[Seq[String]] and
+      (__ \ "CustomsOfficeOfExitForTransitDeclared").writeNullable[Seq[CustomsOfficeOfExitForTransitDeclared]] and
       (__ \ "Consignment").write[Consignment]
   )(unlift(MessageData.unapply))
 }
