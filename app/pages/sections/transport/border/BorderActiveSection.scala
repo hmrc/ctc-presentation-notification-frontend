@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections.transportMeans
+package pages.sections.transport.border
 
 import models.Index
 import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case class TransportMeansActiveSection(index: Index) extends Section[JsObject] {
+case class BorderActiveSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = TransportMeansActiveListSection.path \ index.position
+  override def path: JsPath = BorderActiveListSection.path \ index.position
 
 }

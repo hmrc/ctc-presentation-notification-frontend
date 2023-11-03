@@ -1,4 +1,5 @@
 # microservice specific routes
+->         /                                                              app.transport.border.Routes
 
 ->         /                                                              app.transport.border.Routes
 

@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package pages.sections.transportMeans
+package models.reference
 
-import pages.sections.Section
-import play.api.libs.json.{JsArray, JsPath}
+import models.{DynamicEnumerableType, Radioable}
+import org.apache.commons.text.StringEscapeUtils
+import play.api.libs.json.{Format, Json}
 
-case object TransportMeansActiveListSection extends Section[JsArray] {
+case class BorderMode(code: String, description: String) extends Radioable[BorderMode] {
 
-  override def path: JsPath = JsPath \ toString
+  override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override def toString: String = "transportMeansActiveList"
+  override val messageKeyPrefix: String = BorderMode.messageKeyPrefix
+}
+
+object BorderMode extends DynamicEnumerableType[BorderMode] {
+  implicit val format: Format[BorderMode] = Json.format[BorderMode]
+
+  val messageKeyPrefix = "transport.border.borderModeOfTransport"
 }

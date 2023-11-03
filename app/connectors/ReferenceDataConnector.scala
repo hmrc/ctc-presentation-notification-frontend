@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.reference._
+import models.reference.transport.border.active.Identification
 import models.{LocationOfGoodsIdentification, LocationType}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
@@ -102,9 +103,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[LocationOfGoodsIdentification]](serviceUrl, headers = version2Header)
   }
 
-  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
+  def getBorderModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[BorderMode]] = {
     val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
-    http.GET[Seq[T]](url, headers = version2Header)
+    http.GET[Seq[BorderMode]](url, headers = version2Header)
+  }
+
+  def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Identification]] = {
+    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
+    http.GET[Seq[Identification]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

@@ -47,13 +47,13 @@ trait SpecBase
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val eoriNumber: EoriNumber     = EoriNumber("eoriNumber")
 
+  val index: Index = Index(0)
+
   def emptyUserAnswers: UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
 
   val departureId: String = "651431d7e3b05b21"
 
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123")
-
-  val index: Index = Index(0)
 
   def injector: Injector = app.injector
 

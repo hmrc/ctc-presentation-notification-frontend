@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.border.routes
+@import controllers.transport.border.active.routes
 @import models.LocalReferenceNumber
-@import models.reference.BorderMode
+@import models.reference.transport.border.active.Identification
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
@@ -29,26 +29,26 @@
     button: Button
 )
 
-@(form: Form[BorderMode], departureId: String, borderModesOfTransport: Seq[BorderMode], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Identification], departureId: String, identifiers: Seq[Identification], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.border.borderModeOfTransport.title"),
+    title = messages("transport.border.active.identification.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.BorderModeOfTransportController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.IdentificationController.onSubmit(departureId, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = Some(messages("transport.border.borderModeOfTransport.caption")),
-                heading = messages("transport.border.borderModeOfTransport.heading")
+                caption = Some(messages("transport.border.subheading")),
+                heading = messages("transport.border.active.identification.heading")
             ),
-            radioItems = fieldId => borderModesOfTransport.toRadioItems(fieldId, form.value)
+            radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )
 
-        @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
+        @button("site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
 }
