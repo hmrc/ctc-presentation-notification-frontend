@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.transportMeans
+package forms.border
 
 import forms.Constants.conveyanceRefNumberLength
 import forms.StopOnFirstFail

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputTextViewModel
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.Heading
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int  = 35
-  lazy val exactUnLocodeLength: Int           = 5
-  lazy val maxNameLength: Int                 = 70
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val maxAdditionalIdentifierLength: Int = 4
-  lazy val loadingLocationMaxLength: Int      = 35
-  lazy val conveyanceRefNumberLength: Int     = 17
-  lazy val maxIdentificationNumberLength: Int = 35
-}
+@this(govukInsetText: GovukInsetText)
+
+@(text: String)
+
+@govukInsetText(
+    InsetText(
+        content = Text(text)
+    )
+)

@@ -318,3 +318,11 @@ transport.border.active.identification.81 = Name of an inland waterways vehicle
 transport.border.active.identification.checkYourAnswersLabel = Identification type
 transport.border.active.identification.change.hidden = identification type for the border means of transport
 transport.border.active.identification.error.required = Select which identification you want to use for this vehicle
+
+transport.border.active.identificationNumber.title = What is the identification number for this vehicle?
+transport.border.active.identificationNumber.heading = What is the identification number for this vehicle?
+transport.border.active.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+transport.border.active.identificationNumber.checkYourAnswersLabel = Identification number
+transport.border.active.identificationNumber.error.length = The identification number must be 35 characters or less
+transport.border.active.identificationNumber.error.required = Enter the identification number for this vehicle
+transport.border.active.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9

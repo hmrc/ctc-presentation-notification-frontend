@@ -18,7 +18,7 @@ package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.transportMeans.ConveyanceReferenceNumberFormProvider
+import forms.border.ConveyanceReferenceNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

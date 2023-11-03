@@ -16,23 +16,27 @@
 
 package views.transport.border.active
 
-import forms.border.ConveyanceReferenceNumberFormProvider
+import forms.border.IdentificationNumberFormProvider
 import models.NormalMode
+import models.reference.transport.border.active.Identification
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.transport.border.active.ConveyanceReferenceNumberView
+import views.html.transport.border.active.IdentificationNumberView
 
-class ConveyanceReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
+class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "transport.border.active.conveyanceReferenceNumber"
+  override val prefix: String = "transport.border.active.identificationNumber"
 
-  override def form: Form[String] = new ConveyanceReferenceNumberFormProvider()(prefix)
+  private val identificationType = arbitrary[Identification].sample.value
+
+  override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ConveyanceReferenceNumberView].apply(form, departureId, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[IdentificationNumberView].apply(form, departureId, NormalMode, index, identificationType.asString)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -44,7 +48,7 @@ class ConveyanceReferenceNumberViewSpec extends InputTextViewBehaviours[String] 
 
   behave like pageWithSectionCaption("Border means of transport")
 
-  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers.")
+  behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
