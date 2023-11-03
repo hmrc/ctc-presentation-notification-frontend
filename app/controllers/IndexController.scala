@@ -44,7 +44,6 @@ class IndexController @Inject() (
     implicit request =>
       service.getDepartureData(departureId).flatMap {
         case Some(departureData) =>
-          println(s"*&&&&&&&$departureData")
           service.getLRN(departureId) flatMap {
             lrn =>
               sessionRepository

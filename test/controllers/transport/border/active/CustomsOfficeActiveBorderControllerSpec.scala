@@ -17,12 +17,12 @@
 package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import forms.SelectableFormProvider
 import generators.Generators
+import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared}
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.active.CustomsOfficeActiveBorderPage
@@ -37,16 +37,23 @@ import scala.concurrent.Future
 
 class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val exitOffice                                   = arbitrary[CustomsOffice].sample.value
-  private val transitOffice                                = arbitrary[CustomsOffice].sample.value
-  private val destinationOffice                            = arbitrary[CustomsOffice].sample.value
-  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private val exitOffice        = arbitrary[CustomsOffice].sample.value
+  private val transitOffice     = arbitrary[CustomsOffice].sample.value
+  private val destinationOffice = arbitrary[CustomsOffice].sample.value
 
-  private val customOfficeList     = List(exitOffice, transitOffice, destinationOffice)
-  private val allCustomOfficesList = SelectableList(customOfficeList)
+  private val updatedDepartureData = emptyUserAnswers.departureData.copy(
+    CustomsOfficeOfDestination = destinationOffice.id,
+    CustomsOfficeOfTransitDeclared = Some(Seq(CustomsOfficeOfTransitDeclared(transitOffice.id))),
+    CustomsOfficeOfExitForTransitDeclared = Some(Seq(CustomsOfficeOfExitForTransitDeclared(exitOffice.id)))
+  )
+
+  private val updatedUserAnswers = emptyUserAnswers.copy(departureData = updatedDepartureData)
+
+  private val customOfficeList = List(destinationOffice, transitOffice, exitOffice)
+  private val selectableList   = SelectableList(customOfficeList)
 
   private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("transport.border.active.customsOfficeActiveBorder", allCustomOfficesList)
+  private val form         = formProvider("transport.border.active.customsOfficeActiveBorder", selectableList)
   private val mode         = NormalMode
 
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
@@ -61,10 +68,16 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
   "ActiveBorderOfficeTransit Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
-        .thenReturn(Future.successful(customOfficeList))
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
+        .thenReturn(Future.successful(Some(destinationOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(exitOffice)))
+
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(transitOffice)))
+
+      setExistingUserAnswers(updatedUserAnswers)
 
       val request = FakeRequest(GET, customsOfficeActiveBorderRoute)
 
@@ -80,10 +93,16 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
-        .thenReturn(Future.successful(customOfficeList))
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
+        .thenReturn(Future.successful(Some(destinationOffice)))
 
-      val userAnswers = emptyUserAnswers
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(exitOffice)))
+
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(transitOffice)))
+
+      val userAnswers = updatedUserAnswers
         .setValue(CustomsOfficeActiveBorderPage(index), destinationOffice)
 
       setExistingUserAnswers(userAnswers)
@@ -104,12 +123,18 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
-        .thenReturn(Future.successful(customOfficeList))
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
+        .thenReturn(Future.successful(Some(destinationOffice)))
+
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(exitOffice)))
+
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(transitOffice)))
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(updatedUserAnswers)
 
       val request = FakeRequest(POST, customsOfficeActiveBorderRoute)
         .withFormUrlEncodedBody(("value", destinationOffice.id))
@@ -123,10 +148,16 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
-        .thenReturn(Future.successful(customOfficeList))
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
+        .thenReturn(Future.successful(Some(destinationOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(exitOffice)))
+
+      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
+        .thenReturn(Future.successful(Some(transitOffice)))
+
+      setExistingUserAnswers(updatedUserAnswers)
 
       val request   = FakeRequest(POST, customsOfficeActiveBorderRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))

@@ -140,19 +140,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
   }
 
-  def getCustomsOfficesForIds(ids: Seq[String])(implicit
-    ec: ExecutionContext,
-    hc: HeaderCarrier
-  ): Future[Seq[CustomsOffice]] = {
-    val queryParams: Seq[(String, String)] = ids.map(
-      x => ("data.id" -> x)
-    )
-
-    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
-
-    http.GET[Seq[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
-  }
-
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
