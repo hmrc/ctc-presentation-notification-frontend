@@ -32,5 +32,5 @@ case object LimitDatePage extends QuestionPage[LocalDate] {
   override def toString: String = "limitDate"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.LimitDateController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.LimitDateController.onPageLoad(departureId, mode))
 }
