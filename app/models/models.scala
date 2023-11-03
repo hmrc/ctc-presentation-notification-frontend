@@ -39,6 +39,15 @@ package object models {
       jsObject.remove(path).flatMap(_.validate[JsObject])
   }
 
+  implicit class RichOptionalJsArray(arr: Option[JsArray]) {
+
+    def validate[T](implicit rds: Reads[T]): Option[T] =
+      arr.flatMap(_.validate[T].asOpt)
+
+    def length: Int = arr.getOrElse(JsArray()).value.length
+
+  }
+
   implicit class RichJsValue(jsValue: JsValue) {
 
     def encrypt: SensitiveString = SensitiveString(Json.stringify(jsValue))

@@ -17,8 +17,10 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.SelectableList
+import models.{RichOptionalJsArray, SelectableList, UserAnswers}
+import models.SelectableList.{officeOfDestinationReads, officesOfExitReads, officesOfTransitReads}
 import models.reference.{CountryCode, CustomsOffice}
+import pages.sections.external.{OfficeOfDestinationSection, OfficesOfExitSection, OfficesOfTransitSection}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -58,6 +60,14 @@ class CustomsOfficesService @Inject() (
     referenceDataConnector
       .getCustomsOfficesOfDepartureForCountry(countryCode)
       .map(sort)
+
+  def getCustomsOffices(userAnswers: UserAnswers): SelectableList[CustomsOffice] = {
+    val officesOfExit       = userAnswers.get(OfficesOfExitSection).validate(officesOfExitReads).map(_.values).getOrElse(Nil)
+    val officesOfTransit    = userAnswers.get(OfficesOfTransitSection).validate(officesOfTransitReads).map(_.values).getOrElse(Nil)
+    val officeOfDestination = userAnswers.get(OfficeOfDestinationSection).validate(officeOfDestinationReads).map(_.values).getOrElse(Nil)
+
+    sort(officesOfExit ++ officesOfTransit ++ officeOfDestination)
+  }
 
   private def sort(customsOffices: Seq[CustomsOffice]): SelectableList[CustomsOffice] =
     SelectableList(customsOffices.sortBy(_.name.toLowerCase))

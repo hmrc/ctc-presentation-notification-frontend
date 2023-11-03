@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.external
 
-import queries.{Gettable, Settable}
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsArray, JsPath}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
-  type Data = A
+case object OfficeOfDestinationSection extends ReadOnlySection[JsArray] {
+
+  override def path: JsPath = transitSectionPath \ toString
+
+  override def toString: String = "officeOfDestination"
 }
-
-trait ReadOnlyPage[A] extends Page with Gettable[A]

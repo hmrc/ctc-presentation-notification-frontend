@@ -19,7 +19,6 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
-import pages.transport.border.BorderModeOfTransportPage
 import play.api.mvc.Call
 
 import javax.inject.Inject

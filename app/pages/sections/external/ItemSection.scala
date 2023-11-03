@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.external
 
-import queries.{Gettable, Settable}
+import models.Index
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsObject, JsPath}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
-  type Data = A
+case class ItemSection(index: Index) extends ReadOnlySection[JsObject] {
+
+  override def path: JsPath = ItemsSection.path \ index.position
+
 }
-
-trait ReadOnlyPage[A] extends Page with Gettable[A]

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import queries.{Gettable, Settable}
+import play.api.libs.json.{__, JsPath}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
-  type Data = A
+package object external {
+
+  lazy val exitSectionPath: JsPath    = __ \ "routeDetails" \ "exit"
+  lazy val transitSectionPath: JsPath = __ \ "routeDetails" \ "transit"
+
 }
-
-trait ReadOnlyPage[A] extends Page with Gettable[A]
