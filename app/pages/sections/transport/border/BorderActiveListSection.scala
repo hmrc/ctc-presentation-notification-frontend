@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.transport.border
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.sections.Section
+import pages.sections.transport.TransportSection
+import play.api.libs.json.{JsArray, JsPath}
 
-case object AddPlaceOfLoadingYesNoPage extends QuestionPage[Boolean] {
+case object BorderActiveListSection extends Section[JsArray] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = TransportSection.path \ toString
 
-  override def toString: String = "addPlaceOfLoadingYesNo"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddPlaceOfLoadingYesNoController.onPageLoad(departureId, mode))
-
-// TODO  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
+  override def toString: String = "transportMeansActiveList"
 }

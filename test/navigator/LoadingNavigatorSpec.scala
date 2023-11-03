@@ -17,12 +17,16 @@
 package navigator
 
 import base.SpecBase
+import base.TestMessageData.{messageData, transitOperation}
 import generators.Generators
 import models._
+import models.messages.Authorisation
+import models.messages.AuthorisationType.C521
 import navigation.LoadingNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading
 import pages.loading._
+import pages.transport.LimitDatePage
 
 class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -75,12 +79,30 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .mustBe(LocationPage.route(userAnswers, departureId, mode).value)
         }
 
-        "must go from CountryPage to LocationPage" - {
+        "must go from CountryPage to LocationPage when limitDate exists" - {
           val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+
+          val userAnswersWithLimitDate = userAnswers.copy(
+            departureData =
+              messageData.copy(TransitOperation = transitOperation.copy(limitDate = Some("limitDate")), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
+          )
+
           navigator
-            .nextPage(CountryPage, userAnswers, departureId, mode)
-            .mustBe(LocationPage.route(userAnswers, departureId, mode).value)
+            .nextPage(CountryPage, userAnswersWithLimitDate, departureId, mode)
+            .mustBe(LocationPage.route(userAnswersWithLimitDate, departureId, mode).value)
         }
+
+      }
+
+      "must go from LocationPage to LimitDatePage when limit date does not exist and is simplified" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersNoLimitDate = userAnswers.copy(
+          departureData = messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
+        )
+
+        navigator
+          .nextPage(LocationPage, userAnswersNoLimitDate, departureId, mode)
+          .mustBe(LimitDatePage.route(userAnswersNoLimitDate, departureId, mode).value)
 
       }
 

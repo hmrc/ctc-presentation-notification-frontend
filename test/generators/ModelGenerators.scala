@@ -20,6 +20,7 @@ import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
 import models.reference._
+import models.reference.transport.border.active
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
@@ -163,4 +164,11 @@ trait ModelGenerators {
       } yield Some(BorderMode(code, description))
     }
 
+  implicit lazy val arbitraryIdentificationActive: Arbitrary[active.Identification] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("10", "11", "21", "30", "40", "41", "80", "81")
+        description <- nonEmptyString
+      } yield active.Identification(code, description)
+    }
 }

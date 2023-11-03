@@ -50,13 +50,13 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val borderMode8 = BorderMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted border modes" in {
-        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any()))
+        when(mockRefDataConnector.getBorderModeCodes()(any(), any()))
           .thenReturn(Future.successful(Seq(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
 
         service.getBorderModes().futureValue mustBe
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
-        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any())
+        verify(mockRefDataConnector).getBorderModeCodes()(any(), any())
       }
     }
   }

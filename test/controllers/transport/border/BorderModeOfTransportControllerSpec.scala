@@ -42,7 +42,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
   private val borderModes: Seq[BorderMode] = Seq(border1, border2)
 
   private val formProvider                    = new EnumerableFormProvider()
-  private val form                            = formProvider[BorderMode]("transportMeans.borderModeOfTransport", borderModes)
+  private val form                            = formProvider[BorderMode]("transport.border.borderModeOfTransport", borderModes)
   private val mode                            = NormalMode
   private lazy val borderModeOfTransportRoute = controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
 

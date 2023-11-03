@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package models.reference
+package models.reference.transport.border.active
 
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
 
-sealed trait ModeOfTransport[T] extends Radioable[T] {
-  val code: String
-  val description: String
-}
-
-case class BorderMode(code: String, description: String) extends ModeOfTransport[BorderMode] {
+case class Identification(code: String, description: String) extends Radioable[Identification] {
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = BorderMode.messageKeyPrefix
+  override val messageKeyPrefix: String = Identification.messageKeyPrefix
+
 }
 
-object BorderMode extends DynamicEnumerableType[BorderMode] {
-  implicit val format: Format[BorderMode] = Json.format[BorderMode]
+object Identification extends DynamicEnumerableType[Identification] {
+  implicit val format: Format[Identification] = Json.format[Identification]
 
-  val messageKeyPrefix = "transportMeans.borderModeOfTransport"
+  val messageKeyPrefix = "border.identification"
 }

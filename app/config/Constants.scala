@@ -57,4 +57,7 @@ object Constants {
 
   lazy val maxEoriNumberLength: Int = 17
 
+  object MeansOfTransportIdentification {
+    val UnknownIdentification = "99"
+  }
 }

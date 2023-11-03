@@ -25,4 +25,5 @@ object Constants {
   lazy val maxAdditionalIdentifierLength: Int = 4
   lazy val loadingLocationMaxLength: Int      = 35
   lazy val conveyanceRefNumberLength: Int     = 17
+  lazy val maxIdentificationNumberLength: Int = 35
 }

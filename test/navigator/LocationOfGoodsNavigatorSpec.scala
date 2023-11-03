@@ -16,18 +16,19 @@
 
 package navigator
 
-import base.SpecBase
+import base.TestMessageData.consignment
+import base.{SpecBase, TestMessageData}
 import config.Constants._
 import generators.Generators
 import models._
 import models.messages.MessageData
-import models.reference.CustomsOffice
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.Page
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
+import pages.transport.LimitDatePage
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -185,30 +186,56 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from CustomsOfficeIdentifierPage to AddUnLocodePage" in {
+      "must go from CustomsOfficeIdentifierPage to AddUnLocodePage when place of loading is not present" in {
 
-        val customsOffice = CustomsOffice("id", "Name", None)
+        val userAnswers = emptyUserAnswers.copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(PlaceOfLoading = None)))
 
-        val userAnswers = emptyUserAnswers.setValue(CustomsOfficeIdentifierPage, customsOffice)
         navigator
           .nextPage(CustomsOfficeIdentifierPage, userAnswers, departureId, mode)
           .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
       }
 
-      "must go from AddContactYesNoPage to AddUnLocodePage when 'addContact' is false" in {
+      "must go from AddContactYesNoPage to AddUnLocodePage when 'addContact' is false and place of loading is not present" in {
+        val userAnswers         = emptyUserAnswers.setValue(AddContactYesNoPage, false)
+        val userAnswersEmptyPOL = userAnswers.copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(PlaceOfLoading = None)))
+
+        navigator
+          .nextPage(AddContactYesNoPage, userAnswersEmptyPOL, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswersEmptyPOL, departureId, mode).value)
+      }
+
+      "must go from PhoneNumberPage to AddUnLocodePage when 'placeOfLoading' exists and place of loading is not present" in {
+
+        val identifier: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnlocodeIdentifier, "identifier")
+        val userAnswers                               = emptyUserAnswers.setValue(IdentificationPage, identifier)
+        val userAnswersEmptyPOL                       = userAnswers.copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(PlaceOfLoading = None)))
+
+        navigator
+          .nextPage(PhoneNumberPage, userAnswersEmptyPOL, departureId, mode)
+          .mustBe(AddUnLocodePage.route(userAnswersEmptyPOL, departureId, mode).value)
+      }
+
+      "must go from CustomsOfficeIdentifierPage to LimitDatePage when place of loading is present" in {
+
+        navigator
+          .nextPage(CustomsOfficeIdentifierPage, emptyUserAnswers, departureId, mode)
+          .mustBe(LimitDatePage.route(emptyUserAnswers, departureId, mode).value)
+      }
+
+      "must go from AddContactYesNoPage to LimitDatePage when 'addContact' is false and place of loading is present" in {
         val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, false)
         navigator
           .nextPage(AddContactYesNoPage, userAnswers, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+          .mustBe(LimitDatePage.route(userAnswers, departureId, mode).value)
       }
 
-      "must go from PhoneNumberPage to AddUnLocodePage when 'placeOfLoading' exists" in {
+      "must go from PhoneNumberPage to LimitDatePage when 'placeOfLoading' exists and place of loading is present" in {
 
         val identifier: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnlocodeIdentifier, "identifier")
         val userAnswers                               = emptyUserAnswers.setValue(IdentificationPage, identifier)
         navigator
           .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+          .mustBe(LimitDatePage.route(userAnswers, departureId, mode).value)
       }
     }
   }

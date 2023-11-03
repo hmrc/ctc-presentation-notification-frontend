@@ -48,7 +48,7 @@ class BorderModeOfTransportController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(borderModeCodes: Seq[BorderMode]): Form[BorderMode] = formProvider[BorderMode]("transportMeans.borderModeOfTransport", borderModeCodes)
+  private def form(borderModeCodes: Seq[BorderMode]): Form[BorderMode] = formProvider[BorderMode]("transport.border.borderModeOfTransport", borderModeCodes)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
