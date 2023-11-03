@@ -17,6 +17,7 @@
 package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.ReferenceDataConnector
 import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.CustomsOffice
@@ -36,11 +37,13 @@ import scala.concurrent.Future
 
 class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val exitOffice        = arbitrary[CustomsOffice].sample.value
-  private val transitOffice     = arbitrary[CustomsOffice].sample.value
-  private val destinationOffice = arbitrary[CustomsOffice].sample.value
+  private val exitOffice                                   = arbitrary[CustomsOffice].sample.value
+  private val transitOffice                                = arbitrary[CustomsOffice].sample.value
+  private val destinationOffice                            = arbitrary[CustomsOffice].sample.value
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  private val allCustomOfficesList = SelectableList(List(exitOffice, transitOffice, destinationOffice))
+  private val customOfficeList     = List(exitOffice, transitOffice, destinationOffice)
+  private val allCustomOfficesList = SelectableList(customOfficeList)
 
   private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("transport.border.active.customsOfficeActiveBorder", allCustomOfficesList)
@@ -58,9 +61,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
   "ActiveBorderOfficeTransit Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(
-        mockCustomsOfficesService.getCustomsOffices(any())
-      ).thenReturn(allCustomOfficesList)
+      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -73,14 +75,13 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, allCustomOfficesList.values, mode, index)(request, messages).toString
+        view(form, departureId, customOfficeList, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(
-        mockCustomsOfficesService.getCustomsOffices(any())
-      ).thenReturn(allCustomOfficesList)
+      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       val userAnswers = emptyUserAnswers
         .setValue(CustomsOfficeActiveBorderPage(index), destinationOffice)
@@ -98,14 +99,13 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, allCustomOfficesList.values, mode, index)(request, messages).toString
+        view(filledForm, departureId, customOfficeList, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(
-        mockCustomsOfficesService.getCustomsOffices(any())
-      ).thenReturn(allCustomOfficesList)
+      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -123,9 +123,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(
-        mockCustomsOfficesService.getCustomsOffices(any())
-      ).thenReturn(allCustomOfficesList)
+      when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -139,7 +138,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, allCustomOfficesList.values, mode, index)(request, messages).toString
+        view(boundForm, departureId, customOfficeList, mode, index)(request, messages).toString
     }
   }
 

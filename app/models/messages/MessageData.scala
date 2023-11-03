@@ -21,11 +21,19 @@ import models.messages.AuthorisationType.C521
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
+case class CustomsOfficeOfTransitDeclared(referenceNumber: String)
+
+object CustomsOfficeOfTransitDeclared {
+  implicit val formats: OFormat[CustomsOfficeOfTransitDeclared] = Json.format[CustomsOfficeOfTransitDeclared]
+}
+
 case class MessageData(
   CustomsOfficeOfDeparture: String,
   CustomsOfficeOfDestination: String,
   TransitOperation: TransitOperation,
   Authorisation: Option[Seq[Authorisation]],
+  CustomsOfficeOfTransitDeclared: Option[Seq[CustomsOfficeOfTransitDeclared]],
+  CustomsOfficeOfExitForTransitDeclared: Option[Seq[String]],
   Consignment: Consignment
 ) {
 
@@ -44,6 +52,11 @@ case class MessageData(
 
   def countryOfDeparture: String = CustomsOfficeOfDeparture.take(2)
 
+  def customsOffices: Seq[String] =
+    Seq(CustomsOfficeOfDestination) ++ CustomsOfficeOfTransitDeclared
+      .map(_.map(_.referenceNumber))
+      .getOrElse(Seq.empty) ++ CustomsOfficeOfExitForTransitDeclared.getOrElse(Seq.empty)
+
 }
 
 object MessageData {
@@ -53,6 +66,8 @@ object MessageData {
       (__ \ "CustomsOfficeOfDestinationDeclared" \ "referenceNumber").read[String] and
       (__ \ "TransitOperation").read[TransitOperation] and
       (__ \ "Authorisation").readNullable[Seq[Authorisation]] and
+      (__ \ "CustomsOfficeOfTransitDeclared").readNullable[Seq[CustomsOfficeOfTransitDeclared]] and
+      (__ \ "CustomsOfficeOfExitForTransitDeclared" \ "referenceNumber").readNullable[Seq[String]] and
       (__ \ "Consignment").read[Consignment]
   )(MessageData.apply _)
 
@@ -61,6 +76,8 @@ object MessageData {
       (__ \ "CustomsOfficeOfDestinationDeclared" \ "referenceNumber").write[String] and
       (__ \ "TransitOperation").write[TransitOperation] and
       (__ \ "Authorisation").writeNullable[Seq[Authorisation]] and
+      (__ \ "CustomsOfficeOfTransitDeclared").writeNullable[Seq[CustomsOfficeOfTransitDeclared]] and
+      (__ \ "CustomsOfficeOfExitForTransitDeclared" \ "referenceNumber").writeNullable[Seq[String]] and
       (__ \ "Consignment").write[Consignment]
   )(unlift(MessageData.unapply))
 }

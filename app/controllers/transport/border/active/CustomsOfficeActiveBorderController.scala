@@ -16,18 +16,18 @@
 
 package controllers.transport.border.active
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.CustomsOffice
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, SelectableList}
 import navigation.BorderNavigator
 import pages.transport.border.active.CustomsOfficeActiveBorderPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.CustomsOfficesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.border.active.CustomsOfficeActiveBorderView
 
@@ -40,36 +40,46 @@ class CustomsOfficeActiveBorderController @Inject() (
   navigator: BorderNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
-  customsOfficeService: CustomsOfficesService,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsOfficeActiveBorderView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
+  def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val customsOfficeList         = customsOfficeService.getCustomsOffices(request.userAnswers)
-      val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", customsOfficeList)
-      val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val customsOffices: Seq[String] = request.userAnswers.departureData.customsOffices
+      println(s"*****$customsOffices")
+      referenceDataConnector.getCustomsOfficesForIds(customsOffices).map {
+        customsOfficesList =>
+          println(s"*****$customsOfficesList")
+
+          val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", SelectableList(customsOfficesList))
+          val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+
+          Ok(view(preparedForm, departureId, customsOfficesList, mode, activeIndex))
       }
 
-      Ok(view(preparedForm, departureId, customsOfficeList.values, mode, activeIndex))
   }
 
   def onSubmit(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val customsOfficeList         = customsOfficeService.getCustomsOffices(request.userAnswers)
-      val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", customsOfficeList)
+      val customsOffices: Seq[String] = request.userAnswers.departureData.customsOffices
+      referenceDataConnector.getCustomsOfficesForIds(customsOffices).flatMap {
+        customsOfficesList =>
+          val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", SelectableList(customsOfficesList))
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, customsOfficeList.values, mode, activeIndex))),
-          value => redirect(mode, value, departureId, activeIndex)
-        )
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, customsOfficesList, mode, activeIndex))),
+              value => redirect(mode, value, departureId, activeIndex)
+            )
+      }
   }
 
   private def redirect(
