@@ -16,17 +16,17 @@
 
 package pages.transport.border.active
 
+import controllers.transport.border.active.routes
 import models.reference.CustomsOffice
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transport.border.BorderActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import controllers.transport.border.active.routes
 
 case class CustomsOfficeActiveBorderPage(activeIndex: Index) extends QuestionPage[CustomsOffice] {
 
-  override def path: JsPath = TransportMeansActiveSection(activeIndex).path \ toString
+  override def path: JsPath = BorderActiveSection(activeIndex).path \ toString
 
   override def toString: String = "customsOfficeActiveBorder"
 
