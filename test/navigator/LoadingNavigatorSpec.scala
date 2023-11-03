@@ -94,14 +94,14 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
       }
 
-      "must go from CountryPage to LimitDatePage when limit date does not exist and is simplified" in {
+      "must go from LocationPage to LimitDatePage when limit date does not exist and is simplified" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersNoLimitDate = userAnswers.copy(
           departureData = messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
         )
 
         navigator
-          .nextPage(CountryPage, userAnswersNoLimitDate, departureId, mode)
+          .nextPage(LocationPage, userAnswersNoLimitDate, departureId, mode)
           .mustBe(LimitDatePage.route(userAnswersNoLimitDate, departureId, mode).value)
 
       }
