@@ -68,14 +68,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
   "ActiveBorderOfficeTransit Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
-        .thenReturn(Future.successful(Some(destinationOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(exitOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(transitOffice)))
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       setExistingUserAnswers(updatedUserAnswers)
 
@@ -93,14 +87,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
-        .thenReturn(Future.successful(Some(destinationOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(exitOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(transitOffice)))
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       val userAnswers = updatedUserAnswers
         .setValue(CustomsOfficeActiveBorderPage(index), destinationOffice)
@@ -123,14 +111,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
-        .thenReturn(Future.successful(Some(destinationOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(exitOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(transitOffice)))
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -148,14 +130,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(destinationOffice.id))(any()))
-        .thenReturn(Future.successful(Some(destinationOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(exitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(exitOffice)))
-
-      when(mockCustomsOfficesService.getCustomsOfficeById(eqTo(transitOffice.id))(any()))
-        .thenReturn(Future.successful(Some(transitOffice)))
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
+        .thenReturn(Future.successful(customOfficeList))
 
       setExistingUserAnswers(updatedUserAnswers)
 

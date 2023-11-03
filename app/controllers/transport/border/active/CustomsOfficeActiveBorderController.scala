@@ -16,7 +16,6 @@
 
 package controllers.transport.border.active
 
-import cats.implicits.toTraverseOps
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.CustomsOffice
@@ -29,7 +28,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.CustomsOfficesService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.border.active.CustomsOfficeActiveBorderView
 
@@ -51,7 +49,7 @@ class CustomsOfficeActiveBorderController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      traverseCustomsOffices(request.userAnswers.departureData.customsOffices).map {
+      customsOfficesService.getCustomsOfficesByMultipleIds(request.userAnswers.departureData.customsOffices).map {
         customsOfficesList =>
           val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", SelectableList(customsOfficesList))
           val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)) match {
@@ -66,7 +64,7 @@ class CustomsOfficeActiveBorderController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      traverseCustomsOffices(request.userAnswers.departureData.customsOffices).flatMap {
+      customsOfficesService.getCustomsOfficesByMultipleIds(request.userAnswers.departureData.customsOffices).flatMap {
         customsOfficesList =>
           val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", SelectableList(customsOfficesList))
 
@@ -78,15 +76,6 @@ class CustomsOfficeActiveBorderController @Inject() (
             )
       }
   }
-
-  // TODO this could be refactored in the customs reference data service to get multiple offices rather than traverse
-  private def traverseCustomsOffices(customsOffices: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[CustomsOffice]] =
-    customsOffices
-      .traverse {
-        customsOfficeId =>
-          customsOfficesService.getCustomsOfficeById(customsOfficeId)
-      }
-      .map(_.flatten)
 
   private def redirect(
     mode: Mode,
