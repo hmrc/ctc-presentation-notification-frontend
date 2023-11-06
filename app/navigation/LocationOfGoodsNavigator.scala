@@ -22,7 +22,7 @@ import models._
 import pages._
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import pages.transport.LimitDatePage
+import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -65,30 +65,37 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
         placeOfLoadingExistsRedirect(ua, departureId, mode)
     }
 
-  def addIdentifierYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+  private def addIdentifierYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.get(AddIdentifierYesNoPage) match {
       case Some(true)  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
       case Some(false) => AddContactYesNoPage.route(userAnswers, departureId, mode)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
-  def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+  private def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.get(AddContactYesNoPage) match {
       case Some(true)  => NamePage.route(userAnswers, departureId, mode)
       case Some(false) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
-  def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(IdentificationPage) match {
-      case Some(_) =>
-        placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
-      case None => ???
+  private def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    userAnswers.departureData.Consignment.PlaceOfLoading match {
+      case Some(_) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
+      case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
     }
 
   private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode) =
     userAnswers.departureData.Consignment.PlaceOfLoading match {
-      case Some(_) => LimitDatePage.route(userAnswers, departureId, mode)
-      case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
+      case Some(_) =>
+        if (
+          userAnswers.departureData.TransitOperation.limitDate.isDefined &&
+          userAnswers.departureData.Consignment.containerIndicator.isEmpty
+        ) {
+          ContainerIndicatorPage.route(userAnswers, departureId, mode)
+        } else {
+          LimitDatePage.route(userAnswers, departureId, mode)
+        }
+      case None => AddUnLocodePage.route(userAnswers, departureId, mode)
     }
 }

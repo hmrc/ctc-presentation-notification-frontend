@@ -28,7 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.Page
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import pages.transport.LimitDatePage
+import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -177,6 +177,32 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
+      "must go from Add AddContactYesNo page to AddUnLocode page when user selects No and POL does not exist" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, false)
+              .copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(PlaceOfLoading = None)))
+
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(AddUnLocodePage.route(answers, departureId, mode).value)
+        }
+      }
+
+      "must go from Add AddContactYesNo page to ContainerIndicatorPage page when user selects No and POL & limit date exists and Container Indicator does not exist" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, false)
+              .copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(containerIndicator = None)))
+
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(ContainerIndicatorPage.route(answers, departureId, mode).value)
+        }
+      }
+
       "must go from ContactName page to Contact phone number page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -213,6 +239,19 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         navigator
           .nextPage(PhoneNumberPage, userAnswersEmptyPOL, departureId, mode)
           .mustBe(AddUnLocodePage.route(userAnswersEmptyPOL, departureId, mode).value)
+      }
+
+      "must go from Add PhoneNumberPage page to ContainerIndicatorPage page when user selects No and POL & limit date exists and Container Indicator does not exist" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, false)
+              .copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(containerIndicator = None)))
+
+            navigator
+              .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(ContainerIndicatorPage.route(answers, departureId, mode).value)
+        }
       }
 
       "must go from CustomsOfficeIdentifierPage to LimitDatePage when place of loading is present" in {
