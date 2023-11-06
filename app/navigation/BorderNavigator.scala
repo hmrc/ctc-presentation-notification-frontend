@@ -32,21 +32,21 @@ class BorderNavigator @Inject() (activeIndex: Index) extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case BorderModeOfTransportPage => ua => identificationPageNavigation(ua, departureId, mode, activeIndex)
-    case IdentificationPage(activeIndex) => ua => IdentificationNumberPage(activeIndex).route(ua,departureId,mode)
+    case BorderModeOfTransportPage             => ua => identificationPageNavigation(ua, departureId, mode, activeIndex)
+    case IdentificationPage(activeIndex)       => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
     case IdentificationNumberPage(activeIndex) => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
+    case NationalityPage(activeIndex)          => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
-  private def identificationPageNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] = {
+  private def identificationPageNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     (ua.departureData.Consignment.modeOfTransportAtTheBorder,
-      ua.departureData.TransitOperation.security,
-      ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined
-      ) match {
+     ua.departureData.TransitOperation.security,
+     ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined
+    ) match {
       case (Some("5"), 0, true) => ???
       case _                    => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
     }
-  }
 
 }
