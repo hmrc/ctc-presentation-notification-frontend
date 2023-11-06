@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.ReferenceDataConnector
 import models.reference.{CountryCode, CustomsOffice}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -74,6 +74,37 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         service.getCustomsOfficeById("GB1").futureValue mustBe None
 
         verify(mockRefDataConnector).getCustomsOfficesForId(any())(any(), any())
+      }
+    }
+
+    "getCustomsOfficeByMultipleIds" - {
+      "must customs office list for multiple ids" in {
+
+        when(mockRefDataConnector.getCustomsOfficesForId(eqTo("GB1"))(any(), any()))
+          .thenReturn(Future.successful(Seq(gbCustomsOffice1)))
+
+        when(mockRefDataConnector.getCustomsOfficesForId(eqTo("GB2"))(any(), any()))
+          .thenReturn(Future.successful(Seq(gbCustomsOffice2)))
+
+        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe gbCustomsOffices
+
+        verify(mockRefDataConnector, times(2)).getCustomsOfficesForId(any())(any(), any())
+      }
+
+      "must return empty list when given an empty list" in {
+        service.getCustomsOfficesByMultipleIds(Nil).futureValue mustBe Seq.empty
+
+        verify(mockRefDataConnector, times(0)).getCustomsOfficesForId(any())(any(), any())
+      }
+
+      "must return empty list for non matching" in {
+
+        when(mockRefDataConnector.getCustomsOfficesForId(any())(any(), any()))
+          .thenReturn(Future.successful(Nil))
+
+        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq.empty
+
+        verify(mockRefDataConnector, times(2)).getCustomsOfficesForId(any())(any(), any())
       }
     }
 

@@ -90,7 +90,8 @@ object TestMessageData {
 
   val customsOfficeOfDestination: String = "GB000012"
 
-  val messageData: MessageData = MessageData(customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation, Some(authorisation), consignment)
+  val messageData: MessageData =
+    MessageData(customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation, Some(authorisation), None, None, consignment)
 
   val jsonValue: JsValue = Json.parse(
     s"""

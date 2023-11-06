@@ -326,3 +326,11 @@ transport.border.active.identificationNumber.checkYourAnswersLabel = Identificat
 transport.border.active.identificationNumber.error.length = The identification number must be 35 characters or less
 transport.border.active.identificationNumber.error.required = Enter the identification number for this vehicle
 transport.border.active.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+
+transport.border.active.customsOfficeActiveBorder.title = Where is the customs office at the border?
+transport.border.active.customsOfficeActiveBorder.heading = Where is the customs office at the border?
+transport.border.active.customsOfficeActiveBorder.placeholder = Select a customs office
+transport.border.active.customsOfficeActiveBorder.paragraph = You can only select a location from the offices of transit, exit or destination in your transit route.
+transport.border.active.customsOfficeActiveBorder.change.hidden = customs office for the border means of transport
+transport.border.active.customsOfficeActiveBorder.checkYourAnswersLabel = Customs office
+transport.border.active.customsOfficeActiveBorder.error.required = Select the customs office at the border
