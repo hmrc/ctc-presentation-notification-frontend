@@ -19,7 +19,8 @@ package models.messages
 import play.api.libs.json.{Json, OFormat}
 
 case class TransitOperation(
-  limitDate: Option[String]
+  limitDate: Option[String],
+  security: Int
 )
 
 object TransitOperation {
