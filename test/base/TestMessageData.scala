@@ -16,6 +16,7 @@
 
 package base
 
+import config.Constants.NoSecurityDetails
 import models.messages.AuthorisationType.{C521, Other}
 import models.messages._
 import play.api.libs.json.{JsValue, Json}
@@ -23,7 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 object TestMessageData {
 
   val transitOperation: TransitOperation =
-    TransitOperation(Some("2023-06-09"))
+    TransitOperation(Some("2023-06-09"), NoSecurityDetails)
 
   val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
 

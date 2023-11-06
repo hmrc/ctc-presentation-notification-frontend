@@ -20,6 +20,7 @@ import com.google.inject.Singleton
 import models._
 import pages.Page
 import pages.loading._
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
@@ -37,9 +38,14 @@ class LoadingNavigator {
 
   private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
     ua.departureData.Consignment.containerIndicator match {
-      case Some(_) => ???
-      case None    => ContainerIndicatorPage.route(ua, departureId, mode)
+      case Some(_) =>
+        if (checkTransitOperationSecurity(ua)) BorderModeOfTransportPage.route(ua, departureId, mode)
+        else ??? //TODO follow false path of transitOperationSecurity (<CC015C-TRANSIT OPERATION.Security> is in SET {1,2,3})
+      case None => ContainerIndicatorPage.route(ua, departureId, mode)
     }
+
+  private def checkTransitOperationSecurity(implicit ua: UserAnswers): Boolean =
+    ua.departureData.TransitOperation.isSecurityTypeInSet
 
   private def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers) =
     if (ua.departureData.isSimplified) {

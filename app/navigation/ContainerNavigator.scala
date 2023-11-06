@@ -19,6 +19,8 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
+import pages.transport.ContainerIndicatorPage
+import pages.transport.border.BorderModeOfTransportPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -26,8 +28,16 @@ import javax.inject.Inject
 @Singleton
 class ContainerNavigator @Inject() () extends Navigator {
 
-  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case ContainerIndicatorPage => ua => containerIndicatorNavigation(ua, departureId, mode)
+  }
 
+  private def containerIndicatorNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    if (checkTransitOperationSecurity(userAnswers)) BorderModeOfTransportPage.route(userAnswers, departureId, mode)
+    else ??? //TODO follow false path of transitOperationSecurity (<CC015C-TRANSIT OPERATION.Security> is in SET {1,2,3})
+
+  private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
+    ua.departureData.TransitOperation.isSecurityTypeInSet
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???

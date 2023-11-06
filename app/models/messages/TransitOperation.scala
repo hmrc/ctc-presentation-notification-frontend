@@ -16,11 +16,17 @@
 
 package models.messages
 
+import config.Constants.{EntryAndExitSummaryDeclarationSecurityDetails, EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails}
 import play.api.libs.json.{Json, OFormat}
 
-case class TransitOperation(
-  limitDate: Option[String]
-)
+case class TransitOperation(limitDate: Option[String], security: String) {
+
+  def isSecurityTypeInSet: Boolean = {
+    val allowed = Set(EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails, EntryAndExitSummaryDeclarationSecurityDetails)
+    allowed.contains(security)
+  }
+
+}
 
 object TransitOperation {
   implicit val format: OFormat[TransitOperation] = Json.format[TransitOperation]
