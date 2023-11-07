@@ -17,23 +17,21 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import org.scalacheck.Gen
-import views.html.components.Heading
+import viewModels.ListItem
+import views.html.components.ListWithActions
 import views.html.templates.MainTemplate
 
-class HeadingSpec extends A11ySpecBase {
+class ListWithActionsSpec extends A11ySpecBase {
 
-  "the 'heading' component" must {
+  "the 'list with actions' component" must {
     val template  = app.injector.instanceOf[MainTemplate]
-    val component = app.injector.instanceOf[Heading]
+    val component = app.injector.instanceOf[ListWithActions]
 
-    val title   = nonEmptyString.sample.value
-    val heading = nonEmptyString.sample.value
-    val caption = Gen.option(nonEmptyString).sample.value
-    val classes = Gen.oneOf(None, Some("govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-2")).sample.value
+    val title     = nonEmptyString.sample.value
+    val listItems = listWithMaxLength[ListItem]().sample.value
 
-    val content = template.apply(title) {
-      component.apply(heading, caption, classes)
+    val content = template.apply(title = title) {
+      component.apply(listItems).withHeading(title)
     }
 
     "pass accessibility checks" in {

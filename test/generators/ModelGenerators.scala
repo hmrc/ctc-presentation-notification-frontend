@@ -23,10 +23,16 @@ import models.reference._
 import models.reference.transport.border.active
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.{GET, POST}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryMode: Arbitrary[Mode] = Arbitrary {
+    Gen.oneOf(NormalMode, CheckMode)
+  }
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
     Arbitrary {
@@ -171,4 +177,11 @@ trait ModelGenerators {
         description <- nonEmptyString
       } yield active.Identification(code, description)
     }
+
+  implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {
+    for {
+      method <- Gen.oneOf(GET, POST)
+      url    <- nonEmptyString
+    } yield Call(method, url)
+  }
 }

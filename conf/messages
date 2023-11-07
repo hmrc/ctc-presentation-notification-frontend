@@ -3,6 +3,11 @@ site.saveAndContinue = Save and continue
 site.service_name = Manage your transit movements
 site.no = No
 site.yes = Yes
+site.edit = Change
+site.delete = Remove
+site.change = Change
+site.delete.hidden = Remove {0}
+site.edit.hidden = Change {0}
 
 site.section = This section is
 
@@ -334,3 +339,13 @@ transport.border.active.customsOfficeActiveBorder.paragraph = You can only selec
 transport.border.active.customsOfficeActiveBorder.change.hidden = customs office for the border means of transport
 transport.border.active.customsOfficeActiveBorder.checkYourAnswersLabel = Customs office
 transport.border.active.customsOfficeActiveBorder.error.required = Select the customs office at the border
+
+transport.border.active.addAnotherBorderTransport.singular.title = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.singular.heading = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.plural.title = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.plural.heading = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.error.required =  Select yes if you want to add another border means of transport
+transport.border.active.addAnotherBorderTransport.label = Do you want to add another border means of transport?
+transport.border.active.addAnotherBorderTransport.hidden = Do you want to add another border means of transport?
+transport.border.active.addAnotherBorderTransport.hint = Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.
+transport.border.active.addAnotherBorderTransport.maxLimit.label = You cannot add any more border means of transport. To add another, you need to remove one first.
