@@ -29,6 +29,8 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   lazy val limitDateDaysBefore: Int = config.get[Int]("dates.limitDate.daysBefore")
   lazy val limitDateDaysAfter: Int  = config.get[Int]("dates.limitDate.daysAfter")
 
+  lazy val maxActiveBorderTransports: Int = config.get[Int]("limits.maxActiveBorderTransports")
+
   lazy val contactHost: String = config.get[String]("contact-frontend.host")
 
   lazy val commonTransitConventionTradersUrl: String = config.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl

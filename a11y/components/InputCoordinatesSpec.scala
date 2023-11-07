@@ -36,7 +36,7 @@ class InputCoordinatesSpec extends A11ySpecBase {
     val caption     = Gen.option(nonEmptyString).sample.value
     val form        = new CoordinatesFormProvider()(prefix)
 
-    val content = template.apply(title, lrn = lrn) {
+    val content = template.apply(title) {
       component.apply(form, prefix, caption, coordinates)
     }
 

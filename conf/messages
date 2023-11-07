@@ -3,6 +3,11 @@ site.saveAndContinue = Save and continue
 site.service_name = Manage your transit movements
 site.no = No
 site.yes = Yes
+site.edit = Change
+site.delete = Remove
+site.change = Change
+site.delete.hidden = Remove {0}
+site.edit.hidden = Change {0}
 
 site.section = This section is
 
@@ -326,3 +331,21 @@ transport.border.active.identificationNumber.checkYourAnswersLabel = Identificat
 transport.border.active.identificationNumber.error.length = The identification number must be 35 characters or less
 transport.border.active.identificationNumber.error.required = Enter the identification number for this vehicle
 transport.border.active.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+
+transport.border.active.customsOfficeActiveBorder.title = Where is the customs office at the border?
+transport.border.active.customsOfficeActiveBorder.heading = Where is the customs office at the border?
+transport.border.active.customsOfficeActiveBorder.placeholder = Select a customs office
+transport.border.active.customsOfficeActiveBorder.paragraph = You can only select a location from the offices of transit, exit or destination in your transit route.
+transport.border.active.customsOfficeActiveBorder.change.hidden = customs office for the border means of transport
+transport.border.active.customsOfficeActiveBorder.checkYourAnswersLabel = Customs office
+transport.border.active.customsOfficeActiveBorder.error.required = Select the customs office at the border
+
+transport.border.active.addAnotherBorderTransport.singular.title = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.singular.heading = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.plural.title = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.plural.heading = You have added {0} border means of transport
+transport.border.active.addAnotherBorderTransport.error.required =  Select yes if you want to add another border means of transport
+transport.border.active.addAnotherBorderTransport.label = Do you want to add another border means of transport?
+transport.border.active.addAnotherBorderTransport.hidden = Do you want to add another border means of transport?
+transport.border.active.addAnotherBorderTransport.hint = Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.
+transport.border.active.addAnotherBorderTransport.maxLimit.label = You cannot add any more border means of transport. To add another, you need to remove one first.

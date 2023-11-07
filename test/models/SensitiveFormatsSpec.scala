@@ -130,7 +130,9 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         ActiveBorderTransportMeans = None,
         PlaceOfLoading = None
       ),
-      CustomsOfficeOfDestination = ""
+      CustomsOfficeOfDestination = "",
+      CustomsOfficeOfExitForTransitDeclared = None,
+      CustomsOfficeOfTransitDeclared = None
     )
 
     "reads" - {

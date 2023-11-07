@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import queries.{Gettable, Settable}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
-  type Data = A
+import javax.inject.Inject
+
+class AddAnotherFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String, allowMore: Boolean): Form[Boolean] =
+    Form(
+      "value" -> mandatoryIfBoolean(s"$prefix.error.required", allowMore, defaultValue = false)
+    )
 }
-
-trait ReadOnlyPage[A] extends Page with Gettable[A]
