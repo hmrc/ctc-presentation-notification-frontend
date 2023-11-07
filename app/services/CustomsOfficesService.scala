@@ -16,6 +16,7 @@
 
 package services
 
+import cats.implicits.toTraverseOps
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.{CountryCode, CustomsOffice}
@@ -37,6 +38,13 @@ class CustomsOfficesService @Inject() (
 
   def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[Option[CustomsOffice]] =
     referenceDataConnector.getCustomsOfficesForId(id).map(_.headOption)
+
+  // TODO this could be refactored in the customs reference data service to get multiple offices rather than traverse
+  def getCustomsOfficesByMultipleIds(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[CustomsOffice]] =
+    ids.flatTraverse {
+      customsOfficeId =>
+        referenceDataConnector.getCustomsOfficesForId(customsOfficeId)
+    }
 
   def getCustomsOfficesOfDestinationForCountry(
     countryCode: CountryCode

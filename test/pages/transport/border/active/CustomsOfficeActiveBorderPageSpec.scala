@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transport.border.active
 
-import queries.{Gettable, Settable}
+import models.reference.CustomsOffice
+import pages.behaviours.PageBehaviours
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
-  type Data = A
+class CustomsOfficeActiveBorderPageSpec extends PageBehaviours {
+
+  "CustomsOfficeActiveBorderPage" - {
+
+    beRetrievable[CustomsOffice](CustomsOfficeActiveBorderPage(activeIndex))
+
+    beSettable[CustomsOffice](CustomsOfficeActiveBorderPage(activeIndex))
+
+    beRemovable[CustomsOffice](CustomsOfficeActiveBorderPage(activeIndex))
+  }
 }
-
-trait ReadOnlyPage[A] extends Page with Gettable[A]
