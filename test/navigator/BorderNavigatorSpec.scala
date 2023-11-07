@@ -42,17 +42,22 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "to identification page when security mode of transport at border is not 5, security is 1,2,3 and active border transport is not present " in {
 
-          val userAnswers = emptyUserAnswers
-            .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime Transport"))
-            .copy(departureData =
-              TestMessageData.messageData.copy(
-                Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                TransitOperation = transitOperation.copy(security = "1")
-              )
-            )
-          navigator
-            .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-            .mustBe(IdentificationPage(activeIndex).route(userAnswers, departureId, mode).value)
+          forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            (borderModeOfTransport, securityType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Consignment = consignment.copy(ActiveBorderTransportMeans = None),
+                    TransitOperation = transitOperation.copy(security = securityType)
+                  )
+                )
+              navigator
+                .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                .mustBe(IdentificationPage(activeIndex).route(userAnswers, departureId, mode).value)
+
+          }
+
         }
 
         //TODO: Change more information page to other page when created
