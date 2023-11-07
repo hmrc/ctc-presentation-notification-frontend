@@ -115,11 +115,11 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "MessageData" - {
     val encryptedValue =
-      "5ILKD7bgqwoLb2RQD8zwpX62mJMkDixJVXdpJvpRUbs8rvkq772lmOO0bp0FAAieDR4RgGgspSj36cW322ZpnMBI5/Y1NAJMnNeHUG7BnlPRdGK7FdH9DxlSEnTMAki6DAD0Uo1Dgye1/rfhbNvlW33fzo0qYYjxcooJ05OUXa3tBKt5USIWl2T6FfoqpXe+Ijuh48oWECrPFy8cRKMljgzrRkNHMRnZxZLaig7JIxkwQ3hZTJNEoZgOdijyzLHdKzkhHOx2sEI="
+      "KOMv4qgrjmEY34BPOfF+j+xEpVXgtKigJg0I+iAccmAE8C65To5emqfOAiNcXmLb/ieMPbWjbA8VC9btvJYuE60+MbLKS4KxWovrPc68vjJr/lUrgW+qd+dFrTr0P4EnqxQwYn0BYM+4Rpn66tsA47iFcJCgtJExcd1z328QAGNP+oHfTeSnZ7Lvy6dWpeloVgAwwTG801t49JBhkOKc23Kxd5ZcWat7vfg6aEPAfVqeNx1ngiViSNnQ4aXODFz1Lqpuqw5hU46uZ3F+9yih3sSW1a/V1bAp9Q=="
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
-      TransitOperation = TransitOperation(None),
+      TransitOperation = TransitOperation(None, ""),
       Authorisation = None,
       Consignment = Consignment(
         containerIndicator = None,
