@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class TransitOperation(
   limitDate: Option[String],
-  security: Int
+  security: String
 )
 
 object TransitOperation {

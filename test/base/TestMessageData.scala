@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 object TestMessageData {
 
   val transitOperation: TransitOperation =
-    TransitOperation(Some("2023-06-09"), 3)
+    TransitOperation(Some("2023-06-09"), "3")
 
   val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
 
@@ -59,7 +59,7 @@ object TestMessageData {
     Some(contactPerson)
   )
 
-  val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
+  var activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
     ActiveBorderTransportMeans(
       "11",
       Some("GB000028"),
@@ -206,7 +206,8 @@ object TestMessageData {
        |        "referenceNumber":"GB000012"
        |    },
        |   "TransitOperation" : {
-       |       "limitDate" : "2023-06-09"
+       |       "limitDate" : "2023-06-09",
+       |       "security"  : "2"
        |   },
        |   "Consignment" : {
        |       "containerIndicator" : "1",

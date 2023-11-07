@@ -31,5 +31,5 @@ case class CustomsOfficeActiveBorderPage(activeIndex: Index) extends QuestionPag
   override def toString: String = "customsOfficeActiveBorder"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.CustomsOfficeActiveBorderController.onPageLoad(userAnswers.lrn, mode, activeIndex))
+    Some(routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, mode, activeIndex))
 }
