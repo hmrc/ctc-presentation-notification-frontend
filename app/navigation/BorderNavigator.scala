@@ -39,8 +39,8 @@ class BorderNavigator @Inject() () extends Navigator {
     case IdentificationNumberPage(activeIndex)        => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
     case NationalityPage(activeIndex)                 => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
     case CustomsOfficeActiveBorderPage(activeIndex)   => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
-    case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigation(ua, departureId,mode, activeIndex)
-    case ConveyanceReferenceNumberPage(activeIndex)   => ua => ???
+    case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
+    case ConveyanceReferenceNumberPage(activeIndex)   => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
@@ -50,25 +50,32 @@ class BorderNavigator @Inject() () extends Navigator {
 
     (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
       //TODO: Change route for first case when page has been added
-      case (Some(BorderMode("5", "Mail (Active mode of transport unknown)")), "0", true) =>
+      case (Some(BorderMode("5", _)), "0", true) =>
         Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
       case _ => Some(routes.IdentificationController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans)))
     }
   }
 
-  private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] = {
+  private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security) match {
-      case (Some(BorderMode("4", "Air transport")), "1" || "2" || "3") =>
+      case (Some(BorderMode("4", _)), "1" | "2" | "3") =>
         Some(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
       case _ => Some(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
     }
-  }
 
-  private def addConveyanceNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
-    userAnswers.get(AddConveyanceReferenceYesNoPage(activeIndex)) match {
-      case Some(true) => ConveyanceReferenceNumberPage(activeIndex).route(userAnswers, departureId, mode)
-      case Some(false) => ???
-      case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
+  private def addConveyanceNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+    ua.get(AddConveyanceReferenceYesNoPage(activeIndex)) match {
+      case Some(true)  => ConveyanceReferenceNumberPage(activeIndex).route(ua, departureId, mode)
+      case Some(false) => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
+  private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+    if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
+      Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
+    } else {
+      //TODO: Change this when page is added
+      Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
     }
 
 }

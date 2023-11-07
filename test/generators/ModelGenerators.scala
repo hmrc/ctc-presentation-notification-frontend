@@ -163,7 +163,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
     Arbitrary {
       for {
-        code        <- Gen.oneOf("1", "2", "3")
+        code        <- Gen.oneOf("1", "2", "3", "7", "8", "9")
         description <- nonEmptyString
       } yield Some(BorderMode(code, description))
     }
