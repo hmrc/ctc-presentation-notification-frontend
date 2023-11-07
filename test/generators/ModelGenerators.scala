@@ -114,6 +114,11 @@ trait ModelGenerators {
       } yield Nationality(code, desc)
     }
 
+  lazy val arbitrarySecurityDetailsNonZeroType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("1", "2", "3")
+    }
+
   lazy val arbitraryDynamicAddressWithRequiredPostalCode: Arbitrary[DynamicAddress] =
     Arbitrary {
       for {
@@ -153,6 +158,14 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code        <- Gen.oneOf("1", "2", "3")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
+    }
+
+  implicit lazy val arbitraryOptionalNonMailBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4", "6", "7", "8", "9")
         description <- nonEmptyString
       } yield Some(BorderMode(code, description))
     }
