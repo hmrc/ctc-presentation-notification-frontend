@@ -26,6 +26,7 @@ import navigation.LoadingNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading
 import pages.loading._
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 
 class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -106,6 +107,22 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
       }
 
+      "must go from LocationPage to BorderModePage when is simplified and limit date exists and container indicator exists" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersWithLimitDate = userAnswers.copy(
+          departureData = messageData.copy(
+            Consignment = consignment.copy(containerIndicator = Some("indicator")),
+            TransitOperation = transitOperation.copy(limitDate = Some("date")),
+            Authorisation = Some(Seq(Authorisation(C521, "1234")))
+          )
+        )
+
+        navigator
+          .nextPage(LocationPage, userAnswersWithLimitDate, departureId, mode)
+          .mustBe(BorderModeOfTransportPage.route(userAnswersWithLimitDate, departureId, mode).value)
+
+      }
+
       "must go from LocationPage to ContainerIndicatorPage when is NOT simplified and container indicator is empty" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
@@ -115,6 +132,17 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         navigator
           .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
           .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
+      }
+
+      "must go from LocationPage to BorderModePage when is NOT simplified and container indicator is present" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersUpdated = userAnswers.copy(
+          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
+        )
+
+        navigator
+          .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
+          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LocationPage to ContainerIndicatorPage when limit date exists, is simplified and container indicator is empty" in {
@@ -137,6 +165,17 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
           .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
+      }
+
+      "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersUpdated = userAnswers.copy(
+          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
+        )
+
+        navigator
+          .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
+          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
     }

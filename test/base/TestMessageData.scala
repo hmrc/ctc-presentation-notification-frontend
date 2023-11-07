@@ -16,7 +16,7 @@
 
 package base
 
-import config.Constants.NoSecurityDetails
+import config.Constants.EntrySummaryDeclarationSecurityDetails
 import models.messages.AuthorisationType.{C521, Other}
 import models.messages._
 import play.api.libs.json.{JsValue, Json}
@@ -24,7 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 object TestMessageData {
 
   val transitOperation: TransitOperation =
-    TransitOperation(Some("2023-06-09"), NoSecurityDetails)
+    TransitOperation(Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails)
 
   val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
 
@@ -103,7 +103,8 @@ object TestMessageData {
        |        "referenceNumber":"GB000012"
        |    },
        |   "TransitOperation" : {
-       |       "limitDate" : "2023-06-09"
+       |       "limitDate" : "2023-06-09",
+       |       "security" : "1"
        |   },
        |   "Authorisation" : [
        |     {
@@ -205,7 +206,8 @@ object TestMessageData {
        |        "referenceNumber":"GB000012"
        |    },
        |   "TransitOperation" : {
-       |       "limitDate" : "2023-06-09"
+       |       "limitDate" : "2023-06-09",
+       |       "security" : "1"
        |   },
        |   "Consignment" : {
        |       "containerIndicator" : "1",
