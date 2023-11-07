@@ -20,7 +20,7 @@ import base.SpecBase
 import base.TestMessageData.{consignment, messageData, transitOperation}
 import generators.Generators
 import models._
-import models.messages.Authorisation
+import models.messages.{Authorisation, AuthorisationType}
 import models.messages.AuthorisationType.C521
 import navigation.LoadingNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -126,7 +126,10 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       "must go from LocationPage to ContainerIndicatorPage when is NOT simplified and container indicator is empty" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = None))
+          departureData = messageData.copy(
+            Consignment = consignment.copy(containerIndicator = None),
+            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          )
         )
 
         navigator
@@ -135,9 +138,13 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
       "must go from LocationPage to BorderModePage when is NOT simplified and container indicator is present" in {
+
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
+          departureData = messageData.copy(
+            Consignment = consignment.copy(containerIndicator = Some("indicator")),
+            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          )
         )
 
         navigator

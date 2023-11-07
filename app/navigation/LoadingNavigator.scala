@@ -54,11 +54,12 @@ class LoadingNavigator {
       }
     } else if (ua.departureData.Consignment.containerIndicator.isEmpty | ua.departureData.TransitOperation.limitDate.isEmpty) {
       ContainerIndicatorPage.route(ua, departureId, mode)
-    } else ???
+    } else borderPageNavigation(departureId, mode, ua)
 
-  private def borderPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] = if (ua.departureData.TransitOperation.isSecurityTypeInSet)
-    BorderModeOfTransportPage.route(ua, departureId, mode)
-  else ??? //TODO follow false path of transitOperationSecurity (<CC015C-TRANSIT OPERATION.Security> is in SET {1,2,3})
+  private def borderPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+    if (ua.departureData.TransitOperation.isSecurityTypeInSet)
+      BorderModeOfTransportPage.route(ua, departureId, mode)
+    else ??? //TODO follow false path of transitOperationSecurity (<CC015C-TRANSIT OPERATION.Security> is in SET {1,2,3})
 
   protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
     case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
