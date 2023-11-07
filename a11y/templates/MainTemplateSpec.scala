@@ -30,7 +30,7 @@ class MainTemplateSpec extends A11ySpecBase {
     val canSignOut     = arbitrary[Boolean].sample.value
     val showBackLink   = arbitrary[Boolean].sample.value
 
-    val content = template.apply(title, timeoutEnabled, canSignOut, showBackLink, lrn) {
+    val content = template.apply(title, timeoutEnabled, canSignOut, showBackLink) {
       heading(title)
     }
 
