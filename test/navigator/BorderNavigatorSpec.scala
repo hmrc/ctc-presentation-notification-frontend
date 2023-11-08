@@ -16,7 +16,7 @@
 
 package navigator
 
-import base.TestMessageData.{consignment, transitOperation}
+import base.TestMessageData.{consignment, customsOfficeOfTransitDeclared, transitOperation}
 import base.{SpecBase, TestMessageData}
 import controllers.transport.border.active.routes
 import generators.Generators
@@ -63,10 +63,10 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         //TODO: Change more information page to other page when created
         "to more information page when security mode of transport at border is  5, security is 0 and active border transport is  present " in {
 
-          forAll(arbitraryActiveBorderTransportMeans.arbitrary) {
-            activeBorderTransportMeans =>
+          forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
+            (activeBorderTransportMeans, borderModeDesc) =>
               val userAnswers = emptyUserAnswers
-                .setValue(BorderModeOfTransportPage, BorderMode("5", "Mail (Active mode of transport unknown)"))
+                .setValue(BorderModeOfTransportPage, BorderMode("5", borderModeDesc))
                 .copy(departureData =
                   TestMessageData.messageData.copy(
                     Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
@@ -119,7 +119,118 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           .mustBe(routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, NormalMode, activeIndex))
       }
 
+      "must go from to customs offices page to conveyance number page when security is 1,2,3 and border mode of transport is 4 " in {
+
+        forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString) {
+          (securityType, borderModeDesc) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(BorderModeOfTransportPage, BorderMode("4", borderModeDesc))
+              .copy(departureData =
+                TestMessageData.messageData.copy(
+                  TransitOperation = transitOperation.copy(security = securityType)
+                )
+              )
+            navigator
+              .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
+              .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
+
+        }
+
+      }
+
+      "must go from to customs offices page to conveyance number page when security is 0 and border mode of transport is not 4 " in {
+
+        forAll(arbitraryOptionalNonAirBorderModeOfTransport.arbitrary) {
+          borderModeOfTransport =>
+            val userAnswers = emptyUserAnswers
+              .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+              .copy(departureData =
+                TestMessageData.messageData.copy(
+                  TransitOperation = transitOperation.copy(security = "0")
+                )
+              )
+            navigator
+              .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
+              .mustBe(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
+
+        }
+
+      }
+
+      "must go from add conveyance page yes no to conveyance number page when selected yes" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
+        navigator
+          .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, NormalMode)
+          .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, NormalMode, activeIndex))
+      }
+
+    }
+
+    "when selected no on add conveyance number yes no" - {
+
+      "must go to add another active border when customs office of transit is present" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
+              .copy(departureData =
+                TestMessageData.messageData.copy(
+                  CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                )
+              )
+            navigator
+              .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
+              .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
+        }
+      }
+      //TODO: change unit test once page has been added
+      "must go to more information page when customs office of transit is not present" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
+            navigator
+              .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+        }
+
+      }
+
+    }
+
+    "when on conveyance number page" - {
+
+      "must go to add another active border when customs office of transit is present" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .copy(departureData =
+                TestMessageData.messageData.copy(
+                  CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                )
+              )
+            navigator
+              .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+              .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
+        }
+      }
+      //TODO: change unit test once page has been added
+      "must go to more information page when customs office of transit is not present" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
+              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+        }
+      }
     }
 
   }
+
 }

@@ -81,6 +81,8 @@ object TestMessageData {
     Some(placeOfLoading)
   )
 
+  val customsOfficeOfTransitDeclared: Option[Seq[CustomsOfficeOfTransitDeclared]] = Option(Seq(CustomsOfficeOfTransitDeclared("GB000013")))
+
   val authorisation: Seq[Authorisation] = Seq(
     Authorisation(C521, "AB123"),
     Authorisation(Other("SomethingElse"), "CD123")
