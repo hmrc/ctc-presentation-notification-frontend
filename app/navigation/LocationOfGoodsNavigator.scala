@@ -22,13 +22,12 @@ import models._
 import pages._
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
 
 @Singleton
-class LocationOfGoodsNavigator @Inject() () extends Navigator {
+class LocationOfGoodsNavigator @Inject() () extends LoadingNavigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case InferredLocationTypePage | LocationTypePage                                              => ua => IdentificationPage.route(ua, departureId, mode)
@@ -87,15 +86,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
 
   private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode) =
     userAnswers.departureData.Consignment.PlaceOfLoading match {
-      case Some(_) =>
-        if (
-          userAnswers.departureData.TransitOperation.limitDate.isDefined &&
-          userAnswers.departureData.Consignment.containerIndicator.isEmpty
-        ) {
-          ContainerIndicatorPage.route(userAnswers, departureId, mode)
-        } else {
-          LimitDatePage.route(userAnswers, departureId, mode)
-        }
-      case None => AddUnLocodePage.route(userAnswers, departureId, mode)
+      case Some(_) => locationPageNavigation(departureId, mode, userAnswers)
+      case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
     }
 }

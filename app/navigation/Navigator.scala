@@ -17,7 +17,7 @@
 package navigation
 
 import controllers.routes
-import models.{Mode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
@@ -38,8 +38,16 @@ trait Navigator {
     }
 
   def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
-    normalRoutes(departureId, mode).lift(page) match {
-      case None       => controllers.routes.IndexController.index(departureId)
-      case Some(call) => handleCall(userAnswers, call)
+    mode match {
+      case NormalMode =>
+        normalRoutes(departureId, mode).lift(page) match {
+          case None       => controllers.routes.IndexController.index(departureId)
+          case Some(call) => handleCall(userAnswers, call)
+        }
+      case CheckMode =>
+        checkRoutes(departureId, mode).lift(page) match {
+          case None       => controllers.routes.IndexController.index(departureId)
+          case Some(call) => handleCall(userAnswers, call)
+        }
     }
 }
