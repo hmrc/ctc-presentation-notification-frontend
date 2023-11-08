@@ -50,7 +50,10 @@ class AddAnotherBorderTransportController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       viewModel.count match {
-        case 0 => Redirect(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+        case 0 =>
+          Redirect(
+            controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode)
+          ) //TODO: Change to /add-identification when built
         case _ => Ok(view(form(viewModel), departureId, viewModel))
       }
   }
