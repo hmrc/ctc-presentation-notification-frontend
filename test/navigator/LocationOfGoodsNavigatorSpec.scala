@@ -22,7 +22,7 @@ import config.Constants._
 import generators.Generators
 import models._
 import models.messages.AuthorisationType.C521
-import models.messages.{Authorisation, MessageData}
+import models.messages.{Authorisation, AuthorisationType, MessageData}
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -289,6 +289,38 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         navigator
           .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
           .mustBe(LimitDatePage.route(userAnswers, departureId, mode).value)
+      }
+
+      "must go from PhoneNumberPage to IdentificationPage when place of loading is present and simplified and limit date exists and container indicator exists and security not between 1-3" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersWithLimitDate = userAnswers.copy(
+          departureData = messageData.copy(
+            Consignment = consignment.copy(containerIndicator = Some("indicator"), ActiveBorderTransportMeans = None),
+            TransitOperation = transitOperation.copy(limitDate = Some("date"), security = NoSecurityDetails),
+            Authorisation = Some(Seq(Authorisation(C521, "1234")))
+          )
+        )
+
+        navigator
+          .nextPage(PhoneNumberPage, userAnswersWithLimitDate, departureId, mode)
+          .mustBe(TransportIdentificationPage(Index(0)).route(userAnswersWithLimitDate, departureId, mode).value)
+
+      }
+
+      "must go from PhoneNumberPage to IdentificationPage when place of loading is present and `not simplified` container indicator exists and security not between 1-3" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersWithLimitDate = userAnswers.copy(
+          departureData = messageData.copy(
+            Consignment = consignment.copy(containerIndicator = Some("indicator"), ActiveBorderTransportMeans = None),
+            TransitOperation = transitOperation.copy(limitDate = Some("date"), security = NoSecurityDetails),
+            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          )
+        )
+
+        navigator
+          .nextPage(PhoneNumberPage, userAnswersWithLimitDate, departureId, mode)
+          .mustBe(TransportIdentificationPage(Index(0)).route(userAnswersWithLimitDate, departureId, mode).value)
+
       }
     }
   }

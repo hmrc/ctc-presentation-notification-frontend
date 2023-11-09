@@ -18,14 +18,16 @@ package navigator
 
 import base.SpecBase
 import base.TestMessageData.{authorisation, consignment, customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation}
+import config.Constants.NoSecurityDetails
 import generators.Generators
-import models.NormalMode
+import models.{Index, NormalMode}
 import models.messages.MessageData
 import navigation.ContainerNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
 import org.scalacheck.Arbitrary
 import pages.transport.ContainerIndicatorPage
+import pages.transport.border.active.{IdentificationPage => TransportIdentificationPage}
 
 class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -53,6 +55,26 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               .nextPage(ContainerIndicatorPage, userAnswers, departureId, NormalMode)
               .mustBe(BorderModeOfTransportPage.route(userAnswers, departureId, NormalMode).value)
         }
+      }
+
+      "to IdentificationPage when security is not between 1-3 and ActiveBorderTransportMeans is empty" in {
+
+        val security = NoSecurityDetails
+        val messageData: MessageData =
+          MessageData(
+            customsOfficeOfDeparture,
+            customsOfficeOfDestination,
+            transitOperation.copy(security = security),
+            Some(authorisation),
+            None,
+            None,
+            consignment.copy(ActiveBorderTransportMeans = None)
+          )
+        val userAnswers = emptyUserAnswers.copy(departureData = messageData)
+        navigator
+          .nextPage(ContainerIndicatorPage, userAnswers, departureId, NormalMode)
+          .mustBe(TransportIdentificationPage(Index(0)).route(userAnswers, departureId, NormalMode).value)
+
       }
 
     }
