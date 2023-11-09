@@ -57,7 +57,9 @@ object AddAnotherBorderTransportViewModel {
             }
 
             val changeRoute = "#" // TODO Add change route when CYA page is done
-            val removeRoute = Some("#") // TODO Update when remove route added
+            val removeRoute = Some(
+              controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, index).url
+            )
 
             name.map(ListItem(_, changeRoute, removeRoute))
         }
