@@ -32,14 +32,7 @@ class LoadingNavigator {
     case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoNormalRoute(ua, departureId)
     case CountryPage                  => ua => LocationPage.route(ua, departureId, NormalMode)
     case LocationPage                 => ua => locationPageNavigation(departureId, mode, ua)
-    case LimitDatePage                => ua => limitDatePageNavigator(departureId, mode, ua)
   }
-
-  private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
-    ua.departureData.Consignment.containerIndicator match {
-      case Some(_) => ???
-      case None    => ContainerIndicatorPage.route(ua, departureId, mode)
-    }
 
   private def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers) =
     if (ua.departureData.isSimplified) {

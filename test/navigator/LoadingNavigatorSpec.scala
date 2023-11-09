@@ -127,18 +127,6 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
           .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
       }
-
-      "must go from LimitDatePage to ContainerIndicatorPage when container indicator is empty" in {
-        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-        val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = None))
-        )
-
-        navigator
-          .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
-          .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
-      }
-
     }
     // todo update when CYA page built
     "in Check mode" - {

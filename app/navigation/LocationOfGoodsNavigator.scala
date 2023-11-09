@@ -42,6 +42,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case NamePage                                                                                 => ua => PhoneNumberPage.route(ua, departureId, mode)
     case CustomsOfficeIdentifierPage                                                              => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
     case PhoneNumberPage                                                                          => ua => phoneNumberPageNavigation(ua, departureId, mode)
+    case LimitDatePage                                                                            => ua => limitDatePageNavigator(departureId, mode, ua)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
@@ -55,6 +56,12 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
       case ltp if ltp.code == UnlocodeIdentifier            => controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode)
       case ltp if ltp.code == AddressIdentifier             => controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode)
       case _                                                => controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode)
+    }
+
+  private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
+    ua.departureData.Consignment.containerIndicator match {
+      case Some(_) => ???
+      case None    => ContainerIndicatorPage.route(ua, departureId, mode)
     }
 
   def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =

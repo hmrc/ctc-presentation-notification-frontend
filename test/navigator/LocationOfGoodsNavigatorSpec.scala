@@ -16,7 +16,7 @@
 
 package navigator
 
-import base.TestMessageData.consignment
+import base.TestMessageData.{consignment, messageData}
 import base.{SpecBase, TestMessageData}
 import config.Constants._
 import generators.Generators
@@ -26,6 +26,7 @@ import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.Page
+import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
@@ -275,6 +276,17 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         navigator
           .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
           .mustBe(LimitDatePage.route(userAnswers, departureId, mode).value)
+      }
+
+      "must go from LimitDatePage to ContainerIndicatorPage when container indicator is empty" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersUpdated = userAnswers.copy(
+          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = None))
+        )
+
+        navigator
+          .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
+          .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
       }
     }
   }
