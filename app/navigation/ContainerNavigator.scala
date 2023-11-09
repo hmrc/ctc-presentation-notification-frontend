@@ -18,6 +18,7 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
+import navigation.BorderNavigator.borderModeOfTransportPageNavigation
 import pages._
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.BorderModeOfTransportPage
@@ -34,7 +35,7 @@ class ContainerNavigator @Inject() () extends Navigator {
 
   private def containerIndicatorNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     if (checkTransitOperationSecurity(userAnswers)) BorderModeOfTransportPage.route(userAnswers, departureId, mode)
-    else ??? //TODO follow false path of transitOperationSecurity (<CC015C-TRANSIT OPERATION.Security> is in SET {1,2,3})
+    else borderModeOfTransportPageNavigation(userAnswers, departureId, mode)
 
   private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
     ua.departureData.TransitOperation.isSecurityTypeInSet

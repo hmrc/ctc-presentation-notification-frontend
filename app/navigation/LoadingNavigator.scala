@@ -18,6 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
+import navigation.LoadingNavigator._
+import navigation.BorderNavigator._
 import pages.Page
 import pages.loading._
 import pages.transport.border.BorderModeOfTransportPage
@@ -39,27 +41,9 @@ class LoadingNavigator {
   private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
     ua.departureData.Consignment.containerIndicator match {
       case Some(_) =>
-        borderPageNavigation(departureId, mode, ua)
+        containerIndicatorPageNavigation(departureId, mode, ua)
       case None => ContainerIndicatorPage.route(ua, departureId, mode)
     }
-
-  private def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.isSimplified) {
-      ua.departureData.TransitOperation.limitDate match {
-        case Some(_) =>
-          if (ua.departureData.Consignment.containerIndicator.isEmpty) {
-            ContainerIndicatorPage.route(ua, departureId, mode)
-          } else borderPageNavigation(departureId, mode, ua)
-        case None => LimitDatePage.route(ua, departureId, mode)
-      }
-    } else if (ua.departureData.Consignment.containerIndicator.isEmpty | ua.departureData.TransitOperation.limitDate.isEmpty) {
-      ContainerIndicatorPage.route(ua, departureId, mode)
-    } else borderPageNavigation(departureId, mode, ua)
-
-  private def borderPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.TransitOperation.isSecurityTypeInSet)
-      BorderModeOfTransportPage.route(ua, departureId, mode)
-    else ??? //TODO follow false path of transitOperationSecurity (<CC015C-TRANSIT OPERATION.Security> is in SET {1,2,3})
 
   protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
     case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
@@ -122,5 +106,27 @@ class LoadingNavigator {
           case Some(call) => handleCall(userAnswers, call)
         }
     }
+
+}
+
+object LoadingNavigator {
+
+  private[navigation] def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+    if (ua.departureData.isSimplified) {
+      ua.departureData.TransitOperation.limitDate match {
+        case Some(_) =>
+          if (ua.departureData.Consignment.containerIndicator.isEmpty) {
+            ContainerIndicatorPage.route(ua, departureId, mode)
+          } else containerIndicatorPageNavigation(departureId, mode, ua)
+        case None => LimitDatePage.route(ua, departureId, mode)
+      }
+    } else if (ua.departureData.Consignment.containerIndicator.isEmpty | ua.departureData.TransitOperation.limitDate.isEmpty) {
+      ContainerIndicatorPage.route(ua, departureId, mode)
+    } else containerIndicatorPageNavigation(departureId, mode, ua)
+
+  private def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+    if (ua.departureData.TransitOperation.isSecurityTypeInSet)
+      BorderModeOfTransportPage.route(ua, departureId, mode)
+    else borderModeOfTransportPageNavigation(ua, departureId, mode)
 
 }

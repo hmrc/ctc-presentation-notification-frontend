@@ -18,7 +18,11 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
+import models.messages.ActiveBorderTransportMeans
+import models.reference.BorderMode
 import pages._
+import pages.sections.transport.border.BorderActiveListSection
+import pages.transport.border.BorderModeOfTransportPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -32,4 +36,19 @@ class BorderNavigator @Inject() () extends Navigator {
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
 
+}
+
+object BorderNavigator {
+
+  private[navigation] def borderModeOfTransportPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
+
+    val numberOfActiveBorderMeans: Int = userAnswers.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
+
+    if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty)
+      transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
+    else ??? //TODO follow false path
+  }
+
+  private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
+    ua.departureData.TransitOperation.isSecurityTypeInSet
 }

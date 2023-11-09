@@ -19,6 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import config.Constants._
 import models._
+import navigation.LoadingNavigator._
 import pages._
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -85,17 +86,10 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
       case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
     }
 
-  private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode) =
+  private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.departureData.Consignment.PlaceOfLoading match {
-      case Some(_) =>
-        if (
-          userAnswers.departureData.TransitOperation.limitDate.isDefined &&
-          userAnswers.departureData.Consignment.containerIndicator.isEmpty
-        ) {
-          ContainerIndicatorPage.route(userAnswers, departureId, mode)
-        } else {
-          LimitDatePage.route(userAnswers, departureId, mode)
-        }
+      case Some(_) => locationPageNavigation(departureId, mode, userAnswers)
+
       case None => AddUnLocodePage.route(userAnswers, departureId, mode)
     }
 }
