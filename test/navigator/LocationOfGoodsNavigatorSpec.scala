@@ -262,7 +262,11 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .copy(departureData = TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+              .copy(departureData =
+                TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None),
+                                                 Authorisation = Some(Seq(Authorisation(C521, "1234")))
+                )
+              )
             navigator
               .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, mode)
               .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
@@ -274,7 +278,11 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
-              .copy(departureData = TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+              .copy(departureData =
+                TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None),
+                                                 Authorisation = Some(Seq(Authorisation(C521, "1234")))
+                )
+              )
             navigator
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, mode)
               .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
@@ -285,7 +293,11 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .copy(departureData = TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+              .copy(departureData =
+                TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None),
+                                                 Authorisation = Some(Seq(Authorisation(C521, "1234")))
+                )
+              )
             navigator
               .nextPage(PhoneNumberPage, updatedAnswers, departureId, mode)
               .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
