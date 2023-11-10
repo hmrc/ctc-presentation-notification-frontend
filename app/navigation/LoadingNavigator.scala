@@ -27,7 +27,7 @@ import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
 @Singleton
-class LoadingNavigator {
+class LoadingNavigator extends Navigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddUnLocodeYesNoPage         => ua => addUnlocodeNormalRoute(ua, departureId)
@@ -77,26 +77,6 @@ class LoadingNavigator {
           case _       => CountryPage.route(ua, departureId, CheckMode)
         }
       case _ => ??? // todo will go to CYA page
-    }
-
-  private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
-    call(userAnswers) match {
-      case Some(onwardRoute) => onwardRoute
-      case _                 => ??? //TODO add error page
-    }
-
-  def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
-    mode match {
-      case NormalMode =>
-        normalRoutes(departureId, mode).lift(page) match {
-          case None       => controllers.routes.IndexController.index(departureId)
-          case Some(call) => handleCall(userAnswers, call)
-        }
-      case CheckMode =>
-        checkRoutes(departureId, mode).lift(page) match {
-          case None       => controllers.routes.IndexController.index(departureId)
-          case Some(call) => handleCall(userAnswers, call)
-        }
     }
 
 }

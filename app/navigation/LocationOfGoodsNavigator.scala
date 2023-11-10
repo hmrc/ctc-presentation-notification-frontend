@@ -29,7 +29,7 @@ import play.api.mvc.Call
 import javax.inject.Inject
 
 @Singleton
-class LocationOfGoodsNavigator @Inject() () extends Navigator {
+class LocationOfGoodsNavigator @Inject() () extends LoadingNavigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case InferredLocationTypePage | LocationTypePage                                              => ua => IdentificationPage.route(ua, departureId, mode)

@@ -259,38 +259,37 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from CustomsOfficeIdentifierPage to LimitDatePage when place of loading is present and limit date does not exist and is simplified" in {
-
-        val userAnswersNoLimitDate = emptyUserAnswers.copy(
-          departureData = messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
-        )
-
-        navigator
-          .nextPage(CustomsOfficeIdentifierPage, userAnswersNoLimitDate, departureId, mode)
-          .mustBe(LimitDatePage.route(userAnswersNoLimitDate, departureId, mode).value)
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .copy(departureData = TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+            navigator
+              .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, mode)
+              .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
+        }
       }
 
       "must go from AddContactYesNoPage to LimitDatePage when 'addContact' is false and place of loading is present and limit date does not exist and is simplified" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(AddContactYesNoPage, false)
-          .copy(
-            departureData = messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
-          )
-        navigator
-          .nextPage(AddContactYesNoPage, userAnswers, departureId, mode)
-          .mustBe(LimitDatePage.route(userAnswers, departureId, mode).value)
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, false)
+              .copy(departureData = TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, mode)
+              .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
+        }
       }
 
-      "must go from PhoneNumberPage to LimitDatePage when 'placeOfLoading' exists and place of loading is present and limit date does not exist and is simplified" in {
-
-        val identifier: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnlocodeIdentifier, "identifier")
-        val userAnswers = emptyUserAnswers
-          .setValue(IdentificationPage, identifier)
-          .copy(
-            departureData = messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
-          )
-        navigator
-          .nextPage(PhoneNumberPage, userAnswers, departureId, mode)
-          .mustBe(LimitDatePage.route(userAnswers, departureId, mode).value)
+      "must go from PhoneNumberPage to LimitDatePage when place of loading is present and limit date does not exist and is simplified" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .copy(departureData = TestMessageData.messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+            navigator
+              .nextPage(PhoneNumberPage, updatedAnswers, departureId, mode)
+              .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
+        }
       }
 
       "must go from PhoneNumberPage to IdentificationPage when place of loading is present and simplified and limit date exists and container indicator exists and security not between 1-3" in {
