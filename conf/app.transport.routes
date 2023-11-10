@@ -11,3 +11,7 @@ POST       /containers/mandatory/:departureId                             contro
 GET        /containers/change-mandatory/:departureId                      controllers.transport.ContainerIndicatorController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /containers/change-mandatory/:departureId                      controllers.transport.ContainerIndicatorController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
+GET        /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
