@@ -17,7 +17,7 @@
 package navigator
 
 import models.{Mode, UserAnswers}
-import navigation.{BorderNavigator, ContainerNavigator, LoadingNavigator, LocationOfGoodsNavigator, Navigator}
+import navigation._
 import pages._
 import play.api.mvc.Call
 

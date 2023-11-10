@@ -17,14 +17,17 @@
 package controllers.actions
 
 import models.requests.{DataRequest, OptionalDataRequest}
-import play.api.mvc.{ActionBuilder, AnyContent}
+import pages.sections.Section
+import play.api.libs.json.JsObject
+import play.api.mvc.{ActionBuilder, AnyContent, Call}
 
 import javax.inject.Inject
 
 class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
-  dataRequiredAction: DataRequiredAction
+  dataRequiredAction: DataRequiredAction,
+  indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(departureId: String): ActionBuilder[OptionalDataRequest, AnyContent] =
@@ -32,4 +35,7 @@ class Actions @Inject() (
 
   def requireData(departureId: String): ActionBuilder[DataRequest, AnyContent] =
     getData(departureId) andThen dataRequiredAction
+
+  def requireIndex(departureId: String, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
+    requireData(departureId) andThen indexRequiredAction(section, addAnother)
 }
