@@ -30,6 +30,7 @@ import pages.Page
 import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import pages.transport.border.active.{IdentificationPage => TransportIdentificationPage}
 
@@ -333,6 +334,17 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
           .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
+      }
+
+      "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersUpdated = userAnswers.copy(
+          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
+        )
+
+        navigator
+          .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
+          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
     }
   }

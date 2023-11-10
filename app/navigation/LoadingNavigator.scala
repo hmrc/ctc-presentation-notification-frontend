@@ -116,7 +116,7 @@ object LoadingNavigator {
       ContainerIndicatorPage.route(ua, departureId, mode)
     } else containerIndicatorPageNavigation(departureId, mode, ua)
 
-  private def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+  private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
     if (ua.departureData.TransitOperation.isSecurityTypeInSet)
       BorderModeOfTransportPage.route(ua, departureId, mode)
     else borderModeOfTransportPageNavigation(ua, departureId, mode)
