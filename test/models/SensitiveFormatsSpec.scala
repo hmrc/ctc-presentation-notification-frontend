@@ -17,6 +17,7 @@
 package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.EntrySummaryDeclarationSecurityDetails
 import models.messages.{Consignment, MessageData, TransitOperation}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.running
@@ -115,11 +116,11 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "MessageData" - {
     val encryptedValue =
-      "KOMv4qgrjmEY34BPOfF+j+xEpVXgtKigJg0I+iAccmAE8C65To5emqfOAiNcXmLb/ieMPbWjbA8VC9btvJYuE60+MbLKS4KxWovrPc68vjJr/lUrgW+qd+dFrTr0P4EnqxQwYn0BYM+4Rpn66tsA47iFcJCgtJExcd1z328QAGNP+oHfTeSnZ7Lvy6dWpeloVgAwwTG801t49JBhkOKc23Kxd5ZcWat7vfg6aEPAfVqeNx1ngiViSNnQ4aXODFz1Lqpuqw5hU46uZ3F+9yih3sSW1a/V1bAp9Q=="
+      "YE7KOiJmapAVaQqXojhek15efea8BE7MaTQM1UU61nI36csfYiaOZA2UyFgl0PtFKhgSATcRE09qvXmMZJMe0Or0z+AHx8vwNrqC/eKDVeMDFxkasUWV/k6K6vv+DWhyfgg4+/FNT/Xz5gWzB5ylijmSKG1P+bxqU9WtNQYhNr9PpyAEnPoPrlZ3ZBs8WkUkzM+n/brU7wiim2zR8b6A0KSYH0LCvv8GUklQurVEGAVeO7BmIj0r8IqGYk1mBrGnB/mYg5Ta7mHNXRV6LqLKnzZEDCK/kq0QTYU="
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
-      TransitOperation = TransitOperation(None, ""),
+      TransitOperation = TransitOperation(None, EntrySummaryDeclarationSecurityDetails),
       Authorisation = None,
       Consignment = Consignment(
         containerIndicator = None,
