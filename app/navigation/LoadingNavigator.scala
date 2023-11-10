@@ -35,15 +35,7 @@ class LoadingNavigator {
     case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoNormalRoute(ua, departureId)
     case CountryPage                  => ua => LocationPage.route(ua, departureId, NormalMode)
     case LocationPage                 => ua => locationPageNavigation(departureId, mode, ua)
-    case LimitDatePage                => ua => limitDatePageNavigator(departureId, mode, ua)
   }
-
-  private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
-    ua.departureData.Consignment.containerIndicator match {
-      case Some(_) =>
-        containerIndicatorPageNavigation(departureId, mode, ua)
-      case None => ContainerIndicatorPage.route(ua, departureId, mode)
-    }
 
   protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
     case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
