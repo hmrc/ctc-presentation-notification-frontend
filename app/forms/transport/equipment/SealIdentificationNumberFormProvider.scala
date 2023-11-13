@@ -16,7 +16,7 @@
 
 package forms.transport.equipment
 
-import forms.Constants.maxAuthorisationNumberLength
+import forms.Constants.maxSealIdentificationLength
 import forms.mappings.Mappings
 import models.StringFieldRegex.alphaNumericWithSpacesRegex
 import play.api.data.Form
@@ -31,7 +31,7 @@ class SealIdentificationNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericWithSpacesRegex, s"$prefix.error.invalid"),
-            maxLength(maxAuthorisationNumberLength, s"$prefix.error.length")
+            maxLength(maxSealIdentificationLength, s"$prefix.error.length")
           )
         )
     )
