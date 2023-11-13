@@ -363,3 +363,8 @@ transport.addTransportEquipment.paragraph = This means anything used to transpor
 transport.addTransportEquipment.checkYourAnswersLabel = Do you want to add any transport equipment?
 transport.addTransportEquipment.change.hidden = if you want to add any transport equipment
 transport.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
+
+transport.equipment.addSealYesNo.title = Do you want to add a seal?
+transport.equipment.addSealYesNo.heading = Do you want to add a seal?
+transport.equipment.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
+transport.equipment.addSealYesNo.error.required = Select yes if you want to add a seal

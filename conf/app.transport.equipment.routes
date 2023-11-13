@@ -1,0 +1,4 @@
+GET        /transport-equipment/:equipmentIndex/seals/add/:departureId                        controllers.transport.equipment.AddSealYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode, equipmentIndex: Index)
+POST       /transport-equipment/:equipmentIndex/seals/add/:departureId                        controllers.transport.equipment.AddSealYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode, equipmentIndex: Index)
+GET        /transport-equipment/:equipmentIndex/seals/change-add/:departureId                 controllers.transport.equipment.AddSealYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode, equipmentIndex: Index)
+POST       /transport-equipment/:equipmentIndex/seals/change-add/:departureId                 controllers.transport.equipment.AddSealYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode, equipmentIndex: Index)
