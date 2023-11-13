@@ -18,9 +18,10 @@ package controllers.transport.equipment
 
 import controllers.actions._
 import forms.transport.equipment.SealIdentificationNumberFormProvider
-import models.{Index, Mode}
-import models.requests.MandatoryDataRequest
+import models.{Index, Mode, RichOptionalJsArray}
+import models.requests.{DataRequest, MandatoryDataRequest}
 import navigation.Navigator
+import pages.sections.transport.equipment.SealsSection
 import pages.transport.equipment.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -43,13 +44,24 @@ class SealIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.equipment.sealIdentificationNumber")
+  private def form(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
+    formProvider("transport.equipment.sealIdentificationNumber", otherSealIdentificationNumbers(equipmentIndex, sealIndex))
+
+  private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+    val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
+    (0 until numberOfSeals)
+      .filterNot(_ == sealIndex.position)
+      .map(
+        sealInd => SealIdentificationNumberPage(equipmentIndex, Index(sealInd))
+      )
+      .flatMap(request.userAnswers.get(_))
+  }
 
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => form(equipmentIndex, sealIndex)
+        case Some(value) => form(equipmentIndex, sealIndex).fill(value)
       }
       Ok(view(preparedForm, departureId, mode, equipmentIndex, sealIndex))
   }
@@ -58,7 +70,7 @@ class SealIdentificationNumberController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        form
+        form(equipmentIndex, sealIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex, sealIndex))),

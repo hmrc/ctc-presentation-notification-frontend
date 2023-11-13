@@ -28,9 +28,10 @@ class SealIdentificationNumberProviderSpec extends StringFieldBehaviours {
   private val invalidCharactersKey = s"$prefix.error.invalid"
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.length"
+  val duplicateKey                 = s"$prefix.error.duplicate"
   private val maxLength            = 35
 
-  val form = new SealIdentificationNumberFormProvider()(prefix)
+  val form = new SealIdentificationNumberFormProvider()(prefix, Seq.empty)
 
   ".value" - {
 
@@ -67,6 +68,14 @@ class SealIdentificationNumberProviderSpec extends StringFieldBehaviours {
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors must contain(expectedError)
       }
+    }
+
+    "must not bind if value exists in the list of other ids" in {
+      val otherIds  = Seq("foo", "bar")
+      val form      = new SealIdentificationNumberFormProvider()(prefix, otherIds)
+      val boundForm = form.bind(Map("value" -> "foo"))
+      val field     = boundForm("value")
+      field.errors mustEqual Seq(FormError(fieldName, duplicateKey))
     }
   }
 }

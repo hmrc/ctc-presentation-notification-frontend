@@ -29,7 +29,7 @@ class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "transport.equipment.sealIdentification"
 
-  override def form: Form[String] = new SealIdentificationNumberFormProvider()(prefix)
+  override def form: Form[String] = new SealIdentificationNumberFormProvider()(prefix, Seq.empty)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[SealIdentificationNumberView].apply(form, departureId, NormalMode, equipmentIndex, sealIndex)(fakeRequest, messages)

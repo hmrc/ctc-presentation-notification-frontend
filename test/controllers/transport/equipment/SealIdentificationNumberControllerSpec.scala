@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new SealIdentificationNumberFormProvider()
-  private val form         = formProvider("transport.equipment.sealIdentificationNumber")
+  private val form         = formProvider("transport.equipment.sealIdentificationNumber", Seq.empty)
   private val mode         = NormalMode
 
   private lazy val sealIdentificationNumberRoute =
