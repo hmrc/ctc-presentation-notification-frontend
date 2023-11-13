@@ -53,8 +53,9 @@ trait SpecBase
 
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123")
 
-  val index: Index       = Index(0)
-  val activeIndex: Index = Index(0)
+  val index: Index          = Index(0)
+  val activeIndex: Index    = Index(0)
+  val equipmentIndex: Index = Index(0)
 
   def injector: Injector = app.injector
 
