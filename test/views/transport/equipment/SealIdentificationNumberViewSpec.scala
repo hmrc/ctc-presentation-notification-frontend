@@ -27,7 +27,7 @@ import views.html.transport.equipment.SealIdentificationNumberView
 
 class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "transport.equipment.sealIdentification"
+  override val prefix: String = "transport.equipment.sealIdentificationNumber"
 
   override def form: Form[String] = new SealIdentificationNumberFormProvider()(prefix, Seq.empty)
 
