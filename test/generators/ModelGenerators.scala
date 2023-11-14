@@ -16,9 +16,11 @@
 
 package generators
 
+import config.Constants.{EntryAndExitSummaryDeclarationSecurityDetails, EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails}
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
+import models.messages.ActiveBorderTransportMeans
 import models.reference._
 import models.reference.transport.border.active
 import org.scalacheck.Arbitrary.arbitrary
@@ -119,6 +121,11 @@ trait ModelGenerators {
       } yield Nationality(code, desc)
     }
 
+  lazy val arbitrarySecurityDetailsNonZeroType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("1", "2", "3")
+    }
+
   lazy val arbitraryDynamicAddressWithRequiredPostalCode: Arbitrary[DynamicAddress] =
     Arbitrary {
       for {
@@ -157,7 +164,15 @@ trait ModelGenerators {
   implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
     Arbitrary {
       for {
-        code        <- Gen.oneOf("1", "2", "3")
+        code        <- Gen.oneOf("1", "2", "3", "7", "8", "9")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
+    }
+
+  implicit lazy val arbitraryOptionalNonMailBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4", "7", "8", "9")
         description <- nonEmptyString
       } yield Some(BorderMode(code, description))
     }
@@ -168,6 +183,28 @@ trait ModelGenerators {
         code        <- Gen.oneOf("1", "3", "4")
         description <- nonEmptyString
       } yield Some(BorderMode(code, description))
+    }
+
+  lazy val arbitraryActiveBorderTransportMeans: Arbitrary[Option[List[ActiveBorderTransportMeans]]] =
+    Arbitrary {
+      for {
+        sequenceNumber                       <- nonEmptyString
+        customsOfficeAtBorderReferenceNumber <- Gen.option(nonEmptyString)
+        typeOfIdentification                 <- Gen.option(nonEmptyString)
+        identificationNumber                 <- Gen.option(nonEmptyString)
+        nationality                          <- Gen.option(nonEmptyString)
+        conveyanceReferenceNumber            <- Gen.option(nonEmptyString)
+      } yield Some(
+        List(
+          ActiveBorderTransportMeans(sequenceNumber,
+                                     customsOfficeAtBorderReferenceNumber,
+                                     typeOfIdentification,
+                                     identificationNumber,
+                                     nationality,
+                                     conveyanceReferenceNumber
+          )
+        )
+      )
     }
 
   implicit lazy val arbitraryIdentificationActive: Arbitrary[active.Identification] =
@@ -184,4 +221,11 @@ trait ModelGenerators {
       url    <- nonEmptyString
     } yield Call(method, url)
   }
+
+  lazy val arbitrarySecurityCode: Arbitrary[String] =
+    Arbitrary {
+      for {
+        sec <- Gen.oneOf(EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails, EntryAndExitSummaryDeclarationSecurityDetails)
+      } yield sec
+    }
 }

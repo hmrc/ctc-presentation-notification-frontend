@@ -18,28 +18,23 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
+import navigation.LoadingNavigator._
+import navigation.BorderNavigator._
 import pages.Page
 import pages.loading._
-import pages.transport.LimitDatePage
+import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
 @Singleton
-class LoadingNavigator {
+class LoadingNavigator extends Navigator {
 
   protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddUnLocodeYesNoPage         => ua => addUnlocodeNormalRoute(ua, departureId)
     case UnLocodePage                 => ua => AddExtraInformationYesNoPage.route(ua, departureId, NormalMode)
     case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoNormalRoute(ua, departureId)
     case CountryPage                  => ua => LocationPage.route(ua, departureId, NormalMode)
-    case LocationPage =>
-      ua =>
-        if (ua.departureData.isSimplified) {
-          ua.departureData.TransitOperation.limitDate match {
-            case Some(_) => ???
-            case None    => LimitDatePage.route(ua, departureId, mode)
-          }
-        } else
-          ???
+    case LocationPage                 => ua => locationPageNavigation(departureId, mode, ua)
   }
 
   protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
@@ -84,24 +79,26 @@ class LoadingNavigator {
       case _ => ??? // todo will go to CYA page
     }
 
-  private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
-    call(userAnswers) match {
-      case Some(onwardRoute) => onwardRoute
-      case _                 => ??? //TODO add error page
-    }
+}
 
-  def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
-    mode match {
-      case NormalMode =>
-        normalRoutes(departureId, mode).lift(page) match {
-          case None       => controllers.routes.IndexController.index(departureId)
-          case Some(call) => handleCall(userAnswers, call)
-        }
-      case CheckMode =>
-        checkRoutes(departureId, mode).lift(page) match {
-          case None       => controllers.routes.IndexController.index(departureId)
-          case Some(call) => handleCall(userAnswers, call)
-        }
-    }
+object LoadingNavigator {
+
+  private[navigation] def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+    if (ua.departureData.isSimplified) {
+      ua.departureData.TransitOperation.limitDate match {
+        case Some(_) =>
+          if (ua.departureData.Consignment.containerIndicator.isEmpty) {
+            ContainerIndicatorPage.route(ua, departureId, mode)
+          } else containerIndicatorPageNavigation(departureId, mode, ua)
+        case None => LimitDatePage.route(ua, departureId, mode)
+      }
+    } else if (ua.departureData.Consignment.containerIndicator.isEmpty | ua.departureData.TransitOperation.limitDate.isEmpty) {
+      ContainerIndicatorPage.route(ua, departureId, mode)
+    } else containerIndicatorPageNavigation(departureId, mode, ua)
+
+  private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+    if (ua.departureData.TransitOperation.isSecurityTypeInSet)
+      BorderModeOfTransportPage.route(ua, departureId, mode)
+    else borderModeOfTransportPageNavigation(ua, departureId, mode)
 
 }
