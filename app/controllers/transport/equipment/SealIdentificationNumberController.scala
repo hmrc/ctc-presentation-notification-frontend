@@ -44,19 +44,6 @@ class SealIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
-    formProvider("transport.equipment.sealIdentificationNumber", otherSealIdentificationNumbers(equipmentIndex, sealIndex))
-
-  private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
-    val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
-    (0 until numberOfSeals)
-      .filterNot(_ == sealIndex.position)
-      .map(
-        sealInd => SealIdentificationNumberPage(equipmentIndex, Index(sealInd))
-      )
-      .flatMap(request.userAnswers.get(_))
-  }
-
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)) match {
@@ -78,6 +65,19 @@ class SealIdentificationNumberController @Inject() (
           )
 
     }
+
+  private def form(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
+    formProvider("transport.equipment.sealIdentificationNumber", otherSealIdentificationNumbers(equipmentIndex, sealIndex))
+
+  private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+    val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
+    (0 until numberOfSeals)
+      .filterNot(_ == sealIndex.position)
+      .map(
+        sealInd => SealIdentificationNumberPage(equipmentIndex, Index(sealInd))
+      )
+      .flatMap(request.userAnswers.get(_))
+  }
 
   private def redirect(
     mode: Mode,
