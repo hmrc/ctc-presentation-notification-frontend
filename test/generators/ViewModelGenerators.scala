@@ -24,6 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem,
 import viewModels.ListItem
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.transport.equipment.AddAnotherSealViewModel
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -51,6 +52,13 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherBorderTransportViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherSealViewModel(listItems, onSubmitCall)
   }
 
   implicit lazy val arbitraryLabel: Arbitrary[Label] = Arbitrary {

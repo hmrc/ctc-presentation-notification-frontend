@@ -364,17 +364,24 @@ transport.addTransportEquipment.checkYourAnswersLabel = Do you want to add any t
 transport.addTransportEquipment.change.hidden = if you want to add any transport equipment
 transport.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
 
- transport.equipment.sealIdentification.title = What is the seal identification number?
- transport.equipment.sealIdentification.heading = What is the seal identification number?
- transport.equipment.sealIdentification.checkYourAnswersLabel = Seal Identification Number
- transport.equipment.sealIdentification.error.required = Enter the seal identification number
- transport.equipment.sealIdentification.error.length = The identification number must be 20 characters or less
- transport.equipment.sealIdentification.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
- transport.equipment.sealIdentification.hint = This can be up to 20 characters long and include both letters and numbers.
- transport.equipment.sealIdentification.error.duplicate = This identification number has already been submitted. Enter a unique seal identification number
-
+transport.equipment.sealIdentification.title = What is the seal identification number?
+transport.equipment.sealIdentification.heading = What is the seal identification number?
+transport.equipment.sealIdentification.checkYourAnswersLabel = Seal Identification Number
+transport.equipment.sealIdentification.error.required = Enter the seal identification number
+transport.equipment.sealIdentification.error.length = The identification number must be 20 characters or less
+transport.equipment.sealIdentification.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+transport.equipment.sealIdentification.hint = This can be up to 20 characters long and include both letters and numbers.
+transport.equipment.sealIdentification.error.duplicate = This identification number has already been submitted. Enter a unique seal identification number
 
 transport.equipment.addSealYesNo.title = Do you want to add a seal?
 transport.equipment.addSealYesNo.heading = Do you want to add a seal?
 transport.equipment.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transport.equipment.addSealYesNo.error.required = Select yes if you want to add a seal
+
+transport.equipment.addAnotherSeal.singular.title = You have added 1 seal
+transport.equipment.addAnotherSeal.plural.title = You have added {0} seals
+transport.equipment.addAnotherSeal.singular.heading = You have added 1 seal
+transport.equipment.addAnotherSeal.plural.heading = You have added {0} seals
+transport.equipment.addAnotherSeal.error.required = Select yes if you want to add another seal
+transport.equipment.addAnotherSeal.label = Do you want to add another seal?
+transport.equipment.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.

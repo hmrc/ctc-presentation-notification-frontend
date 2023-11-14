@@ -16,8 +16,8 @@
 
 @import config.FrontendAppConfig
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, Heading, ErrorSummary, InputYesNo, ListWithActions}
-@import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
+@import viewModels.transport.equipment.AddAnotherSealViewModel
+@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, viewModel: AddAnotherBorderTransportViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], departureId: String, viewModel: AddAnotherSealViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -40,7 +40,7 @@
 
     @heading(
         heading = viewModel.heading,
-        caption = Some(messages("transport.border.subheading"))
+        caption = Some(messages("transport.caption"))
     )
 
     @listWithActions(viewModel.listItems)
@@ -50,7 +50,6 @@
         @if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
-                hint = Some(viewModel.hint),
                 yesNoType = YesNoWithLegend(
                     legend = viewModel.legend
                 )

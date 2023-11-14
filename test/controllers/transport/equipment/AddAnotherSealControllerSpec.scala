@@ -14,48 +14,46 @@
  * limitations under the License.
  */
 
-package controllers.transport.border.active
+package controllers.transport.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import controllers.transport.border.active.{routes => borderActiveRoutes}
-import controllers.transport.border.{routes => borderRoutes}
+import controllers.transport.equipment.{routes => equipmentRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.ListItem
-import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
-import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
-import views.html.transport.border.active.AddAnotherBorderTransportView
+import viewModels.transport.equipment.AddAnotherSealViewModel
+import viewModels.transport.equipment.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
+import views.html.transport.equipment.AddAnotherSealView
 
-class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
   private val formProvider = new AddAnotherFormProvider()
 
-  private def form(viewModel: AddAnotherBorderTransportViewModel) =
+  private def form(viewModel: AddAnotherSealViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
   private val mode = NormalMode
 
-  private lazy val addAnotherBorderTransportRoute =
-    borderActiveRoutes.AddAnotherBorderTransportController.onPageLoad(departureId, mode).url
+  private lazy val addAnotherSealRoute = equipmentRoutes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex).url
 
-  private val mockViewModelProvider = mock[AddAnotherBorderTransportViewModelProvider]
+  private val mockViewModelProvider = mock[AddAnotherSealViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AddAnotherBorderTransportViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[AddAnotherSealViewModelProvider]).toInstance(mockViewModelProvider))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,25 +61,25 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
   }
 
   private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxActiveBorderTransports - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxActiveBorderTransports)(listItem)
+  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxSeals - 1).sample.value)(listItem)
+  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxSeals)(listItem)
 
-  private val viewModel = arbitrary[AddAnotherBorderTransportViewModel].sample.value
+  private val viewModel = arbitrary[AddAnotherSealViewModel].sample.value
 
-  private val viewModelWithNoItems = viewModel.copy(listItems = Nil)
+  private val emptyViewModel       = viewModel.copy(listItems = Nil)
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
-  "AddAnotherBorderTransport Controller" - {
+  "AddAnotherSeal Controller" - {
 
-    "redirect to border mode of transport page" - {
-      "when 0 active border transports" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(viewModelWithNoItems)
+    "redirect to add seal yes/no page" - {
+      "when 0 seals" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+          .thenReturn(emptyViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherBorderTransportRoute)
+        val request = FakeRequest(GET, addAnotherSealRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
@@ -89,23 +87,22 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          borderRoutes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
+          equipmentRoutes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
       }
     }
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherBorderTransportRoute)
+        val request = FakeRequest(GET, addAnotherSealRoute)
 
         val result = route(app, request).value
 
-        val view = injector.instanceOf[AddAnotherBorderTransportView]
+        val view = injector.instanceOf[AddAnotherSealView]
 
         status(result) mustEqual OK
 
@@ -114,17 +111,16 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
       }
 
       "when max limit reached" in {
-
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherBorderTransportRoute)
+        val request = FakeRequest(GET, addAnotherSealRoute)
 
         val result = route(app, request).value
 
-        val view = injector.instanceOf[AddAnotherBorderTransportView]
+        val view = injector.instanceOf[AddAnotherSealView]
 
         status(result) mustEqual OK
 
@@ -135,13 +131,13 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to identification type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        "must redirect to seal id number page at next index" in {
+          when(mockViewModelProvider.apply(any(), any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+          val request = FakeRequest(POST, addAnotherSealRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(app, request).value
@@ -149,64 +145,62 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            borderActiveRoutes.IdentificationController.onPageLoad(departureId, mode, notMaxedOutViewModel.nextIndex).url
+            equipmentRoutes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(listItems.length)).url
         }
       }
 
       "when no submitted" - {
-        "must redirect to CYA" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        "must redirect to next page" in {
+          when(mockViewModelProvider.apply(any(), any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+          val request = FakeRequest(POST, addAnotherSealRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
           val result = route(app, request).value
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual
-            Call("GET", "#").url // TODO redirect to border CYA
+          redirectLocation(result).value mustEqual Call("GET", "#").url // TODO redirect to CYA
         }
       }
     }
 
     "when max limit reached" - {
-      "must redirect to CYA" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+      "must redirect to next page" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+        val request = FakeRequest(POST, addAnotherSealRoute)
           .withFormUrlEncodedBody(("value", ""))
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to border CYA
+        redirectLocation(result).value mustEqual Call("GET", "#").url // TODO redirect to CYA
       }
     }
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+        val request = FakeRequest(POST, addAnotherSealRoute)
           .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
-        val view = injector.instanceOf[AddAnotherBorderTransportView]
+        val view = injector.instanceOf[AddAnotherSealView]
 
         status(result) mustEqual BAD_REQUEST
 
@@ -216,10 +210,9 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addAnotherBorderTransportRoute)
+      val request = FakeRequest(GET, addAnotherSealRoute)
 
       val result = route(app, request).value
 
@@ -229,10 +222,9 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+      val request = FakeRequest(POST, addAnotherSealRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
