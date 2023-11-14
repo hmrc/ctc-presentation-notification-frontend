@@ -64,7 +64,6 @@ class AddAnotherSealController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
           {
             case true =>
-              println("Falling into you")
               Redirect(
                 controllers.transport.equipment.routes.SealIdentificationNumberController
                   .onPageLoad(departureId, mode, equipmentIndex, viewModel.nextIndex)
