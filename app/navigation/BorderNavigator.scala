@@ -85,7 +85,7 @@ object BorderNavigator {
 
     val numberOfActiveBorderMeans: Int = userAnswers.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
 
-    if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty)
+    if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty && checkTransitOperationSecurity(userAnswers))
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
     else ??? //TODO follow false path
   }

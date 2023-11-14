@@ -57,26 +57,6 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
       }
 
-      "to IdentificationPage when security is not between 1-3 and ActiveBorderTransportMeans is empty" in {
-
-        val security = NoSecurityDetails
-        val messageData: MessageData =
-          MessageData(
-            customsOfficeOfDeparture,
-            customsOfficeOfDestination,
-            transitOperation.copy(security = security),
-            Some(authorisation),
-            None,
-            None,
-            consignment.copy(ActiveBorderTransportMeans = None)
-          )
-        val userAnswers = emptyUserAnswers.copy(departureData = messageData)
-        navigator
-          .nextPage(ContainerIndicatorPage, userAnswers, departureId, NormalMode)
-          .mustBe(TransportIdentificationPage(Index(0)).route(userAnswers, departureId, NormalMode).value)
-
-      }
-
     }
 
   }

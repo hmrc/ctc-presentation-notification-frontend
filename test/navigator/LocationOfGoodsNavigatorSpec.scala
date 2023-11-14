@@ -304,38 +304,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from PhoneNumberPage to IdentificationPage when place of loading is present and simplified and limit date exists and container indicator exists and security not between 1-3" in {
-        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-        val userAnswersWithLimitDate = userAnswers.copy(
-          departureData = messageData.copy(
-            Consignment = consignment.copy(containerIndicator = Some("indicator"), ActiveBorderTransportMeans = None),
-            TransitOperation = transitOperation.copy(limitDate = Some("date"), security = NoSecurityDetails),
-            Authorisation = Some(Seq(Authorisation(C521, "1234")))
-          )
-        )
-
-        navigator
-          .nextPage(PhoneNumberPage, userAnswersWithLimitDate, departureId, mode)
-          .mustBe(TransportIdentificationPage(Index(0)).route(userAnswersWithLimitDate, departureId, mode).value)
-
-      }
-
-      "must go from PhoneNumberPage to IdentificationPage when place of loading is present and `not simplified` container indicator exists and security not between 1-3" in {
-        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-        val userAnswersWithLimitDate = userAnswers.copy(
-          departureData = messageData.copy(
-            Consignment = consignment.copy(containerIndicator = Some("indicator"), ActiveBorderTransportMeans = None),
-            TransitOperation = transitOperation.copy(limitDate = Some("date"), security = NoSecurityDetails),
-            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
-          )
-        )
-
-        navigator
-          .nextPage(PhoneNumberPage, userAnswersWithLimitDate, departureId, mode)
-          .mustBe(TransportIdentificationPage(Index(0)).route(userAnswersWithLimitDate, departureId, mode).value)
-
-      }
-
       "must go from LimitDatePage to ContainerIndicatorPage when container indicator is empty" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
