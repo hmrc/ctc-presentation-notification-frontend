@@ -364,6 +364,15 @@ transport.addTransportEquipment.checkYourAnswersLabel = Do you want to add any t
 transport.addTransportEquipment.change.hidden = if you want to add any transport equipment
 transport.addTransportEquipment.error.required = Select yes if you want to add any transport equipment
 
+transport.equipment.sealIdentificationNumber.title = What is the seal identification number?
+transport.equipment.sealIdentificationNumber.heading = What is the seal identification number?
+transport.equipment.sealIdentificationNumber.checkYourAnswersLabel = Seal Identification Number
+transport.equipment.sealIdentificationNumber.error.required = Enter the seal identification number
+transport.equipment.sealIdentificationNumber.error.length = The identification number must be 20 characters or less
+transport.equipment.sealIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+transport.equipment.sealIdentificationNumber.hint = This can be up to 20 characters long and include both letters and numbers.
+transport.equipment.sealIdentificationNumber.error.duplicate = This identification number has already been submitted. Enter a unique seal identification number
+
 transport.equipment.addSealYesNo.title = Do you want to add a seal?
 transport.equipment.addSealYesNo.heading = Do you want to add a seal?
 transport.equipment.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.

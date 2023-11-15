@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.transport.equipment
 
-object Constants {
-  lazy val maxAuthorisationNumberLength: Int  = 35
-  lazy val maxSealIdentificationLength: Int   = 20
-  lazy val exactUnLocodeLength: Int           = 5
-  lazy val maxNameLength: Int                 = 70
-  lazy val minTelephoneNumberLength: Int      = 6
-  lazy val maxTelephoneNumberLength: Int      = 35
-  lazy val maxAdditionalIdentifierLength: Int = 4
-  lazy val loadingLocationMaxLength: Int      = 35
-  lazy val conveyanceRefNumberLength: Int     = 17
-  lazy val maxIdentificationNumberLength: Int = 35
+import pages.behaviours.PageBehaviours
+
+class SealIdentificationNumberPageSpec extends PageBehaviours {
+
+  "SealIdentificationNumberPage" - {
+
+    beRetrievable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
+
+    beSettable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
+
+    beRemovable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
+  }
 }
