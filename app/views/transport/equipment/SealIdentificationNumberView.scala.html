@@ -29,7 +29,7 @@
 @(form: Form[String], departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.sealIdentification.title"),
+    title = messages("transport.equipment.sealIdentificationNumber.title"),
     showBackLink = true
 ) {
 
@@ -40,10 +40,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transport.equipment.sealIdentification.heading"),
+                heading = messages("transport.equipment.sealIdentificationNumber.heading"),
                 caption = Some(messages("transport.caption"))
             ),
-            hint = Some(messages("transport.equipment.sealIdentification.hint")),
+            hint = Some(messages("transport.equipment.sealIdentificationNumber.hint")),
             inputClass = InputSize.Width20
         )
 

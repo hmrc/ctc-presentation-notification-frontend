@@ -25,7 +25,9 @@ case class Consignment(
   LocationOfGoods: Option[LocationOfGoods],
   ActiveBorderTransportMeans: Option[List[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading]
-)
+) {
+  def isConsignmentActiveBorderTransportMeansEmpty = ActiveBorderTransportMeans.toList.flatten.isEmpty
+}
 
 object Consignment {
   implicit val format: OFormat[Consignment] = Json.format[Consignment]

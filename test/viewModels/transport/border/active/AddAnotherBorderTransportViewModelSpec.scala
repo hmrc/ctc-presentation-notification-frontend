@@ -25,6 +25,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.ListItem
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
 
 class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -67,6 +68,32 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
           result.legend mustBe "Do you want to add another border means of transport?"
           result.hint mustBe "Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.".toText
           result.maxLimitLabel mustBe "You cannot add any more border means of transport. To add another, you need to remove one first."
+      }
+    }
+
+    "with change and remove links" in {
+      forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
+        (mode, identification, identificationNumber) =>
+          val userAnswers = emptyUserAnswers
+            .setValue(IdentificationPage(Index(0)), identification)
+            .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
+            .setValue(IdentificationPage(Index(1)), identification)
+            .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
+
+          val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
+
+          result.listItems mustBe Seq(
+            ListItem(
+              name = s"$identification - $identificationNumber",
+              changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
+              removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
+            ),
+            ListItem(
+              name = s"$identification - $identificationNumber",
+              changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
+              removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
+            )
+          )
       }
     }
   }
