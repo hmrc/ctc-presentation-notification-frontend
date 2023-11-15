@@ -377,3 +377,10 @@ transport.equipment.addSealYesNo.title = Do you want to add a seal?
 transport.equipment.addSealYesNo.heading = Do you want to add a seal?
 transport.equipment.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transport.equipment.addSealYesNo.error.required = Select yes if you want to add a seal
+
+transport.equipment.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number?
+transport.equipment.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+transport.equipment.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
+transport.equipment.addContainerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
+transport.equipment.addContainerIdentificationNumberYesNo.change.hidden = if you want to add an identification number
+transport.equipment.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
