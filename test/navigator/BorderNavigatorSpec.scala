@@ -27,8 +27,10 @@ import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.MoreInformationPage
+import pages.transport.ContainerIndicatorPage
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active._
+import play.api.mvc.Call
 
 class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -186,8 +188,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
         }
       }
-      //TODO: change unit test once page has been added
-      "must go to more information page when customs office of transit is not present" in {
+      "must go to final border cya page when customs office of transit is not present" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -195,7 +196,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
             navigator
               .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId)) // TODO: Update to be final border CYA page once implemented
         }
 
       }
@@ -219,14 +220,49 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
         }
       }
-      //TODO: change unit test once page has been added
-      "must go to more information page when customs office of transit is not present" in {
+
+      "when customs office of transit is not present, container indicator is present in IE170" - {
+        "must go to container identification number page when container indicator is true" ignore { // TODO: Update once CTCP-3960 is implemented
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = None
+                  )
+                )
+                .setValue(ContainerIndicatorPage, true)
+
+              navigator
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode)) // TODO: Update once CTCP-3960 is implemented
+          }
+        }
+
+        "must go to container identification number page when container indicator is false" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = None
+                  )
+                )
+                .setValue(ContainerIndicatorPage, false)
+
+              navigator
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+          }
+        }
+      }
+      "must go to final border CYA page when customs office of transit is not present and container indicator is not present in IE170" in { // TODO: Update to be final border CYA page once implemented
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
-              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId)) // TODO: Update to be final border CYA page once implemented
         }
       }
     }

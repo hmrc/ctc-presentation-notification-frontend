@@ -22,6 +22,7 @@ import models._
 import models.reference.BorderMode
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
+import pages.transport.ContainerIndicatorPage
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active._
 import play.api.mvc.Call
@@ -73,10 +74,12 @@ class BorderNavigator @Inject() () extends Navigator {
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
     } else {
-      //TODO: Change this when page is added
-      Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
+      ua.get(ContainerIndicatorPage) match {
+        case Some(true)  => ??? // TODO - Redirect to CTCP-3960
+        case Some(false) => Some(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
+        case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO: update to border check your answers once implemented
+      }
     }
-
 }
 
 object BorderNavigator {
