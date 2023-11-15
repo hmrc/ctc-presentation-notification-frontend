@@ -17,17 +17,15 @@
 package navigator
 
 import base.SpecBase
-import base.TestMessageData.{authorisation, consignment, customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation}
-import config.Constants.NoSecurityDetails
+import base.TestMessageData._
 import generators.Generators
-import models.{Index, NormalMode}
+import models.NormalMode
 import models.messages.MessageData
 import navigation.ContainerNavigator
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.border.BorderModeOfTransportPage
 import org.scalacheck.Arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
-import pages.transport.border.active.{IdentificationPage => TransportIdentificationPage}
+import pages.transport.border.BorderModeOfTransportPage
 
 class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

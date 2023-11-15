@@ -29,6 +29,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.ContainerIndicatorPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
@@ -93,6 +94,69 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
         redirectLocation(result).value mustEqual
           borderRoutes.BorderModeOfTransportController.onPageLoad(departureId, mode).url //TODO: Change to /add-identification when built
+      }
+    }
+
+    "when false submitted" - {
+      "must redirect to" - {
+        "CTCP-3960 ONCE IMPLEMENTED " - {
+          "when container indicator captured in IE170 and containerIndicator is 1" ignore { // TODO: update once CTCP-3960 is done
+            when(mockViewModelProvider.apply(any(), any(), any())(any()))
+              .thenReturn(viewModelWithNoItems)
+
+            setExistingUserAnswers(
+              emptyUserAnswers.setValue(ContainerIndicatorPage, true)
+            )
+
+            val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url // todo redirect to CTCP-3960
+          }
+        }
+        "Container identification number page" - {
+          "when container indicator captured in IE170 and containerIndicator is 0" in {
+            when(mockViewModelProvider.apply(any(), any(), any())(any()))
+              .thenReturn(viewModelWithNoItems)
+
+            setExistingUserAnswers(
+              emptyUserAnswers.setValue(ContainerIndicatorPage, false)
+            )
+
+            val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url
+          }
+        }
+        "Border CYA page" - {
+          "when container indicator is not captured in IE170" ignore {
+            when(mockViewModelProvider.apply(any(), any(), any())(any()))
+              .thenReturn(viewModelWithNoItems)
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url // TODO: Update to border CYA page when built
+          }
+        }
       }
     }
 

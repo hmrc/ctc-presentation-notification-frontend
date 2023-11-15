@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.Mode
+import pages.transport.ContainerIndicatorPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -66,8 +67,13 @@ class AddAnotherBorderTransportController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
           {
-            case true  => Redirect(routes.IdentificationController.onPageLoad(departureId, mode, viewModel.nextIndex))
-            case false => Redirect(Call("GET", "#")) // TODO redirect to Border CYA Controller
+            case true => Redirect(routes.IdentificationController.onPageLoad(departureId, mode, viewModel.nextIndex))
+            case false =>
+              request.userAnswers.get(ContainerIndicatorPage) match {
+                case Some(true)  => ??? // TODO - Redirect to CTCP-3960
+                case Some(false) => Redirect(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
+                case None        => Redirect(Call("GET", "#")) // TODO redirect to Border CYA Controller
+              }
           }
         )
   }
