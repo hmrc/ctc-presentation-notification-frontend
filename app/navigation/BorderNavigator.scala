@@ -74,7 +74,7 @@ class BorderNavigator @Inject() () extends Navigator {
 
   private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     ua.get(AddAnotherBorderModeOfTransportPage(activeIndex)) match {
-      case Some(true)  => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex.next))
+      case Some(true)  => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
       case Some(false) => addAnotherBorderNavigationFromNo(ua, departureId, mode, activeIndex)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }

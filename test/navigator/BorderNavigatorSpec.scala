@@ -279,7 +279,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
             navigator
               .nextPage(AddAnotherBorderModeOfTransportPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(routes.IdentificationController.onPageLoad(departureId, NormalMode, activeIndex.next))
+              .mustBe(routes.IdentificationController.onPageLoad(departureId, NormalMode, activeIndex))
         }
       }
 
