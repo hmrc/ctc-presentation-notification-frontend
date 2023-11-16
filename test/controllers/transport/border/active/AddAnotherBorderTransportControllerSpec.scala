@@ -22,7 +22,7 @@ import controllers.routes
 import controllers.transport.border.active.{routes => borderActiveRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -90,7 +90,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url //TODO: Change to /add-identification when built
+          controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url
       }
     }
 

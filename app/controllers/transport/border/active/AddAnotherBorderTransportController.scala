@@ -57,8 +57,8 @@ class AddAnotherBorderTransportController @Inject() (
       viewModel.count match {
         case 0 =>
           Redirect(
-            controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode)
-          ) //TODO: Change to /add-identification when built
+            routes.IdentificationController.onPageLoad(departureId, mode, Index(0))
+          )
         case _ => Ok(view(form(viewModel), departureId, viewModel))
       }
   }
