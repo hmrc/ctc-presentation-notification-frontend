@@ -23,7 +23,7 @@ import models.reference.BorderMode
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.ContainerIndicatorPage
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
 import pages.transport.border.active._
 import play.api.mvc.Call
 
@@ -34,13 +34,14 @@ class BorderNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case BorderModeOfTransportPage                    => ua => borderModeNavigation(ua, departureId, mode)
-    case IdentificationPage(activeIndex)              => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
-    case IdentificationNumberPage(activeIndex)        => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
-    case NationalityPage(activeIndex)                 => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
-    case CustomsOfficeActiveBorderPage(activeIndex)   => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
-    case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
-    case ConveyanceReferenceNumberPage(activeIndex)   => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
+    case BorderModeOfTransportPage                        => ua => borderModeNavigation(ua, departureId, mode)
+    case IdentificationPage(activeIndex)                  => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
+    case IdentificationNumberPage(activeIndex)            => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
+    case NationalityPage(activeIndex)                     => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
+    case CustomsOfficeActiveBorderPage(activeIndex)       => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
+    case AddConveyanceReferenceYesNoPage(activeIndex)     => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
+    case ConveyanceReferenceNumberPage(activeIndex)       => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
+    case AddAnotherBorderModeOfTransportPage(activeIndex) => ua => addAnotherBorderNavigation(ua, departureId, mode, activeIndex)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
@@ -70,15 +71,25 @@ class BorderNavigator @Inject() () extends Navigator {
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
+  private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+    ua.get(AddAnotherBorderModeOfTransportPage(activeIndex)) match {
+      case Some(true)  => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex.next))
+      case Some(false) => addAnotherBorderNavigationFromNo(ua, departureId, mode, activeIndex)
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
+  private def addAnotherBorderNavigationFromNo(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+    ua.get(ContainerIndicatorPage) match {
+      case Some(true)  => ??? // TODO - Redirect to CTCP-3960
+      case Some(false) => Some(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
+      case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO: update to border check your answers once implemented
+    }
+
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
     } else {
-      ua.get(ContainerIndicatorPage) match {
-        case Some(true)  => ??? // TODO - Redirect to CTCP-3960
-        case Some(false) => Some(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-        case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO: update to border check your answers once implemented
-      }
+      addAnotherBorderNavigationFromNo(ua, departureId, mode, activeIndex)
     }
 }
 

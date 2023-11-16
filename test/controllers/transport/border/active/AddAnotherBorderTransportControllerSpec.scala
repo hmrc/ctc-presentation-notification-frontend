@@ -19,7 +19,6 @@ package controllers.transport.border.active
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.FrontendAppConfig
 import controllers.routes
-import controllers.transport.border.{routes => borderRoutes}
 import controllers.transport.border.active.{routes => borderActiveRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
@@ -29,10 +28,8 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.ContainerIndicatorPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.ListItem
@@ -78,7 +75,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
   "AddAnotherBorderTransport Controller" - {
 
-    "redirect to border mode of transport page" - {
+    "redirect to next page" - {
       "when 0 active border transports" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(viewModelWithNoItems)
@@ -93,70 +90,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          borderRoutes.BorderModeOfTransportController.onPageLoad(departureId, mode).url //TODO: Change to /add-identification when built
-      }
-    }
-
-    "when false submitted" - {
-      "must redirect to" - {
-        "CTCP-3960 ONCE IMPLEMENTED " - {
-          "when container indicator captured in IE170 and containerIndicator is 1" ignore { // TODO: update once CTCP-3960 is done
-            when(mockViewModelProvider.apply(any(), any(), any())(any()))
-              .thenReturn(viewModelWithNoItems)
-
-            setExistingUserAnswers(
-              emptyUserAnswers.setValue(ContainerIndicatorPage, true)
-            )
-
-            val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-              .withFormUrlEncodedBody(("value", "false"))
-
-            val result = route(app, request).value
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual
-              controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url // todo redirect to CTCP-3960
-          }
-        }
-        "Container identification number page" - {
-          "when container indicator captured in IE170 and containerIndicator is 0" in {
-            when(mockViewModelProvider.apply(any(), any(), any())(any()))
-              .thenReturn(viewModelWithNoItems)
-
-            setExistingUserAnswers(
-              emptyUserAnswers.setValue(ContainerIndicatorPage, false)
-            )
-
-            val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-              .withFormUrlEncodedBody(("value", "false"))
-
-            val result = route(app, request).value
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual
-              controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url
-          }
-        }
-        "Border CYA page" - {
-          "when container indicator is not captured in IE170" ignore {
-            when(mockViewModelProvider.apply(any(), any(), any())(any()))
-              .thenReturn(viewModelWithNoItems)
-
-            setExistingUserAnswers(emptyUserAnswers)
-
-            val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-              .withFormUrlEncodedBody(("value", "false"))
-
-            val result = route(app, request).value
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual
-              controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url // TODO: Update to border CYA page when built
-          }
-        }
+          controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url //TODO: Change to /add-identification when built
       }
     }
 
@@ -201,62 +135,58 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
     }
 
     "when max limit not reached" - {
-      "when yes submitted" - {
-        "must redirect to identification type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
-
-          setExistingUserAnswers(emptyUserAnswers)
-
-          val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-            .withFormUrlEncodedBody(("value", "true"))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual
-            borderActiveRoutes.IdentificationController.onPageLoad(departureId, mode, notMaxedOutViewModel.nextIndex).url
-        }
-      }
-
-      "when no submitted" - {
-        "must redirect to CYA" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
-
-          setExistingUserAnswers(emptyUserAnswers)
-
-          val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-            .withFormUrlEncodedBody(("value", "false"))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual
-            Call("GET", "#").url // TODO redirect to border CYA
-        }
-      }
-    }
-
-    "when max limit reached" - {
-      "must redirect to CYA" in {
+      "when yes submitted" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(maxedOutViewModel)
+          .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-          .withFormUrlEncodedBody(("value", ""))
+          .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to border CYA
+          onwardRoute.url
       }
+    }
+
+    "when no submitted" - {
+      "must redirect to CYA" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          onwardRoute.url
+      }
+    }
+
+    "when max limit reached" in {
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        .thenReturn(maxedOutViewModel)
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, addAnotherBorderTransportRoute)
+        .withFormUrlEncodedBody(("value", ""))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        onwardRoute.url
     }
 
     "must return a Bad Request and errors" - {
