@@ -54,7 +54,6 @@ locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
 placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
-transport.equipment.caption = Transport equipment
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
