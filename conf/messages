@@ -377,3 +377,7 @@ transport.equipment.addSealYesNo.title = Do you want to add a seal?
 transport.equipment.addSealYesNo.heading = Do you want to add a seal?
 transport.equipment.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transport.equipment.addSealYesNo.error.required = Select yes if you want to add a seal
+
+transport.equipment.removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
+transport.equipment.removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
+transport.equipment.removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}
