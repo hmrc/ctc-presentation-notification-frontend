@@ -120,7 +120,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
-      TransitOperation = TransitOperation(None, EntrySummaryDeclarationSecurityDetails),
+      TransitOperation = TransitOperation(None, None, EntrySummaryDeclarationSecurityDetails),
       Authorisation = None,
       Consignment = Consignment(
         containerIndicator = None,
