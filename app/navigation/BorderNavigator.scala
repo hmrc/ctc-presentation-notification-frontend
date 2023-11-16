@@ -22,6 +22,7 @@ import models._
 import models.reference.BorderMode
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
+import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
 import pages.transport.border.active._
@@ -80,10 +81,16 @@ class BorderNavigator @Inject() () extends Navigator {
 
   private def addAnotherBorderNavigationFromNo(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     ua.get(ContainerIndicatorPage) match {
-      case Some(true)  => ??? // TODO - Redirect to CTCP-3960
+      case Some(true) =>
+        Some(
+          controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
+            .onPageLoad(departureId, mode, Index(getTransportEquipmentIndex(ua)))
+        )
       case Some(false) => Some(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
       case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO: update to border check your answers once implemented
     }
+
+  private def getTransportEquipmentIndex(ua: UserAnswers): Int = ua.get(EquipmentsSection).map(_.value.length).getOrElse(0)
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {

@@ -221,7 +221,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       }
 
       "when customs office of transit is not present, container indicator is present in IE170" - {
-        "must go to container identification number page when container indicator is true" ignore { // TODO: Update once CTCP-3960 is implemented
+        "must go to container identification number page when container indicator is true" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
@@ -234,7 +234,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode)) // TODO: Update once CTCP-3960 is implemented
+                .mustBe(
+                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                )
           }
         }
 
@@ -282,7 +284,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       }
 
       "when no" - {
-        "and container indicator is true must go to container identification number page" ignore { // TODO: Update once CTCP-3960 is implemented
+        "and container indicator is true must go to container identification number page" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
@@ -295,7 +297,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode)) // TODO: Update once CTCP-3960 is implemented
+                .mustBe(
+                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                )
           }
         }
 
