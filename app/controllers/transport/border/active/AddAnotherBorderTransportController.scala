@@ -54,13 +54,7 @@ class AddAnotherBorderTransportController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
-      viewModel.count match {
-        case 0 =>
-          Redirect(
-            routes.IdentificationController.onPageLoad(departureId, mode, Index(0))
-          )
-        case _ => Ok(view(form(viewModel), departureId, viewModel))
-      }
+      Ok(view(form(viewModel), departureId, viewModel))
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {

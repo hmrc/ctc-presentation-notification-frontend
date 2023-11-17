@@ -75,25 +75,6 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
   "AddAnotherBorderTransport Controller" - {
 
-    "redirect to next page" - {
-      "when 0 active border transports" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(viewModelWithNoItems)
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, addAnotherBorderTransportRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url
-      }
-    }
-
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
