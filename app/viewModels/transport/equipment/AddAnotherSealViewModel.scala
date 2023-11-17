@@ -19,13 +19,14 @@ package viewModels.transport.equipment
 import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.equipment.SealsSection
-import pages.transport.equipment.{AddSealYesNoPage, SealIdentificationNumberPage}
+import pages.transport.equipment.index.AddSealYesNoPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
 case class AddAnotherSealViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
-  override val prefix: String = "transport.equipment.addAnotherSeal"
+  override val prefix: String = "transport.equipment.index.addAnotherSeal"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSeals
 }
@@ -61,7 +62,7 @@ object AddAnotherSealViewModel {
 
       new AddAnotherSealViewModel(
         listItems,
-        onSubmitCall = controllers.transport.equipment.routes.AddAnotherSealController.onSubmit(departureId, mode, equipmentIndex)
+        onSubmitCall = controllers.transport.equipment.index.routes.AddAnotherSealController.onSubmit(departureId, mode, equipmentIndex)
       )
     }
   }

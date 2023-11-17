@@ -17,74 +17,62 @@
 package controllers.transport.equipment.index
 
 import controllers.actions._
-import forms.transport.equipment.ContainerIdentificationNumberFormProvider
-import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{Index, Mode, RichOptionalJsArray}
+import forms.YesNoFormProvider
+import models.requests.MandatoryDataRequest
+import models.{Index, Mode}
 import navigation.Navigator
-import pages.sections.transport.equipment.EquipmentsSection
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
-import play.api.data.Form
+import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.equipment.index.ContainerIdentificationNumberView
+import views.html.transport.equipment.index.AddContainerIdentificationNumberYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContainerIdentificationNumberController @Inject() (
+class AddContainerIdentificationNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  formProvider: ContainerIdentificationNumberFormProvider,
   navigator: Navigator,
   actions: Actions,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ContainerIdentificationNumberView
+  view: AddContainerIdentificationNumberYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val form = formProvider("transport.equipment.index.addContainerIdentificationNumberYesNo")
+
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) match {
-        case None        => form(equipmentIndex)
-        case Some(value) => form(equipmentIndex).fill(value)
+      val preparedForm = request.userAnswers.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
+
       Ok(view(preparedForm, departureId, mode, equipmentIndex))
   }
 
   def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      form(equipmentIndex)
+      form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex))),
           value => redirect(mode, value, departureId, equipmentIndex)
         )
-
-  }
-
-  private def form(equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
-    formProvider("equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
-
-  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
-    val numberOfEquipments = request.userAnswers.get(EquipmentsSection).length
-    (0 until numberOfEquipments)
-      .map(Index(_))
-      .filterNot(_ == equipmentIndex)
-      .map(ContainerIdentificationNumberPage)
-      .flatMap(request.userAnswers.get(_))
   }
 
   private def redirect(
     mode: Mode,
-    value: String,
+    value: Boolean,
     departureId: String,
     equipmentIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(equipmentIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddContainerIdentificationNumberYesNoPage(equipmentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode))
 }
