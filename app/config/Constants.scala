@@ -55,7 +55,8 @@ object Constants {
   val ApprovedPlace      = "C"
   val Other              = "D"
 
-  lazy val maxEoriNumberLength: Int = 17
+  lazy val maxEoriNumberLength: Int        = 17
+  lazy val maxContainerIdNumberLength: Int = 17
 
   object MeansOfTransportIdentification {
     val UnknownIdentification = "99"
