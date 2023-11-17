@@ -18,19 +18,14 @@ package controllers.transport.equipment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.transport.equipment.ContainerIdentificationNumberFormProvider
-import models.{Index, NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
-import org.scalacheck.Arbitrary.arbitrary
+import org.mockito.Mockito.when
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.transport.equipment.index.ContainerIdentificationNumberView
 
-import java.util.UUID
 import scala.concurrent.Future
 
 class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
