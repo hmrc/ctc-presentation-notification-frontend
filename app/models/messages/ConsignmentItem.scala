@@ -18,18 +18,8 @@ package models.messages
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Consignment(
-  containerIndicator: Option[String],
-  modeOfTransportAtTheBorder: Option[String],
-  TransportEquipment: Option[List[TransportEquipment]],
-  LocationOfGoods: Option[LocationOfGoods],
-  ActiveBorderTransportMeans: Option[List[ActiveBorderTransportMeans]],
-  PlaceOfLoading: Option[PlaceOfLoading],
-  HouseConsignment: Seq[HouseConsignment]
-) {
-  def isConsignmentActiveBorderTransportMeansEmpty = ActiveBorderTransportMeans.toList.flatten.isEmpty
-}
+case class ConsignmentItem(Commodity: Commodity)
 
-object Consignment {
-  implicit val format: OFormat[Consignment] = Json.format[Consignment]
+object ConsignmentItem {
+  implicit val format: OFormat[ConsignmentItem] = Json.format[ConsignmentItem]
 }

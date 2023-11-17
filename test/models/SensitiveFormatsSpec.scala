@@ -18,7 +18,7 @@ package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.EntrySummaryDeclarationSecurityDetails
-import models.messages.{Consignment, MessageData, TransitOperation}
+import models.messages.{Commodity, Consignment, ConsignmentItem, HouseConsignment, MessageData, TransitOperation}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.running
 
@@ -116,7 +116,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "MessageData" - {
     val encryptedValue =
-      "YE7KOiJmapAVaQqXojhek15efea8BE7MaTQM1UU61nI36csfYiaOZA2UyFgl0PtFKhgSATcRE09qvXmMZJMe0Or0z+AHx8vwNrqC/eKDVeMDFxkasUWV/k6K6vv+DWhyfgg4+/FNT/Xz5gWzB5ylijmSKG1P+bxqU9WtNQYhNr9PpyAEnPoPrlZ3ZBs8WkUkzM+n/brU7wiim2zR8b6A0KSYH0LCvv8GUklQurVEGAVeO7BmIj0r8IqGYk1mBrGnB/mYg5Ta7mHNXRV6LqLKnzZEDCK/kq0QTYU="
+      "fnR9UUxFHzzjzJzKxHKBDyTgCA8gAbhqAB3jpmHnKoi/M1jgydbbrMTLaOmfPyOcPJLzAH6CU+Otx82ubTwLBFTKM0CTgRU7x0DZCuhgacpBIR108EFBCstwIHgCazd2PXZ9/RRmyG6irCyDe4y7cym6+7C/XXGjxqFYPUvCLL3fUq8bc7R/EelfGgAW1KrGJg2sD6sFoY9iIHRy+Dm9W2nHyGStYaK2wzRIJU+Ib/lGIiDnBr1jt4/FhtZhWq8JCRKK+uCF4fEZ+Y0izs6cq+FSaGOetRTgq3dJbmZG3vlrQ42VUp80DeSL/DJuKT3gcOr6JWXZUyERM0OdBEPftCQYAdy78SsuezjkNNAi+TPp7TFwQ8a0dpYLvQDoKJdyg+i7lbGsmDBP0H2eecknPH4t3qOoK3ctO771KGf6yNUq"
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
@@ -128,7 +128,16 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         TransportEquipment = None,
         LocationOfGoods = None,
         ActiveBorderTransportMeans = None,
-        PlaceOfLoading = None
+        PlaceOfLoading = None,
+        HouseConsignment = Seq(
+          HouseConsignment(
+            List(
+              ConsignmentItem(
+                Commodity("descOfGoods")
+              )
+            )
+          )
+        )
       ),
       CustomsOfficeOfDestination = "",
       CustomsOfficeOfExitForTransitDeclared = None,
