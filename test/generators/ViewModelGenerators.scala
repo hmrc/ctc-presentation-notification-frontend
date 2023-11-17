@@ -23,7 +23,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.ListItem
-import viewModels.transport.AddAnotherEquipmentViewModel
+import viewModels.transport.equipment.AddAnotherEquipmentViewModel
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
 import viewModels.transport.equipment.AddAnotherSealViewModel
 

@@ -1,7 +1,6 @@
 # microservice specific routes
 ->         /                                                              app.transport.border.Routes
 ->         /                                                              app.transport.equipment.Routes
-->         /                                                              app.transport.equipment.index.Routes
 GET        /office-of-destination/arrival-date/:departureId               controllers.transport.LimitDateController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /office-of-destination/arrival-date/:departureId               controllers.transport.LimitDateController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /office-of-destination/change-arrival-date/:departureId        controllers.transport.LimitDateController.onPageLoad(departureId: String, mode: Mode = CheckMode)
@@ -11,13 +10,3 @@ GET        /containers/mandatory/:departureId                             contro
 POST       /containers/mandatory/:departureId                             controllers.transport.ContainerIndicatorController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /containers/change-mandatory/:departureId                      controllers.transport.ContainerIndicatorController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /containers/change-mandatory/:departureId                      controllers.transport.ContainerIndicatorController.onSubmit(departureId: String, mode: Mode = CheckMode)
-
-GET        /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
-
-GET        /transport-equipment/add-another/:departureId                  controllers.transport.AddAnotherEquipmentController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /transport-equipment/add-another/:departureId                  controllers.transport.AddAnotherEquipmentController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /transport-equipment/change-add-another/:departureId           controllers.transport.AddAnotherEquipmentController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /transport-equipment/change-add-another/:departureId           controllers.transport.AddAnotherEquipmentController.onSubmit(departureId: String, mode: Mode = CheckMode)

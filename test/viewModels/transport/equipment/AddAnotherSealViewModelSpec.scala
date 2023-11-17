@@ -22,7 +22,7 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.equipment.SealIdentificationNumberPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import viewModels.transport.equipment.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 
 class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
