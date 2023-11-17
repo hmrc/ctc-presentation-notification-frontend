@@ -378,6 +378,14 @@ transport.equipment.addSealYesNo.heading = Do you want to add a seal?
 transport.equipment.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transport.equipment.addSealYesNo.error.required = Select yes if you want to add a seal
 
+transport.equipment.addAnotherSeal.singular.title = You have added 1 seal
+transport.equipment.addAnotherSeal.plural.title = You have added {0} seals
+transport.equipment.addAnotherSeal.singular.heading = You have added 1 seal
+transport.equipment.addAnotherSeal.plural.heading = You have added {0} seals
+transport.equipment.addAnotherSeal.error.required = Select yes if you want to add another seal
+transport.equipment.addAnotherSeal.label = Do you want to add another seal?
+transport.equipment.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
+
 transport.equipment.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number?
 transport.equipment.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
 transport.equipment.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
