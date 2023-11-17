@@ -406,3 +406,15 @@ transport.equipment.index.containerIdentificationNumber.error.duplicate = This i
 transport.equipment.removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
 transport.equipment.removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
 transport.equipment.removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}
+
+transport.prefix = Transport equipment {0}
+transport.container = container {0}
+transport.value.withoutContainer = no container identification number
+
+transport.addAnotherEquipment.singular.title = You have added 1 transport equipment
+transport.addAnotherEquipment.plural.title = You have added {0} transport equipment
+transport.addAnotherEquipment.singular.heading = You have added 1 transport equipment
+transport.addAnotherEquipment.plural.heading = You have added {0} transport equipment
+transport.addAnotherEquipment.label = Do you want to add any other transport equipment?
+transport.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
+transport.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment

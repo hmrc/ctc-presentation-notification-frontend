@@ -16,3 +16,8 @@ GET        /transport-equipment/add-transport-equipment/:departureId      contro
 POST       /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /transport-equipment/add-transport-equipment/:departureId      controllers.transport.AddTransportEquipmentYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /transport-equipment/add-another/:departureId                  controllers.transport.AddAnotherEquipmentController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /transport-equipment/add-another/:departureId                  controllers.transport.AddAnotherEquipmentController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /transport-equipment/change-add-another/:departureId           controllers.transport.AddAnotherEquipmentController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /transport-equipment/change-add-another/:departureId           controllers.transport.AddAnotherEquipmentController.onSubmit(departureId: String, mode: Mode = CheckMode)

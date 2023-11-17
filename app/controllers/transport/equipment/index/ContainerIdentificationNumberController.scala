@@ -16,11 +16,10 @@
 
 package controllers.transport.equipment.index
 
-import controllers.SettableOps
 import controllers.actions._
 import forms.transport.equipment.ContainerIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{Index, LocalReferenceNumber, Mode, RichOptionalJsArray}
+import models.{Index, Mode, RichOptionalJsArray}
 import navigation.Navigator
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
