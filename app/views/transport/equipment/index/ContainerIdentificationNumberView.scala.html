@@ -42,12 +42,12 @@
             field = form("value"),
             inputTextType = OrdinaryTextInput(
                 heading = messages("transport.equipment.index.containerIdentificationNumber.heading"),
-                caption = Some(messages("transport.equipment.caption"))
+                caption = Some(messages("transport.caption"))
             ),
             hint = Some(messages("transport.equipment.index.containerIdentificationNumber.hint")),
             inputClass = InputSize.Width20
         )
 
-        @button(attributes = Map("id" -> "submit"))
+        @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
 }

@@ -46,18 +46,6 @@ class ContainerIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
-    formProvider("equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
-
-  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
-    val numberOfEquipments = request.userAnswers.get(EquipmentsSection).length
-    (0 until numberOfEquipments)
-      .map(Index(_))
-      .filterNot(_ == equipmentIndex)
-      .map(ContainerIdentificationNumberPage)
-      .flatMap(request.userAnswers.get(_))
-  }
-
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) match {
@@ -76,6 +64,18 @@ class ContainerIdentificationNumberController @Inject() (
           value => redirect(mode, value, departureId, equipmentIndex)
         )
 
+  }
+
+  private def form(equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+    formProvider("equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
+
+  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+    val numberOfEquipments = request.userAnswers.get(EquipmentsSection).length
+    (0 until numberOfEquipments)
+      .map(Index(_))
+      .filterNot(_ == equipmentIndex)
+      .map(ContainerIdentificationNumberPage)
+      .flatMap(request.userAnswers.get(_))
   }
 
   private def redirect(
