@@ -28,6 +28,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.Content
 import viewModels.{AddAnotherViewModel, ListItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import config.Constants._
 
 case class AddAnotherBorderTransportViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "transport.border.active.addAnotherBorderTransport"
@@ -62,7 +63,7 @@ object AddAnotherBorderTransportViewModel {
             val removeRoute =
               if (
                 index.isFirst
-                && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != "5")
+                && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail)
                   || userAnswers.departureData.TransitOperation.isSecurityTypeInSet
                   || userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined)
               )

@@ -30,6 +30,7 @@ import pages.transport.border.active.{IdentificationNumberPage, IdentificationPa
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.ListItem
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
+import config.Constants._
 
 class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -76,12 +77,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
     "with change and remove links" - {
       "for first Border Mode of transport when BorderMode of Transport is  5, " +
-        "security type is not 1,2 or 3 and CustomsOfficeOfTransitDeclared is not defined" in {
+        "security type is NoSecurityDetails and CustomsOfficeOfTransitDeclared is not defined" in {
           forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(security = "5", limitDate = None),
+                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(security = NoSecurityDetails, limitDate = None),
                                                                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
@@ -89,7 +90,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode("5", "test"))
+                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
@@ -110,13 +111,13 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
     }
 
     "with change link and no remove link" - {
-      "for first Border Mode of transport when BorderMode of Transport is  4, " +
-        "security type is not 1,2 or 3 and CustomsOfficeOfTransitDeclared is not defined" in {
+      "for first Border Mode of transport when BorderMode of Transport is  not mail, " +
+        "security type is NoSecurityDetails and CustomsOfficeOfTransitDeclared is not defined" in {
           forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(security = "5", limitDate = None),
+                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(security = NoSecurityDetails, limitDate = None),
                                                                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
@@ -124,7 +125,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode("4", "test"))
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
@@ -143,12 +144,13 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
           }
         }
       "for first Border Mode of transport when BorderMode of Transport is  5, " +
-        "security type is 1,2 or 3 and CustomsOfficeOfTransitDeclared is not defined" in {
+        "security type not NoSecurityDetails and CustomsOfficeOfTransitDeclared is not defined" in {
           forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(security = "1", limitDate = None),
+                  departureData = TestMessageData.messageData.copy(TransitOperation =
+                                                                     TransitOperation(security = EntrySummaryDeclarationSecurityDetails, limitDate = None),
                                                                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
@@ -156,7 +158,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode("5", "test"))
+                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
@@ -181,15 +183,16 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(security = "5", limitDate = None),
-                                                                   CustomsOfficeOfTransitDeclared = TestMessageData.customsOfficeOfTransitDeclared
+                  departureData = TestMessageData.messageData.copy(
+                    TransitOperation = TransitOperation(security = NoSecurityDetails, limitDate = None),
+                    CustomsOfficeOfTransitDeclared = TestMessageData.customsOfficeOfTransitDeclared
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode("5", "test"))
+                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
