@@ -16,12 +16,10 @@
 
 package pages.transport.border
 
-import models.reference.BorderMode
-import models.{Index, Mode, UserAnswers}
-import pages.{Page, QuestionPage}
+import models.Index
+import pages.QuestionPage
 import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 case class AddAnotherBorderModeOfTransportPage(activeIndex: Index) extends QuestionPage[Boolean] {
   override def toString: String = "addAnotherBorderModeOfTransport"

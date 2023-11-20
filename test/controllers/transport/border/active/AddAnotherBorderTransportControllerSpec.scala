@@ -69,7 +69,6 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
   private val viewModel = arbitrary[AddAnotherBorderTransportViewModel].sample.value
 
-  private val viewModelWithNoItems = viewModel.copy(listItems = Nil)
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 

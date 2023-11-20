@@ -20,10 +20,10 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.ListItem
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 trait ViewModelGenerators {
   self: Generators =>
