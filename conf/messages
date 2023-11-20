@@ -393,6 +393,10 @@ transport.equipment.index.addContainerIdentificationNumberYesNo.checkYourAnswers
 transport.equipment.index.addContainerIdentificationNumberYesNo.change.hidden = if you want to add an identification number
 transport.equipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
 
+transport.equipment.index.seals.transport.equipment.removeSeal.title = Are you sure you want to remove seal {0}?
+transport.equipment.index.seals.transport.equipment.removeSeal.heading = Are you sure you want to remove seal {0}?
+transport.equipment.index.seals.transport.equipment.removeSeal.error.required = Select yes if you want to remove seal {0}
+
 transport.equipment.index.containerIdentificationNumber.title = What is the container identification number?
 transport.equipment.index.containerIdentificationNumber.heading = What is the container identification number?
 transport.equipment.index.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
