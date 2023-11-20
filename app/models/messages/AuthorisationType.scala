@@ -24,11 +24,13 @@ sealed trait AuthorisationType extends WithName
 object AuthorisationType extends Enumerable.Implicits {
 
   case object C521 extends WithName("C521") with AuthorisationType
+  case object C523 extends WithName("C523") with AuthorisationType
 
   case class Other(value: String) extends WithName(value) with AuthorisationType
 
   val values: Seq[AuthorisationType] = Seq(
-    C521
+    C521,
+    C523
   )
 
   implicit val enumerable: Enumerable[AuthorisationType] =

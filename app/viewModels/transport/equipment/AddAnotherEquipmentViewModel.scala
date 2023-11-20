@@ -61,7 +61,7 @@ object AddAnotherEquipmentViewModel {
               case _                          => Some(s"${equipmentPrefix(equipmentIndex.display)} - $noContainer")
             }
 
-            val changeRoute = Call("GET", "#").url // TODO to be implemented as part of CTCP-4057
+            val changeRoute = Call("GET", "#").url //TODO: to be implemented as part of CTCP-4057
 
             val removeRoute: Option[String] = if (equipmentIndex.isFirst && userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty) {
               None
