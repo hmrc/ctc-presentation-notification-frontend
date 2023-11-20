@@ -16,6 +16,7 @@
 
 package viewModels.transport.border.active
 
+import config.Constants.Mail
 import config.FrontendAppConfig
 import models.reference.BorderMode
 import models.{Index, Mode, UserAnswers}
@@ -62,7 +63,7 @@ object AddAnotherBorderTransportViewModel {
             val removeRoute =
               if (
                 index.isFirst
-                && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != "5")
+                && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail)
                   || userAnswers.departureData.TransitOperation.isSecurityTypeInSet
                   || userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined)
               )
