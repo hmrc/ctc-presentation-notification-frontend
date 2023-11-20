@@ -66,7 +66,7 @@ class ContainerIdentificationNumberController @Inject() (
   }
 
   private def form(equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
-    formProvider("equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
+    formProvider("transport.equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
 
   private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
     val numberOfEquipments = request.userAnswers.get(EquipmentsSection).length

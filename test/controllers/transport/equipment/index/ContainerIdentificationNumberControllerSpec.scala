@@ -117,5 +117,43 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
+
+    "must return a Bad Request and errors when invalid data is submitted" in {
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val invalidAnswer = ""
+
+      val request    = FakeRequest(POST, identificationNumberRoute(equipmentIndex)).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form().bind(Map("value" -> invalidAnswer))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[ContainerIdentificationNumberView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode, equipmentIndex)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when duplicate value is submitted" in {
+      val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(equipmentIndex), validAnswer)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, identificationNumberRoute(Index(1)))
+        .withFormUrlEncodedBody(("value", validAnswer))
+
+      val filledForm = form(Seq(validAnswer)).bind(Map("value" -> validAnswer))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[ContainerIdentificationNumberView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode, Index(1))(request, messages).toString
+    }
   }
 }
