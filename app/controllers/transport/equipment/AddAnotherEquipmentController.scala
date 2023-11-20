@@ -18,11 +18,16 @@ package controllers.transport.equipment
 
 import config.FrontendAppConfig
 import controllers.actions._
+import controllers.transport.equipment.index.seals.{routes => sealRoutes}
+import controllers.transport.equipment.index.{routes => indexRoutes}
 import forms.AddAnotherFormProvider
-import models.Mode
+import models.requests.MandatoryDataRequest
+import models.{Index, Mode}
+import pages.sections.transport.equipment.{EquipmentsSection, SealsSection}
+import pages.transport.ContainerIndicatorPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
@@ -62,10 +67,30 @@ class AddAnotherEquipmentController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
           {
             case true =>
-              Redirect(Call("GET", "#")) // TODO nav logic to be implemented in CTCP-4057
+              redirect(departureId, mode, viewModel)
             case false =>
               Redirect(Call("GET", "#")) // TODO redirect to Border CYA Controller
           }
         )
+  }
+
+  private def redirect(
+    departureId: String,
+    mode: Mode,
+    equipmentViewModel: AddAnotherEquipmentViewModel
+  )(implicit request: MandatoryDataRequest[_]): Result = {
+
+    val sealIndex = request.userAnswers.get(SealsSection(equipmentViewModel.nextIndex)).map(_.value.length).getOrElse(0)
+
+    (request.userAnswers.get(ContainerIndicatorPage), request.userAnswers.get(EquipmentsSection).isDefined) match {
+      case (Some(true), true) =>
+        Redirect(indexRoutes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex))
+      case _ =>
+        (request.userAnswers.departureData.isSimplified, request.userAnswers.departureData.hasAuthC523) match {
+          case (true, true) =>
+            Redirect(sealRoutes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex, Index(sealIndex)))
+          case _ => Redirect(indexRoutes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex))
+        }
+    }
   }
 }
