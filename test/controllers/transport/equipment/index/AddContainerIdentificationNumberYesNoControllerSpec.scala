@@ -14,80 +14,81 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment
+package controllers.transport.equipment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.transport.equipment.SealIdentificationNumberFormProvider
+import controllers.transport.equipment.index.{routes => equipmentRoutes}
+import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.transport.equipment.SealIdentificationNumberPage
+import org.scalatestplus.mockito.MockitoSugar
+import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transport.equipment.SealIdentificationNumberView
+import views.html.transport.equipment.index.AddContainerIdentificationNumberYesNoView
 
 import scala.concurrent.Future
 
-class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddContainerIdentificationNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider = new SealIdentificationNumberFormProvider()
-  private val form         = formProvider("transport.equipment.sealIdentificationNumber", Seq.empty)
+  private val formProvider = new YesNoFormProvider()
+  private val form         = formProvider("transport.equipment.index.addContainerIdentificationNumberYesNo")
   private val mode         = NormalMode
 
-  private lazy val sealIdentificationNumberRoute =
-    controllers.transport.equipment.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url
+  private lazy val addContainerIdentificationNumberYesNoRoute =
+    equipmentRoutes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "SealIdentificationNumber Controller" - {
+  "AddContainerIdentificationNumberYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+      val request = FakeRequest(GET, addContainerIdentificationNumberYesNoRoute)
+      val result  = route(app, request).value
 
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[SealIdentificationNumberView]
+      val view = injector.instanceOf[AddContainerIdentificationNumberYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode, equipmentIndex, sealIndex)(request, messages).toString
+        view(form, departureId, mode, equipmentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "testString")
+      val userAnswers = emptyUserAnswers.setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+      val request = FakeRequest(GET, addContainerIdentificationNumberYesNoRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "testString"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+      val view = injector.instanceOf[AddContainerIdentificationNumberYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, mode, equipmentIndex, sealIndex)(request, messages).toString
+        view(filledForm, departureId, mode, equipmentIndex)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" - {
 
       setExistingUserAnswers(emptyUserAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, sealIdentificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "testString"))
+      val request = FakeRequest(POST, addContainerIdentificationNumberYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -100,26 +101,24 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val invalidAnswer = ""
-
-      val request    = FakeRequest(POST, sealIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+      val request   = FakeRequest(POST, addContainerIdentificationNumberYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+      val view = injector.instanceOf[AddContainerIdentificationNumberYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, mode, equipmentIndex, sealIndex)(request, messages).toString
+        view(boundForm, departureId, mode, equipmentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+      val request = FakeRequest(GET, addContainerIdentificationNumberYesNoRoute)
 
       val result = route(app, request).value
 
@@ -132,8 +131,8 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, sealIdentificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, addContainerIdentificationNumberYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

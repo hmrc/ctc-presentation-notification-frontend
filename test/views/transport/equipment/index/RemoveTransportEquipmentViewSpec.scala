@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package views.transport
+package views.transport.equipment.index
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.transport.AddTransportEquipmentYesNoView
+import views.html.transport.equipment.index.RemoveTransportEquipmentView
 
-class AddTransportEquipmentYesNoViewSpec extends YesNoViewBehaviours {
+class RemoveTransportEquipmentViewSpec extends YesNoViewBehaviours {
+
+  private val equipmentIdNumber = equipmentIndex.display
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddTransportEquipmentYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[RemoveTransportEquipmentView].apply(form, departureId, NormalMode, equipmentIndex)(fakeRequest, messages)
 
-  override val prefix: String = "transport.addTransportEquipment"
+  override val prefix: String = "transport.equipment.index.removeTransportEquipment"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(equipmentIdNumber)
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption(messages("transport.caption"))
+  behave like pageWithSectionCaption("Transport equipment")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(equipmentIdNumber)
 
-  behave like pageWithContent("p", messages("transport.addTransportEquipment.paragraph"))
+  behave like pageWithRadioItems(args = Seq(equipmentIdNumber))
 
-  behave like pageWithRadioItems()
-
-  behave like pageWithSubmitButton(messages("site.saveAndContinue"))
+  behave like pageWithSubmitButton("Save and continue")
 }

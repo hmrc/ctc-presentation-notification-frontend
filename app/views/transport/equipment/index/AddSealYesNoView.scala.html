@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.equipment.routes
+@import controllers.transport.equipment.index.routes
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 
@@ -29,7 +29,7 @@
 @(form: Form[Boolean], departureId: String, mode: Mode, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.addSealYesNo.title"),
+    title = messages("transport.equipment.index.addSealYesNo.title"),
     showBackLink = true
 ) {
 
@@ -40,9 +40,9 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-            heading = messages("transport.equipment.addSealYesNo.heading"),
+            heading = messages("transport.equipment.index.addSealYesNo.heading"),
             caption = Some(messages("transport.caption")),
-            additionalHtml = messages("transport.equipment.addSealYesNo.paragraph").toParagraph
+            additionalHtml = messages("transport.equipment.index.addSealYesNo.paragraph").toParagraph
             )
         )
         @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))

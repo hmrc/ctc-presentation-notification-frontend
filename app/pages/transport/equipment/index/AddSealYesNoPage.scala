@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package pages.transport
+package pages.transport.equipment.index
 
-import controllers.transport.routes
-import models.{Mode, UserAnswers}
+import controllers.transport.equipment.index.routes
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.TransportSection
+import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddTransportEquipmentYesNoPage extends QuestionPage[Boolean] {
+case class AddSealYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportSection.path \ toString
+  override def path: JsPath = EquipmentSection(equipmentIndex).path \ toString
 
-  override def toString: String = "addTransportEquipment"
+  override def toString: String = "addSealsYesNo"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
+    Some(routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
 
-// TODO: add cleanup when TransportEquipmentPage is added
-//  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-//    value match {
-//      case Some(false) => userAnswers.remove(TransportEquipmentPage)
-//      case _           => super.cleanup(value, userAnswers)
-//    }
-
+  //TODO add seal clean up
 }

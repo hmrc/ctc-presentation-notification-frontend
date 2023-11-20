@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment
+package controllers.transport.equipment.index.seals
 
 import controllers.actions._
 import forms.transport.equipment.SealIdentificationNumberFormProvider
-import models.{Index, Mode, RichOptionalJsArray}
 import models.requests.{DataRequest, MandatoryDataRequest}
+import models.{Index, Mode, RichOptionalJsArray}
 import navigation.Navigator
 import pages.sections.transport.equipment.SealsSection
-import pages.transport.equipment.SealIdentificationNumberPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.equipment.SealIdentificationNumberView
+import views.html.transport.equipment.index.seals.SealIdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,7 +67,7 @@ class SealIdentificationNumberController @Inject() (
     }
 
   private def form(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
-    formProvider("transport.equipment.sealIdentificationNumber", otherSealIdentificationNumbers(equipmentIndex, sealIndex))
+    formProvider("transport.equipment.index.seals.sealIdentificationNumber", otherSealIdentificationNumbers(equipmentIndex, sealIndex))
 
   private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length

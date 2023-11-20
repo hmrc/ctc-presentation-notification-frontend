@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package pages.transport.equipment
+package pages.transport.equipment.index
 
-import controllers.transport.equipment.routes
+import controllers.transport.equipment.index.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.equipment.SealSection
+import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
+case class AddContainerIdentificationNumberYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = SealSection(equipmentIndex, sealIndex).path \ toString
+  override def path: JsPath = EquipmentSection(equipmentIndex).path \ toString
 
-  override def toString: String = "sealIdentificationNumber"
+  override def toString: String = "addContainerIdentificationNumberYesNo"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, sealIndex))
+    Some(routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex))
+
+  //TODO add ContainerIdentificationNumber clean up
 }

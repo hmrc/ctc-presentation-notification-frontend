@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment
+package controllers.transport.equipment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import controllers.transport.equipment.{routes => equipmentRoutes}
+import controllers.transport.equipment.index.{routes => equipmentRoutes}
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport.equipment.AddSealYesNoPage
+import pages.transport.equipment.index.AddSealYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transport.equipment.AddSealYesNoView
+import views.html.transport.equipment.index.AddSealYesNoView
 
 import scala.concurrent.Future
 
 class AddSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider           = new YesNoFormProvider()
-  private val form                   = formProvider("transport.equipment.addSealYesNo")
+  private val form                   = formProvider("transport.equipment.index.addSealYesNo")
   private val mode                   = NormalMode
   private lazy val addSealYesNoRoute = equipmentRoutes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
 

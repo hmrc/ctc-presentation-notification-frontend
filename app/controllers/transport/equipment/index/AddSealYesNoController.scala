@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment
+package controllers.transport.equipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.Navigator
-import pages.transport.equipment.AddSealYesNoPage
+import pages.transport.equipment.index.AddSealYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.equipment.AddSealYesNoView
+import views.html.transport.equipment.index.AddSealYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +44,7 @@ class AddSealYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider("transport.equipment.addSealYesNo")
+  private val form: Form[Boolean] = formProvider("transport.equipment.index.addSealYesNo")
 
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireData(departureId) {

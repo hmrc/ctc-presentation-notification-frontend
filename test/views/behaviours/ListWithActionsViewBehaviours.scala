@@ -34,7 +34,8 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   private val listItem = arbitrary[ListItem].sample.value
 
-  val listItems: Seq[ListItem] = Seq(listItem, listItem)
+  val listItems: Seq[ListItem]              = Seq(listItem, listItem)
+  val listItemsWithJust1Item: Seq[ListItem] = Seq(listItems.head)
 
   val maxedOutListItems: Seq[ListItem] = Seq.fill(maxNumber)(listItem)
 
@@ -43,9 +44,9 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
   def pageWithMoreItemsAllowed(h1Args: Any*)(h2Args: Any*): Unit =
     "page with more items allowed" - {
 
-      behave like pageWithTitle(doc, s"$prefix.singular", h1Args: _*)
+      behave like pageWithTitle(doc, s"$prefix.plural", h1Args: _*)
 
-      behave like pageWithHeading(doc, s"$prefix.singular", h1Args: _*)
+      behave like pageWithHeading(doc, s"$prefix.plural", h1Args: _*)
 
       behave like pageWithListWithActions(doc, listItems)
 
