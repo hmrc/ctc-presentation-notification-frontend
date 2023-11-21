@@ -22,7 +22,7 @@ import config.Constants._
 import generators.Generators
 import models._
 import models.messages.AuthorisationType.C521
-import models.messages.{Authorisation, AuthorisationType, MessageData}
+import models.messages.{Authorisation, MessageData}
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,7 +32,6 @@ import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
-import pages.transport.border.active.{IdentificationPage => TransportIdentificationPage}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
