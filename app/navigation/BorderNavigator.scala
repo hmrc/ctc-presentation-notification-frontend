@@ -80,7 +80,7 @@ object BorderNavigator {
 
     if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty && userAnswers.departureData.TransitOperation.isSecurityTypeInSet)
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
-    else containerIndicatorRouting(userAnswers.departureData.Consignment.containerIndicator, userAnswers, departureId, mode) //TODO follow false path
+    else containerIndicatorRouting(userAnswers.departureData.Consignment.containerIndicator, userAnswers, departureId, mode)
   }
 
   private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
