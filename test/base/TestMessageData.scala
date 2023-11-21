@@ -84,6 +84,8 @@ object TestMessageData {
       HouseConsignment(
         List(
           ConsignmentItem(
+            "18914",
+            1458,
             Commodity("descOfGoods")
           )
         )

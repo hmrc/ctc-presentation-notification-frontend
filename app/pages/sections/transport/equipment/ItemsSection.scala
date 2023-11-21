@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package models.messages
+package pages.sections.transport.equipment
 
-import play.api.libs.json.{Json, OFormat}
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-case class ConsignmentItem(
-  goodsItemNumber: String,
-  declarationGoodsItemNumber: Int,
-  Commodity: Commodity
-)
+case class ItemsSection(equipmentIndex: Index) extends Section[JsArray] {
 
-object ConsignmentItem {
-  implicit val format: OFormat[ConsignmentItem] = Json.format[ConsignmentItem]
+  override def path: JsPath = EquipmentSection(equipmentIndex).path \ toString
+
+  override def toString: String = "items"
+
 }

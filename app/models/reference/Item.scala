@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.reference
 
+import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
-case class ConsignmentItem(
-  goodsItemNumber: String,
-  declarationGoodsItemNumber: Int,
-  Commodity: Commodity
-)
+case class Item(goodsItemNumber: Int, description: String) extends Selectable {
+  override def toString: String = s"$goodsItemNumber - $description"
 
-object ConsignmentItem {
-  implicit val format: OFormat[ConsignmentItem] = Json.format[ConsignmentItem]
+  override val value: String = goodsItemNumber.toString
+}
+
+object Item {
+  implicit val format: OFormat[Item] = Json.format[Item]
 }

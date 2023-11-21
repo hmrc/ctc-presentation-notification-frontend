@@ -116,7 +116,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "MessageData" - {
     val encryptedValue =
-      "fnR9UUxFHzzjzJzKxHKBDyTgCA8gAbhqAB3jpmHnKoi/M1jgydbbrMTLaOmfPyOcPJLzAH6CU+Otx82ubTwLBFTKM0CTgRU7x0DZCuhgacpBIR108EFBCstwIHgCazd2PXZ9/RRmyG6irCyDe4y7cym6+7C/XXGjxqFYPUvCLL3fUq8bc7R/EelfGgAW1KrGJg2sD6sFoY9iIHRy+Dm9W2nHyGStYaK2wzRIJU+Ib/lGIiDnBr1jt4/FhtZhWq8JCRKK+uCF4fEZ+Y0izs6cq+FSaGOetRTgq3dJbmZG3vlrQ42VUp80DeSL/DJuKT3gcOr6JWXZUyERM0OdBEPftCQYAdy78SsuezjkNNAi+TPp7TFwQ8a0dpYLvQDoKJdyg+i7lbGsmDBP0H2eecknPH4t3qOoK3ctO771KGf6yNUq"
+      "r5/szDgj+BL50TfhgcNlvztZJZWWvycri43GeiUy/gAodIUQaIQHKD1UCAn0HanLuOydhRnBr25oMBbs6oJDDIX3/24UDkRMtJHB6HxWOzBQBNRoGfsv6+LVaxgDd3YJtuk+Jphg/WsSmep3yA4DM6W6TE2BYY608Mf2BYcVa8knOugd7xjooLg1cPNA8pfiJT5pEqzm+Ex7cwrmxQJO7sMerkRYHEA1I2WW7rx0IT47QhnAFJ9iLwz/0wnbmIWh608iZxB07Mw5b3PkRAAEVSIojmkQ7wPxG0h4NtfIS8/wnOkhmw/yVLR8jHJM9IiW3m0moVK6158mBWooekqED2DuEQh4/QaaCLAztNtkEM2AT/Q3MLFhJgVPkqFY1Rolav7urC+dwkcTCja4pTH/WJL+gpqjnCu90U2PZL8Sn9yDkr58583RYBHPEBabXt7Z7ph2/UYVLm6RjxJ7FDh3QRrdGdAWAi3PvUmCSkudG5KEMFogvYmUPpC/+BE1gJv9JYtwr28rFHI="
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
@@ -133,6 +133,8 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
           HouseConsignment(
             List(
               ConsignmentItem(
+                "goodsItemsNo1",
+                1,
                 Commodity("descOfGoods")
               )
             )

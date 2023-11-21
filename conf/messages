@@ -377,3 +377,9 @@ transport.equipment.addSealYesNo.title = Do you want to add a seal?
 transport.equipment.addSealYesNo.heading = Do you want to add a seal?
 transport.equipment.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transport.equipment.addSealYesNo.error.required = Select yes if you want to add a seal
+
+transport.equipment.selectItems.title = Which items does this transport equipment apply to?
+transport.equipment.selectItems.heading = Which items does this transport equipment apply to?
+transport.equipment.selectItems.paragraph = You can only select from the items you added when making the declaration.
+transport.equipment.selectItems.label = Search your {0} items.
+transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
