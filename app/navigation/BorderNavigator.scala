@@ -86,7 +86,7 @@ class BorderNavigator @Inject() () extends Navigator {
           controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
             .onPageLoad(departureId, mode, Index(getTransportEquipmentIndex(ua)))
         )
-      case Some(false) => Some(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
+      case Some(false) => Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
       case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO: update to border check your answers once implemented
     }
 

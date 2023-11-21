@@ -63,7 +63,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 result.listItems mustBe Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
-                    changeUrl = "#", //TODO: to be implemented as part of CTCP-4057
+                    changeUrl =
+                      controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url,
                     removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url)
                   )
                 )
@@ -85,7 +86,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 result.listItems mustBe Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
-                    changeUrl = "#", //TODO: to be implemented as part of CTCP-4057
+                    changeUrl =
+                      controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url,
                     removeUrl = None
                   )
                 )
@@ -113,7 +115,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               result.listItems mustBe Seq(
                 ListItem(
                   name = s"Transport equipment 1 - no container identification number",
-                  changeUrl = "#", //TODO: to be implemented as part of CTCP-4057
+                  changeUrl =
+                    controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url,
                   removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(0)).url)
                 )
               )
@@ -140,12 +143,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               result.listItems mustBe Seq(
                 ListItem(
                   name = "Transport equipment 1 - no container identification number",
-                  changeUrl = "#", //TODO: to be implemented as part of CTCP-4057
+                  changeUrl =
+                    controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url,
                   removeUrl = None
                 ),
                 ListItem(
                   name = s"Transport equipment 2 - container $containerId",
-                  changeUrl = "#", //TODO: to be implemented as part of CTCP-4057
+                  changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(1)).url)
                 )
               )

@@ -18,12 +18,18 @@ package navigator
 
 import base.{SpecBase, TestMessageData}
 import generators.Generators
+import models.ProcedureType.Simplified
 import models._
 import models.messages.{Authorisation, AuthorisationType}
-import models.messages.AuthorisationType.C521
+import models.messages.AuthorisationType.{C521, C523}
 import navigation.EquipmentNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.ContainerIndicatorPage
+import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
+import viewModels.transport.equipment.AddAnotherEquipmentViewModel
+
+import javax.inject.Inject
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -68,6 +74,74 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
 
       }
+
+      "Must go from AddAnotherTransportEquipmentPage" - {
+        //        "to Check your answers page when answered no" ignore { //todo action when CYA page built
+        //          val userAnswers = emptyUserAnswers
+        //            .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), false)
+        //          navigator
+        //            .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+        //            .mustBe (controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))//todo when CYA page built will go there
+        //        }
+
+        "when answered yes" - {
+          "when ContainerIndicatorPage is true" - {
+            "must navigate to AddContainerIdentificationNumberYesNoController " in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, true)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+                )
+            }
+          }
+          "when ContainerIndicatorPage is false" - {
+
+            "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test"), Authorisation(C521, "test2")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, false)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
+                )
+            }
+
+            "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test2")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, false)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+                )
+            }
+
+            "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test2")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, false)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+                )
+            }
+
+          }
+        }
+
+      }
+
     }
 
   }

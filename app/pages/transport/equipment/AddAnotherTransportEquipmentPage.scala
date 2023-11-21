@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages.transport.border
+package pages.transport.equipment
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.transport.TransportSection
+import pages.sections.transport.equipment.EquipmentsSection
 import play.api.libs.json.JsPath
 
-case class AddAnotherBorderModeOfTransportPage(activeIndex: Index) extends QuestionPage[Boolean] {
-  override def toString: String = "addAnotherBorderModeOfTransport"
-  override def path: JsPath     = TransportSection.path \ toString
+case class AddAnotherTransportEquipmentPage(activeIndex: Index) extends QuestionPage[Boolean] {
+  override def toString: String = "addAnotherTransportEquipment"
+
+  override def path: JsPath = EquipmentsSection.path \ toString
 }

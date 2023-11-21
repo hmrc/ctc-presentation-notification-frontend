@@ -19,10 +19,9 @@ package controllers.transport.border.active
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import controllers.transport.border.active.{routes => borderActiveRoutes}
-import controllers.transport.border.{routes => borderRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

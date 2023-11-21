@@ -21,7 +21,7 @@ import models._
 import navigation.BorderNavigator.borderModeOfTransportPageNavigation
 import pages._
 import pages.transport.ContainerIndicatorPage
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border._
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -30,6 +30,7 @@ import javax.inject.Inject
 class ContainerNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
+    //  case AddAnotherEquipmentPage
     case ContainerIndicatorPage => ua => containerIndicatorNavigation(ua, departureId, mode)
   }
 

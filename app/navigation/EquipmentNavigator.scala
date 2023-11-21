@@ -16,24 +16,45 @@
 
 package navigation
 
-import com.google.inject.Singleton
 import models._
 import models.messages.AuthorisationType
 import pages._
+import pages.transport.ContainerIndicatorPage
+import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 import play.api.mvc.Call
 
-import javax.inject.Inject
-
-@Singleton
-class EquipmentNavigator @Inject() () extends Navigator {
+class EquipmentNavigator extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-
+    case AddAnotherTransportEquipmentPage(equipmentIndex: Index)   => ua => addAnotherTransportEquipmentRoute(ua, equipmentIndex, departureId, mode)
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) => ua => addContainerIdentificationNumberYesNoRoute(ua, equipmentIndex, departureId, mode)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+
+  private def addAnotherTransportEquipmentRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
+    ua.get(AddAnotherTransportEquipmentPage(equipmentIndex)) match {
+      case Some(true) =>
+        ua.get(ContainerIndicatorPage) match {
+          case Some(true) =>
+            Some(controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex))
+
+          case _ =>
+            (ua.departureData.isSimplified, ua.departureData.hasAuthC523) match {
+
+              case (true, true) =>
+                Some(
+                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
+                )
+              case _ => Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
+
+            }
+
+          case Some(false) => ??? //todo- redirect to CYA when built
+        }
+    }
 
   private def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] = {
 
@@ -42,16 +63,13 @@ class EquipmentNavigator @Inject() () extends Navigator {
     ua.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) match {
       case Some(true) =>
         Some(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+      case Some(false) if ua.departureData.isSimplified && isAuth523Present =>
+        Some(controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
       case Some(false) =>
-        if (ua.departureData.isSimplified && isAuth523Present) {
-          Some(controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
-        } else {
-          Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
-        }
-      case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
-
+        Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
+      case _ =>
+        Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
-
   }
 
 }
