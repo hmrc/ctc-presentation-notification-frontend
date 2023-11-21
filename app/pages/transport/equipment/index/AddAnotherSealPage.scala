@@ -18,10 +18,10 @@ package pages.transport.equipment.index
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.transport.equipment.EquipmentSection
+import pages.sections.transport.equipment.{EquipmentSection, SealSection}
 import play.api.libs.json.JsPath
 
-case class AddAnotherSealPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherSealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[Boolean] {
   override def toString: String = "addAnotherSeal"
   override def path: JsPath     = EquipmentSection(equipmentIndex).path \ toString
 }

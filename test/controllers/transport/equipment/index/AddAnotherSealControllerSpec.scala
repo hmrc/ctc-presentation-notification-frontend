@@ -145,8 +145,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual
-            sealsRoutes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(listItems.length)).url
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
 
@@ -164,7 +163,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual Call("GET", "#").url // TODO redirect to CYA
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
     }
@@ -183,7 +182,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#").url // TODO redirect to CYA
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 

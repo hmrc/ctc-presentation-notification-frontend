@@ -18,15 +18,15 @@ package navigator
 
 import base.{SpecBase, TestMessageData}
 import generators.Generators
+import models.messages.AuthorisationType.{C521, C523}
 import models.messages.{Authorisation, AuthorisationType}
-import models.messages.AuthorisationType.C521
 import models.{Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
-import pages.transport.equipment.index.{AddSealYesNoPage, ContainerIdentificationNumberPage}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import pages.transport.equipment.index.{AddAnotherSealPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   val navigator = new EquipmentNavigator
@@ -41,9 +41,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             answers =>
               val updatedAnswers =
                 answers.copy(departureData =
-                  TestMessageData.messageData.copy(Authorisation =
-                    Some(Seq(Authorisation(C521, "1234"), Authorisation(AuthorisationType.Other("C523"), "1235")))
-                  )
+                  TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234"), Authorisation(C523, "1235"))))
                 )
 
               navigator
@@ -57,9 +55,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers =
-                  answers.copy(departureData =
-                    TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C523"), "1235"))))
-                  )
+                  answers.copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1235")))))
 
                 navigator
                   .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
@@ -89,7 +85,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(AddTransportEquipmentYesNoPage, true)
                   .copy(departureData =
                     TestMessageData.messageData
-                      .copy(Authorisation = Some(Seq(Authorisation(C521, "1234"), Authorisation(AuthorisationType.Other("C523"), "1235"))))
+                      .copy(Authorisation = Some(Seq(Authorisation(C521, "1234"), Authorisation(C523, "1235"))))
                   )
 
               navigator
@@ -105,7 +101,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val updatedAnswers =
                   answers
                     .setValue(AddTransportEquipmentYesNoPage, true)
-                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C523"), "1235")))))
+                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1235")))))
 
                 navigator
                   .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
@@ -142,8 +138,17 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           }
         }
 
-        "to goods reference item page when user answers no" ignore {
-          // Todo Update when CTCP-3956 is completed
+        "to goods reference item page when user answers no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(AddSealYesNoPage(equipmentIndex), false)
+
+              navigator
+                .nextPage(AddSealYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+          }
         }
       }
 
@@ -158,6 +163,26 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode)
               .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
         }
+      }
+
+      "must go from add another seal page" - {
+        "to seal identification number page when user answers yes" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal1")
+            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), "Seal2")
+            .setValue(AddAnotherSealPage(equipmentIndex, Index(2)), true)
+          navigator
+            .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
+            .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
+        }
+      }
+
+      "to to goods reference item page when user answers no" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
+        navigator
+          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
+          .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
       }
     }
   }
