@@ -48,27 +48,6 @@ class BorderNavigator @Inject() () extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
-  private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-    val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
-
-    (ua.departureData.TransitOperation.isSecurityTypeInSet, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
-      //TODO: Change route for _ case when page has been added
-      case (true, false) =>
-        Some(routes.IdentificationController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans)))
-      case _ => Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
-    }
-  }
-//  private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-//    val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
-//
-//    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
-//      //TODO: Change route for first case when page has been added
-//      case (Some(BorderMode("5", _)), "0", true) =>
-//        Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
-//      case _ => Some(routes.IdentificationController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans)))
-//    }
-//  }
-
   private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.isSecurityTypeInSet) match {
       case (Some(BorderMode("4", _)), true) =>
@@ -99,7 +78,7 @@ object BorderNavigator {
 
     val numberOfActiveBorderMeans: Int = userAnswers.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
 
-    if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty && checkTransitOperationSecurity(userAnswers))
+    if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty && userAnswers.departureData.TransitOperation.isSecurityTypeInSet)
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
     else containerIndicatorRouting(userAnswers.departureData.Consignment.containerIndicator, userAnswers, departureId, mode) //TODO follow false path
   }
