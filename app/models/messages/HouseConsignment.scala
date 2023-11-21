@@ -16,18 +16,10 @@
 
 package models.messages
 
-import config.Constants.{EntryAndExitSummaryDeclarationSecurityDetails, EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails}
 import play.api.libs.json.{Json, OFormat}
 
-case class TransitOperation(LRN: Option[String], limitDate: Option[String], security: String) {
+case class HouseConsignment(ConsignmentItem: List[ConsignmentItem])
 
-  def isSecurityTypeInSet: Boolean = {
-    val allowed = Set(EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails, EntryAndExitSummaryDeclarationSecurityDetails)
-    allowed.contains(security)
-  }
-
-}
-
-object TransitOperation {
-  implicit val format: OFormat[TransitOperation] = Json.format[TransitOperation]
+object HouseConsignment {
+  implicit val format: OFormat[HouseConsignment] = Json.format[HouseConsignment]
 }

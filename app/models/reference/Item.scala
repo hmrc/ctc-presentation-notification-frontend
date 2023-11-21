@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.reference
 
-import config.Constants.{EntryAndExitSummaryDeclarationSecurityDetails, EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails}
+import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
-case class TransitOperation(LRN: Option[String], limitDate: Option[String], security: String) {
+case class Item(goodsItemNumber: Int, description: String) extends Selectable {
+  override def toString: String = s"$goodsItemNumber - $description"
 
-  def isSecurityTypeInSet: Boolean = {
-    val allowed = Set(EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails, EntryAndExitSummaryDeclarationSecurityDetails)
-    allowed.contains(security)
-  }
-
+  override val value: String = goodsItemNumber.toString
 }
 
-object TransitOperation {
-  implicit val format: OFormat[TransitOperation] = Json.format[TransitOperation]
+object Item {
+  implicit val format: OFormat[Item] = Json.format[Item]
 }

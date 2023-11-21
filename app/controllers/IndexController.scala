@@ -16,13 +16,16 @@
 
 package controllers
 
+import cats.data.OptionT
 import controllers.actions._
-import models.UserAnswers
+import models.{LocalReferenceNumber, UserAnswers}
+import models.messages.MessageData
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.DepartureMessageService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.TimeMachine
 
@@ -42,34 +45,27 @@ class IndexController @Inject() (
 
   def index(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
     implicit request =>
-      service.getDepartureData(departureId).flatMap {
-        case Some(departureData) =>
-          service.getLRN(departureId) flatMap {
-            lrn =>
-              sessionRepository
-                .set(
-                  request.userAnswers.getOrElse(
-                    UserAnswers(
-                      departureId,
-                      request.eoriNumber,
-                      lrn.value,
-                      JsObject.empty,
-                      timeMachine.now(),
-                      departureData.data
-                    )
-                  )
-                )
-                .map {
-                  _ =>
-                    if (departureData.data.isDataComplete) {
-                      Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
-                    } else {
-                      Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
-                    }
-                }
-          }
-        case None => Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
-      }
+      (for {
+        departureData <- OptionT(service.getDepartureData(departureId))
+        lrn           <- OptionT.liftF(retrieveLRN(departureData.data, departureId))
+        _ <- OptionT.liftF(
+          sessionRepository
+            .set(
+              request.userAnswers.getOrElse(
+                UserAnswers(departureId, request.eoriNumber, lrn.value, JsObject.empty, timeMachine.now(), departureData.data)
+              )
+            )
+        )
+      } yield departureData.data.isDataComplete match {
+        case true  => Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
+        case false => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+      }).getOrElse(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
   }
+
+  private def retrieveLRN(messageData: MessageData, departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] =
+    messageData.TransitOperation.LRN match {
+      case Some(lrn) => Future.successful(LocalReferenceNumber(lrn))
+      case _         => service.getLRN(departureId)
+    }
 
 }

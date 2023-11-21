@@ -16,6 +16,8 @@
 
 package models.messages
 
+import models.SelectableList
+import models.reference.Item
 import play.api.libs.json.{Json, OFormat}
 
 case class Consignment(
@@ -24,9 +26,20 @@ case class Consignment(
   TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
   ActiveBorderTransportMeans: Option[List[ActiveBorderTransportMeans]],
-  PlaceOfLoading: Option[PlaceOfLoading]
+  PlaceOfLoading: Option[PlaceOfLoading],
+  HouseConsignment: Seq[HouseConsignment]
 ) {
   def isConsignmentActiveBorderTransportMeansEmpty = ActiveBorderTransportMeans.toList.flatten.isEmpty
+
+  val allItems: Seq[Item] =
+    HouseConsignment
+      .foldLeft(Seq.empty[Item]) {
+        (listOfItems, houseConsignment) =>
+          houseConsignment.ConsignmentItem.map(
+            item => Item(item.declarationGoodsItemNumber, item.Commodity.descriptionOfGoods)
+          ) ++ listOfItems
+      }
+      .sortBy(_.goodsItemNumber)
 }
 
 object Consignment {
