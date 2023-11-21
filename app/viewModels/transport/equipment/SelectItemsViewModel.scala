@@ -26,24 +26,17 @@ case class SelectItemsViewModel(items: SelectableList[Item], allItemsCount: Int)
 object SelectItemsViewModel {
 
   def apply(userAnswers: UserAnswers, selectedItem: Option[Item] = None): SelectItemsViewModel = {
-    val allItems: Seq[Item] = userAnswers.departureData.Consignment.allItems
+    val allItems = userAnswers.departureData.Consignment.allItems
 
-    val filteredList = (0 until userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)).foldLeft(allItems) {
-      (allItems, equipmentIndex) =>
-        (0 until userAnswers.get(ItemsSection(Index(equipmentIndex))).map(_.value.length).getOrElse(0)).foldLeft(allItems) {
-          (filteredItems, itemIndex) =>
-            userAnswers
-              .get(ItemPage(Index(equipmentIndex), Index(itemIndex)))
-              .map {
-                itemToFilter =>
-                  filteredItems.filterNot(
-                    item => item == itemToFilter
-                  )
-              }
-              .getOrElse(filteredItems)
-        }
-    } ++ selectedItem.map(Seq(_)).getOrElse(Seq.empty)
+    val filteredList = (for {
+      equipmentIndex <- 0 until userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)
+      itemIndex      <- 0 until userAnswers.get(ItemsSection(Index(equipmentIndex))).map(_.value.length).getOrElse(0)
+      itemToFilter   <- userAnswers.get(ItemPage(Index(equipmentIndex), Index(itemIndex)))
+    } yield itemToFilter).foldLeft(allItems) {
+      (items, itemToFilter) =>
+        items.filterNot(_ == itemToFilter)
+    }
 
-    SelectItemsViewModel(SelectableList(filteredList), allItems.length)
+    SelectItemsViewModel(SelectableList(filteredList ++ selectedItem.toSeq), allItems.length)
   }
 }
