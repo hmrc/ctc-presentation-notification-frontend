@@ -48,6 +48,16 @@ class BorderNavigator @Inject() () extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
+  private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
+    val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
+
+    (ua.departureData.TransitOperation.isSecurityTypeInSet, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
+      //TODO: Change route for _ case when page has been added
+      case (true, false) =>
+        Some(routes.IdentificationController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans)))
+      case _ => Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
+    }
+  }
 //  private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
 //    val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
 //
@@ -60,8 +70,8 @@ class BorderNavigator @Inject() () extends Navigator {
 //  }
 
   private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
-    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security) match {
-      case (Some(BorderMode("4", _)), "1" | "2" | "3") =>
+    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.isSecurityTypeInSet) match {
+      case (Some(BorderMode("4", _)), true) =>
         Some(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
       case _ => Some(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
     }

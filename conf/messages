@@ -55,6 +55,10 @@ arrivalDate.caption = Estimated arrival date
 placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
 
+transport.prefix = Transport equipment {0}
+transport.container = container {0}
+transport.value.withoutContainer = no container identification number
+
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
@@ -410,3 +414,17 @@ transport.equipment.index.containerIdentificationNumber.error.duplicate = This i
 transport.equipment.index.removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
 transport.equipment.index.removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
 transport.equipment.index.removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}
+
+transport.equipment.selectItems.title = Which items does this transport equipment apply to?
+transport.equipment.selectItems.heading = Which items does this transport equipment apply to?
+transport.equipment.selectItems.paragraph = You can only select from the items you added when making the declaration.
+transport.equipment.selectItems.label = Search your {0} items.
+transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
+
+transport.equipment.addAnotherEquipment.singular.title = You have added 1 transport equipment
+transport.equipment.addAnotherEquipment.plural.title = You have added {0} transport equipment
+transport.equipment.addAnotherEquipment.singular.heading = You have added 1 transport equipment
+transport.equipment.addAnotherEquipment.plural.heading = You have added {0} transport equipment
+transport.equipment.addAnotherEquipment.label = Do you want to add any other transport equipment?
+transport.equipment.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
+transport.equipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment

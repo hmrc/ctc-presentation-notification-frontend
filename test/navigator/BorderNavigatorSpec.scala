@@ -62,6 +62,24 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
+        "to more information page when security mode of transport at border is not 5, security is 1,2,3 and active border transport is present " in {
+
+          forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            (borderModeOfTransport, securityType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = securityType)
+                  )
+                )
+              navigator
+                .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                .mustBe(MoreInformationPage.route(userAnswers, departureId, mode).value)
+          }
+
+        }
+
         "to container identification number page when security mode of transport at border is 5" +
           "and security is 0" +
           "and active border transport is present" +
