@@ -17,26 +17,15 @@
 package controllers.transport.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.reference.Item
-import models.{Index, NormalMode, SelectableList}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import pages.locationOfGoods.CountryPage
+import models.{Index, NormalMode}
 import pages.transport.equipment.ItemPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CountriesService
 import viewModels.transport.equipment.SelectItemsViewModel
-import views.html.locationOfGoods.CountryView
 import views.html.transport.equipment.SelectItemsView
-
-import scala.concurrent.Future
 
 class SelectItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 

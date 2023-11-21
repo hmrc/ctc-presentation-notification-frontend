@@ -22,7 +22,8 @@ import models.messages._
 import models.reference.Item
 import models.{Index, SelectableList}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.equipment.{ItemPage, SealIdentificationNumberPage}
+import pages.transport.equipment.ItemPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
 class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
