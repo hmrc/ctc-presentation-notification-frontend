@@ -85,7 +85,7 @@ class AddAnotherEquipmentController @Inject() (
     (request.userAnswers.get(ContainerIndicatorPage), request.userAnswers.get(EquipmentsSection).isDefined) match {
       case (Some(true), true) =>
         Redirect(indexRoutes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex))
-      case _ if request.userAnswers.departureData.isSimplified & request.userAnswers.departureData.hasAuthC523 =>
+      case _ if request.userAnswers.departureData.isSimplified && request.userAnswers.departureData.hasAuthC523 =>
         Redirect(sealRoutes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex, Index(sealIndex)))
       case _ => Redirect(indexRoutes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex))
     }
