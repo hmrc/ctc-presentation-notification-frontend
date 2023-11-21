@@ -18,11 +18,14 @@ package controllers.transport.equipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
+import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
+import navigation.EquipmentNavigator
 import pages.sections.transport.equipment.EquipmentSection
+import pages.transport.equipment.RemoveTransportEquipmentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.equipment.index.RemoveTransportEquipmentView
@@ -36,13 +39,14 @@ class RemoveTransportEquipmentController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveTransportEquipmentView
+  view: RemoveTransportEquipmentView,
+  navigator: EquipmentNavigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private def addAnother(departureId: String, mode: Mode): Call =
-    Call("GET", "#") //TODO redirect to addAnother page
+    controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode)
 
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("transport.equipment.removeTransportEquipment", equipmentIndex.display)
@@ -61,16 +65,18 @@ class RemoveTransportEquipmentController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex))),
-            value =>
-              for {
-                updatedAnswers <-
-                  if (value) {
-                    Future.fromTry(request.userAnswers.remove(EquipmentSection(equipmentIndex)))
-                  } else {
-                    Future.successful(request.userAnswers)
-                  }
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(departureId, mode))
+            value => redirect(mode, value, departureId, equipmentIndex)
           )
     }
+
+  private def redirect(
+    mode: Mode,
+    value: Boolean,
+    departureId: String,
+    equipmentIndex: Index
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveTransportEquipmentPage(equipmentIndex), value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(RemoveTransportEquipmentPage(equipmentIndex), updatedAnswers, departureId, mode))
 }

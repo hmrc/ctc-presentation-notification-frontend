@@ -16,11 +16,12 @@
 
 package navigation
 
+import akka.util.OptionVal
 import models._
 import models.messages.AuthorisationType
 import pages._
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.AddAnotherTransportEquipmentPage
+import pages.transport.equipment.{AddAnotherTransportEquipmentPage, RemoveTransportEquipmentPage}
 import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 import play.api.mvc.Call
 
@@ -29,16 +30,26 @@ class EquipmentNavigator extends Navigator {
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddAnotherTransportEquipmentPage(equipmentIndex: Index)   => ua => addAnotherTransportEquipmentRoute(ua, equipmentIndex, departureId, mode)
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) => ua => addContainerIdentificationNumberYesNoRoute(ua, equipmentIndex, departureId, mode)
+    case RemoveTransportEquipmentPage(equipmentIndex)              => ua => removeTransportEquipmentRoute(ua, equipmentIndex, departureId, mode)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+
+  private def removeTransportEquipmentRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
+    ua.get(RemoveTransportEquipmentPage(equipmentIndex)) match {
+      case Some(true) if equipmentIndex.isFirst =>
+        Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
+      case Some(false) => Some(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
+    }
 
   private def addAnotherTransportEquipmentRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
     ua.get(AddAnotherTransportEquipmentPage(equipmentIndex)) match {
       case Some(true) =>
         ua.get(ContainerIndicatorPage) match {
           case Some(true) =>
-            Some(controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex))
+            Some(
+              controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex.next)
+            )
 
           case _ =>
             (ua.departureData.isSimplified, ua.departureData.hasAuthC523) match {

@@ -25,8 +25,9 @@ import models.messages.AuthorisationType.{C521, C523}
 import navigation.EquipmentNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.AddAnotherTransportEquipmentPage
-import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
+import pages.transport.equipment.{AddAnotherTransportEquipmentPage, RemoveTransportEquipmentPage}
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, ContainerIdentificationNumberPage}
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel
 
 import javax.inject.Inject
@@ -86,7 +87,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         "when answered yes" - {
           "when ContainerIndicatorPage is true" - {
-            "must navigate to AddContainerIdentificationNumberYesNoController " in {
+            "must navigate to AddContainerIdentificationNumberYesNoPage " in {
               val userAnswers = emptyUserAnswers
                 .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test")))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
@@ -94,7 +95,8 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               navigator
                 .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
                 .mustBe(
-                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
+                    .onPageLoad(departureId, mode, equipmentIndex.next)
                 )
             }
           }
@@ -142,6 +144,38 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       }
 
+      "Must go from RemoveTransportEquipmentPage" - {
+        "when answered yes" - {
+          "if equipment.index is first" - {
+            "must navigate to AddContainerIdentificationNumberYesNoPage " in {
+              val userAnswers = emptyUserAnswers
+                .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+                .setValue(ContainerIdentificationNumberPage(equipmentIndex), "test")
+                .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "test")
+                .setValue(RemoveTransportEquipmentPage(equipmentIndex), true)
+              navigator
+                .nextPage(RemoveTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode)
+                )
+            }
+          }
+
+        }
+        "when answered no toAddAnotherTransportEquipmentPage" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "test")
+            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "test")
+            .setValue(RemoveTransportEquipmentPage(equipmentIndex), false)
+          navigator
+            .nextPage(RemoveTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+            .mustBe(
+              controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode)
+            )
+        }
+      }
     }
 
   }

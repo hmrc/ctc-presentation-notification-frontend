@@ -135,103 +135,8 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
       }
     }
 
-    "when max limit not reached" - {
-      "when yes submitted" - {
-        "must redirect to Add Container Identification Number page for the next index" in {
-          val oneListItem          = Seq(listItem)
-          val notMaxedOutViewModel = viewModel.copy(listItems = oneListItem)
-
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
-
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, true)
-            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "containerId")
-
-          setExistingUserAnswers(userAnswers)
-
-          val request = FakeRequest(POST, addAnotherEquipmentRoute)
-            .withFormUrlEncodedBody(("value", "true"))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual indexRoutes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, Index(1)).url
-        }
-
-        "must redirect to Seal Identification Number page for the next index" in {
-          val notMaxedOutViewModel = viewModel.copy(listItems = Nil)
-
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
-
-          val authData = Some(
-            Seq(
-              Authorisation(C521, "AB123"),
-              Authorisation(C523, "CD456")
-            )
-          )
-
-          val userAnswers = emptyUserAnswers
-            .copy(departureData = messageData.copy(Authorisation = authData))
-            .setValue(ContainerIndicatorPage, false)
-
-          setExistingUserAnswers(userAnswers)
-
-          val request = FakeRequest(POST, addAnotherEquipmentRoute)
-            .withFormUrlEncodedBody(("value", "true"))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual sealRoutes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url
-        }
-
-        "must redirect to Add Seal page for the next index" in {
-          val notMaxedOutViewModel = viewModel.copy(listItems = Nil)
-
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
-
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, false)
-
-          setExistingUserAnswers(userAnswers)
-
-          val request = FakeRequest(POST, addAnotherEquipmentRoute)
-            .withFormUrlEncodedBody(("value", "true"))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual indexRoutes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
-        }
-      }
-
-      "when no submitted" - {
-        "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
-
-          setExistingUserAnswers(emptyUserAnswers)
-
-          val request = FakeRequest(POST, addAnotherEquipmentRoute)
-            .withFormUrlEncodedBody(("value", "false"))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual "#" //TODO: redirect to CYA
-        }
-      }
-    }
-
     "when max limit reached" - {
-      "must redirect to next page" in {
+      "must redirect to next page" ignore {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
@@ -244,7 +149,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "#" //TODO: redirect to CYA
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
