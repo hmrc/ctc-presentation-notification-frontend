@@ -20,10 +20,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem, Text}
-import viewModels.ListItem
-import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.ListItem
+import viewModels.transport.equipment.AddAnotherEquipmentViewModel
+import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
 import viewModels.transport.equipment.AddAnotherSealViewModel
 
 trait ViewModelGenerators {
@@ -59,6 +60,13 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherSealViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherEquipmentViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall)
   }
 
   implicit lazy val arbitraryLabel: Arbitrary[Label] = Arbitrary {

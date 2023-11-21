@@ -17,7 +17,7 @@
 package models.messages
 
 import cats.implicits._
-import models.messages.AuthorisationType.C521
+import models.messages.AuthorisationType.{C521, C523}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -44,6 +44,7 @@ case class MessageData(
 ) {
 
   val isSimplified: Boolean = Authorisation.flatMap(_.find(_.`type` == C521)).isDefined
+  val hasAuthC523: Boolean  = Authorisation.flatMap(_.find(_.`type` == C523)).isDefined
 
   def isDataComplete: Boolean =
     List(
