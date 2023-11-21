@@ -17,6 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -30,4 +31,8 @@ class UnLocodeService @Inject() (
     referenceDataConnector
       .getUnLocode(unLocode)
       .map(_.nonEmpty)
+      .recover {
+        case _: NoReferenceDataFoundException => false
+        case e: Exception                     => throw e
+      }
 }
