@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package pages.transport.border
+package pages.transport.equipment.index
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.transport.TransportSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class AddAnotherBorderModeOfTransportPage(activeIndex: Index) extends QuestionPage[Boolean] {
-  override def toString: String = "addAnotherBorderModeOfTransport"
-  override def path: JsPath     = TransportSection.path \ toString
+class AddContainerIdentificationNumberYesNoPageSpec extends PageBehaviours {
+
+  "AddContainerIdentificationNumberYesNoPage" - {
+
+    beRetrievable[Boolean](AddContainerIdentificationNumberYesNoPage(equipmentIndex))
+
+    beSettable[Boolean](AddContainerIdentificationNumberYesNoPage(equipmentIndex))
+
+    beRemovable[Boolean](AddContainerIdentificationNumberYesNoPage(equipmentIndex))
+
+    //TODO: Add ContainerIdentificationNumber clean up
+  }
 }

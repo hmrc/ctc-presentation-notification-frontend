@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages.transport.equipment
+package pages.transport.equipment.index.seals
 
 import pages.behaviours.PageBehaviours
 
-class AddSealYesNoPageSpec extends PageBehaviours {
+class SealIdentificationNumberPageSpec extends PageBehaviours {
 
-  "AddSealYesNoPage" - {
+  "SealIdentificationNumberPage" - {
 
-    beRetrievable[Boolean](AddSealYesNoPage(equipmentIndex))
+    beRetrievable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
 
-    beSettable[Boolean](AddSealYesNoPage(equipmentIndex))
+    beSettable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
 
-    beRemovable[Boolean](AddSealYesNoPage(equipmentIndex))
-
-    //TODO: Add seal clean up
+    beRemovable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
   }
 }

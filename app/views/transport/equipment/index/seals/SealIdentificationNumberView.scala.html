@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.equipment.routes
+@import controllers.transport.equipment.index.seals.routes
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
 
@@ -29,7 +29,7 @@
 @(form: Form[String], departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.sealIdentificationNumber.title"),
+    title = messages("transport.equipment.index.seals.sealIdentificationNumber.title"),
     showBackLink = true
 ) {
 
@@ -40,10 +40,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transport.equipment.sealIdentificationNumber.heading"),
+                heading = messages("transport.equipment.index.seals.sealIdentificationNumber.heading"),
                 caption = Some(messages("transport.caption"))
             ),
-            hint = Some(messages("transport.equipment.sealIdentificationNumber.hint")),
+            hint = Some(messages("transport.equipment.index.seals.sealIdentificationNumber.hint")),
             inputClass = InputSize.Width20
         )
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.transport.equipment
+package views.transport.equipment.index.seals
 
 import forms.transport.equipment.SealIdentificationNumberFormProvider
 import models.NormalMode
@@ -23,11 +23,11 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.transport.equipment.SealIdentificationNumberView
+import views.html.transport.equipment.index.seals.SealIdentificationNumberView
 
 class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "transport.equipment.sealIdentificationNumber"
+  override val prefix: String = "transport.equipment.index.seals.sealIdentificationNumber"
 
   override def form: Form[String] = new SealIdentificationNumberFormProvider()(prefix, Seq.empty)
 

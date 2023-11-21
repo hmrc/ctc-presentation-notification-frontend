@@ -17,9 +17,9 @@
 package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
 import controllers.routes
 import controllers.transport.border.active.{routes => borderActiveRoutes}
+import controllers.transport.border.{routes => borderRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
 import models.{Index, NormalMode}
@@ -40,8 +40,6 @@ import views.html.transport.border.active.AddAnotherBorderTransportView
 class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider = new AddAnotherFormProvider()
-
-  implicit override def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   private def form(viewModel: AddAnotherBorderTransportViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore)

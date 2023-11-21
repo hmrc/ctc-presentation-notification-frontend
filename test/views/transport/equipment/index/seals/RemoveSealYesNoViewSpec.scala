@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package views.transport
+package views.transport.equipment.index.seals
 
+import generators.Generators
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.transport.AddTransportEquipmentYesNoView
+import views.html.transport.equipment.index.seals.RemoveSealYesNoView
 
-class AddTransportEquipmentYesNoViewSpec extends YesNoViewBehaviours {
+class RemoveSealYesNoViewSpec extends YesNoViewBehaviours with Generators {
+
+  private val sealIdNumber = nonEmptyString.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddTransportEquipmentYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[RemoveSealYesNoView].apply(form, departureId, NormalMode, equipmentIndex, sealIndex, sealIdNumber)(fakeRequest, messages)
 
-  override val prefix: String = "transport.addTransportEquipment"
+  override val prefix: String = "transport.equipment.index.seals.transport.equipment.removeSeal"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(sealIdNumber)
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption(messages("transport.caption"))
+  behave like pageWithSectionCaption("Transport equipment")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(sealIdNumber)
 
-  behave like pageWithContent("p", messages("transport.addTransportEquipment.paragraph"))
+  behave like pageWithRadioItems(args = Seq(sealIdNumber))
 
-  behave like pageWithRadioItems()
-
-  behave like pageWithSubmitButton(messages("site.saveAndContinue"))
+  behave like pageWithSubmitButton("Save and continue")
 }

@@ -16,8 +16,8 @@
 
 package viewModels.transport.border.active
 
+import config.Constants._
 import config.FrontendAppConfig
-import models.reference.BorderMode
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.BorderModeOfTransportPage
@@ -26,9 +26,8 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.Content
-import viewModels.{AddAnotherViewModel, ListItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import config.Constants._
+import viewModels.{AddAnotherViewModel, ListItem}
 
 case class AddAnotherBorderTransportViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "transport.border.active.addAnotherBorderTransport"

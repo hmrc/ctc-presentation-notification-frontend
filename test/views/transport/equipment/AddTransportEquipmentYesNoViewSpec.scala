@@ -20,26 +20,26 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.transport.equipment.AddSealYesNoView
+import views.html.transport.equipment.AddTransportEquipmentYesNoView
 
-class AddSealYesNoViewSpec extends YesNoViewBehaviours {
+class AddTransportEquipmentYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddSealYesNoView].apply(form, departureId, NormalMode, equipmentIndex)(fakeRequest, messages)
+    injector.instanceOf[AddTransportEquipmentYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "transport.equipment.addSealYesNo"
+  override val prefix: String = "transport.equipment.addTransportEquipment"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Transport equipment")
+  behave like pageWithSectionCaption(messages("transport.caption"))
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "You can only add a seal if you are authorised to use customs seals.")
+  behave like pageWithContent("p", messages("transport.equipment.addTransportEquipment.paragraph"))
 
   behave like pageWithRadioItems()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton(messages("site.saveAndContinue"))
 }

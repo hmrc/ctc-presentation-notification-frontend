@@ -55,7 +55,7 @@ class AddAnotherBorderTransportController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       Ok(view(form(viewModel), departureId, viewModel))
-  } //todo will have to handle when last one removed the last one when 3901 is built
+  } //todo will have to refactor when 3901 built for the case when last one is removed
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>

@@ -17,18 +17,18 @@
 package controllers.transport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.transport.{routes => transportRoutes}
+import controllers.transport.equipment.{routes => equipmentRoutes}
 import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transport.AddTransportEquipmentYesNoView
+import views.html.transport.equipment.AddTransportEquipmentYesNoView
 
 import scala.concurrent.Future
 
@@ -37,7 +37,7 @@ class AddTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithDefa
   private val formProvider                         = new YesNoFormProvider()
   private val form                                 = formProvider("transport.addTransportEquipment")
   private val mode                                 = NormalMode
-  private lazy val addTransportEquipmentYesNoRoute = transportRoutes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url
+  private lazy val addTransportEquipmentYesNoRoute = equipmentRoutes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

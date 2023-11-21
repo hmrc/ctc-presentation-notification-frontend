@@ -18,14 +18,12 @@ package pages.transport.equipment
 
 import pages.behaviours.PageBehaviours
 
-class SealIdentificationNumberPageSpec extends PageBehaviours {
+class AddTransportEquipmentYesNoPageSpec extends PageBehaviours {
 
-  "SealIdentificationNumberPage" - {
+  "AddTransportEquipmentYesNoPage" - {
 
-    beRetrievable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
-
-    beSettable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
-
-    beRemovable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
+    beRetrievable[Boolean](AddTransportEquipmentYesNoPage)
+    beSettable[Boolean](AddTransportEquipmentYesNoPage)
+    beRemovable[Boolean](AddTransportEquipmentYesNoPage)
   }
 }
