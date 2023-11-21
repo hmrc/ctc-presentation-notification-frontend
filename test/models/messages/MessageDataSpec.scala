@@ -17,7 +17,7 @@
 package models.messages
 
 import base.TestMessageData.{incompleteJsonValue, jsonValue, messageData}
-import models.messages.AuthorisationType.{C521, Other}
+import models.messages.AuthorisationType.{C521, C523, Other}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -72,6 +72,44 @@ class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues {
           )
 
           updatedMessageData.isSimplified mustBe false
+        }
+      }
+    }
+
+    "hasAuthC523" - {
+
+      "must return true when authorisations contain C523" in {
+
+        val updatedMessageData: MessageData = messageData.copy(Authorisation =
+          Some(
+            Seq(
+              Authorisation(C523, "CD456"),
+              Authorisation(Other("otherValue"), "AB123")
+            )
+          )
+        )
+
+        updatedMessageData.hasAuthC523 mustBe true
+      }
+
+      "must return false" - {
+
+        "when authorisations are not defined" in {
+
+          val updatedMessageData = messageData.copy(Authorisation = None)
+
+          updatedMessageData.hasAuthC523 mustBe false
+        }
+
+        "when authorisations are defined but without C523" in {
+
+          val updatedMessageData: MessageData = messageData.copy(Authorisation =
+            Some(
+              Seq(Authorisation(Other("otherValue"), "AB123"))
+            )
+          )
+
+          updatedMessageData.hasAuthC523 mustBe false
         }
       }
     }
