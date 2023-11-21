@@ -29,6 +29,8 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.MoreInformationPage
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active._
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
 
 class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -60,24 +62,47 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
-        //TODO: Change more information page to other page when created
-        "to more information page when security mode of transport at border is  5, security is 0 and active border transport is  present " in {
+        "to container identification number page when security mode of transport at border is 5" +
+          "and security is 0" +
+          "and active border transport is present" +
+          "and containerIndicator is '1' " in {
 
-          forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
-            (activeBorderTransportMeans, borderModeDesc) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(BorderModeOfTransportPage, BorderMode("5", borderModeDesc))
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
-                    TransitOperation = transitOperation.copy(security = "0")
+            forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
+              (activeBorderTransportMeans, borderModeDesc) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(BorderModeOfTransportPage, BorderMode("5", borderModeDesc))
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = Some("1")),
+                      TransitOperation = transitOperation.copy(security = "0")
+                    )
                   )
-                )
-              navigator
-                .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                .mustBe(MoreInformationPage.route(userAnswers, departureId, mode).value)
+                navigator
+                  .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                  .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(userAnswers, departureId, mode).value)
+            }
           }
-        }
+
+        "to transport equipment page when security mode of transport at border is 5" +
+          "and security is 0" +
+          "and active border transport is present" +
+          "and containerIndicator not '1'" in {
+
+            forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
+              (activeBorderTransportMeans, borderModeDesc) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(BorderModeOfTransportPage, BorderMode("5", borderModeDesc))
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = Some("0")),
+                      TransitOperation = transitOperation.copy(security = "0")
+                    )
+                  )
+                navigator
+                  .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                  .mustBe(AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode).value)
+            }
+          }
       }
 
       "must go from identification page to identification number page" in {

@@ -20,10 +20,14 @@ import com.google.inject.Singleton
 import controllers.transport.border.active.routes
 import models._
 import models.reference.BorderMode
+import navigation.BorderNavigator.borderModeOfTransportPageNavigation
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
+import pages.sections.transport.equipment.{EquipmentSection, EquipmentsSection}
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active._
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -33,7 +37,7 @@ class BorderNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case BorderModeOfTransportPage                    => ua => borderModeNavigation(ua, departureId, mode)
+    case BorderModeOfTransportPage                    => ua => borderModeOfTransportPageNavigation(ua, departureId, mode)
     case IdentificationPage(activeIndex)              => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
     case IdentificationNumberPage(activeIndex)        => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
     case NationalityPage(activeIndex)                 => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
@@ -44,16 +48,16 @@ class BorderNavigator @Inject() () extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
-  private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-    val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
-
-    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
-      //TODO: Change route for first case when page has been added
-      case (Some(BorderMode("5", _)), "0", true) =>
-        Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
-      case _ => Some(routes.IdentificationController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans)))
-    }
-  }
+//  private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
+//    val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
+//
+//    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
+//      //TODO: Change route for first case when page has been added
+//      case (Some(BorderMode("5", _)), "0", true) =>
+//        Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
+//      case _ => Some(routes.IdentificationController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans)))
+//    }
+//  }
 
   private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security) match {
@@ -87,9 +91,22 @@ object BorderNavigator {
 
     if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty && checkTransitOperationSecurity(userAnswers))
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
-    else ??? //TODO follow false path
+    else containerIndicatorRouting(userAnswers.departureData.Consignment.containerIndicator, userAnswers, departureId, mode) //TODO follow false path
   }
 
   private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
     ua.departureData.TransitOperation.isSecurityTypeInSet
+
+  private[navigation] def containerIndicatorRouting(indicator: Option[String], userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
+
+    val numberOfEquipmentSection: Int = userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)
+
+    indicator match {
+      case Some(value) if value == "1" =>
+        ContainerIdentificationNumberPage(equipmentIndex = Index(numberOfEquipmentSection))
+          .route(userAnswers, departureId, mode)
+      case Some(_) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
+      case None    => ??? //TODO CYA 3811
+    }
+  }
 }

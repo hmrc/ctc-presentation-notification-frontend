@@ -26,7 +26,7 @@ case class Consignment(
   ActiveBorderTransportMeans: Option[List[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading]
 ) {
-  def isConsignmentActiveBorderTransportMeansEmpty = ActiveBorderTransportMeans.toList.flatten.isEmpty
+  def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
 }
 
 object Consignment {
