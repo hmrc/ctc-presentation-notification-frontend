@@ -33,6 +33,5 @@ class UnLocodeService @Inject() (
       .map(_.nonEmpty)
       .recover {
         case _: NoReferenceDataFoundException => false
-        case e: Exception                     => throw e
       }
 }
