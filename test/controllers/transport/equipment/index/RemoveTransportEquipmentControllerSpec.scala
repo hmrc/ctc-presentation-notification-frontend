@@ -26,7 +26,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.Json
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.transport.equipment.index.RemoveTransportEquipmentView
@@ -72,9 +71,11 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url
+          controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
+
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.get(EquipmentSection(equipmentIndex)) mustNot be(defined)
 
       }
 

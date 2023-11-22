@@ -30,17 +30,9 @@ class EquipmentNavigator extends Navigator {
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddAnotherTransportEquipmentPage(equipmentIndex: Index)   => ua => addAnotherTransportEquipmentRoute(ua, equipmentIndex, departureId, mode)
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) => ua => addContainerIdentificationNumberYesNoRoute(ua, equipmentIndex, departureId, mode)
-    case RemoveTransportEquipmentPage(equipmentIndex)              => ua => removeTransportEquipmentRoute(ua, equipmentIndex, departureId, mode)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
-
-  private def removeTransportEquipmentRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
-    ua.get(RemoveTransportEquipmentPage(equipmentIndex)) match {
-      case Some(true) if equipmentIndex.isFirst =>
-        Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-      case Some(false) => Some(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
-    }
 
   private def addAnotherTransportEquipmentRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
     ua.get(AddAnotherTransportEquipmentPage(equipmentIndex)) match {
