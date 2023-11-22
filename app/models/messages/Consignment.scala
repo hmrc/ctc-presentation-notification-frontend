@@ -16,7 +16,6 @@
 
 package models.messages
 
-import models.SelectableList
 import models.reference.Item
 import play.api.libs.json.{Json, OFormat}
 

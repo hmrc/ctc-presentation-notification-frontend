@@ -421,6 +421,14 @@ transport.equipment.selectItems.paragraph = You can only select from the items y
 transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
 
+transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
+transport.equipment.applyAnotherItem.plural.title = You have applied {0} items to transport equipment {1}
+transport.equipment.applyAnotherItem.singular.heading = You have applied 1 item to transport equipment {0}
+transport.equipment.applyAnotherItem.plural.heading = You have applied {0} items to transport equipment {1}
+transport.equipment.applyAnotherItem.label = Do any other items apply to transport equipment {0}?
+transport.equipment.applyAnotherItem.maxLimit.label = You cannot apply any more items. To apply another, you need to remove one first.
+transport.equipment.applyAnotherItem.error.required = Select yes if you want to apply any other items to transport equipment {0}
+
 transport.equipment.addAnotherEquipment.singular.title = You have added 1 transport equipment
 transport.equipment.addAnotherEquipment.plural.title = You have added {0} transport equipment
 transport.equipment.addAnotherEquipment.singular.heading = You have added 1 transport equipment
