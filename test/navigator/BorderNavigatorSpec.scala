@@ -253,7 +253,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+                .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
           }
         }
       }
@@ -316,7 +316,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+                .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
           }
         }
       }
