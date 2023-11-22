@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                       = new YesNoFormProvider()
-  private val form                               = formProvider("transport.equipment.removeTransportEquipment", equipmentIndex.display)
+  private val form                               = formProvider("transport.equipment.index.removeTransportEquipment", equipmentIndex.display)
   private val mode                               = NormalMode
   private lazy val removeTransportEquipmentRoute = equipmentRoutes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url
 
