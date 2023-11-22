@@ -16,8 +16,9 @@
 
 package navigator
 
-import base.TestMessageData.{activeBorderTransportMeans, consignment, customsOfficeOfTransitDeclared, transitOperation}
+import base.TestMessageData.{consignment, customsOfficeOfTransitDeclared, transitOperation}
 import base.{SpecBase, TestMessageData}
+import config.Constants._
 import controllers.transport.border.active.routes
 import generators.Generators
 import models._
@@ -29,7 +30,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
-import config.Constants._
 
 class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
