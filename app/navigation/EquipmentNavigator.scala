@@ -41,21 +41,12 @@ class EquipmentNavigator extends Navigator {
             Some(
               controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex.next)
             )
-
-          case _ =>
-            (ua.departureData.isSimplified, ua.departureData.hasAuthC523) match {
-
-              case (true, true) =>
-                Some(
-                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
-                )
-              case _ => Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
-
-            }
-
-          case Some(false) => ??? //todo- redirect to CYA when built
+          case _ if ua.departureData.isSimplified && ua.departureData.hasAuthC523 =>
+            Some(controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
+          case _ => Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
         }
+      case Some(false) => ??? //todo- redirect to CYA when built
+
     }
 
   private def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] = {

@@ -16,24 +16,17 @@
 
 package controllers.transport.equipment
 
-import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import controllers.transport.equipment.{routes => euipmentRoutes}
-import controllers.transport.equipment.index.{routes => indexRoutes}
-import controllers.transport.equipment.index.seals.{routes => sealRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.messages.Authorisation
-import models.messages.AuthorisationType.{C521, C523}
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

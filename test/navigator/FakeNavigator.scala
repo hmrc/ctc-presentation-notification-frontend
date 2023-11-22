@@ -20,7 +20,6 @@ import models.{Mode, UserAnswers}
 import navigation._
 import pages._
 import play.api.mvc.Call
-import viewModels.transport.equipment.AddAnotherEquipmentViewModel
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
 
