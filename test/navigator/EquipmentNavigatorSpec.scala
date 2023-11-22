@@ -45,7 +45,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         }
 
-        "to ContainerIdentifierNumberPage when user selects No and AuthType is in CL253" in {
+        "to SealIdentifierNumberPage when user selects No and AuthType is in CL253" in {
           val userAnswers = emptyUserAnswers
             .copy(departureData =
               TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234"), Authorisation(AuthorisationType.Other("C523"), "1235"))))
@@ -59,7 +59,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         }
 
-        "to ContainerIdentifierNumberPage when user selects No and AuthType is not in CL253" in {
+        "to AddSealsYesNo page when user selects No and AuthType is not in CL253" in {
           val userAnswers = emptyUserAnswers
             .copy(departureData = TestMessageData.messageData.copy(Authorisation = None))
             .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
@@ -72,13 +72,13 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
 
       "Must go from AddAnotherTransportEquipmentPage" - {
-        //        "to Check your answers page when answered no" ignore { //todo action when CYA page built
-        //          val userAnswers = emptyUserAnswers
-        //            .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), false)
-        //          navigator
-        //            .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
-        //            .mustBe (controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))//todo when CYA page built will go there
-        //        }
+        "when answered no must go to Check your answers page" ignore { //todo action when CYA page built
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), false)
+                  navigator
+                    .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
+                    .mustBe (controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))//todo when CYA page built will go there
+                }
 
         "when answered yes" - {
           "when ContainerIndicatorPage is true" - {

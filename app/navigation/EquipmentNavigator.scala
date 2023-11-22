@@ -16,12 +16,11 @@
 
 package navigation
 
-import akka.util.OptionVal
 import models._
 import models.messages.AuthorisationType
 import pages._
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.{AddAnotherTransportEquipmentPage, RemoveTransportEquipmentPage}
+import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 import play.api.mvc.Call
 
