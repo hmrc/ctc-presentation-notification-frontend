@@ -16,16 +16,18 @@
 
 package viewModels.transport.border.active
 
+import config.Constants._
 import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.Content
-import viewModels.{AddAnotherViewModel, ListItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.{AddAnotherViewModel, ListItem}
 
 case class AddAnotherBorderTransportViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "transport.border.active.addAnotherBorderTransport"
@@ -57,8 +59,15 @@ object AddAnotherBorderTransportViewModel {
             }
 
             val changeRoute = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url
-            val removeRoute = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, index).url)
-
+            val removeRoute =
+              if (
+                index.isFirst
+                && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail)
+                  || userAnswers.departureData.TransitOperation.isSecurityTypeInSet
+                  || userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined)
+              )
+                None
+              else Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, index).url)
             name.map(ListItem(_, changeRoute, removeRoute))
         }
         .toSeq
