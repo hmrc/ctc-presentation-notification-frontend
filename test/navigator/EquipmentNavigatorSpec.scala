@@ -18,19 +18,14 @@ package navigator
 
 import base.{SpecBase, TestMessageData}
 import generators.Generators
-import models.ProcedureType.Simplified
 import models._
-import models.messages.{Authorisation, AuthorisationType}
 import models.messages.AuthorisationType.{C521, C523}
+import models.messages.{Authorisation, AuthorisationType}
 import navigation.EquipmentNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.{AddAnotherTransportEquipmentPage, RemoveTransportEquipmentPage}
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
-import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, ContainerIdentificationNumberPage}
-import viewModels.transport.equipment.AddAnotherEquipmentViewModel
-
-import javax.inject.Inject
+import pages.transport.equipment.AddAnotherTransportEquipmentPage
+import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
