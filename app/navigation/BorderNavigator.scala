@@ -51,10 +51,12 @@ class BorderNavigator @Inject() () extends Navigator {
     val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
 
     (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
-      //TODO: Change route for first case when page has been added
-      case (Some(BorderMode("5", _)), "0", true) =>
-        Some(controllers.routes.MoreInformationController.onPageLoad(departureId))
-      case _ => Some(routes.IdentificationController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans)))
+      case (Some(BorderMode("5", _)), _, _) => addAnotherBorderNavigationFromNo(ua, departureId, mode, None)
+      case (Some(_), "1" | "2" | "3", true) =>
+        Some(
+          controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans))
+        )
+      case _ => addAnotherBorderNavigationFromNo(ua, departureId, mode, None)
     }
   }
 
@@ -75,11 +77,11 @@ class BorderNavigator @Inject() () extends Navigator {
   private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     ua.get(AddAnotherBorderModeOfTransportPage(activeIndex)) match {
       case Some(true)  => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
-      case Some(false) => addAnotherBorderNavigationFromNo(ua, departureId, mode, activeIndex)
+      case Some(false) => addAnotherBorderNavigationFromNo(ua, departureId, mode, Some(activeIndex))
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
-  private def addAnotherBorderNavigationFromNo(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+  private def addAnotherBorderNavigationFromNo(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Option[Index]): Option[Call] =
     ua.get(ContainerIndicatorPage) match {
       case Some(true) =>
         Some(
@@ -96,7 +98,7 @@ class BorderNavigator @Inject() () extends Navigator {
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
     } else {
-      addAnotherBorderNavigationFromNo(ua, departureId, mode, activeIndex)
+      addAnotherBorderNavigationFromNo(ua, departureId, mode, Some(activeIndex))
     }
 }
 
