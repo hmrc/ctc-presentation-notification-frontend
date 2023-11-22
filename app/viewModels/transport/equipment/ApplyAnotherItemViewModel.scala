@@ -49,6 +49,7 @@ object ApplyAnotherItemViewModel {
         .zipWithIndex
         .flatMap {
           case (_, i) =>
+            println("*************")
             val itemIndex = Index(i)
 
             val name = userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map(_.toString)
