@@ -18,31 +18,33 @@ package controllers.transport.equipment
 
 import config.FrontendAppConfig
 import controllers.actions._
-import controllers.transport.equipment.index.seals.{routes => sealRoutes}
-import controllers.transport.equipment.index.{routes => indexRoutes}
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import pages.sections.transport.equipment.{EquipmentsSection, SealsSection}
-import pages.transport.ContainerIndicatorPage
+import navigation.EquipmentNavigator
+import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 import views.html.transport.equipment.AddAnotherEquipmentView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherEquipmentView,
-  viewModelProvider: AddAnotherEquipmentViewModelProvider
-)(implicit config: FrontendAppConfig)
+  viewModelProvider: AddAnotherEquipmentViewModelProvider,
+  navigator: EquipmentNavigator
+)(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -58,36 +60,26 @@ class AddAnotherEquipmentController @Inject() (
       }
   }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
-          {
-            case true =>
-              redirect(departureId, mode, viewModel)
-            case false =>
-              Redirect(Call("GET", "#")) //TODO: redirect to CYA
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          value => redirect(departureId, mode, value, viewModel.nextIndex)
         )
   }
 
   private def redirect(
     departureId: String,
     mode: Mode,
-    equipmentViewModel: AddAnotherEquipmentViewModel
-  )(implicit request: MandatoryDataRequest[_]): Result = {
+    value: Boolean,
+    activeIndex: Index
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportEquipmentPage(activeIndex), value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(AddAnotherTransportEquipmentPage(activeIndex), updatedAnswers, departureId, mode))
 
-    val sealIndex = request.userAnswers.get(SealsSection(equipmentViewModel.nextIndex)).map(_.value.length).getOrElse(0)
-
-    (request.userAnswers.get(ContainerIndicatorPage), request.userAnswers.get(EquipmentsSection).isDefined) match {
-      case (Some(true), true) =>
-        Redirect(indexRoutes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex))
-      case _ if request.userAnswers.departureData.isSimplified && request.userAnswers.departureData.hasAuthC523 =>
-        Redirect(sealRoutes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex, Index(sealIndex)))
-      case _ => Redirect(indexRoutes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentViewModel.nextIndex))
-    }
-  }
 }
