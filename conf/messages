@@ -415,6 +415,12 @@ transport.equipment.index.removeTransportEquipment.title = Are you sure you want
 transport.equipment.index.removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
 transport.equipment.index.removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}
 
+transport.equipment.selectItems.title = Which items does this transport equipment apply to?
+transport.equipment.selectItems.heading = Which items does this transport equipment apply to?
+transport.equipment.selectItems.paragraph = You can only select from the items you added when making the declaration.
+transport.equipment.selectItems.label = Search your {0} items.
+transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
+
 transport.equipment.addAnotherEquipment.singular.title = You have added 1 transport equipment
 transport.equipment.addAnotherEquipment.plural.title = You have added {0} transport equipment
 transport.equipment.addAnotherEquipment.singular.heading = You have added 1 transport equipment

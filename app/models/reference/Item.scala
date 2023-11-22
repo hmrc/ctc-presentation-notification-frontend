@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
-import play.api.libs.json.Json
+import models.Selectable
+import play.api.libs.json.{Json, OFormat}
 
-case class QueryGroupsEnrolmentsResponseModel(enrolments: Seq[Service])
+case class Item(goodsItemNumber: Int, description: String) extends Selectable {
+  override def toString: String = s"$goodsItemNumber - $description"
 
-case class Service(service: String)
+  override val value: String = goodsItemNumber.toString
+}
 
-object QueryGroupsEnrolmentsResponseModel {
-  implicit val enrolmentReads             = Json.format[Service]
-  implicit val queryGroupsEnrolmentsReads = Json.format[QueryGroupsEnrolmentsResponseModel]
+object Item {
+  implicit val format: OFormat[Item] = Json.format[Item]
 }

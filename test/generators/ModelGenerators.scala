@@ -153,6 +153,14 @@ trait ModelGenerators {
       } yield CustomsOffice(id, name, phoneNumber)
     }
 
+  implicit lazy val arbitraryItem: Arbitrary[Item] =
+    Arbitrary {
+      for {
+        no   <- positiveInts
+        desc <- nonEmptyString
+      } yield Item(no, desc)
+    }
+
   implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderMode] =
     Arbitrary {
       for {

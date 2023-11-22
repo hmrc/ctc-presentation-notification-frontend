@@ -24,7 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 object TestMessageData {
 
   val transitOperation: TransitOperation =
-    TransitOperation(Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails)
+    TransitOperation(None, Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails)
 
   val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
 
@@ -79,7 +79,18 @@ object TestMessageData {
     Some(transportEquipment),
     Some(locationOfGoods),
     Some(activeBorderTransportMeans),
-    Some(placeOfLoading)
+    Some(placeOfLoading),
+    Seq(
+      HouseConsignment(
+        List(
+          ConsignmentItem(
+            "18914",
+            1458,
+            Commodity("descOfGoods")
+          )
+        )
+      )
+    )
   )
 
   val customsOfficeOfTransitDeclared: Option[Seq[CustomsOfficeOfTransitDeclared]] = Option(Seq(CustomsOfficeOfTransitDeclared("GB000013")))
@@ -99,101 +110,230 @@ object TestMessageData {
   val jsonValue: JsValue = Json.parse(
     s"""
        |{
-       |   "CustomsOfficeOfDeparture":{
-       |        "referenceNumber":"GB000011"
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
        |    },
-       |    "CustomsOfficeOfDestinationDeclared":{
-       |        "referenceNumber":"GB000012"
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
        |    },
-       |   "TransitOperation" : {
-       |       "limitDate" : "2023-06-09",
-       |       "security" : "1"
-       |   },
-       |   "Authorisation" : [
-       |     {
-       |       "type" : "C521",
-       |       "referenceNumber": "AB123"
-       |     },
-       |     {
-       |       "type": "SomethingElse",
-       |       "referenceNumber": "CD123"
-       |     }
-       |   ],
-       |   "Consignment" : {
-       |       "containerIndicator" : "1",
-       |       "modeOfTransportAtTheBorder": "2",
-       |       "TransportEquipment": [
-       |         {
-       |           "sequenceNumber": "26754",
-       |           "containerIdentificationNumber": "CIN2",
-       |           "numberOfSeals": 1234,
-       |           "Seal": [
-       |             {
-       |               "sequenceNumber": "1",
-       |               "identifier": "seal1"
-       |             },
-       |             {
-       |               "sequenceNumber": "2",
-       |               "identifier": "seal2"
-       |             }
-       |           ],
-       |           "GoodsReference": [
-       |             {
-       |               "sequenceNumber": "1",
-       |               "declarationGoodsItemNumber": 5
-       |             }
-       |           ]
-       |         }
-       |       ],
-       |       "LocationOfGoods": {
-       |          "typeOfLocation": "A",
-       |          "qualifierOfIdentification": "Q",
-       |          "authorisationNumber": "AUTH1",
-       |          "additionalIdentifier": "ADD1",
-       |          "UNLocode": "FG345UNLOCODE",
-       |          "CustomsOffice": {
-       |            "referenceNumber": "GB000068"
-       |          },
-       |          "GNSS": {
-       |            "latitude": "44.968046",
-       |            "longitude": "-94.420307"
-       |          },
-       |          "EconomicOperator": {
-       |            "identificationNumber": "ECO247"
-       |          },
-       |          "Address": {
-       |            "streetAndNumber": "Address Line 1",
-       |            "postcode": "NE53KL",
-       |            "city": "Newcastle",
-       |            "country": "GB"
-       |          },
-       |          "PostcodeAddress": {
-       |            "houseNumber": "House number 1",
-       |            "postcode": "NE52ZL",
-       |            "country": "GB"
-       |          },
-       |          "ContactPerson": {
-       |            "name": "Paul Sully",
-       |            "phoneNumber": "07508994566",
-       |            "eMailAddress": "sullivan@epic.com"
-       |          }
-       |       },
-       |       "ActiveBorderTransportMeans": [
-       |         {
-       |           "sequenceNumber": "11",
-       |           "customsOfficeAtBorderReferenceNumber": "GB000028",
-       |           "typeOfIdentification": "10",
-       |           "identificationNumber": "BX857GGE",
-       |           "nationality": "FR",
-       |           "conveyanceReferenceNumber": "REF2"
-       |         }
-       |       ],
-       |       "PlaceOfLoading": {
-       |         "UNLocode": "UNCODEX",
-       |         "country": "GB",
-       |         "location": "Sheffield"
-       |       }
-       |   }
+       |    "TransitOperation": {
+       |        "limitDate": "2023-06-09",
+       |        "security": "1"
+       |    },
+       |    "Authorisation": [
+       |        {
+       |            "type": "C521",
+       |            "referenceNumber": "AB123"
+       |        },
+       |        {
+       |            "type": "SomethingElse",
+       |            "referenceNumber": "CD123"
+       |        }
+       |    ],
+       |    "Consignment": {
+       |        "containerIndicator": "1",
+       |        "modeOfTransportAtTheBorder": "2",
+       |        "TransportEquipment": [
+       |            {
+       |                "sequenceNumber": "26754",
+       |                "containerIdentificationNumber": "CIN2",
+       |                "numberOfSeals": 1234,
+       |                "Seal": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "identifier": "seal1"
+       |                    },
+       |                    {
+       |                        "sequenceNumber": "2",
+       |                        "identifier": "seal2"
+       |                    }
+       |                ],
+       |                "GoodsReference": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "declarationGoodsItemNumber": 5
+       |                    }
+       |                ]
+       |            }
+       |        ],
+       |        "LocationOfGoods": {
+       |            "typeOfLocation": "A",
+       |            "qualifierOfIdentification": "Q",
+       |            "authorisationNumber": "AUTH1",
+       |            "additionalIdentifier": "ADD1",
+       |            "UNLocode": "FG345UNLOCODE",
+       |            "CustomsOffice": {
+       |                "referenceNumber": "GB000068"
+       |            },
+       |            "GNSS": {
+       |                "latitude": "44.968046",
+       |                "longitude": "-94.420307"
+       |            },
+       |            "EconomicOperator": {
+       |                "identificationNumber": "ECO247"
+       |            },
+       |            "Address": {
+       |                "streetAndNumber": "Address Line 1",
+       |                "postcode": "NE53KL",
+       |                "city": "Newcastle",
+       |                "country": "GB"
+       |            },
+       |            "PostcodeAddress": {
+       |                "houseNumber": "House number 1",
+       |                "postcode": "NE52ZL",
+       |                "country": "GB"
+       |            },
+       |            "ContactPerson": {
+       |                "name": "Paul Sully",
+       |                "phoneNumber": "07508994566",
+       |                "eMailAddress": "sullivan@epic.com"
+       |            }
+       |        },
+       |        "ActiveBorderTransportMeans": [
+       |            {
+       |                "sequenceNumber": "11",
+       |                "customsOfficeAtBorderReferenceNumber": "GB000028",
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR",
+       |                "conveyanceReferenceNumber": "REF2"
+       |            }
+       |        ],
+       |        "PlaceOfLoading": {
+       |            "UNLocode": "UNCODEX",
+       |            "country": "GB",
+       |            "location": "Sheffield"
+       |        },
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
+       |}
+       |""".stripMargin
+  )
+
+  val jsonValueWithLrn: JsValue = Json.parse(
+    s"""
+       |{
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
+       |    },
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
+       |    },
+       |    "TransitOperation": {
+       |        "limitDate": "2023-06-09",
+       |        "security": "1",
+       |        "LRN": "testLrn"
+       |    },
+       |    "Authorisation": [
+       |        {
+       |            "type": "C521",
+       |            "referenceNumber": "AB123"
+       |        },
+       |        {
+       |            "type": "SomethingElse",
+       |            "referenceNumber": "CD123"
+       |        }
+       |    ],
+       |    "Consignment": {
+       |        "containerIndicator": "1",
+       |        "modeOfTransportAtTheBorder": "2",
+       |        "TransportEquipment": [
+       |            {
+       |                "sequenceNumber": "26754",
+       |                "containerIdentificationNumber": "CIN2",
+       |                "numberOfSeals": 1234,
+       |                "Seal": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "identifier": "seal1"
+       |                    },
+       |                    {
+       |                        "sequenceNumber": "2",
+       |                        "identifier": "seal2"
+       |                    }
+       |                ],
+       |                "GoodsReference": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "declarationGoodsItemNumber": 5
+       |                    }
+       |                ]
+       |            }
+       |        ],
+       |        "LocationOfGoods": {
+       |            "typeOfLocation": "A",
+       |            "qualifierOfIdentification": "Q",
+       |            "authorisationNumber": "AUTH1",
+       |            "additionalIdentifier": "ADD1",
+       |            "UNLocode": "FG345UNLOCODE",
+       |            "CustomsOffice": {
+       |                "referenceNumber": "GB000068"
+       |            },
+       |            "GNSS": {
+       |                "latitude": "44.968046",
+       |                "longitude": "-94.420307"
+       |            },
+       |            "EconomicOperator": {
+       |                "identificationNumber": "ECO247"
+       |            },
+       |            "Address": {
+       |                "streetAndNumber": "Address Line 1",
+       |                "postcode": "NE53KL",
+       |                "city": "Newcastle",
+       |                "country": "GB"
+       |            },
+       |            "PostcodeAddress": {
+       |                "houseNumber": "House number 1",
+       |                "postcode": "NE52ZL",
+       |                "country": "GB"
+       |            },
+       |            "ContactPerson": {
+       |                "name": "Paul Sully",
+       |                "phoneNumber": "07508994566",
+       |                "eMailAddress": "sullivan@epic.com"
+       |            }
+       |        },
+       |        "ActiveBorderTransportMeans": [
+       |            {
+       |                "sequenceNumber": "11",
+       |                "customsOfficeAtBorderReferenceNumber": "GB000028",
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR",
+       |                "conveyanceReferenceNumber": "REF2"
+       |            }
+       |        ],
+       |        "PlaceOfLoading": {
+       |            "UNLocode": "UNCODEX",
+       |            "country": "GB",
+       |            "location": "Sheffield"
+       |        },
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
        |}
        |""".stripMargin
   )
@@ -201,82 +341,94 @@ object TestMessageData {
   val incompleteJsonValue: JsValue = Json.parse(
     s"""
        |{
-       |
-       |   "CustomsOfficeOfDeparture":{
-       |        "referenceNumber":"GB000011"
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
        |    },
-       |    "CustomsOfficeOfDestinationDeclared":{
-       |        "referenceNumber":"GB000012"
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
        |    },
-       |   "TransitOperation" : {
-       |       "limitDate" : "2023-06-09",
-       |       "security" : "1"
-       |   },
-       |   "Consignment" : {
-       |       "containerIndicator" : "1",
-       |       "modeOfTransportAtTheBorder": "2",
-       |       "TransportEquipment": [
-       |         {
-       |           "sequenceNumber": "26754",
-       |           "containerIdentificationNumber": "CIN2",
-       |           "numberOfSeals": 1234,
-       |           "Seal": [
-       |             {
-       |               "sequenceNumber": "1",
-       |               "identifier": "seal1"
-       |             },
-       |             {
-       |               "sequenceNumber": "2",
-       |               "identifier": "seal2"
-       |             }
-       |           ],
-       |           "GoodsReference": [
-       |             {
-       |               "sequenceNumber": "1",
-       |               "declarationGoodsItemNumber": 5
-       |             }
-       |           ]
-       |         }
-       |       ],
-       |       "LocationOfGoods": {
-       |          "typeOfLocation": "A",
-       |          "qualifierOfIdentification": "Q",
-       |          "authorisationNumber": "AUTH1",
-       |          "additionalIdentifier": "ADD1",
-       |          "UNLocode": "FG345UNLOCODE",
-       |          "CustomsOffice": {
-       |            "referenceNumber": "GB000068"
-       |          },
-       |          "GNSS": {
-       |            "latitude": "44.968046",
-       |            "longitude": "-94.420307"
-       |          },
-       |          "EconomicOperator": {
-       |            "identificationNumber": "ECO247"
-       |          },
-       |          "Address": {
-       |            "streetAndNumber": "Address Line 1",
-       |            "postcode": "NE53KL",
-       |            "city": "Newcastle",
-       |            "country": "GB"
-       |          },
-       |          "PostcodeAddress": {
-       |            "houseNumber": "House number 1",
-       |            "postcode": "NE52ZL",
-       |            "country": "GB"
-       |          },
-       |          "ContactPerson": {
-       |            "name": "Paul Sully",
-       |            "phoneNumber": "07508994566",
-       |            "eMailAddress": "sullivan@epic.com"
-       |          }
-       |       },
-       |       "PlaceOfLoading": {
-       |         "UNLocode": "UNCODEX",
-       |         "country": "GB",
-       |         "location": "Sheffield"
-       |       }
-       |   }
+       |    "TransitOperation": {
+       |        "limitDate": "2023-06-09",
+       |        "security": "1"
+       |    },
+       |    "Consignment": {
+       |        "containerIndicator": "1",
+       |        "modeOfTransportAtTheBorder": "2",
+       |        "TransportEquipment": [
+       |            {
+       |                "sequenceNumber": "26754",
+       |                "containerIdentificationNumber": "CIN2",
+       |                "numberOfSeals": 1234,
+       |                "Seal": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "identifier": "seal1"
+       |                    },
+       |                    {
+       |                        "sequenceNumber": "2",
+       |                        "identifier": "seal2"
+       |                    }
+       |                ],
+       |                "GoodsReference": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "declarationGoodsItemNumber": 5
+       |                    }
+       |                ]
+       |            }
+       |        ],
+       |        "LocationOfGoods": {
+       |            "typeOfLocation": "A",
+       |            "qualifierOfIdentification": "Q",
+       |            "authorisationNumber": "AUTH1",
+       |            "additionalIdentifier": "ADD1",
+       |            "UNLocode": "FG345UNLOCODE",
+       |            "CustomsOffice": {
+       |                "referenceNumber": "GB000068"
+       |            },
+       |            "GNSS": {
+       |                "latitude": "44.968046",
+       |                "longitude": "-94.420307"
+       |            },
+       |            "EconomicOperator": {
+       |                "identificationNumber": "ECO247"
+       |            },
+       |            "Address": {
+       |                "streetAndNumber": "Address Line 1",
+       |                "postcode": "NE53KL",
+       |                "city": "Newcastle",
+       |                "country": "GB"
+       |            },
+       |            "PostcodeAddress": {
+       |                "houseNumber": "House number 1",
+       |                "postcode": "NE52ZL",
+       |                "country": "GB"
+       |            },
+       |            "ContactPerson": {
+       |                "name": "Paul Sully",
+       |                "phoneNumber": "07508994566",
+       |                "eMailAddress": "sullivan@epic.com"
+       |            }
+       |        },
+       |        "PlaceOfLoading": {
+       |            "UNLocode": "UNCODEX",
+       |            "country": "GB",
+       |            "location": "Sheffield"
+       |        },
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
        |}
        |""".stripMargin
   )
