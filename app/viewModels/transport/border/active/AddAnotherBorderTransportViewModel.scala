@@ -16,7 +16,7 @@
 
 package viewModels.transport.border.active
 
-import config.Constants.Mail
+import config.Constants._
 import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
