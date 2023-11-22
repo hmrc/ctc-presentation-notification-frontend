@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.transport.equipment.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{Index, Mode, RichOptionalJsArray}
-import navigation.{EquipmentNavigator, Navigator}
+import navigation.EquipmentNavigator
 import pages.sections.transport.equipment.SealsSection
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}

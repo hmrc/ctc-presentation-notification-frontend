@@ -18,8 +18,8 @@ package navigator
 
 import base.{SpecBase, TestMessageData}
 import generators.Generators
+import models.messages.Authorisation
 import models.messages.AuthorisationType.{C521, C523}
-import models.messages.{Authorisation, AuthorisationType}
 import models.{Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary

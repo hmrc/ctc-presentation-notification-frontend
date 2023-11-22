@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.transport.equipment.ContainerIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{Index, Mode, RichOptionalJsArray}
-import navigation.Navigator
+import navigation.EquipmentNavigator
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.data.Form
@@ -37,7 +37,7 @@ class ContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   formProvider: ContainerIdentificationNumberFormProvider,
-  navigator: Navigator,
+  navigator: EquipmentNavigator,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: ContainerIdentificationNumberView

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.{EquipmentNavigator, Navigator}
+import navigation.EquipmentNavigator
 import pages.transport.equipment.index.AddSealYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

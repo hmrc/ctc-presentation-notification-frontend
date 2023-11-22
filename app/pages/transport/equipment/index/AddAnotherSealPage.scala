@@ -18,7 +18,7 @@ package pages.transport.equipment.index
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.transport.equipment.{EquipmentSection, SealSection}
+import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.JsPath
 
 case class AddAnotherSealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[Boolean] {
