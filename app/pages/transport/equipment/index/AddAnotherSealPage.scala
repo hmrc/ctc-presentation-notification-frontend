@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package pages.transport.equipment
+package pages.transport.equipment.index
 
-import controllers.transport.equipment.routes
-import models.reference.Item
-import models.{Index, Mode, UserAnswers}
+import models.Index
 import pages.QuestionPage
-import pages.sections.transport.equipment.ItemSection
+import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends QuestionPage[Item] {
-
-  override def path: JsPath = ItemSection(equipmentIndex, itemIndex).path
-
-  override def toString: String = "item"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, itemIndex))
+case class AddAnotherSealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[Boolean] {
+  override def toString: String = "addAnotherSeal"
+  override def path: JsPath     = EquipmentSection(equipmentIndex).path \ toString
 }

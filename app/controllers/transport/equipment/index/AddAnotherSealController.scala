@@ -19,10 +19,13 @@ package controllers.transport.equipment.index
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
+import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
+import navigation.EquipmentNavigator
+import pages.transport.equipment.index.AddAnotherSealPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.equipment.AddAnotherSealViewModel
@@ -30,16 +33,18 @@ import viewModels.transport.equipment.AddAnotherSealViewModel.AddAnotherSealView
 import views.html.transport.equipment.index.AddAnotherSealView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherSealController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
+  navigator: EquipmentNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSealView,
   viewModelProvider: AddAnotherSealViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -55,22 +60,27 @@ class AddAnotherSealController @Inject() (
       }
   }
 
-  def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
+  def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
-          {
-            case true =>
-              Redirect(
-                controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(departureId, mode, equipmentIndex, viewModel.nextIndex)
-              )
-            case false =>
-              Redirect(Call("GET", "#")) // TODO redirect to CYA page
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          value => redirect(mode, value, departureId, equipmentIndex, viewModel.nextIndex)
         )
   }
+
+  private def redirect(
+    mode: Mode,
+    value: Boolean,
+    departureId: String,
+    equipmentIndex: Index,
+    sealIndex: Index
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSealPage(equipmentIndex, sealIndex), value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode))
+
 }

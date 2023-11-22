@@ -93,8 +93,6 @@ class BorderNavigator @Inject() () extends Navigator {
       case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO: update to border check your answers once implemented
     }
 
-  private def getTransportEquipmentIndex(ua: UserAnswers): Int = ua.get(EquipmentsSection).map(_.value.length).getOrElse(0)
-
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
