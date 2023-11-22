@@ -20,7 +20,7 @@ import controllers.transport.equipment.routes
 import models.reference.Item
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.equipment.{ItemSection, SealSection}
+import pages.sections.transport.equipment.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
