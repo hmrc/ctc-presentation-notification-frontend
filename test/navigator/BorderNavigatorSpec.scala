@@ -63,9 +63,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         }
 
         "to more information page when security mode of transport at border is not 5" +
-          "and security is 1,2,3" +
+          "and security is EntrySummaryDeclarationSecurityDetails,ExitSummaryDeclarationSecurityDetails, EntryAndExitSummaryDeclarationSecurityDetails" +
           "and active border transport is present" +
-          "and containerIndicator is '1' " in {
+          "and containerIndicator is present " in {
 
             forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
               (borderModeOfTransport, securityType) =>
@@ -85,9 +85,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           }
 
         "to container identification number page when security mode of transport at border is 5" +
-          "and security is 0" +
+          "and security is NoSecurityDetails" +
           "and active border transport is present" +
-          "and containerIndicator is '1' " in {
+          "and containerIndicator is present" in {
 
             forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
               (activeBorderTransportMeans, borderModeDesc) =>
@@ -106,9 +106,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           }
 
         "to transport equipment page when security mode of transport at border is 5" +
-          "and security is 0" +
+          "and security is NoSecurityDetails" +
           "and active border transport is present" +
-          "and containerIndicator not '1'" in {
+          "and containerIndicator not present" in {
 
             forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
               (activeBorderTransportMeans, borderModeDesc) =>

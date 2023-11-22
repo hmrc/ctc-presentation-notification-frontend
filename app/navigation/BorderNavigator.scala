@@ -17,6 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
+import config.Constants.Air
 import controllers.transport.border.active.routes
 import models._
 import models.reference.BorderMode
@@ -50,7 +51,7 @@ class BorderNavigator @Inject() () extends Navigator {
 
   private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.isSecurityTypeInSet) match {
-      case (Some(BorderMode("4", _)), true) =>
+      case (Some(BorderMode(Air, _)), true) =>
         Some(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
       case _ => Some(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
     }
@@ -82,9 +83,6 @@ object BorderNavigator {
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
     else containerIndicatorRouting(userAnswers.departureData.Consignment.containerIndicator, userAnswers, departureId, mode)
   }
-
-  private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
-    ua.departureData.TransitOperation.isSecurityTypeInSet
 
   private[navigation] def containerIndicatorRouting(indicator: Option[String], userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
 
