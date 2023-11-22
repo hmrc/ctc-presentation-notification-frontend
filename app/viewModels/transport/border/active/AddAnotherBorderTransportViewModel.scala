@@ -16,9 +16,12 @@
 
 package viewModels.transport.border.active
 
+import config.Constants.Mail
 import config.FrontendAppConfig
+import models.reference.BorderMode
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
@@ -57,8 +60,15 @@ object AddAnotherBorderTransportViewModel {
             }
 
             val changeRoute = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url
-            val removeRoute = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, index).url)
-
+            val removeRoute =
+              if (
+                index.isFirst
+                && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail)
+                  || userAnswers.departureData.TransitOperation.isSecurityTypeInSet
+                  || userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined)
+              )
+                None
+              else Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, index).url)
             name.map(ListItem(_, changeRoute, removeRoute))
         }
         .toSeq
