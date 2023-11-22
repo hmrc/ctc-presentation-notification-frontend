@@ -17,6 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
+import config.Constants.Air
 import controllers.transport.border.active.routes
 import models._
 import models.reference.BorderMode
@@ -59,8 +60,8 @@ class BorderNavigator @Inject() () extends Navigator {
   }
 
   private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
-    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security) match {
-      case (Some(BorderMode("4", _)), "1" | "2" | "3") =>
+    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.isSecurityTypeInSet) match {
+      case (Some(BorderMode(Air, _)), true) =>
         Some(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
       case _ => Some(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
     }
