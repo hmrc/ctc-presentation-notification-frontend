@@ -21,7 +21,7 @@ import config.Constants.Air
 import controllers.transport.border.active.routes
 import models._
 import models.reference.BorderMode
-import navigation.BorderNavigator.borderModeOfTransportPageNavigation
+import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.equipment.{EquipmentSection, EquipmentsSection}
@@ -53,19 +53,6 @@ class BorderNavigator @Inject() () extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
-//  private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-//    val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
-//
-//    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
-//      case (Some(BorderMode("5", _)), _, _) => addAnotherBorderNavigationFromNo(ua, departureId, mode, Index(numberOfActiveBorderMeans))
-//      case (Some(_), "1" | "2" | "3", true) =>
-//        Some(
-//          controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans))
-//        )
-//      case _ => addAnotherBorderNavigationFromNo(ua, departureId, mode, Index(numberOfActiveBorderMeans))
-//    }
-//  }
-
   private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.isSecurityTypeInSet) match {
       case (Some(BorderMode(Air, _)), true) =>
@@ -83,26 +70,15 @@ class BorderNavigator @Inject() () extends Navigator {
   private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     ua.get(AddAnotherBorderModeOfTransportPage(activeIndex)) match {
       case Some(true)  => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex.next))
-      case Some(false) => addAnotherBorderNavigationFromNo(ua, departureId, mode, activeIndex)
+      case Some(false) => containerIndicatorRouting(ua, departureId, mode, activeIndex)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-
-  private def addAnotherBorderNavigationFromNo(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
-    ua.get(ContainerIndicatorPage) match {
-      case Some(true) =>
-        Some(
-          controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
-            .onPageLoad(departureId, mode, activeIndex)
-        )
-      case Some(false) => Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-      case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO: update to border check your answers once implemented
     }
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
     } else {
-      addAnotherBorderNavigationFromNo(ua, departureId, mode, activeIndex)
+      containerIndicatorRouting(ua, departureId, mode, activeIndex)
     }
 
 }
@@ -115,19 +91,15 @@ object BorderNavigator {
 
     if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty && userAnswers.departureData.TransitOperation.isSecurityTypeInSet)
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
-    else containerIndicatorRouting(userAnswers.departureData.Consignment.containerIndicator, userAnswers, departureId, mode)
+    else containerIndicatorRouting(userAnswers, departureId, mode, Index(numberOfActiveBorderMeans))
   }
 
-  private[navigation] def containerIndicatorRouting(indicator: Option[String], userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-
-    val numberOfEquipmentSection: Int = userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)
-
-    indicator match {
-      case Some(value) if value == "1" =>
-        ContainerIdentificationNumberPage(equipmentIndex = Index(numberOfEquipmentSection))
+  private[navigation] def containerIndicatorRouting(userAnswers: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+    userAnswers.get(ContainerIndicatorPage) match {
+      case Some(true) =>
+        ContainerIdentificationNumberPage(equipmentIndex = activeIndex)
           .route(userAnswers, departureId, mode)
-      case Some(_) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
-      case None    => ??? //TODO CYA 3811
+      case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
+      case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO CYA 3811
     }
-  }
 }

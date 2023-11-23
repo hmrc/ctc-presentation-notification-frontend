@@ -335,10 +335,10 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             answers =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
+                .setValue(ContainerIndicatorPage, true)
                 .copy(departureData =
                   TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = "0"),
-                    Consignment = consignment.copy(containerIndicator = Some("1"))
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
                   )
                 )
               navigator
@@ -357,10 +357,10 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             answers =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
+                .setValue(ContainerIndicatorPage, false)
                 .copy(departureData =
                   TestMessageData.messageData.copy(
-                    Consignment = consignment.copy(containerIndicator = Some("0")),
-                    TransitOperation = transitOperation.copy(security = "0")
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
                   )
                 )
               navigator

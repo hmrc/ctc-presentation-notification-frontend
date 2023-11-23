@@ -74,13 +74,13 @@ object TestMessageData {
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
 
   val consignment: Consignment = Consignment(
-    Some("1"),
-    Some("2"),
-    Some(transportEquipment),
-    Some(locationOfGoods),
-    Some(activeBorderTransportMeans),
-    Some(placeOfLoading),
-    Seq(
+    containerIndicator = Some("1"),
+    modeOfTransportAtTheBorder = Some("2"),
+    TransportEquipment = Some(transportEquipment),
+    LocationOfGoods = Some(locationOfGoods),
+    ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
+    PlaceOfLoading = Some(placeOfLoading),
+    HouseConsignment = Seq(
       HouseConsignment(
         List(
           ConsignmentItem(
