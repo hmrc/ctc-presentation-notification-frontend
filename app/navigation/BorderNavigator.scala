@@ -76,11 +76,10 @@ class BorderNavigator @Inject() () extends Navigator {
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
-      Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
-    } else {
       containerIndicatorRouting(ua, departureId, mode, activeIndex)
+    } else {
+      Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
     }
-
 }
 
 object BorderNavigator {
