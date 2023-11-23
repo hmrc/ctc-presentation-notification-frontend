@@ -24,9 +24,7 @@ import models.reference.BorderMode
 import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
-import pages.sections.transport.equipment.{EquipmentSection, EquipmentsSection}
 import pages.transport.border.BorderModeOfTransportPage
-import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
 import pages.transport.border.active._
@@ -76,9 +74,9 @@ class BorderNavigator @Inject() () extends Navigator {
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
-      containerIndicatorRouting(ua, departureId, mode, activeIndex)
-    } else {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
+    } else {
+      containerIndicatorRouting(ua, departureId, mode, activeIndex)
     }
 }
 
