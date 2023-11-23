@@ -61,7 +61,8 @@ object AddAnotherEquipmentViewModel {
               case _                          => Some(s"${equipmentPrefix(equipmentIndex.display)} - $noContainer")
             }
 
-            val changeRoute = Call("GET", "#").url //TODO: to be implemented as part of CTCP-4057
+            val changeRoute =
+              controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url
 
             val removeRoute: Option[String] = if (equipmentIndex.isFirst && userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty) {
               None

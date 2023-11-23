@@ -26,7 +26,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.Json
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.transport.equipment.index.RemoveTransportEquipmentView
@@ -36,7 +35,7 @@ import scala.concurrent.Future
 class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                       = new YesNoFormProvider()
-  private val form                               = formProvider("transport.equipment.removeTransportEquipment", equipmentIndex.display)
+  private val form                               = formProvider("transport.equipment.index.removeTransportEquipment", equipmentIndex.display)
   private val mode                               = NormalMode
   private lazy val removeTransportEquipmentRoute = equipmentRoutes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url
 
@@ -72,7 +71,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to AddAnotherTransportEquipmentController
+          controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -94,7 +93,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to AddAnotherTransportEquipmentController
+          controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())

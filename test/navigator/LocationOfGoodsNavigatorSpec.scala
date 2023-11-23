@@ -39,7 +39,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   val navigator = new LocationOfGoodsNavigator
 
-  "Navigator" - {
+  "LocationOfGoodsNavigator" - {
 
     "in Normal mode" - {
 
