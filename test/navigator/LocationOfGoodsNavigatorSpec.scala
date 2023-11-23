@@ -31,6 +31,8 @@ import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -324,6 +326,48 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
           .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
+      "must go from Add PhoneNumberPage page to ContainerIdentificationNumberPage page " +
+        "when user selects No and POL & limit date exists and Container Indicator exists" +
+        "and security is '0'" +
+        "and active border means is present" +
+        "and container indicator is '1'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddContactYesNoPage, false)
+                .setValue(ContainerIndicatorPage, true)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                  )
+                )
+              navigator
+                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(answers, departureId, mode).value)
+          }
+        }
+      "must go from Add PhoneNumberPage page to AddTransportEquipmentYesNoPage" +
+        "when user selects No" +
+        "and POL & limit date exists" +
+        "and security is '0'" +
+        "and active border means is present" +
+        "and container indicator is '0'" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddContactYesNoPage, false)
+                .setValue(ContainerIndicatorPage, false)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                  )
+                )
+              navigator
+                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(AddTransportEquipmentYesNoPage.route(answers, departureId, mode).value)
+          }
+        }
     }
   }
 }
