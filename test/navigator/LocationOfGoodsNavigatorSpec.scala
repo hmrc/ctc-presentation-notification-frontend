@@ -215,8 +215,8 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .setValue(AddContactYesNoPage, false)
               .setValue(ContainerIndicatorPage, true)
               .copy(departureData =
-                TestMessageData.messageData.copy(Consignment = consignment.copy(containerIndicator = Some("1")),
-                                                 TransitOperation = transitOperation.copy(security = "0")
+                TestMessageData.messageData.copy(
+                  TransitOperation = transitOperation.copy(security = "0")
                 )
               )
 
