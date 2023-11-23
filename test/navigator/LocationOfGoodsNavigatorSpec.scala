@@ -208,7 +208,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from Add AddContactYesNo page to ContainerIdentificationNumberPage page when user selects No and POL & limit date exists and Container Indicator does not exist" in {
+      "must go from Add AddContactYesNo page to ContainerIdentificationNumberPage page when user selcts no, Security is NoSecurityDetails, Add contcact if false, Container Indicator is true" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
@@ -216,7 +216,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .setValue(ContainerIndicatorPage, true)
               .copy(departureData =
                 TestMessageData.messageData.copy(
-                  TransitOperation = transitOperation.copy(security = "0")
+                  TransitOperation = transitOperation.copy(security = NoSecurityDetails)
                 )
               )
 
