@@ -31,10 +31,7 @@ object Index {
     override def bind(key: String, value: String): Either[String, Index] =
       intBinder.bind(key, value) match {
         case Right(x) if x > 0 => Right(Index(x - 1))
-        case x =>
-          println("\n\n\n")
-          println(x)
-          Left("Index binding failed")
+        case _                 => Left("Index binding failed")
       }
 
     override def unbind(key: String, value: Index): String =

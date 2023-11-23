@@ -31,9 +31,9 @@ case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Cal
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
 
-  override def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", count, equipmentIndex.display.toString)
-  override def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", count, equipmentIndex.display.toString)
-  override def legend(implicit messages: Messages): String  = messages(s"$prefix.label", equipmentIndex.display.toString)
+  override def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", count, equipmentIndex.display)
+  override def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", count, equipmentIndex.display)
+  override def legend(implicit messages: Messages): String  = messages(s"$prefix.label", equipmentIndex.display)
 }
 
 object ApplyAnotherItemViewModel {
@@ -49,7 +49,6 @@ object ApplyAnotherItemViewModel {
         .zipWithIndex
         .flatMap {
           case (_, i) =>
-            println("*************")
             val itemIndex = Index(i)
 
             val name = userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map(_.toString)

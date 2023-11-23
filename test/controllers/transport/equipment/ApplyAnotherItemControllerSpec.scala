@@ -40,8 +40,8 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   private val formProvider = new AddAnotherFormProvider()
 
-  private def form(viewModel: ApplyAnotherItemViewModel) =
-    formProvider(viewModel.prefix, viewModel.allowMore)
+  private def form(viewModel: ApplyAnotherItemViewModel, equipmentIndex: Index) =
+    formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
   private val mode = NormalMode
 
@@ -105,7 +105,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel), departureId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(notMaxedOutViewModel, equipmentIndex), departureId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
@@ -123,7 +123,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel), departureId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(maxedOutViewModel, equipmentIndex), departureId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -196,7 +196,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         val request = FakeRequest(POST, applyAnotherItemRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
+        val boundForm = form(notMaxedOutViewModel, equipmentIndex).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 

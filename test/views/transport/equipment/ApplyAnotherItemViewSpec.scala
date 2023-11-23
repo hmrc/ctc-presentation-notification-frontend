@@ -20,9 +20,9 @@ import forms.AddAnotherFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, ApplyAnotherItemViewModel}
+import viewModels.transport.equipment.ApplyAnotherItemViewModel
 import views.behaviours.ListWithActionsViewBehaviours
-import views.html.transport.equipment.{AddAnotherEquipmentView, ApplyAnotherItemView}
+import views.html.transport.equipment.ApplyAnotherItemView
 
 class ApplyAnotherItemViewSpec extends ListWithActionsViewBehaviours {
 
@@ -53,9 +53,9 @@ class ApplyAnotherItemViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithSectionCaption("Transport equipment")
 
-  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)(equipmentIndex.display)
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count, equipmentIndex.display)
 
   behave like pageWithSubmitButton("Continue")
 }

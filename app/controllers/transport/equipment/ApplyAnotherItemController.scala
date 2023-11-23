@@ -41,27 +41,23 @@ class ApplyAnotherItemController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(viewModel: ApplyAnotherItemViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore)
+  private def form(viewModel: ApplyAnotherItemViewModel, equipmentIndex: Index): Form[Boolean] =
+    formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
-  def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = {
-    println("\n\n\n\n")
-    println("HERE")
-    actions.requireData(departureId) {
-      implicit request =>
-        val viewModel = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex)
-        viewModel.count match {
-          case 0 =>
-            Redirect(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
-          case _ => Ok(view(form(viewModel), departureId, viewModel))
-        }
-    }
+  def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
+    implicit request =>
+      val viewModel = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex)
+      viewModel.count match {
+        case 0 =>
+          Redirect(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
+        case _ => Ok(view(form(viewModel, equipmentIndex), departureId, viewModel))
+      }
   }
 
   def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex)
-      form(viewModel)
+      form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
