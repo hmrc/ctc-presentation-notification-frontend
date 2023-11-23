@@ -51,9 +51,8 @@ class BorderNavigator @Inject() () extends Navigator {
   private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
     val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
 
-    (ua.get(BorderModeOfTransportPage), ua.departureData.TransitOperation.security, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
-      case (Some(BorderMode("5", _)), _, _) => addAnotherBorderNavigationFromNo(ua, departureId, mode, Index(numberOfActiveBorderMeans))
-      case (Some(_), "1" | "2" | "3", true) =>
+    (ua.departureData.TransitOperation.isSecurityTypeInSet, ua.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
+      case (true, true) =>
         Some(
           controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(numberOfActiveBorderMeans))
         )

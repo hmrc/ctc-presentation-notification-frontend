@@ -27,6 +27,7 @@ import models.reference.{BorderMode, CustomsOffice}
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.MoreInformationPage
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
@@ -168,6 +169,41 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
+        "to more information page when security mode of transport at border is not 5, security is 1,2,3 and active border transport is present " in {
+
+          forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            (borderModeOfTransport, securityType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = securityType)
+                  )
+                )
+              navigator
+                .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                .mustBe(MoreInformationPage.route(userAnswers, departureId, mode).value)
+          }
+
+        }
+
+        "to more information page when security mode of transport at border is  5, security is 0 and active border transport is present " in {
+
+          forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
+            (activeBorderTransportMeans, borderModeDesc) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(BorderModeOfTransportPage, BorderMode("5", borderModeDesc))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
+                    TransitOperation = transitOperation.copy(security = "0")
+                  )
+                )
+              navigator
+                .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                .mustBe(MoreInformationPage.route(userAnswers, departureId, mode).value)
+          }
+        }
       }
 
       "must go from identification page to identification number page" in {
