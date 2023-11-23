@@ -208,6 +208,24 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
+      "must go from Add AddContactYesNo page to ContainerIdentificationNumberPage page when user selects No and POL & limit date exists and Container Indicator does not exist" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, false)
+              .setValue(ContainerIndicatorPage, true)
+              .copy(departureData =
+                TestMessageData.messageData.copy(Consignment = consignment.copy(containerIndicator = Some("1")),
+                                                 TransitOperation = transitOperation.copy(security = "0")
+                )
+              )
+
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+        }
+      }
+
       "must go from ContactName page to Contact phone number page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
