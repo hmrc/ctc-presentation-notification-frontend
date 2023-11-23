@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment.index
+package controllers.transport.equipment
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{Index, Mode}
-import pages.sections.transport.equipment.EquipmentSection
+import pages.sections.transport.equipment.ItemSection
+import pages.transport.equipment.ItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.equipment.index.RemoveTransportEquipmentView
+import views.html.transport.equipment.RemoveItemView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveTransportEquipmentController @Inject() (
+class RemoveItemController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveTransportEquipmentView
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  view: RemoveItemView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -45,27 +47,29 @@ class RemoveTransportEquipmentController @Inject() (
     Call("GET", "#") //TODO redirect to addAnother page
 
   private def form(equipmentIndex: Index): Form[Boolean] =
-    formProvider("transport.equipment.index.removeTransportEquipment", equipmentIndex.display)
+    formProvider("transport.equipment.removeItem", equipmentIndex.display)
 
-  def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(departureId, EquipmentSection(equipmentIndex), addAnother(departureId, mode)) {
+  def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
+    .requireIndex(departureId, ItemSection(equipmentIndex, itemIndex), addAnother(departureId, mode))
+    .andThen(getMandatoryPage(ItemPage(equipmentIndex, itemIndex))) {
       implicit request =>
-        Ok(view(form(equipmentIndex), departureId, mode, equipmentIndex))
+        Ok(view(form(equipmentIndex), departureId, mode, equipmentIndex, itemIndex, request.arg))
     }
 
-  def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(departureId, EquipmentSection(equipmentIndex), addAnother(departureId, mode))
+  def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
+    .requireIndex(departureId, ItemSection(equipmentIndex, itemIndex), addAnother(departureId, mode))
+    .andThen(getMandatoryPage(ItemPage(equipmentIndex, itemIndex)))
     .async {
       implicit request =>
         form(equipmentIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex, itemIndex, request.arg))),
             value =>
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.remove(EquipmentSection(equipmentIndex)))
+                    Future.fromTry(request.userAnswers.remove(ItemSection(equipmentIndex, itemIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }

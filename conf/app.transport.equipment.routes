@@ -1,4 +1,4 @@
-->         /                                                                                                                        app.transport.equipment.index.Routes
+->         /                                                              app.transport.equipment.index.Routes
 
 GET        /transport-equipment/add-transport-equipment/:departureId                                                                controllers.transport.equipment.AddTransportEquipmentYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /transport-equipment/add-transport-equipment/:departureId                                                                controllers.transport.equipment.AddTransportEquipmentYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
@@ -20,3 +20,9 @@ GET        /transport-equipment/:equipmentIndex/items/:itemIndex/:departureId   
 POST       /transport-equipment/:equipmentIndex/items/:itemIndex/:departureId                                                       controllers.transport.equipment.SelectItemsController.onSubmit(departureId: String, mode: Mode = NormalMode, equipmentIndex: Index, itemIndex:Index)
 GET        /transport-equipment/:equipmentIndex/change-items/:itemIndex/:departureId                                                controllers.transport.equipment.SelectItemsController.onPageLoad(departureId: String, mode: Mode = CheckMode, equipmentIndex: Index, itemIndex:Index)
 POST       /transport-equipment/:equipmentIndex/change-items/:itemIndex/:departureId                                                controllers.transport.equipment.SelectItemsController.onSubmit(departureId: String, mode: Mode = CheckMode, equipmentIndex: Index, itemIndex:Index)
+
+GET        /transport-equipment/:equipmentIndex/items/:itemIndex/remove/:departureId                                                controllers.transport.equipment.RemoveItemController.onPageLoad(departureId: String, mode: Mode = NormalMode, equipmentIndex: Index, itemIndex:Index)
+POST       /transport-equipment/:equipmentIndex/items/:itemIndex/remove/:departureId                                                controllers.transport.equipment.RemoveItemController.onSubmit(departureId: String, mode: Mode = NormalMode, equipmentIndex: Index, itemIndex:Index)
+GET        /transport-equipment/:equipmentIndex/change-items/:itemIndex/remove/:departureId                                         controllers.transport.equipment.RemoveItemController.onPageLoad(departureId: String, mode: Mode = CheckMode, equipmentIndex: Index, itemIndex:Index)
+POST       /transport-equipment/:equipmentIndex/change-items/:itemIndex/remove/:departureId                                         controllers.transport.equipment.RemoveItemController.onSubmit(departureId: String, mode: Mode = CheckMode, equipmentIndex: Index, itemIndex:Index)
+

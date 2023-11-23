@@ -17,12 +17,14 @@
 package viewModels.transport.equipment
 
 import base.SpecBase
+import controllers.transport.equipment.routes
 import generators.Generators
 import models.reference.Item
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.ItemPage
+import viewModels.ListItem
 import viewModels.transport.equipment.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
 
 class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -33,7 +35,7 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
       forAll(arbitrary[Mode], arbitrary[Item]) {
         (mode, item) =>
           val userAnswers = emptyUserAnswers
-            .setValue(ItemPage(equipmentIndex, sealIndex), item)
+            .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
           val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex)
 
@@ -42,16 +44,24 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.heading mustBe "You have applied 1 item to transport equipment 1"
           result.legend mustBe "Do any other items apply to transport equipment 1?"
           result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
+
+          result.listItems mustBe Seq(
+            ListItem(
+              name = s"Item ${item.toString}",
+              changeUrl = routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
+              removeUrl = None
+            )
+          )
       }
     }
 
     "when there are multiple items" in {
 
-      forAll(arbitrary[Mode], arbitrary[Item]) {
-        (mode, item) =>
+      forAll(arbitrary[Mode], arbitrary[Item], arbitrary[Item]) {
+        (mode, item1, item2) =>
           val userAnswers = emptyUserAnswers
-            .setValue(ItemPage(equipmentIndex, sealIndex), item)
-            .setValue(ItemPage(equipmentIndex, Index(1)), item)
+            .setValue(ItemPage(equipmentIndex, itemIndex), item1)
+            .setValue(ItemPage(equipmentIndex, Index(1)), item2)
 
           val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex)
 
@@ -60,6 +70,19 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.heading mustBe "You have applied 2 items to transport equipment 1"
           result.legend mustBe "Do any other items apply to transport equipment 1?"
           result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
+
+          result.listItems mustBe Seq(
+            ListItem(
+              name = s"Item ${item1.toString}",
+              changeUrl = routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
+              removeUrl = None
+            ),
+            ListItem(
+              name = s"Item ${item2.toString}",
+              changeUrl = routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url,
+              removeUrl = Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url)
+            )
+          )
       }
     }
   }

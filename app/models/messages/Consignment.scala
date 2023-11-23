@@ -28,7 +28,7 @@ case class Consignment(
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]
 ) {
-  def isConsignmentActiveBorderTransportMeansEmpty = ActiveBorderTransportMeans.toList.flatten.isEmpty
+  def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
 
   val allItems: Seq[Item] =
     HouseConsignment

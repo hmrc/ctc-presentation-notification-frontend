@@ -58,6 +58,7 @@ transport.caption = Transport equipment
 transport.prefix = Transport equipment {0}
 transport.container = container {0}
 transport.value.withoutContainer = no container identification number
+transport.item.prefix = Item {0}
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
@@ -436,3 +437,9 @@ transport.equipment.addAnotherEquipment.plural.heading = You have added {0} tran
 transport.equipment.addAnotherEquipment.label = Do you want to add any other transport equipment?
 transport.equipment.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 transport.equipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
+
+transport.equipment.removeItem.title = Are you sure you want to remove this item from transport equipment {0}?
+transport.equipment.removeItem.heading = Are you sure you want to remove this item from transport equipment {0}?
+transport.equipment.removeItem.inset = Item {0} - {1}
+transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
+

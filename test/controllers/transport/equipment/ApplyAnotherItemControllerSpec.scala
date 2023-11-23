@@ -73,7 +73,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "redirect to select items page" - {
       "when 0 items" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(emptyViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -91,7 +91,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -109,7 +109,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -130,7 +130,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to select items page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -149,7 +149,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -169,7 +169,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -188,7 +188,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

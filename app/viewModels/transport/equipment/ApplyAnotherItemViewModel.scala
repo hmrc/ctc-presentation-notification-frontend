@@ -40,7 +40,7 @@ object ApplyAnotherItemViewModel {
 
   class ApplyAnotherItemViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): ApplyAnotherItemViewModel = {
+    def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index)(implicit messages: Messages): ApplyAnotherItemViewModel = {
 
       val listItems = userAnswers
         .get(ItemsSection(equipmentIndex))
@@ -51,11 +51,17 @@ object ApplyAnotherItemViewModel {
           case (_, i) =>
             val itemIndex = Index(i)
 
-            val name = userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map(_.toString)
+            def itemPrefix(item: String) = messages("transport.item.prefix", item)
+
+            val name = userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map(_.toString).map(itemPrefix)
 
             val changeRoute = routes.SelectItemsController.onSubmit(departureId, mode, equipmentIndex, itemIndex).url
 
-            val removeRoute: Option[String] = Some(Call("GET", "#").url) //TODO: To be done as part of CTCP-4056
+            val removeRoute: Option[String] = if (itemIndex.isFirst) {
+              None
+            } else {
+              Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+            }
 
             name.map(ListItem(_, changeRoute, removeRoute))
         }

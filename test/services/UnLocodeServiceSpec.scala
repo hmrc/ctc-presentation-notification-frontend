@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.UnLocode
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -60,6 +61,17 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
 
       when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
         .thenReturn(Future.successful(Nil))
+
+      service.doesUnLocodeExist(unLocode).futureValue mustBe false
+      verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())
+    }
+
+    "must return false when unLocode does not exist in reference data" in {
+
+      val unLocode = "ABCDE"
+
+      when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
+        .thenReturn(Future.failed(new NoReferenceDataFoundException))
 
       service.doesUnLocodeExist(unLocode).futureValue mustBe false
       verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())

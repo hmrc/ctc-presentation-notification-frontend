@@ -56,8 +56,8 @@ trait SpecBase
   val index: Index          = Index(0)
   val activeIndex: Index    = Index(0)
   val equipmentIndex: Index = Index(0)
-  val sealIndex: Index      = Index(0)
   val itemIndex: Index      = Index(0)
+  val sealIndex: Index      = Index(0)
 
   def injector: Injector = app.injector
 
