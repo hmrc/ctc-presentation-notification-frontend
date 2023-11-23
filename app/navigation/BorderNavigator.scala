@@ -23,7 +23,6 @@ import models._
 import models.reference.BorderMode
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
-import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
 import pages.transport.border.active._

@@ -31,6 +31,7 @@ import pages.MoreInformationPage
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
 
 class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -169,7 +170,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
-        "to more information page when security mode of transport at border is not 5, security is 1,2,3 and active border transport is present " in {
+        "to AddContainerIdentificationNumberYesNoPage when security mode of transport at border is not 5, security is 1,2,3 and active border transport is present " in {
 
           forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
             (borderModeOfTransport, securityType) =>
@@ -182,7 +183,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 )
               navigator
                 .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                .mustBe(MoreInformationPage.route(userAnswers, departureId, mode).value)
+                .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(userAnswers, departureId, mode).value)
           }
 
         }
