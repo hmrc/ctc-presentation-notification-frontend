@@ -24,7 +24,9 @@ import models.reference.BorderMode
 import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
+import pages.sections.transport.equipment.{EquipmentSection, EquipmentsSection}
 import pages.transport.border.BorderModeOfTransportPage
+import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
 import pages.transport.border.active._
