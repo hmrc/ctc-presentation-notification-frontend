@@ -22,9 +22,9 @@ import play.api.i18n.Messages
 
 trait AddAnotherViewModel {
   val listItems: Seq[ListItem]
-  val count: Int = listItems.length - 1
+  val count: Int = listItems.length
 
-  val nextIndex: Index = Index(count)
+  val nextIndex: Index = Index(count - 1)
 
   val singularOrPlural: String = if (count == 1) "singular" else "plural"
 
