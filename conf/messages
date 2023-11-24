@@ -440,6 +440,6 @@ transport.equipment.addAnotherEquipment.error.required = Select yes if you want 
 
 transport.equipment.removeItem.title = Are you sure you want to remove this item from transport equipment {0}?
 transport.equipment.removeItem.heading = Are you sure you want to remove this item from transport equipment {0}?
-transport.equipment.removeItem.inset = Item {0} - {1}
+transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
 
