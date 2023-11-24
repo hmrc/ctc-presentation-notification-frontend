@@ -16,7 +16,7 @@
 
 package navigator
 
-import base.TestMessageData.{consignment, messageData, transitOperation}
+import base.TestMessageData.{consignment, locationOfGoods, messageData, transitOperation}
 import base.{SpecBase, TestMessageData}
 import config.Constants._
 import generators.Generators
@@ -26,7 +26,7 @@ import models.messages.{Authorisation, MessageData}
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.Page
+import pages.{MoreInformationPage, Page}
 import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -384,6 +384,28 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               navigator
                 .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
                 .mustBe(AddTransportEquipmentYesNoPage.route(answers, departureId, mode).value)
+          }
+        }
+
+      "must go from Add MoreInformationPage page to ContainerIdentificationNumberPage page " +
+        "when user hits 'Save and Continue', " +
+        "consignment contains LocationOfGoods, " +
+        "Security is NoSecurityDetails, " +
+        "Container Indicator is true" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, true)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(MoreInformationPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
           }
         }
     }
