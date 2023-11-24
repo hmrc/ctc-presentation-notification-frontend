@@ -58,6 +58,7 @@ transport.caption = Transport equipment
 transport.prefix = Transport equipment {0}
 transport.container = container {0}
 transport.value.withoutContainer = no container identification number
+transport.item.prefix = Item {0}
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
@@ -420,6 +421,14 @@ transport.equipment.selectItems.heading = Which items does this transport equipm
 transport.equipment.selectItems.paragraph = You can only select from the items you added when making the declaration.
 transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
+
+transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
+transport.equipment.applyAnotherItem.plural.title = You have applied {0} items to transport equipment {1}
+transport.equipment.applyAnotherItem.singular.heading = You have applied 1 item to transport equipment {0}
+transport.equipment.applyAnotherItem.plural.heading = You have applied {0} items to transport equipment {1}
+transport.equipment.applyAnotherItem.label = Do any other items apply to transport equipment {0}?
+transport.equipment.applyAnotherItem.maxLimit.label = You cannot apply any more items. To apply another, you need to remove one first.
+transport.equipment.applyAnotherItem.error.required = Select yes if you want to apply any other items to transport equipment {0}
 
 transport.equipment.addAnotherEquipment.singular.title = You have added 1 transport equipment
 transport.equipment.addAnotherEquipment.plural.title = You have added {0} transport equipment
