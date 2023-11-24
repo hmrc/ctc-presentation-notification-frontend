@@ -387,7 +387,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           }
         }
 
-      "must go from Add MoreInformationPage page to ContainerIdentificationNumberPage page " +
+      "must go from MoreInformationPage to ContainerIdentificationNumberPage " +
         "when user hits 'Save and Continue', " +
         "consignment contains LocationOfGoods, " +
         "Security is NoSecurityDetails, " +
@@ -405,6 +405,28 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(MoreInformationPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+          }
+        }
+
+      "must go from CustomsOfficeIdentifierPage to ContainerIdentificationNumberPage " +
+        "when user hits 'Save and Continue', " +
+        "consignment contains LocationOfGoods, " +
+        "Security is NoSecurityDetails, " +
+        "Container Indicator is true" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, true)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
                 .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
           }
         }
