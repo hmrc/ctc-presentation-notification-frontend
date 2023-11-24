@@ -142,8 +142,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual
-            equipmentRoutes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(listItems.length)).url
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
 
@@ -161,8 +160,8 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual
-            equipmentRoutes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
+          redirectLocation(result).value mustEqual onwardRoute.url
+
         }
       }
     }
@@ -181,8 +180,8 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          equipmentRoutes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
+        redirectLocation(result).value mustEqual onwardRoute.url
+
       }
     }
 
