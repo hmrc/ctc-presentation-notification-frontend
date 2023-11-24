@@ -24,7 +24,7 @@ trait AddAnotherViewModel {
   val listItems: Seq[ListItem]
   val count: Int = listItems.length
 
-  val nextIndex: Index = Index(count - 1)
+  val nextIndex: Index = Index(count)
 
   val singularOrPlural: String = if (count == 1) "singular" else "plural"
 
