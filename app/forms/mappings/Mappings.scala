@@ -63,6 +63,6 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
-  protected def mandatoryIfBoolean(errorKey: String = "error.required", condition: Boolean, defaultValue: Boolean): FieldMapping[Boolean] =
-    if (condition) boolean(errorKey) else of(ignoredFormat(defaultValue))
+  protected def mandatoryIfBoolean(errorKey: String, condition: Boolean, defaultValue: Boolean, args: Any*): FieldMapping[Boolean] =
+    if (condition) boolean(errorKey, args = args) else of(ignoredFormat(defaultValue))
 }

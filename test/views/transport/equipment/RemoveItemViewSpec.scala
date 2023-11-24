@@ -22,7 +22,6 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.transport.equipment.RemoveItemView
-import views.html.transport.equipment.index.RemoveTransportEquipmentView
 
 class RemoveItemViewSpec extends YesNoViewBehaviours {
 
