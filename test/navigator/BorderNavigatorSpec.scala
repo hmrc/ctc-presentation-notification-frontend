@@ -27,12 +27,10 @@ import models.reference.{BorderMode, CustomsOffice}
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.MoreInformationPage
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 
 class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

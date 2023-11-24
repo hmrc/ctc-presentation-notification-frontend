@@ -24,10 +24,9 @@ import models.reference.BorderMode
 import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
-import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.ContainerIndicatorPage
-import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
 import pages.transport.border.active._
+import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.mvc.Call
