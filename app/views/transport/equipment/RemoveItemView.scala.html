@@ -44,7 +44,7 @@ button: Button
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("transport.equipment.removeItem.heading", equipmentIndex.display),
                 caption = Some(messages("transport.caption")),
-                additionalHtml = inset(messages("transport.equipment.removeItem.inset", itemIndex.display, item.description))
+                additionalHtml = inset(messages("transport.equipment.removeItem.inset", item.toString))
             )
         )
 
