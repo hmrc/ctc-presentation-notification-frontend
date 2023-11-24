@@ -41,7 +41,7 @@ class RemoveItemViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading(equipmentIdNumber)
 
-  behave like pageWithInsetText(s"Item ${itemIndex.display} - ${item.description}")
+  behave like pageWithInsetText(s"Item ${item.toString}")
 
   behave like pageWithRadioItems(args = Seq(equipmentIdNumber))
 
