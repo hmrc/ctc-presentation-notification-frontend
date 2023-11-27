@@ -28,7 +28,6 @@ import org.mockito.Mockito.{reset, verify, when}
 import pages.sections.transport.equipment.ItemSection
 import pages.transport.equipment.ItemPage
 import play.api.libs.json.Json
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.transport.equipment.RemoveItemView
