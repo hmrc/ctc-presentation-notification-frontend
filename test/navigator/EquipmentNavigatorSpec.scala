@@ -20,13 +20,20 @@ import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models.messages.Authorisation
 import models.messages.AuthorisationType.{C521, C523}
+import models.reference.Item
 import models.{Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
-import pages.transport.equipment.index.{AddAnotherSealPage, AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
+import pages.transport.equipment.index.{
+  AddAnotherSealPage,
+  AddContainerIdentificationNumberYesNoPage,
+  AddSealYesNoPage,
+  ApplyAnotherItemPage,
+  ContainerIdentificationNumberPage
+}
 import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage, ItemPage}
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -139,6 +146,48 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           }
         }
 
+      }
+
+      "must go from ItemPage to Apply another Item page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers =
+              answers
+                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
+
+            navigator
+              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
+        }
+      }
+
+      "must go from ApplyAnotherItempage" - {
+        "to Item page when user answers yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
+
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+          }
+        }
+
+        "to AddAnotherEquipment page when user answers no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
+
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
+          }
+        }
       }
 
       "must go from container Identification number page" - {

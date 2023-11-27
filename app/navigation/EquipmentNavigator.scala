@@ -21,7 +21,7 @@ import models.{Index, Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
-import pages.transport.equipment.index.{AddAnotherSealPage, AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
+import pages.transport.equipment.index._
 import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.mvc.Call
 
@@ -37,9 +37,19 @@ class EquipmentNavigator extends Navigator {
       _ => Some(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
     case AddAnotherSealPage(equipmentIndex, sealIndex)           => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex, sealIndex)
     case AddAnotherTransportEquipmentPage(equipmentIndex: Index) => ua => addAnotherTransportEquipmentRoute(ua, equipmentIndex, departureId, mode)
+    case ItemPage(equipmentIndex, _) =>
+      ua => Some(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
+    case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, departureId, mode, equipmentIndex, itemIndex)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+
+  private def applyAnotherItemRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Option[Call] =
+    ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
+      case Some(true)  => ItemPage(equipmentIndex, itemIndex).route(ua, departureId, mode)
+      case Some(false) => Some(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   private def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
     ua.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) match {

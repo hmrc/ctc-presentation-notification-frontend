@@ -16,6 +16,7 @@
 
 package generators
 
+import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -23,9 +24,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.ListItem
-import viewModels.transport.equipment.AddAnotherEquipmentViewModel
+import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel, ApplyAnotherItemViewModel}
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
-import viewModels.transport.equipment.AddAnotherSealViewModel
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -60,6 +60,13 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherSealViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryApplyAnotherItemViewModel: Arbitrary[ApplyAnotherItemViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0))
   }
 
   implicit lazy val arbitraryAddAnotherEquipmentViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
