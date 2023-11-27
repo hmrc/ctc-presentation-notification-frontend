@@ -26,7 +26,8 @@ import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
-case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index) extends AddAnotherViewModel {
+case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index, isNumberItemsZero: Boolean)
+    extends AddAnotherViewModel {
   override val prefix: String = "transport.equipment.applyAnotherItem"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
@@ -34,13 +35,18 @@ case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Cal
   override def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", count, equipmentIndex.display)
   override def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", count, equipmentIndex.display)
   override def legend(implicit messages: Messages): String  = messages(s"$prefix.label", equipmentIndex.display)
+  def noMoreItemsLabel(implicit messages: Messages): String = messages(s"$prefix.noMoreItems.label")
+
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount && !isNumberItemsZero
 }
 
 object ApplyAnotherItemViewModel {
 
   class ApplyAnotherItemViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index)(implicit messages: Messages): ApplyAnotherItemViewModel = {
+    def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
+      messages: Messages
+    ): ApplyAnotherItemViewModel = {
 
       val listItems = userAnswers
         .get(ItemsSection(equipmentIndex))
@@ -70,7 +76,8 @@ object ApplyAnotherItemViewModel {
       new ApplyAnotherItemViewModel(
         listItems,
         onSubmitCall = routes.ApplyAnotherItemController.onSubmit(departureId, mode, equipmentIndex),
-        equipmentIndex
+        equipmentIndex,
+        isNumberItemsZero
       )
     }
   }
