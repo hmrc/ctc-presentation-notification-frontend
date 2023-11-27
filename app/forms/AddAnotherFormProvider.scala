@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 class AddAnotherFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, allowMore: Boolean): Form[Boolean] =
+  def apply(prefix: String, allowMore: Boolean, args: Any*): Form[Boolean] =
     Form(
-      "value" -> mandatoryIfBoolean(s"$prefix.error.required", allowMore, defaultValue = false)
+      "value" -> mandatoryIfBoolean(s"$prefix.error.required", allowMore, defaultValue = false, args: _*)
     )
 }
