@@ -84,7 +84,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to AddAnotherTransportEquipmentController
+          controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -110,7 +110,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to AddAnotherItemController
+          controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())

@@ -43,21 +43,21 @@ class RemoveItemController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def addAnother(departureId: String, mode: Mode): Call =
-    Call("GET", "#") //TODO redirect to addAnother page
+  private def addAnother(departureId: String, mode: Mode, equipmentIndex: Index): Call =
+    controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex)
 
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("transport.equipment.removeItem", equipmentIndex.display)
 
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
-    .requireIndex(departureId, ItemSection(equipmentIndex, itemIndex), addAnother(departureId, mode))
+    .requireIndex(departureId, ItemSection(equipmentIndex, itemIndex), addAnother(departureId, mode, equipmentIndex))
     .andThen(getMandatoryPage(ItemPage(equipmentIndex, itemIndex))) {
       implicit request =>
         Ok(view(form(equipmentIndex), departureId, mode, equipmentIndex, itemIndex, request.arg))
     }
 
   def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
-    .requireIndex(departureId, ItemSection(equipmentIndex, itemIndex), addAnother(departureId, mode))
+    .requireIndex(departureId, ItemSection(equipmentIndex, itemIndex), addAnother(departureId, mode, equipmentIndex))
     .andThen(getMandatoryPage(ItemPage(equipmentIndex, itemIndex)))
     .async {
       implicit request =>
@@ -74,7 +74,7 @@ class RemoveItemController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(departureId, mode))
+              } yield Redirect(addAnother(departureId, mode, equipmentIndex))
           )
     }
 }
