@@ -44,7 +44,7 @@ class BorderNavigator @Inject() () extends Navigator {
     case NationalityPage(activeIndex)                     => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
     case CustomsOfficeActiveBorderPage(activeIndex)       => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
     case AddConveyanceReferenceYesNoPage(activeIndex)     => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
-    case ConveyanceReferenceNumberPage(activeIndex)       => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
+    case ConveyanceReferenceNumberPage(activeIndex)       => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
     case AddAnotherBorderModeOfTransportPage(activeIndex) => ua => addAnotherBorderNavigation(ua, departureId, mode, activeIndex)
   }
 
@@ -60,22 +60,22 @@ class BorderNavigator @Inject() () extends Navigator {
   private def addConveyanceNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     ua.get(AddConveyanceReferenceYesNoPage(activeIndex)) match {
       case Some(true)  => ConveyanceReferenceNumberPage(activeIndex).route(ua, departureId, mode)
-      case Some(false) => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
+      case Some(false) => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     ua.get(AddAnotherBorderModeOfTransportPage(activeIndex)) match {
       case Some(true)  => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
-      case Some(false) => containerIndicatorRouting(ua, departureId, mode, activeIndex)
+      case Some(false) => containerIndicatorRouting(ua, departureId, mode)
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
-  private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+  private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
     } else {
-      containerIndicatorRouting(ua, departureId, mode, activeIndex)
+      containerIndicatorRouting(ua, departureId, mode)
     }
 }
 
@@ -87,15 +87,15 @@ object BorderNavigator {
 
     if (userAnswers.departureData.Consignment.isConsignmentActiveBorderTransportMeansEmpty && userAnswers.departureData.TransitOperation.isSecurityTypeInSet)
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
-    else containerIndicatorRouting(userAnswers, departureId, mode, Index(numberOfActiveBorderMeans))
+    else containerIndicatorRouting(userAnswers, departureId, mode)
   }
 
-  private[navigation] def containerIndicatorRouting(userAnswers: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
+  private[navigation] def containerIndicatorRouting(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.get(ContainerIndicatorPage) match {
       case Some(true) =>
-        ContainerIdentificationNumberPage(equipmentIndex = activeIndex)
+        ContainerIdentificationNumberPage(Index(0))
           .route(userAnswers, departureId, mode)
       case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
-      case None        => Some(controllers.routes.MoreInformationController.onPageLoad(departureId)) //TODO CYA 3811
+      case None        => Some(controllers.routes.SessionExpiredController.onPageLoad()) //TODO CYA 3811
     }
 }
