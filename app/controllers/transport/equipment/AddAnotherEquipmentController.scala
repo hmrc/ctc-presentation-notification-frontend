@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transport.equipment.AddAnotherEquipmentViewModel
+import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, SelectItemsViewModel}
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 import views.html.transport.equipment.AddAnotherEquipmentView
 
@@ -53,7 +53,8 @@ class AddAnotherEquipmentController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
+      val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
+      val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, isNumberItemsZero)
       viewModel.count match {
         case 0 => Redirect(routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
         case _ => Ok(view(form(viewModel), departureId, viewModel))
@@ -62,7 +63,8 @@ class AddAnotherEquipmentController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
+      val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
+      val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, isNumberItemsZero)
       form(viewModel)
         .bindFromRequest()
         .fold(
