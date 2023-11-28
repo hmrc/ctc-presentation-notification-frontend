@@ -96,7 +96,7 @@ class EquipmentNavigator extends Navigator {
         ua.get(ContainerIndicatorPage) match {
           case Some(true) =>
             Some(
-              controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex.next)
+              controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex)
             )
           case _ if ua.departureData.isSimplified && ua.departureData.hasAuthC523 =>
             Some(controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
