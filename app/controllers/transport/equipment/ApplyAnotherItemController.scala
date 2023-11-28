@@ -55,7 +55,6 @@ class ApplyAnotherItemController @Inject() (
     implicit request =>
       val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
       val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex, isNumberItemsZero)
-      println(s"\n\n\n\n8888${SelectItemsViewModel(request.userAnswers).items}")
       viewModel.count match {
         case 0 =>
           Redirect(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
