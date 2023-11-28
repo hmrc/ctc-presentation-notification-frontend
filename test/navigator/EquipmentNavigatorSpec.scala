@@ -20,20 +20,13 @@ import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models.messages.Authorisation
 import models.messages.AuthorisationType.{C521, C523}
-import models.reference.Item
 import models.{Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
-import pages.transport.equipment.index.{
-  AddAnotherSealPage,
-  AddContainerIdentificationNumberYesNoPage,
-  AddSealYesNoPage,
-  ApplyAnotherItemPage,
-  ContainerIdentificationNumberPage
-}
+import pages.transport.equipment.index._
 import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage, ItemPage}
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -99,7 +92,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
                 .mustBe(
                   controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
-                    .onPageLoad(departureId, mode, equipmentIndex.next)
+                    .onPageLoad(departureId, mode, equipmentIndex)
                 )
             }
           }
