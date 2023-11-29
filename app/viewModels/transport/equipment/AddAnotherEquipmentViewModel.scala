@@ -21,7 +21,8 @@ import controllers.transport.equipment.routes
 import controllers.transport.equipment.index.{routes => indexRoutes}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.equipment.EquipmentsSection
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.ContainerIndicatorPage
+import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage}
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
@@ -68,8 +69,16 @@ object AddAnotherEquipmentViewModel {
             }
 
             val changeRoute =
-              controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url
+              userAnswers.get(ContainerIndicatorPage) match {
+                case Some(true) =>
+                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
 
+                case _ if userAnswers.departureData.isSimplified && userAnswers.departureData.hasAuthC523 =>
+                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
+                    .url
+                case _ => controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
+              }
             val removeRoute: Option[String] = if (equipmentIndex.isFirst && userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty) {
               None
             } else {
