@@ -42,7 +42,6 @@ object AddAnotherBorderTransportViewModel {
   class AddAnotherBorderTransportViewModelProvider() {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode)(implicit messages: Messages): AddAnotherBorderTransportViewModel = {
-
       val listItems = userAnswers
         .get(BorderActiveListSection)
         .getOrElse(JsArray())
@@ -58,10 +57,11 @@ object AddAnotherBorderTransportViewModel {
               case _                                                  => None
             }
 
-            val changeRoute = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url
+            val changeRoute                             = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url
+            val lessThan2BorderModeOfTransport: Boolean = userAnswers.get(BorderActiveListSection).map(_.value.length).getOrElse(0) < 2
             val removeRoute =
               if (
-                index.isFirst
+                lessThan2BorderModeOfTransport
                 && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail)
                   || userAnswers.departureData.TransitOperation.isSecurityTypeInSet
                   || userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined)

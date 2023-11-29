@@ -110,7 +110,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
         }
     }
 
-    "with change link and no remove link" - {
+    "with change link and remove link  for each bordermode of transport when there are more than one" - {
       "for first Border Mode of transport when BorderMode of Transport is  not mail, " +
         "security type is NoSecurityDetails and CustomsOfficeOfTransitDeclared is not defined" in {
           forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
@@ -133,7 +133,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 ListItem(
                   name = s"$identification - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
-                  removeUrl = None
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
                   name = s"$identification - $identificationNumber",
@@ -166,7 +166,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 ListItem(
                   name = s"$identification - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
-                  removeUrl = None
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
                   name = s"$identification - $identificationNumber",
@@ -200,7 +200,102 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 ListItem(
                   name = s"$identification - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
+                ),
+                ListItem(
+                  name = s"$identification - $identificationNumber",
+                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
+                )
+              )
+          }
+        }
+
+    }
+    "with change link and no remove link  for each bordermode of transport when there is only one" - {
+      "for first Border Mode of transport when BorderMode of Transport is  not mail, " +
+        "security type is NoSecurityDetails and CustomsOfficeOfTransitDeclared is not defined" in {
+          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
+            (mode, identification, identificationNumber) =>
+              val userAnswers = emptyUserAnswers
+                .copy(
+                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(None, None, security = NoSecurityDetails),
+                                                                   CustomsOfficeOfTransitDeclared = None
+                  )
+                )
+                .setValue(IdentificationPage(Index(0)), identification)
+                .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "test"))
+
+              val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
+
+              result.listItems mustBe Seq(
+                ListItem(
+                  name = s"$identification - $identificationNumber",
+                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = None
+                )
+              )
+          }
+        }
+      "for first Border Mode of transport when BorderMode of Transport is  5, " +
+        "security type not NoSecurityDetails and CustomsOfficeOfTransitDeclared is not defined" in {
+          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
+            (mode, identification, identificationNumber) =>
+              val userAnswers = emptyUserAnswers
+                .copy(
+                  departureData = TestMessageData.messageData.copy(TransitOperation =
+                                                                     TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails),
+                                                                   CustomsOfficeOfTransitDeclared = None
+                  )
+                )
+                .setValue(IdentificationPage(Index(0)), identification)
+                .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
+                .setValue(IdentificationPage(Index(1)), identification)
+                .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
+                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
+
+              val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
+
+              result.listItems mustBe Seq(
+                ListItem(
+                  name = s"$identification - $identificationNumber",
+                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
+                ),
+                ListItem(
+                  name = s"$identification - $identificationNumber",
+                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
+                )
+              )
+          }
+        }
+
+      "for first Border Mode of transport when BorderMode of Transport is  5, " +
+        "security type is not 1,2 or 3 and CustomsOfficeOfTransitDeclared is defined" in {
+          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
+            (mode, identification, identificationNumber) =>
+              val userAnswers = emptyUserAnswers
+                .copy(
+                  departureData = TestMessageData.messageData.copy(
+                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = TestMessageData.customsOfficeOfTransitDeclared
+                  )
+                )
+                .setValue(IdentificationPage(Index(0)), identification)
+                .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
+                .setValue(IdentificationPage(Index(1)), identification)
+                .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
+                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
+
+              val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
+
+              result.listItems mustBe Seq(
+                ListItem(
+                  name = s"$identification - $identificationNumber",
+                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
                   name = s"$identification - $identificationNumber",
