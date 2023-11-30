@@ -363,9 +363,9 @@ transport.border.active.removeBorderTransport.error.required = Select yes if you
 transport.border.active.removeBorderTransport.change.hidden = if you want to remove this border means of transport
 
 transport.border.addBorderModeOfTransport.title = Do you want to add a border mode of transport?
-transport.border.addBorderModeOfTransport.heading = Do you want to add any transport equipment?
+transport.border.addBorderModeOfTransport.heading = Do you want to add a border mode of transport?
 transport.border.addBorderModeOfTransport.paragraph = This is the mode of transport used from a UK port or airport to another customs territory. For example, road, sea or air.
-transport.border.addBorderModeOfTransport.checkYourAnswersLabel = Do you want to add any transport equipment?
+transport.border.addBorderModeOfTransport.checkYourAnswersLabel = Do you want to add a border mode of transport?
 transport.border.addBorderModeOfTransport.change.hidden = if you want to add a border mode of transport
 transport.border.addBorderModeOfTransport.error.required = Select yes if you want to add a border mode of transport
 
