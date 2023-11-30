@@ -20,8 +20,8 @@ import base.SpecBase
 import base.TestMessageData.messageData
 import controllers.transport.equipment.index.routes
 import generators.Generators
+import models.messages.Authorisation
 import models.messages.AuthorisationType.{C521, C523}
-import models.messages.{Authorisation, MessageData, TransitOperation}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -158,7 +158,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   changeUrl = controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
                     .onPageLoad(departureId, mode, equipmentIndex)
                     .url,
-                  removeUrl = None
+                  removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
                   name = s"Transport equipment 2 - container $containerId",
@@ -196,7 +196,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
                     .onPageLoad(departureId, mode, equipmentIndex, sealIndex)
                     .url,
-                  removeUrl = None
+                  removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
                   name = s"Transport equipment 2 - container $containerId",
@@ -235,12 +235,73 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController
                     .onPageLoad(departureId, mode, equipmentIndex)
                     .url,
-                  removeUrl = None
+                  removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
                   name = s"Transport equipment 2 - container $containerId",
                   changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(1)).url)
+                )
+              )
+          }
+        }
+
+        "must not show remove link when there is only 1 equipment and the section is mandatory(there is no answer to do you want to add an equipment page)" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
+                .setValue(AddSealYesNoPage(Index(0)), false)
+
+              val updatedUserAnswers =
+                userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+
+              val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
+
+              result.listItems.length mustBe 1
+              result.title mustBe s"You have added 1 transport equipment"
+              result.heading mustBe s"You have added 1 transport equipment"
+              result.legend mustBe "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+
+              result.listItems mustBe Seq(
+                ListItem(
+                  name = "Transport equipment 1 - no container identification number",
+                  changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController
+                    .onPageLoad(departureId, mode, equipmentIndex)
+                    .url,
+                  removeUrl = None
+                )
+              )
+          }
+        }
+
+        "must show remove link when there is only 1 equipment and the section is mandatory(there is a yes answer to do you want to add an equipment page)" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
+                .setValue(AddSealYesNoPage(Index(0)), false)
+                .setValue(AddTransportEquipmentYesNoPage, true)
+
+              val updatedUserAnswers =
+                userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+
+              val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
+
+              result.listItems.length mustBe 1
+              result.title mustBe s"You have added 1 transport equipment"
+              result.heading mustBe s"You have added 1 transport equipment"
+              result.legend mustBe "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+
+              result.listItems mustBe Seq(
+                ListItem(
+                  name = "Transport equipment 1 - no container identification number",
+                  changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController
+                    .onPageLoad(departureId, mode, equipmentIndex)
+                    .url,
+                  removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(0)).url)
                 )
               )
           }
