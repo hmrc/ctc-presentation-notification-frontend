@@ -41,7 +41,7 @@ class AnswersHelper(
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     for {
-      answer <- userAnswers.get(page).orElse(userAnswers.getDataFromDepartureData(key))
+      answer <- userAnswers.getOrElse(page, key)
       call   <- page.route(userAnswers, departureId, mode)
     } yield buildRow(
       prefix = prefix,

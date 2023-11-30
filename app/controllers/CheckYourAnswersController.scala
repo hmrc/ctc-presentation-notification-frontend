@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import views.html.CheckYourAnswersView
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 class CheckYourAnswersController @Inject() (
   actions: Actions,
