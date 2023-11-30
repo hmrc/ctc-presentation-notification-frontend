@@ -53,7 +53,7 @@ object AddAnotherEquipmentViewModel {
             val equipmentIndex = Index(i)
 
             def equipmentPrefix(increment: Int) = messages("transport.prefix", increment)
-            def container(id: String)           = messages("transport.container", id)
+            def container(id: String)           = messages("transport.value.container", id)
             val noContainer                     = messages("transport.value.withoutContainer")
 
             val name = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) match {

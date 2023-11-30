@@ -1,6 +1,11 @@
-->         /                                                              app.transport.border.active.Routes
+->         /                                                                        app.transport.border.active.Routes
 
-GET        /border-mode-of-transport/:departureId                        controllers.transport.border.BorderModeOfTransportController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /border-mode-of-transport/:departureId                        controllers.transport.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /change-border-mode-of-transport/:departureId                 controllers.transport.border.BorderModeOfTransportController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /change-border-mode-of-transport/:departureId                 controllers.transport.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = CheckMode)
+GET        /border-means-of-transport/add-identification/:departureId               controllers.transport.border.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /border-means-of-transport/add-identification/:departureId               controllers.transport.border.AddBorderMeansOfTransportYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /border-means-of-transport/change-add-identification/:departureId        controllers.transport.border.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /border-means-of-transport/change-add-identification/:departureId        controllers.transport.border.AddBorderMeansOfTransportYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /border-mode-of-transport/:departureId                                   controllers.transport.border.BorderModeOfTransportController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /border-mode-of-transport/:departureId                                   controllers.transport.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /change-border-mode-of-transport/:departureId                            controllers.transport.border.BorderModeOfTransportController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-border-mode-of-transport/:departureId                            controllers.transport.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = CheckMode)
