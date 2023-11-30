@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import pages.transport.LimitDatePage
 import play.api.i18n.Messages
+import play.api.libs.json.JsPath
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
 import java.time.LocalDate
@@ -35,6 +36,7 @@ class PresentationNotificationAnswersHelper(
     page = LimitDatePage,
     formatAnswer = formatAsDate,
     prefix = "transport.limit.date",
+    key = JsPath \ "TransitOperation" \ "limitDate",
     id = Some("change-limit-date")
   )
 

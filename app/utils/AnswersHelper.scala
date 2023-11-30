@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import play.api.libs.json.{JsPath, Reads}
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 
 class AnswersHelper(
@@ -36,11 +36,12 @@ class AnswersHelper(
     page: QuestionPage[T],
     formatAnswer: T => Content,
     prefix: String,
+    key: JsPath,
     id: Option[String],
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     for {
-      answer <- userAnswers.get(page)
+      answer <- userAnswers.get(page).orElse(userAnswers.getDataFromDepartureData(key))
       call   <- page.route(userAnswers, departureId, mode)
     } yield buildRow(
       prefix = prefix,
