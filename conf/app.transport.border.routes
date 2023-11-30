@@ -4,3 +4,8 @@ GET        /border-mode-of-transport/:departureId                        control
 POST       /border-mode-of-transport/:departureId                        controllers.transport.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /change-border-mode-of-transport/:departureId                 controllers.transport.border.BorderModeOfTransportController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /change-border-mode-of-transport/:departureId                 controllers.transport.border.BorderModeOfTransportController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /border-mode-of-transport/add/:departureId                    controllers.transport.border.AddBorderModeOfTransportYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /border-mode-of-transport/add/:departureId                    controllers.transport.border.AddBorderModeOfTransportYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /border-mode-of-transport/add/:departureId                    controllers.transport.border.AddBorderModeOfTransportYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /border-mode-of-transport/add/:departureId                    controllers.transport.border.AddBorderModeOfTransportYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
