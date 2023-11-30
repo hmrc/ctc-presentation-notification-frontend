@@ -72,7 +72,7 @@ object AddAnotherEquipmentViewModel {
             val changeRoute =
               userAnswers.get(ContainerIndicatorPage) match {
                 case Some(true) =>
-                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
+                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url
 
                 case _ if userAnswers.departureData.isSimplified && userAnswers.departureData.hasAuthC523 =>
                   controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
