@@ -20,26 +20,26 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.transport.border.AddBorderMeansOfTransportYesNoView
+import views.html.transport.border.AddBorderModeOfTransportYesNoView
 
-class AddBorderMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
+class AddBorderModeOfTransportYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddBorderMeansOfTransportYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddBorderModeOfTransportYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "transport.border.addBorderMeansOfTransportYesNo"
+  override val prefix: String = "transport.border.addBorderModeOfTransport"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Border means of transport")
+  behave like pageWithSectionCaption(messages("transport.border.subheading"))
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This is the means of transport used from a UK port or airport to another customs territory.")
+  behave like pageWithContent("p", "This is the mode of transport used from a UK port or airport to another customs territory. For example, road, sea or air.")
 
   behave like pageWithRadioItems()
 
-  behave like pageWithSubmitButton("Continue")
+  behave like pageWithSubmitButton(messages("site.continue"))
 }

@@ -8,6 +8,7 @@ site.delete = Remove
 site.change = Change
 site.delete.hidden = Remove {0}
 site.edit.hidden = Change {0}
+site.confirmAndSend = Confirm and send
 
 site.section = This section is
 
@@ -369,6 +370,13 @@ transport.border.active.removeBorderTransport.checkYourAnswersLabel = Are you su
 transport.border.active.removeBorderTransport.error.required = Select yes if you want to remove this border means of transport
 transport.border.active.removeBorderTransport.change.hidden = if you want to remove this border means of transport
 
+transport.border.addBorderModeOfTransport.title = Do you want to add a border mode of transport?
+transport.border.addBorderModeOfTransport.heading = Do you want to add a border mode of transport?
+transport.border.addBorderModeOfTransport.paragraph = This is the mode of transport used from a UK port or airport to another customs territory. For example, road, sea or air.
+transport.border.addBorderModeOfTransport.checkYourAnswersLabel = Do you want to add a border mode of transport?
+transport.border.addBorderModeOfTransport.change.hidden = if you want to add a border mode of transport
+transport.border.addBorderModeOfTransport.error.required = Select yes if you want to add a border mode of transport
+
 transport.equipment.addTransportEquipment.title = Do you want to add any transport equipment?
 transport.equipment.addTransportEquipment.heading = Do you want to add any transport equipment?
 transport.equipment.addTransportEquipment.paragraph = This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.
@@ -450,3 +458,8 @@ transport.equipment.removeItem.heading = Are you sure you want to remove this it
 transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
 
+checkYourAnswers.title = Check your answers
+checkYourAnswers.heading = Check your answers
+checkYourAnswers.paragraph1 = The information below combines parts of your initial declaration with the answers you just provided. Check this and confirm whether the details are still correct.
+checkYourAnswers.subHeading = Send this information for your departure declaration
+checkYourAnswers.paragraph2 = By sending this, you are confirming that these details are correct to the best of your knowledge.
