@@ -57,7 +57,7 @@ placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
 
 transport.prefix = Transport equipment {0}
-transport.container = container {0}
+transport.value.container = container {0}
 transport.value.withoutContainer = no container identification number
 transport.item.prefix = Item {0}
 
@@ -291,6 +291,13 @@ transport.containers.containerIndicator.change.hidden = if you are using any shi
 transport.containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
 transport.border.subheading = Border means of transport
+
+transport.border.addBorderMeansOfTransportYesNo.title = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.heading = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.paragraph = This is the means of transport used from a UK port or airport to another customs territory.
+transport.border.addBorderMeansOfTransportYesNo.checkYourAnswersLabel = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.error.required = Select yes if you want to add identification for the border means of transport
+transport.border.addBorderMeansOfTransportYesNo.change.hidden = if you want to add identification for the border means of transport
 
 transport.border.active.addConveyanceReference.title = Do you want to add a conveyance reference number?
 transport.border.active.addConveyanceReference.heading = Do you want to add a conveyance reference number?
