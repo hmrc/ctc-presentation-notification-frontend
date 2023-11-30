@@ -44,7 +44,7 @@ class AddBorderModeOfTransportYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.addBorderModeOfTransport")
+  private val form = formProvider("transport.border.addBorderModeOfTransport")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>

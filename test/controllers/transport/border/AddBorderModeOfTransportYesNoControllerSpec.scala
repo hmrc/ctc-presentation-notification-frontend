@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                            = new YesNoFormProvider()
-  private val form                                    = formProvider("transport.addBorderModeOfTransport")
+  private val form                                    = formProvider("transport.border.addBorderModeOfTransport")
   private val mode                                    = NormalMode
   private lazy val addBorderModeOfTransportYesNoRoute = borderRoutes.AddBorderModeOfTransportYesNoController.onPageLoad(departureId, mode).url
 
