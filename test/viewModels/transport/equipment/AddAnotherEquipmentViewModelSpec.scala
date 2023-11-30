@@ -22,11 +22,12 @@ import controllers.transport.equipment.index.routes
 import generators.Generators
 import models.messages.Authorisation
 import models.messages.AuthorisationType.{C521, C523}
+import models.reference.Item
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index._
 import viewModels.ListItem
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
@@ -68,7 +69,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 result.listItems mustBe Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
-                    changeUrl = controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
+                    changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
                       .onPageLoad(departureId, mode, equipmentIndex)
                       .url,
                     removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url)
@@ -94,7 +95,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 result.listItems mustBe Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
-                    changeUrl = controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
+                    changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
                       .onPageLoad(departureId, mode, equipmentIndex)
                       .url,
                     removeUrl = None
@@ -107,13 +108,14 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
       "when user answers populated with one equipment and without container id" - {
         "must return one list item" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Item]) {
+            (mode, item) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddTransportEquipmentYesNoPage, true)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(ContainerIndicatorPage, true)
+                .setValue(ItemPage(Index(0), Index(0)), item)
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
               result.listItems.length mustBe 1
@@ -125,7 +127,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               result.listItems mustBe Seq(
                 ListItem(
                   name = s"Transport equipment 1 - no container identification number",
-                  changeUrl = controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
+                  changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
                     .onPageLoad(departureId, mode, equipmentIndex)
                     .url,
                   removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(0)).url)
@@ -137,13 +139,15 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
       "when user answers is populated with more than one equipment" - {
         "must return multiple list items  when container indicator is true" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, containerId) =>
+          forAll(arbitrary[Mode], nonEmptyString, arbitrary[Item]) {
+            (mode, containerId, item) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
                 .setValue(ContainerIndicatorPage, true)
+                .setValue(ItemPage(Index(0), Index(0)), item)
+
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
               result.listItems.length mustBe 2
@@ -155,15 +159,14 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               result.listItems mustBe Seq(
                 ListItem(
                   name = "Transport equipment 1 - no container identification number",
-                  changeUrl = controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
+                  changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
                     .onPageLoad(departureId, mode, equipmentIndex)
                     .url,
                   removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
                   name = s"Transport equipment 2 - container $containerId",
-                  changeUrl =
-                    controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, Index(1)).url,
+                  changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, Index(1)).url)
                 )
               )
@@ -171,13 +174,14 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
         }
 
         "must return multiple list items when container indicator is false and Authorisation is C521 and C523 change url must point to AddContainerIdentificationNumberYesNoController," in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, containerId) =>
+          forAll(arbitrary[Mode], nonEmptyString, arbitrary[Item]) {
+            (mode, containerId, item) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
                 .setValue(ContainerIndicatorPage, false)
+                .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
                 userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1234"), Authorisation(C521, "1234")))))
@@ -210,13 +214,14 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
         }
 
         "must return multiple list items when container indicator is false and Authorisation is C521 but not C523, change link must redirect to AddSealsController" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, containerId) =>
+          forAll(arbitrary[Mode], nonEmptyString, arbitrary[Item]) {
+            (mode, containerId, item) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
                 .setValue(ContainerIndicatorPage, false)
+                .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
                 userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
@@ -247,11 +252,12 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
         }
 
         "must not show remove link when there is only 1 equipment and the section is mandatory(there is no answer to do you want to add an equipment page)" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Item]) {
+            (mode, item) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
+                .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
                 userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
@@ -277,12 +283,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
         }
 
         "must show remove link when there is only 1 equipment and the section is mandatory(there is a yes answer to do you want to add an equipment page)" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Item]) {
+            (mode, item) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(AddTransportEquipmentYesNoPage, true)
+                .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
                 userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))

@@ -22,7 +22,7 @@ import controllers.transport.equipment.routes
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
@@ -64,15 +64,21 @@ object AddAnotherEquipmentViewModel {
             val noContainer                          = messages("transport.value.withoutContainer")
             val lessThan2TransportEquipment: Boolean = userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0) < 2
 
-            val name = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) match {
-              case Some(identificationNumber) => Some(s"${equipmentPrefix(equipmentIndex.display)} - ${container(identificationNumber)}")
-              case _                          => Some(s"${equipmentPrefix(equipmentIndex.display)} - $noContainer")
+            val name = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) flatMap {
+              identificationNumber =>
+                Some(s"${equipmentPrefix(equipmentIndex.display)} - ${container(identificationNumber)}")
+            } orElse {
+              userAnswers
+                .get(ItemPage(equipmentIndex, Index(0)))
+                .map(
+                  _ => s"${equipmentPrefix(equipmentIndex.display)} - $noContainer"
+                )
             }
 
             val changeRoute =
               userAnswers.get(ContainerIndicatorPage) match {
                 case Some(true) =>
-                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
+                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url
 
                 case _ if userAnswers.departureData.isSimplified && userAnswers.departureData.hasAuthC523 =>
                   controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
