@@ -432,4 +432,35 @@ object TestMessageData {
        |}
        |""".stripMargin
   )
+
+  val allOptionsNoneJsonValue: JsValue = Json.parse(
+    s"""
+       |{
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
+       |    },
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
+       |    },
+       |    "TransitOperation": {
+       |        "security": "1"
+       |    },
+       |    "Consignment": {
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
+       |}
+       |""".stripMargin
+  )
 }

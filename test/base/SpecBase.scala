@@ -22,16 +22,19 @@ import models.{EoriNumber, Index, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import org.scalatest.{BeforeAndAfterEach, EitherValues, OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar
 import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.Instant
+import scala.concurrent.Future
 
 trait SpecBase
     extends AnyFreeSpec
@@ -42,7 +45,8 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience
     with BeforeAndAfterEach
-    with AppWithDefaultMockFixtures {
+    with AppWithDefaultMockFixtures
+    with MockitoSugar {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val eoriNumber: EoriNumber     = EoriNumber("eoriNumber")
@@ -85,5 +89,24 @@ trait SpecBase
 
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
+
   }
+
+  implicit class RichContent(c: Content) {
+    def value: String = c.asHtml.toString()
+  }
+
+  implicit class RichKey(k: Key) {
+    def value: String = k.content.value
+  }
+
+  implicit class RichValue(v: Value) {
+    def value: String = v.content.value
+  }
+
+  implicit class RichAction(ai: ActionItem) {
+    def id: String = ai.attributes.get("id").value
+  }
+
+  def response(status: Int): Future[HttpResponse] = Future.successful(HttpResponse(status, ""))
 }
