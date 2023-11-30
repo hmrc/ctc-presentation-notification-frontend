@@ -17,14 +17,11 @@
 package utils
 
 import config.FrontendAppConfig
-import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, Reads}
-import play.api.mvc.Call
+import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
-import viewModels.{Link, ListItem}
 
 class AnswersHelper(
   userAnswers: UserAnswers,

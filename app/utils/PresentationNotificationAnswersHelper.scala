@@ -17,8 +17,7 @@
 package utils
 
 import config.FrontendAppConfig
-import models.reference.Country
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.transport.LimitDatePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -27,9 +26,10 @@ import java.time.LocalDate
 
 class PresentationNotificationAnswersHelper(
   userAnswers: UserAnswers,
+  departureId: String,
   mode: Mode
 )(implicit messages: Messages, appConfig: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+    extends AnswersHelper(userAnswers, departureId, mode) {
 
   def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = LimitDatePage,
@@ -37,7 +37,5 @@ class PresentationNotificationAnswersHelper(
     prefix = "transport.limit.date",
     id = Some("change-limit-date")
   )
-
-
 
 }

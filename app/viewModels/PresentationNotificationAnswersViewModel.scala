@@ -27,24 +27,21 @@ case class PresentationNotificationAnswersViewModel(sections: Seq[Section])
 
 object PresentationNotificationAnswersViewModel {
 
-  class PresentationNotificationAnswersViewModelProvider @Inject() (
-    presentationNotificationAnswersViewModelProvider: PresentationNotificationAnswersViewModelProvider,
-    implicit val config: FrontendAppConfig
+  class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
+    val config: FrontendAppConfig
   ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages): PresentationNotificationAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, departureId: String)(implicit messages: Messages): PresentationNotificationAnswersViewModel = {
       val mode = CheckMode
 
-      val helper = new PresentationNotificationAnswersHelper(userAnswers, mode)
+      val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
 
       val firstSection = Section(
         rows = Seq(
           helper.limitDate
         ).flatten
       )
-
-
 
       val sections = firstSection.toSeq
 
