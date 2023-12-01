@@ -421,6 +421,7 @@ transport.equipment.selectItems.heading = Which items does this transport equipm
 transport.equipment.selectItems.paragraph = You can only select from the items you added when making the declaration.
 transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
+transport.equipment.selectItems.placeholder = Select an item
 
 transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
 transport.equipment.applyAnotherItem.plural.title = You have applied {0} items to transport equipment {1}
