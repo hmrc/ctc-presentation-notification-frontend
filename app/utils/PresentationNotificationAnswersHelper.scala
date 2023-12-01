@@ -19,6 +19,7 @@ package utils
 import config.FrontendAppConfig
 import models.reference.BorderMode
 import models.{Mode, UserAnswers}
+import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import pages.QuestionPage
 import pages.transport.LimitDatePage
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
@@ -39,7 +40,7 @@ class PresentationNotificationAnswersHelper(
     page = LimitDatePage,
     formatAnswer = formatAsDate,
     prefix = "transport.limit.date",
-    key = JsPath \ "TransitOperation" \ "limitDate",
+    findValueInDepartureData = _.TransitOperation.limitDate.map(_.asLocalDate),
     id = Some("change-limit-date")
   )
 
@@ -57,6 +58,14 @@ class PresentationNotificationAnswersHelper(
     prefix = "transport.border.borderModeOfTransport",
     key = JsPath \ "Consignment" \ "modeOfTransportAtTheBorder" \ "code",
     id = Some("change-border-mode-of-transport")
+  )
+
+  def containerIndicator: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = ContainerIndicatorPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.containers.containerIndicator",
+    findValueInDepartureData = _.Consignment.containerIndicator.map(_.asBoolean),
+    id = Some("change-container-indicator")
   )
 
 }

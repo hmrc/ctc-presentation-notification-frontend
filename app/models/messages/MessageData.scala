@@ -46,11 +46,6 @@ case class MessageData(
   val isSimplified: Boolean = Authorisation.flatMap(_.find(_.`type` == C521)).isDefined
   val hasAuthC523: Boolean  = Authorisation.flatMap(_.find(_.`type` == C523)).isDefined
 
-  def getData[A](key: JsPath)(implicit reads: Reads[A]): Option[A] = {
-    val cc = reads
-    key.readNullable[A].reads(Json.toJson(this)).asOpt.flatten
-  }
-
   def isDataComplete: Boolean =
     List(
       TransitOperation.limitDate,

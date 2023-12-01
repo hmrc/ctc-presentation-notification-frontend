@@ -39,7 +39,8 @@ object PresentationNotificationAnswersViewModel {
 
       val firstSection = Section(
         rows = Seq(
-          helper.limitDate
+          helper.limitDate,
+          helper.containerIndicator
         ).flatten
       )
 
