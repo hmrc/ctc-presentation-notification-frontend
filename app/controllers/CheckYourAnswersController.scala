@@ -21,14 +21,15 @@ import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import views.html.CheckYourAnswersView
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-@Singleton
 class CheckYourAnswersController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  viewModelProvider: PresentationNotificationAnswersViewModelProvider,
   navigator: Navigator,
   view: CheckYourAnswersView
 ) extends FrontendBaseController
@@ -36,8 +37,9 @@ class CheckYourAnswersController @Inject() (
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val lrn = request.userAnswers.lrn
-      Ok(view(lrn, departureId))
+      val lrn      = request.userAnswers.lrn
+      val sections = viewModelProvider(request.userAnswers, departureId).sections
+      Ok(view(lrn, departureId, sections))
   }
 
   def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {

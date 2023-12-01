@@ -39,7 +39,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   "Navigator" - {
 
-    "in Normal mode" - {
+    "in Normal Mode" - {
 
       val mode = NormalMode
       "must go from LocationTypePage to IdentificationPage" - {
@@ -323,6 +323,19 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
           .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
+      }
+    }
+
+    "in Check Mode" - {
+
+      "must go from limit date page to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(LimitDatePage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
       }
     }
   }

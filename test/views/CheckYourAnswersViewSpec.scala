@@ -17,13 +17,16 @@
 package views
 
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import viewModels.Section
+import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersViewSpec extends ViewBehaviours {
+class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[CheckYourAnswersView].apply(lrn.value, departureId)(fakeRequest, messages)
+  override def view: HtmlFormat.Appendable = viewWithSections(sections)
+
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
+    injector.instanceOf[CheckYourAnswersView].apply(lrn.value, departureId, sections)(fakeRequest, messages)
 
   override val prefix: String = "checkYourAnswers"
 
@@ -37,6 +40,9 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
     "p",
     s"The information below combines parts of your initial declaration with the answers you just provided. Check this and confirm whether the details are still correct."
   )
+
+  behave like pageWithCheckYourAnswers()
+
   behave like pageWithContent("h2", "Send this information for your departure declaration")
 
   behave like pageWithContent("p", "By sending this, you are confirming that these details are correct to the best of your knowledge.")
