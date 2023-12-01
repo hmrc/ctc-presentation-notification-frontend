@@ -38,6 +38,8 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsDate(answer: LocalDate): Content = answer.formatAsString.toText
 
+  protected def formatAsText[T](answer: T): Content = s"$answer".toText
+
   protected def buildRow(
     prefix: String,
     answer: Content,

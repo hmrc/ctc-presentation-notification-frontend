@@ -17,8 +17,11 @@
 package utils
 
 import config.FrontendAppConfig
+import models.reference.BorderMode
 import models.{Mode, UserAnswers}
+import pages.QuestionPage
 import pages.transport.LimitDatePage
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -38,6 +41,22 @@ class PresentationNotificationAnswersHelper(
     prefix = "transport.limit.date",
     key = JsPath \ "TransitOperation" \ "limitDate",
     id = Some("change-limit-date")
+  )
+
+  def borderModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddBorderModeOfTransportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.border.addBorderModeOfTransport",
+    key = JsPath \ "Consignment" \ "modeOfTransportAtTheBorder",
+    id = Some("change-add-border-mode")
+  )
+
+  def borderModeOfTransport: Option[SummaryListRow] = getAnswerAndBuildRow[BorderMode](
+    page = BorderModeOfTransportPage,
+    formatAnswer = formatAsText,
+    prefix = "transport.border.borderModeOfTransport",
+    key = JsPath \ "Consignment" \ "modeOfTransportAtTheBorder" \ "code",
+    id = Some("change-border-mode-of-transport")
   )
 
 }

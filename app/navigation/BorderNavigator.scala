@@ -42,7 +42,9 @@ class BorderNavigator @Inject() () extends Navigator {
     case ConveyanceReferenceNumberPage(activeIndex)   => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
   }
 
-  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case BorderModeOfTransportPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+  }
 
   private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
     val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)
