@@ -18,7 +18,7 @@ package utils
 
 import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
-import pages.transport.LimitDatePage
+import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -36,8 +36,16 @@ class PresentationNotificationAnswersHelper(
     page = LimitDatePage,
     formatAnswer = formatAsDate,
     prefix = "transport.limit.date",
-    key = JsPath \ "TransitOperation" \ "limitDate",
+    findValueInDepartureData = _.TransitOperation.limitDate.map(_.asLocalDate),
     id = Some("change-limit-date")
+  )
+
+  def containerIndicator: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = ContainerIndicatorPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.containers.containerIndicator",
+    findValueInDepartureData = _.Consignment.containerIndicator.map(_.asBoolean),
+    id = Some("change-container-indicator")
   )
 
 }

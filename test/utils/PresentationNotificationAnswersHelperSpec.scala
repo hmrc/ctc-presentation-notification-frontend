@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.LimitDatePage
+import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
 
 import java.time.{Instant, LocalDate}
@@ -90,6 +90,62 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               action.href mustBe controllers.transport.routes.LimitDateController.onPageLoad(departureId, mode).url
               action.visuallyHiddenText.get mustBe "estimated arrival date at the office of destination"
               action.id mustBe "change-limit-date"
+          }
+        }
+      }
+    }
+
+    "containerIndicator" - {
+      "must return None when no container indicator in ie15/170" - {
+        s"when $ContainerIndicatorPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val ie015WithNoLimitDateUserAnswers =
+                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
+              val result = helper.containerIndicator
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $ContainerIndicatorPage defined in the ie170" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, true)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val result = helper.containerIndicator.get
+
+              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
+              action.id mustBe "change-container-indicator"
+          }
+        }
+
+        s"when $ContainerIndicatorPage defined in the ie15" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val ie015WithContainerIndicatorUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, mode)
+              val result                                 = helper.containerIndicator.get
+
+              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
+              action.id mustBe "change-container-indicator"
           }
         }
       }

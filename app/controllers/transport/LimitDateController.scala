@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{CustomsOfficesService, DateTimeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Format.RichLocalDate
+import utils.RichLocalDate
 import views.html.transport.LimitDateView
 
 import java.time.LocalDate

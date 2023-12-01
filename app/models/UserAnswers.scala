@@ -37,10 +37,8 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def getDataFromDepartureData[A](key: JsPath)(implicit reads: Reads[A]): Option[A] =
-    departureData.getData[A](key)
-
-  def getOrElse[A](page: QuestionPage[A], key: JsPath)(implicit reads: Reads[A]): Option[A] = get(page) orElse getDataFromDepartureData(key)
+  def getOrElse[A](page: QuestionPage[A], findValueInDepartureData: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
+    get(page) orElse findValueInDepartureData(departureData)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
     lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {
