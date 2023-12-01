@@ -14,15 +14,32 @@
  * limitations under the License.
  */
 
-package utils
-
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-object Format {
+package object utils {
+
+  implicit class EnrichedString(value: String) {
+
+    def asBoolean: Boolean = value match {
+      case "0" => false
+      case "1" => true
+      case x   => throw new IllegalArgumentException(s"could not cast $x to boolean")
+    }
+
+    def asLocalDate: LocalDate = {
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+      LocalDate.parse(value, formatter)
+    }
+
+  }
 
   implicit class RichLocalDate(localDate: LocalDate) {
     def formatAsString: String = localDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
-    def formatForText: String  = localDate.format(DateTimeFormatter.ofPattern("dd MM yyyy"))
+
+    def formatForText: String = localDate.format(DateTimeFormatter.ofPattern("dd MM yyyy"))
   }
+
 }

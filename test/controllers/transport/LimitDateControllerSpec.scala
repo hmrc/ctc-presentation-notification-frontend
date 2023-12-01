@@ -28,7 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{CustomsOfficesService, DateTimeService}
-import utils.Format.RichLocalDate
+import utils.RichLocalDate
 import views.html.transport.LimitDateView
 
 import java.time.LocalDate
