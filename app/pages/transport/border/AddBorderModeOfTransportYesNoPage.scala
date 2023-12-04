@@ -39,6 +39,9 @@ case object AddBorderModeOfTransportYesNoPage extends QuestionPage[Boolean] {
       case Some(false) =>
         userAnswers
           .remove(BorderModeOfTransportPage)
+          .map(
+            userAnswers => UserAnswers.lensModeOfTransportAtTheBorder.set(None)(userAnswers)
+          )
       case _ => super.cleanup(value, userAnswers)
     }
 

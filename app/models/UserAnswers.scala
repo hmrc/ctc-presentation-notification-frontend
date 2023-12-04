@@ -16,7 +16,9 @@
 
 package models
 
-import models.messages.MessageData
+import models.messages.{Consignment, MessageData}
+import monocle.Lens
+import monocle.macros.GenLens
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -67,6 +69,15 @@ final case class UserAnswers(
 }
 
 object UserAnswers {
+
+  val departureDataLens: Lens[UserAnswers, MessageData] = GenLens[UserAnswers](_.departureData)
+  val consignmentLens: Lens[MessageData, Consignment]   = GenLens[MessageData](_.Consignment)
+
+  val modeOfTransportAtTheBorderLens: Lens[Consignment, Option[String]] =
+    GenLens[Consignment](_.modeOfTransportAtTheBorder)
+
+  val lensModeOfTransportAtTheBorder: Lens[UserAnswers, Option[String]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderLens)
 
   import play.api.libs.functional.syntax._
 
