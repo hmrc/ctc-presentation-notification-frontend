@@ -51,7 +51,7 @@ class AddAnotherBorderTransportViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Border mode of transport")
+  behave like pageWithSectionCaption("Border means of transport")
 
   behave like pageWithHint(
     "Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU."
