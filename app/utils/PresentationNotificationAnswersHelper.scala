@@ -44,28 +44,28 @@ class PresentationNotificationAnswersHelper(
     id = Some("change-limit-date")
   )
 
-  def borderModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddBorderModeOfTransportYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transport.border.addBorderModeOfTransport",
-    key = JsPath \ "Consignment" \ "modeOfTransportAtTheBorder",
-    id = Some("change-add-border-mode")
-  )
-
-  def borderModeOfTransport: Option[SummaryListRow] = getAnswerAndBuildRow[BorderMode](
-    page = BorderModeOfTransportPage,
-    formatAnswer = formatAsText,
-    prefix = "transport.border.borderModeOfTransport",
-    key = JsPath \ "Consignment" \ "modeOfTransportAtTheBorder" \ "code",
-    id = Some("change-border-mode-of-transport")
-  )
-
   def containerIndicator: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = ContainerIndicatorPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.containers.containerIndicator",
     findValueInDepartureData = _.Consignment.containerIndicator.map(_.asBoolean),
     id = Some("change-container-indicator")
+  )
+
+  def borderModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddBorderModeOfTransportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.border.addBorderModeOfTransport",
+    findValueInDepartureData = _.Consignment.isTransportDefined,
+    id = Some("change-add-border-mode")
+  )
+
+  def borderModeOfTransport: Option[SummaryListRow] = getAnswerAndBuildRow[BorderMode](
+    page = BorderModeOfTransportPage,
+    formatAnswer = formatDynamicEnumAsText(_),
+    prefix = "transport.border.borderModeOfTransport",
+    findValueInDepartureData = _.Consignment.modeOfTransportAtTheBorder.map(_.asBorderMode),
+    id = Some("change-border-mode-of-transport")
   )
 
 }

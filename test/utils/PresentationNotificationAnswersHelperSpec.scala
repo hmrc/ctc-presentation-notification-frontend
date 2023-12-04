@@ -151,5 +151,61 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
       }
     }
 
+    "borderModeOfTransport" - {
+      "must return None when no border mode in ie15/170" - {
+        s"when $ContainerIndicatorPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val ie015WithNoLimitDateUserAnswers =
+                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
+              val result = helper.containerIndicator
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $ContainerIndicatorPage defined in the ie170" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, true)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val result = helper.containerIndicator.get
+
+              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
+              action.id mustBe "change-container-indicator"
+          }
+        }
+
+        s"when $ContainerIndicatorPage defined in the ie15" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val ie015WithContainerIndicatorUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, mode)
+              val result                                 = helper.containerIndicator.get
+
+              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
+              action.id mustBe "change-container-indicator"
+          }
+        }
+      }
+    }
+
   }
 }
