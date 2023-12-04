@@ -30,6 +30,7 @@ case class BorderMode(code: String, description: String) extends Radioable[Borde
 
 object BorderMode extends DynamicEnumerableType[BorderMode] {
 
+  //TODO: update this to use reference data calls
   def getDescription(value: String): BorderMode = value match {
     case Maritime => BorderMode(Maritime, "Maritime")
     case Rail     => BorderMode(Rail, "Rail")
