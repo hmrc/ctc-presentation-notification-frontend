@@ -58,10 +58,10 @@ object AddAnotherEquipmentViewModel {
           case (_, i) =>
             val equipmentIndex = Index(i)
 
-            def equipmentPrefix(increment: Int)      = messages("transport.prefix", increment)
-            def container(id: String)                = messages("transport.container", id)
-            val noContainer                          = messages("transport.value.withoutContainer")
             val lessThan2TransportEquipment: Boolean = userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0) < 2
+            def equipmentPrefix(increment: Int)      = messages("transport.prefix", increment)
+            def container(id: String)                = messages("transport.value.container", id)
+            val noContainer                          = messages("transport.value.withoutContainer")
 
             val name = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) flatMap {
               identificationNumber =>

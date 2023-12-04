@@ -33,3 +33,7 @@ GET        /place-of-loading/change-add/:departureId                          co
 POST       /place-of-loading/change-add/:departureId                          controllers.AddPlaceOfLoadingYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
 GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
+
+GET        /check-answers/:departureId                                        controllers.CheckYourAnswersController.onPageLoad(departureId: String)
+POST       /check-answers/:departureId                                        controllers.CheckYourAnswersController.onSubmit(departureId: String)
+
