@@ -32,8 +32,18 @@ case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Cal
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
 
-  override def title(implicit messages: Messages): String   = messages(s"$prefix.$singularOrPlural.title", count, equipmentIndex.display)
-  override def heading(implicit messages: Messages): String = messages(s"$prefix.$singularOrPlural.heading", count, equipmentIndex.display)
+  override def title(implicit messages: Messages): String = if (count == 1) {
+    messages(s"$prefix.singular.title", equipmentIndex.display)
+  } else {
+    messages(s"$prefix.plural.title", count, equipmentIndex.display)
+  }
+
+  override def heading(implicit messages: Messages): String = if (count == 1) {
+    messages(s"$prefix.singular.heading", equipmentIndex.display)
+  } else {
+    messages(s"$prefix.plural.heading", count, equipmentIndex.display)
+  }
+
   override def legend(implicit messages: Messages): String  = messages(s"$prefix.label", equipmentIndex.display)
   def noMoreItemsLabel(implicit messages: Messages): String = messages(s"$prefix.noMoreItems.label")
 
