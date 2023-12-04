@@ -73,7 +73,7 @@ class EquipmentNavigator extends Navigator {
   def addTransportEquipmentYesNoNormalRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.get(AddTransportEquipmentYesNoPage) match {
       case Some(true) => checkProcedureAuthRoute(ua, departureId, mode, Index(0))
-      case _          => ??? // TODO Should go CYA
+      case _          => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   def addSealYesNoNormalRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =
@@ -102,6 +102,6 @@ class EquipmentNavigator extends Navigator {
             Some(controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
           case _ => Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
         }
-      case Some(false) => ??? //todo- redirect to CYA when built
+      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 }
