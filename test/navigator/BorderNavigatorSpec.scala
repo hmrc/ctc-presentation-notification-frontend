@@ -27,7 +27,7 @@ import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.MoreInformationPage
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.border.active._
 
 class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -184,69 +184,97 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, NormalMode, activeIndex))
       }
 
+      "when selected no on add conveyance number yes no" - {
+
+        "must go to add another active border when customs office of transit is present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                  )
+                )
+              navigator
+                .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
+          }
+        }
+        //TODO: change unit test once page has been added
+        "must go to more information page when customs office of transit is not present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
+              navigator
+                .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+          }
+
+        }
+
+      }
+
+      "when on conveyance number page" - {
+
+        "must go to add another active border when customs office of transit is present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                  )
+                )
+              navigator
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
+          }
+        }
+        //TODO: change unit test once page has been added
+        "must go to more information page when customs office of transit is not present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
+                .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+          }
+        }
+      }
+
     }
 
-    "when selected no on add conveyance number yes no" - {
+    "in CheckMode" - {
+      val mode = CheckMode
+      "must go from AddBorderModeOfTransportYesNoPage" - {
 
-      "must go to add another active border when customs office of transit is present" in {
+        "to CYA page when No " in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
-              .copy(departureData =
-                TestMessageData.messageData.copy(
-                  CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
-                )
-              )
-            navigator
-              .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
         }
-      }
-      //TODO: change unit test once page has been added
-      "must go to more information page when customs office of transit is not present" in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
-            navigator
-              .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+        "to BorderModeOfTransportPage when Yes " in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+
         }
 
       }
 
-    }
-
-    "when on conveyance number page" - {
-
-      "must go to add another active border when customs office of transit is present" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .copy(departureData =
-                TestMessageData.messageData.copy(
-                  CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
-                )
-              )
-            navigator
-              .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
-        }
-      }
-      //TODO: change unit test once page has been added
-      "must go to more information page when customs office of transit is not present" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
-              .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
-        }
-      }
     }
 
   }

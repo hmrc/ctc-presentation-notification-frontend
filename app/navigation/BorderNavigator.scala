@@ -22,7 +22,7 @@ import models._
 import models.reference.BorderMode
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.border.active._
 import play.api.mvc.Call
 
@@ -43,8 +43,16 @@ class BorderNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case BorderModeOfTransportPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddBorderModeOfTransportYesNoPage => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
+    case BorderModeOfTransportPage         => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
+
+  private def addBorderModeOfTransportYesNoNavigation(ua: UserAnswers, departureId: String): Option[Call] =
+    ua.get(AddBorderModeOfTransportYesNoPage) match {
+      case Some(true)  => BorderModeOfTransportPage.route(ua, departureId, CheckMode)
+      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
     val numberOfActiveBorderMeans: Int = ua.get(BorderActiveListSection).map(_.value.length).getOrElse(0)

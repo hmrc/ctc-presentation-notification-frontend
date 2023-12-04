@@ -19,6 +19,7 @@ package models.reference
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
+import config.Constants._
 
 case class BorderMode(code: String, description: String) extends Radioable[BorderMode] {
 
@@ -28,6 +29,13 @@ case class BorderMode(code: String, description: String) extends Radioable[Borde
 }
 
 object BorderMode extends DynamicEnumerableType[BorderMode] {
+
+  def getDescription(value: String): BorderMode = value match {
+    case Maritime => BorderMode(Maritime, "Maritime")
+    case Rail     => BorderMode(Rail, "Rail")
+    case Road     => BorderMode(Road, "Road")
+    case Air      => BorderMode(Air, "Air")
+  }
   implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
   val messageKeyPrefix = "transport.border.borderModeOfTransport"

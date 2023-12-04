@@ -20,12 +20,13 @@ import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import generators.Generators
 import models.messages.MessageData
-import models.reference.CustomsOffice
+import models.reference.{BorderMode, CustomsOffice}
 import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
 
@@ -151,60 +152,84 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
       }
     }
 
-    "borderModeOfTransport" - {
-      "must return None when no border mode in ie15/170" - {
-        s"when $ContainerIndicatorPage undefined" in {
+    "addBorderModeOfTransportYesNo" - {
+      "must return No" - {
+        "when transport mode is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoLimitDateUserAnswers =
+              val ie015WithNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
-              val result = helper.containerIndicator
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mode)
+              val result = helper.borderModeOfTransportYesNo
+              result.get.key.value mustBe s"Do you want to add a border mode of transport?"
+              result.get.value.value mustBe "No"
+              val actions = result.get.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.border.routes.AddBorderModeOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add a border mode of transport"
+              action.id mustBe "change-add-border-mode"
+          }
+        }
+      }
+    }
+
+    "borderModeOfTransport" - {
+      "must return None" - {
+        "when ModeCrossingBorderPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val ie015WithNoUserAnswers =
+                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mode)
+              val result = helper.borderModeOfTransport
               result mustBe None
           }
         }
       }
 
       "must return Some(Row)" - {
-        s"when $ContainerIndicatorPage defined in the ie170" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(ContainerIndicatorPage, true)
+        s"when ModeCrossingBorderPage defined in the ie170" in {
+          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
+            (mode, borderModeOfTransport) =>
+              val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
               val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
-              val result = helper.containerIndicator.get
+              val result = helper.borderModeOfTransport
 
-              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
-              result.value.value mustBe "Yes"
-              val actions = result.actions.get.items
+              result.get.key.value mustBe s"Mode"
+              result.get.value.value mustBe borderModeOfTransport.description
+              val actions = result.get.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
-              action.id mustBe "change-container-indicator"
+              action.href mustBe controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "border mode of transport"
+              action.id mustBe "change-border-mode-of-transport"
           }
         }
 
-        s"when $ContainerIndicatorPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithContainerIndicatorUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, mode)
-              val result                                 = helper.containerIndicator.get
+        "when ModeCrossingBorderPage defined in ie15" in {
+          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
+            (mode, borderModeOfTransport) =>
+              val answers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
+              val helper  = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val result  = helper.borderModeOfTransport
 
-              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
-              result.value.value mustBe "Yes"
-              val actions = result.actions.get.items
+              result.get.key.value mustBe s"Mode"
+              result.get.value.value mustBe borderModeOfTransport.description
+              val actions = result.get.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
-              action.id mustBe "change-container-indicator"
+              action.href mustBe controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "border mode of transport"
+              action.id mustBe "change-border-mode-of-transport"
           }
         }
       }
+
     }
 
   }

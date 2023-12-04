@@ -17,11 +17,14 @@
 package pages.transport.border
 
 import models.reference.BorderMode
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
+import pages.sections.transport.border.BorderActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
 
@@ -31,5 +34,13 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+
+  override def cleanup(value: Option[BorderMode], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers.remove(BorderActiveSection(Index(0)))
+      case None =>
+        super.cleanup(value, userAnswers)
+    }
 
 }
