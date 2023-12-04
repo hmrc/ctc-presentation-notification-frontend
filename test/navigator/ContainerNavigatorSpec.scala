@@ -95,24 +95,24 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode)
                 )
           }
-      }
+        }
 
       "to CYA Page" +
-      "when security is '0'" +
+        "when security is '0'" +
         "and containerIndicator has not been answered in IE170" ignore {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .copy(departureData =
-                TestMessageData.messageData.copy(
-                  TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                  )
                 )
-              )
-            navigator
-              .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(???) // TODO should go to CYA
+              navigator
+                .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(???) // TODO should go to CYA
+          }
         }
-      }
     }
 
   }
