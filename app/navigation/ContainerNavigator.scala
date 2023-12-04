@@ -40,6 +40,7 @@ class ContainerNavigator @Inject() () extends Navigator {
 
   private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
     ua.departureData.TransitOperation.isSecurityTypeInSet
+
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
