@@ -34,7 +34,7 @@ case class AddAnotherEquipmentViewModel(
   onSubmitCall: Call,
   isNumberItemsZero: Boolean
 ) extends AddAnotherViewModel {
-  override val prefix: String = "transport.equipment.addAnotherEquipment"
+  override val prefix: String                                         = "transport.equipment.addAnotherEquipment"
   override def maxCount(implicit config: FrontendAppConfig): Int      = config.maxEquipmentNumbers
   override def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount && !isNumberItemsZero
   def noMoreItemsLabel(implicit messages: Messages): String           = messages(s"$prefix.noMoreItems.label")
