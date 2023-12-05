@@ -26,23 +26,23 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId:String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.border.addBorderModeOfTransport.title"),
+    title = messages("transport.border.addBorderMeansOfTransportYesNo.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AddBorderModeOfTransportYesNoController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddBorderMeansOfTransportYesNoController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("transport.border.addBorderModeOfTransport.heading"),
-                caption = Some(messages("transport.border.borderModeOfTransport.caption")),
-                additionalHtml = messages("transport.border.addBorderModeOfTransport.paragraph").toParagraph
+                heading = messages("transport.border.addBorderMeansOfTransportYesNo.heading"),
+                caption = Some(messages("transport.border.subheading")),
+                additionalHtml = messages("transport.border.addBorderMeansOfTransportYesNo.paragraph").toParagraph
             )
         )
 

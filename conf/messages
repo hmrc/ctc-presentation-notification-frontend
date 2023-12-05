@@ -57,7 +57,7 @@ placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
 
 transport.prefix = Transport equipment {0}
-transport.container = container {0}
+transport.value.container = container {0}
 transport.value.withoutContainer = no container identification number
 transport.item.prefix = Item {0}
 
@@ -294,6 +294,13 @@ transport.containers.containerIndicator.error.required = Select yes if you are u
 
 transport.border.subheading = Border means of transport
 
+transport.border.addBorderMeansOfTransportYesNo.title = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.heading = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.paragraph = This is the means of transport used from a UK port or airport to another customs territory.
+transport.border.addBorderMeansOfTransportYesNo.checkYourAnswersLabel = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.error.required = Select yes if you want to add identification for the border means of transport
+transport.border.addBorderMeansOfTransportYesNo.change.hidden = if you want to add identification for the border means of transport
+
 transport.border.active.addConveyanceReference.title = Do you want to add a conveyance reference number?
 transport.border.active.addConveyanceReference.heading = Do you want to add a conveyance reference number?
 transport.border.active.addConveyanceReference.paragraph = This is a unique reference provided by the carrier to identify the means of transport.
@@ -431,6 +438,7 @@ transport.equipment.selectItems.heading = Which items does this transport equipm
 transport.equipment.selectItems.paragraph = You can only select from the items you added when making the declaration.
 transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
+transport.equipment.selectItems.placeholder = Select an item
 
 transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
 transport.equipment.applyAnotherItem.plural.title = You have applied {0} items to transport equipment {1}
