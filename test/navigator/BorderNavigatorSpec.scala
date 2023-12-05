@@ -275,6 +275,38 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       }
 
+      "must go from BorderModeOfTransportPage to" - {
+        "Check answers page when Do you want to add border mode of transport?  is Yes" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+          navigator
+            .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+        "active.routes.Identification page when Do you want to add border mode of transport?  is false and security type is 0" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+            .copy(departureData = emptyUserAnswers.departureData.copy(TransitOperation = emptyUserAnswers.departureData.TransitOperation.copy(security = "0")))
+
+          navigator
+            .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
+            .mustBe(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+
+        }
+        "border.routes.AddBorderMeansOfTransport page" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+            .copy(departureData = emptyUserAnswers.departureData.copy(TransitOperation = emptyUserAnswers.departureData.TransitOperation.copy(security = "1")))
+
+          navigator
+            .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
+            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)))
+
+        }
+
+      }
+
     }
 
   }

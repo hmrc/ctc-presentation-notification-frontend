@@ -44,8 +44,19 @@ class BorderNavigator @Inject() () extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddBorderModeOfTransportYesNoPage => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
-    case BorderModeOfTransportPage         => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case BorderModeOfTransportPage         => ua => borderModeOfTransportCheckRoute(ua, departureId, CheckMode)
   }
+
+  private def borderModeOfTransportCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    ua.get(AddBorderModeOfTransportYesNoPage) match {
+      case Some(false) =>
+        ua.departureData.TransitOperation.isSecurityTypeInSet match {
+          case true  => Some(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)))
+          case false => Some(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+        }
+      case Some(true) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _          => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   private def addBorderModeOfTransportYesNoNavigation(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddBorderModeOfTransportYesNoPage) match {
