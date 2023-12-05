@@ -22,7 +22,12 @@ case class PlaceOfLoading(
   UNLocode: Option[String],
   country: Option[String],
   location: Option[String]
-)
+) {
+
+  val isUnlocodePresent: Boolean              = UNLocode.isDefined
+  val isAdditionalInformationPresent: Boolean = country.isDefined
+
+}
 
 object PlaceOfLoading {
   implicit val format: OFormat[PlaceOfLoading] = Json.format[PlaceOfLoading]

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import java.text.SimpleDateFormat
+import models.reference.{Country, CountryCode}
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -33,6 +34,10 @@ package object utils {
 
       LocalDate.parse(value, formatter)
     }
+
+    //TODO: Fetch this from ref data instead
+    def asCountry: Country =
+      Country(CountryCode(value), "countryDesc")
 
   }
 

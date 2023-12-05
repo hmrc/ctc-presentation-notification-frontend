@@ -37,46 +37,61 @@ class LoadingNavigator extends Navigator {
     case LocationPage                 => ua => locationPageNavigation(departureId, mode, ua)
   }
 
-  protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = { //todo add when CYA page built
+  protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
-    case UnLocodePage                 => ua => ??? //todo will go back to CYA
+    case UnLocodePage                 => ua => unLocodeCheckRoute(ua, departureId)
     case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoCheckRoute(ua, departureId)
-    case CountryPage                  => ua => ??? //todo will go back to CYA
+    case CountryPage                  => ua => countryCheckRoute(ua, departureId)
+    case LocationPage                 => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 
-  def addUnlocodeNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
+  private def unLocodeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
+    (ua.get(AddExtraInformationYesNoPage), ua.departureData.Consignment.PlaceOfLoading.map(_.isAdditionalInformationPresent)) match {
+      case (None, None) =>
+        AddExtraInformationYesNoPage.route(ua, departureId, CheckMode)
+      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    }
+
+  private def addUnlocodeNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddUnLocodeYesNoPage) match {
       case Some(true) =>
         UnLocodePage.route(ua, departureId, NormalMode)
       case _ => CountryPage.route(ua, departureId, NormalMode)
     }
 
-  def addUnlocodeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
+  private def addUnlocodeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddUnLocodeYesNoPage) match {
       case Some(true) =>
-        ua.get(UnLocodePage) match {
-          case Some(_) => ??? //todo go to cya
-          case _       => UnLocodePage.route(ua, departureId, CheckMode)
+        (ua.get(UnLocodePage), ua.departureData.Consignment.isPlaceOfLoadingPresent) match {
+          case (None, false) => UnLocodePage.route(ua, departureId, CheckMode)
+          case _             => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
-
-      case _ => ??? // todo will go to CYA page
+      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
-  def addExtraInformationYesNoNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
+  private def addExtraInformationYesNoNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddExtraInformationYesNoPage) match {
       case Some(true) =>
         CountryPage.route(ua, departureId, NormalMode)
       case _ => LocationPage.route(ua, departureId, NormalMode)
     }
 
-  def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
+  private def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddExtraInformationYesNoPage) match {
       case Some(true) =>
-        ua.get(CountryPage) match {
-          case Some(_) => ??? //todo  will go to cya
-          case _       => CountryPage.route(ua, departureId, CheckMode)
+        (ua.get(CountryPage), ua.departureData.Consignment.PlaceOfLoading.flatMap(_.country)) match {
+          case (None, None) => CountryPage.route(ua, departureId, CheckMode)
+          case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
         }
-      case _ => ??? // todo will go to CYA page
+      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    }
+
+  private def countryCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
+    (ua.get(LocationPage), ua.departureData.Consignment.PlaceOfLoading.flatMap(_.location)) match {
+      case (None, None) =>
+        LocationPage.route(ua, departureId, CheckMode)
+      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
 }
