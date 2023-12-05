@@ -23,7 +23,7 @@ import models.reference.BorderMode
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.active._
-import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -44,9 +44,23 @@ class BorderNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddBorderModeOfTransportYesNoPage => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
-    case BorderModeOfTransportPage         => ua => borderModeOfTransportCheckRoute(ua, departureId, CheckMode)
+    case AddBorderModeOfTransportYesNoPage            => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
+    case BorderModeOfTransportPage                    => ua => borderModeOfTransportCheckRoute(ua, departureId, mode)
+    case IdentificationPage(activeIndex)              => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
+    case IdentificationNumberPage(activeIndex)        => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
+    case NationalityPage(activeIndex)                 => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
+    case CustomsOfficeActiveBorderPage(activeIndex)   => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
+    case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
+    case ConveyanceReferenceNumberPage(activeIndex)   => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
+    case AddBorderMeansOfTransportYesNoPage           => ua => addBorderMeansOfTransportYesNoRoute(ua, departureId, mode)
   }
+
+  private def addBorderMeansOfTransportYesNoRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    ua.get(AddBorderMeansOfTransportYesNoPage) match {
+      case Some(true)  => Some(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)))
+      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case None        => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   private def borderModeOfTransportCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.departureData.TransitOperation.isSecurityTypeInSet match {
