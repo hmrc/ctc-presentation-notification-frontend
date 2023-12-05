@@ -71,14 +71,12 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
 
       "Must go from AddAnotherTransportEquipmentPage" - {
-        "when answered no must go to Check your answers page" ignore { //todo action when CYA page built
+        "when answered no must go to Check your answers page" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), false)
           navigator
             .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
-            .mustBe(
-              controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
-            ) //todo when CYA page built will go there
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
         "when answered yes" - {

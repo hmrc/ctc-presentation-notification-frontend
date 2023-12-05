@@ -75,7 +75,11 @@ class BorderNavigator @Inject() () extends Navigator {
     if (ua.departureData.CustomsOfficeOfTransitDeclared.isDefined) {
       Some(routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode))
     } else {
-      containerIndicatorRouting(ua, departureId, mode)
+      ua.get(ContainerIndicatorPage) match {
+        case Some(_) => containerIndicatorRouting(ua, departureId, mode)
+        case None    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      }
+
     }
 }
 
@@ -96,6 +100,6 @@ object BorderNavigator {
         ContainerIdentificationNumberPage(Index(0))
           .route(userAnswers, departureId, mode)
       case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
-      case None        => Some(controllers.routes.SessionExpiredController.onPageLoad()) //TODO CYA 3811
+      case None        => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 }
