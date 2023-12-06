@@ -51,7 +51,6 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val sections = Seq(firstSection, borderSection)
       val placeOfLoading = Section(
         sectionTitle = messages("checkYourAnswers.placeOfLoading"),
         rows = Seq(
@@ -63,7 +62,7 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val sections = firstSection.toSeq ++ placeOfLoading.toSeq
+      val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq
 
       new PresentationNotificationAnswersViewModel(sections)
     }
