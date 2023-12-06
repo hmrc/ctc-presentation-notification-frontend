@@ -59,7 +59,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               val result = helper.identificationType.get
 
               result.key.value mustBe s"Identification type"
-              result.value.value mustBe messages(s"${identification.messageKeyPrefix}.${identification.code}")
+              result.value.value mustBe identification.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-import models.reference.BorderMode
-
-import java.text.SimpleDateFormat
-import models.reference.{Country, CountryCode}
-
-import models.reference.{CustomsOffice, Nationality}
 import models.reference.transport.border.active.Identification
+import models.reference._
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
