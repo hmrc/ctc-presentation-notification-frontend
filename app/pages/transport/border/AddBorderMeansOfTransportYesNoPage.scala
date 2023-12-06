@@ -19,27 +19,18 @@ package pages.transport.border
 import controllers.transport.border.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.border.BorderSection
+import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+case object AddBorderMeansOfTransportYesNoPage extends QuestionPage[Boolean] {
 
-case object AddBorderModeOfTransportYesNoPage extends QuestionPage[Boolean] {
+  override def path: JsPath = TransportSection.path \ toString
 
-  override def path: JsPath = BorderSection.path \ toString
-
-  override def toString: String = "addBorderModeOfTransport"
+  override def toString: String = "addBorderMeansOfTransport"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddBorderModeOfTransportYesNoController.onPageLoad(departureId, mode))
+    Some(routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val modeOfTransportAtTheBorderPath: JsPath = JsPath \ "Consignment" \ "modeOfTransportAtTheBorder"
-    value match {
-      case Some(false) => userAnswers.remove(BorderModeOfTransportPage, modeOfTransportAtTheBorderPath)
-      case _           => super.cleanup(value, userAnswers)
-    }
-  }
-
+  //TODO: Add clean up logic
 }

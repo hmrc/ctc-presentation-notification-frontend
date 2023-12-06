@@ -14,40 +14,40 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment
+package controllers.transport.border
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.EquipmentNavigator
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import navigation.BorderNavigator
+import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.equipment.AddTransportEquipmentYesNoView
+import views.html.transport.border.AddBorderMeansOfTransportYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddTransportEquipmentYesNoController @Inject() (
+class AddBorderMeansOfTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: EquipmentNavigator,
+  navigator: BorderNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddTransportEquipmentYesNoView
+  view: AddBorderMeansOfTransportYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.addTransportEquipment")
+  private val form = formProvider("transport.border.addBorderMeansOfTransportYesNo")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddTransportEquipmentYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddBorderMeansOfTransportYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -71,7 +71,7 @@ class AddTransportEquipmentYesNoController @Inject() (
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTransportEquipmentYesNoPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddBorderMeansOfTransportYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AddBorderMeansOfTransportYesNoPage, updatedAnswers, departureId, mode))
 }

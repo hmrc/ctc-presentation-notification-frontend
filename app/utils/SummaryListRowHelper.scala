@@ -17,6 +17,7 @@
 package utils
 
 import models.reference.Country
+import models.Radioable
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -41,6 +42,12 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   protected def formatAsText[T](answer: T): Content = s"$answer".toText
 
   protected def formatAsCountry(country: Country): Content = country.toString.toText
+
+  protected def formatAsText[T](answer: T): Content = s"$answer".toText
+
+  protected def formatDynamicEnumAsString[T <: Radioable[T]](answer: T): String = answer.asString
+
+  protected def formatDynamicEnumAsText[T <: Radioable[T]](answer: T): Content = formatDynamicEnumAsString(answer).toText
 
   protected def buildRow(
     prefix: String,

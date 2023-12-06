@@ -57,7 +57,7 @@ placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
 
 transport.prefix = Transport equipment {0}
-transport.container = container {0}
+transport.value.container = container {0}
 transport.value.withoutContainer = no container identification number
 transport.item.prefix = Item {0}
 
@@ -276,6 +276,8 @@ transport.border.borderModeOfTransport.title = How is the transit crossing the b
 transport.border.borderModeOfTransport.heading = How is the transit crossing the border?
 transport.border.borderModeOfTransport.error.required = Select how the transit is crossing the border
 transport.border.borderModeOfTransport.caption = Border mode of transport
+transport.border.borderModeOfTransport.checkYourAnswersLabel = Mode
+transport.border.borderModeOfTransport.change.hidden = border mode of transport
 
 transport.limit.date.title = When do you expect the transit to arrive in {0}?
 transport.limit.date.heading = When do you expect the transit to arrive in {0}?
@@ -299,6 +301,13 @@ transport.containers.containerIndicator.change.hidden = if you are using any shi
 transport.containers.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
 transport.border.subheading = Border means of transport
+
+transport.border.addBorderMeansOfTransportYesNo.title = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.heading = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.paragraph = This is the means of transport used from a UK port or airport to another customs territory.
+transport.border.addBorderMeansOfTransportYesNo.checkYourAnswersLabel = Do you want to add identification for the border means of transport?
+transport.border.addBorderMeansOfTransportYesNo.error.required = Select yes if you want to add identification for the border means of transport
+transport.border.addBorderMeansOfTransportYesNo.change.hidden = if you want to add identification for the border means of transport
 
 transport.border.active.addConveyanceReference.title = Do you want to add a conveyance reference number?
 transport.border.active.addConveyanceReference.heading = Do you want to add a conveyance reference number?
@@ -437,6 +446,7 @@ transport.equipment.selectItems.heading = Which items does this transport equipm
 transport.equipment.selectItems.paragraph = You can only select from the items you added when making the declaration.
 transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which items this transport equipment applies to
+transport.equipment.selectItems.placeholder = Select an item
 
 transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
 transport.equipment.applyAnotherItem.plural.title = You have applied {0} items to transport equipment {1}
@@ -445,6 +455,7 @@ transport.equipment.applyAnotherItem.plural.heading = You have applied {0} items
 transport.equipment.applyAnotherItem.label = Do any other items apply to transport equipment {0}?
 transport.equipment.applyAnotherItem.maxLimit.label = You cannot apply any more items. To apply another, you need to remove one first.
 transport.equipment.applyAnotherItem.error.required = Select yes if you want to apply any other items to transport equipment {0}
+transport.equipment.applyAnotherItem.noMoreItems.label = There are no items left to apply to this transport equipment.
 
 transport.equipment.addAnotherEquipment.singular.title = You have added 1 transport equipment
 transport.equipment.addAnotherEquipment.plural.title = You have added {0} transport equipment
@@ -453,6 +464,7 @@ transport.equipment.addAnotherEquipment.plural.heading = You have added {0} tran
 transport.equipment.addAnotherEquipment.label = Do you want to add any other transport equipment?
 transport.equipment.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 transport.equipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
+transport.equipment.addAnotherEquipment.noMoreItems.label = You cannot add any more transport equipment as there are no more items to apply to it. To add another transport equipment, you need to add an item first.
 
 transport.equipment.removeItem.title = Are you sure you want to remove this item from transport equipment {0}?
 transport.equipment.removeItem.heading = Are you sure you want to remove this item from transport equipment {0}?

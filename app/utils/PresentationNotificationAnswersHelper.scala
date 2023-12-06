@@ -17,11 +17,16 @@
 package utils
 
 import config.FrontendAppConfig
+import models.reference.BorderMode
 import models.reference.Country
 import models.{Mode, UserAnswers}
 import pages.loading._
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
+import pages.QuestionPage
+import pages.transport.LimitDatePage
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.i18n.Messages
+import play.api.libs.json.JsPath
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
 import java.time.LocalDate
@@ -87,6 +92,22 @@ class PresentationNotificationAnswersHelper(
     prefix = "loading.location",
     findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.location),
     id = Some("change-location")
+  )
+
+  def borderModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddBorderModeOfTransportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.border.addBorderModeOfTransport",
+    findValueInDepartureData = _.Consignment.isTransportDefined,
+    id = Some("change-add-border-mode")
+  )
+
+  def borderModeOfTransport: Option[SummaryListRow] = getAnswerAndBuildRow[BorderMode](
+    page = BorderModeOfTransportPage,
+    formatAnswer = formatDynamicEnumAsText(_),
+    prefix = "transport.border.borderModeOfTransport",
+    findValueInDepartureData = message => message.Consignment.modeOfTransportAtTheBorder.map(_.asBorderMode),
+    id = Some("change-border-mode-of-transport")
   )
 
 }

@@ -134,14 +134,14 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0))
+    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
   }
 
   implicit lazy val arbitraryAddAnotherEquipmentViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall)
+    } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall, isNumberItemsZero = false)
   }
 
   implicit lazy val arbitraryLabel: Arbitrary[Label] = Arbitrary {

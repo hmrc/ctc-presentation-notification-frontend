@@ -42,7 +42,7 @@ class RemoveTransportEquipmentController @Inject() (
     with I18nSupport {
 
   private def addAnother(departureId: String, mode: Mode): Call =
-    Call("GET", "#") //TODO redirect to addAnother page
+    controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode)
 
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("transport.equipment.index.removeTransportEquipment", equipmentIndex.display)

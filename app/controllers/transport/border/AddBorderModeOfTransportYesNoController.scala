@@ -20,13 +20,12 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.{BorderNavigator, Navigator}
 import pages.transport.border.AddBorderModeOfTransportYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
 import views.html.transport.border.AddBorderModeOfTransportYesNoView
 
 import javax.inject.Inject
@@ -35,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddBorderModeOfTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: BorderNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

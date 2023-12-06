@@ -21,7 +21,7 @@ import models._
 import navigation.BorderNavigator.borderModeOfTransportPageNavigation
 import pages._
 import pages.transport.ContainerIndicatorPage
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border._
 import play.api.mvc.Call
 
 import javax.inject.Inject

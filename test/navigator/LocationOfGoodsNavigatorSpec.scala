@@ -16,28 +16,31 @@
 
 package navigator
 
-import base.TestMessageData.{consignment, messageData, transitOperation}
+import base.TestMessageData.{consignment, locationOfGoods, messageData, transitOperation}
 import base.{SpecBase, TestMessageData}
 import config.Constants._
 import generators.Generators
 import models._
-import models.messages.AuthorisationType.C521
+import models.messages.AuthorisationType.{C521, C523}
 import models.messages.{Authorisation, MessageData}
+import models.reference.BorderMode
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.Page
+import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
 import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new LocationOfGoodsNavigator
 
-  "Navigator" - {
+  "LocationOfGoodsNavigator" - {
 
     "in Normal Mode" - {
 
@@ -206,6 +209,24 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
+      "must go from Add AddContactYesNo page to ContainerIdentificationNumberPage page when user selcts no, Security is NoSecurityDetails, Add contcact if false, Container Indicator is true" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(AddContactYesNoPage, false)
+              .setValue(ContainerIndicatorPage, true)
+              .copy(departureData =
+                TestMessageData.messageData.copy(
+                  TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                )
+              )
+
+            navigator
+              .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+              .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+        }
+      }
+
       "must go from ContactName page to Contact phone number page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -324,6 +345,321 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
           .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
+      "must go from Add PhoneNumberPage page to ContainerIdentificationNumberPage page " +
+        "when user selects No and POL & limit date exists and Container Indicator exists" +
+        "and security is '0'" +
+        "and active border means is present" +
+        "and container indicator is '1'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddContactYesNoPage, false)
+                .setValue(ContainerIndicatorPage, true)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                  )
+                )
+              navigator
+                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(answers, departureId, mode).value)
+          }
+        }
+      "must go from Add PhoneNumberPage page to AddTransportEquipmentYesNoPage" +
+        "when user selects No" +
+        "and POL & limit date exists" +
+        "and security is '0'" +
+        "and active border means is present" +
+        "and container indicator is '0'" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddContactYesNoPage, false)
+                .setValue(ContainerIndicatorPage, false)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                  )
+                )
+              navigator
+                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(AddTransportEquipmentYesNoPage.route(answers, departureId, mode).value)
+          }
+        }
+
+      "must go from MoreInformationPage to ContainerIdentificationNumberPage " +
+        "when user hits 'Save and Continue', " +
+        "consignment contains LocationOfGoods, " +
+        "Security is NoSecurityDetails, " +
+        "Container Indicator is true" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, true)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(MoreInformationPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+          }
+        }
+
+      "must go from MoreInformationPage to Check Your Answers when: " +
+        "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
+        "is NOT C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 5" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from MoreInformationPage to Check Your Answers when: " +
+        "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
+        "is NOT C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4 AND transport means is present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from MoreInformationPage to Check Your Answers when: " +
+        "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
+        "is C521 AND limit date exists AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 5" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C521, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from MoreInformationPage to Check Your Answers when: " +
+        "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
+        "is C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C521, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from MoreInformationPage to Check Your Answers when: " +
+        "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
+        "is C523 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from Phone Number Page to Check Your Answers when: " +
+        "Place of loading is present AND " +
+        "Container indicator is not captured AND " +
+        "Authorisation is not C521 AND " +
+        "Transit Operation Security is not in {1, 2, 3} AND " +
+        "Consignment Container Indicator is present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddPlaceOfLoadingYesNoPage, true)
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
+                  )
+                )
+
+              navigator
+                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from Phone Number Page to Check Your Answers when: " +
+        "Place of loading is present AND " +
+        "Container indicator is not captured AND " +
+        "Authorisation is C521 AND " +
+        "Transit Operation Limit Date is present AND " +
+        "Transit Operation Security is not in {1, 2, 3} AND " +
+        "Consignment Container Indicator is present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddPlaceOfLoadingYesNoPage, true)
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C521, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails, limitDate = Some("limitDate")),
+                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
+                  )
+                )
+
+              navigator
+                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from AddContactYesNoPage to Check Your Answers when: " +
+        "the user selects No AND " +
+        "Place of loading is present AND " +
+        "Container indicator is not captured AND " +
+        "Authorisation is not C521 AND " +
+        "Transit Operation Security is not in {1, 2, 3} AND " +
+        "Consignment Container Indicator is present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddContactYesNoPage, false)
+                .setValue(AddPlaceOfLoadingYesNoPage, true)
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
+                  )
+                )
+
+              navigator
+                .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from AddContactYesNoPage to Check Your Answers when: " +
+        "the user selects No AND " +
+        "Place of loading is present AND " +
+        "Container indicator is not captured AND " +
+        "Authorisation is C521 AND " +
+        "Transit Operation Limit Date is present AND " +
+        "Transit Operation Security is not in {1, 2, 3} AND " +
+        "Consignment Container Indicator is presentD" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddContactYesNoPage, false)
+                .setValue(AddPlaceOfLoadingYesNoPage, true)
+                .setValue(ContainerIndicatorPage, None)
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Authorisation = Some(Seq(Authorisation(C521, "1234"))),
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails, limitDate = Some("limitDate")),
+                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
+                  )
+                )
+
+              navigator
+                .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from CustomsOfficeIdentifierPage to ContainerIdentificationNumberPage " +
+        "when user hits 'Save and Continue', " +
+        "consignment contains LocationOfGoods, " +
+        "Security is NoSecurityDetails, " +
+        "Container Indicator is true" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, true)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+          }
+        }
     }
 
     "in Check Mode" - {

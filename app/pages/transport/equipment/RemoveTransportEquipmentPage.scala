@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-package pages.transport.border
+package pages.transport.equipment
 
-import models.reference.BorderMode
+import controllers.transport.equipment.index.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.TransportSection
-import pages.sections.transport.border.{BorderActiveListSection, BorderActiveSection}
+import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+case class RemoveTransportEquipmentPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
 
-case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
+  override def path: JsPath = EquipmentSection(equipmentIndex).path \ toString
 
-  override def path: JsPath = TransportSection.path \ toString
-
-  override def toString: String = "borderModeOfTransport"
+  override def toString: String = "removeTransportEquipment"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+    Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex))
 
-  override def cleanup(value: Option[BorderMode], userAnswers: UserAnswers): Try[UserAnswers] =
-    super.cleanup(value, userAnswers)
-
+  //TODO add ContainerIdentificationNumber clean up
 }

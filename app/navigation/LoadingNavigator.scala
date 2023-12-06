@@ -73,7 +73,8 @@ class LoadingNavigator extends Navigator {
     ua.get(AddExtraInformationYesNoPage) match {
       case Some(true) =>
         CountryPage.route(ua, departureId, NormalMode)
-      case _ => LocationPage.route(ua, departureId, NormalMode)
+      case Some(false) => locationPageNavigation(departureId, NormalMode, ua)
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   private def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =

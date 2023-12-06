@@ -28,7 +28,6 @@ import org.mockito.Mockito.{reset, verify, when}
 import pages.sections.transport.equipment.ItemSection
 import pages.transport.equipment.ItemPage
 import play.api.libs.json.Json
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.transport.equipment.RemoveItemView
@@ -84,7 +83,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to AddAnotherTransportEquipmentController
+          controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -110,7 +109,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          Call("GET", "#").url // TODO redirect to AddAnotherItemController
+          controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
