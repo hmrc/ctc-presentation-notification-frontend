@@ -27,5 +27,27 @@ class AddExtraInformationYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddExtraInformationYesNoPage)
 
     beRemovable[Boolean](AddExtraInformationYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove country and location pages in 15/13/170" in {
+          forAll(arbitraryCountry.arbitrary, nonEmptyString.sample.value) {
+            (country, location) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddExtraInformationYesNoPage, true)
+                .setValue(CountryPage, country)
+                .setValue(LocationPage, location)
+
+              val result = userAnswers.setValue(AddExtraInformationYesNoPage, false)
+
+              result.get(CountryPage) must not be defined
+              result.get(LocationPage) must not be defined
+              result.departureData.Consignment.PlaceOfLoading.flatMap(_.country) must not be defined
+              result.departureData.Consignment.PlaceOfLoading.flatMap(_.location) must not be defined
+
+          }
+        }
+      }
+    }
   }
 }
