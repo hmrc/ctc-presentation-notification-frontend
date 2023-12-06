@@ -58,7 +58,7 @@ class BorderNavigator @Inject() () extends Navigator {
     case NationalityPage(activeIndex)                 => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
     case CustomsOfficeActiveBorderPage(activeIndex)   => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
     case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
-    case ConveyanceReferenceNumberPage(activeIndex)   => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode, activeIndex)
+    case ConveyanceReferenceNumberPage(activeIndex)   => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
     case AddBorderMeansOfTransportYesNoPage           => ua => addBorderMeansOfTransportYesNoRoute(ua, departureId, mode)
   }
 
@@ -103,9 +103,10 @@ class BorderNavigator @Inject() () extends Navigator {
 
   private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
     ua.get(AddAnotherBorderModeOfTransportPage(activeIndex)) match {
-      case Some(true)  => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
-      case Some(false) => containerIndicatorRouting(ua, departureId, mode)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+      case Some(true)                       => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
+      case Some(false) if mode == CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case Some(false)                      => containerIndicatorRouting(ua, departureId, mode)
+      case _                                => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =

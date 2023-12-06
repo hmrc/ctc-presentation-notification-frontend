@@ -59,7 +59,7 @@ object AddAnotherBorderTransportViewModel {
 
             val changeRoute                             = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url
             val lessThan2BorderModeOfTransport: Boolean = userAnswers.get(BorderActiveListSection).map(_.value.length).getOrElse(0) < 2
-            val removeRoute =
+            val removeRoute: Option[String] =
               if (
                 lessThan2BorderModeOfTransport
                 && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail)

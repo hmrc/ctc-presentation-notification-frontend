@@ -329,8 +329,8 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
           }
         }
-        //TODO: change unit test once page has been added
-        "must go to more information page when customs office of transit is not present" in {
+
+        "must go to check your answers page when customs office of transit is not present" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -338,7 +338,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
               navigator
                 .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
 
         }
@@ -362,14 +362,13 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
           }
         }
-        //TODO: change unit test once page has been added
-        "must go to more information page when customs office of transit is not present" in {
+        "must go to check your answers page when customs office of transit is not present" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
-                .mustBe(controllers.routes.MoreInformationController.onPageLoad(departureId))
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
@@ -641,42 +640,42 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           }
         }
         "when customs office of transit is not present, container indicator is present in IE170" - {
-        "must go to container identification number page when container indicator is true" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
+          "must go to container identification number page when container indicator is true" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      CustomsOfficeOfTransitDeclared = None
+                    )
                   )
-                )
-                .setValue(ContainerIndicatorPage, true)
+                  .setValue(ContainerIndicatorPage, true)
 
-              navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
-                )
+                navigator
+                  .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                  .mustBe(
+                    controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                  )
+            }
+          }
+
+          "must go to container identification number page when container indicator is false" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      CustomsOfficeOfTransitDeclared = None
+                    )
+                  )
+                  .setValue(ContainerIndicatorPage, false)
+
+                navigator
+                  .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                  .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+            }
           }
         }
-
-        "must go to container identification number page when container indicator is false" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
-                  )
-                )
-                .setValue(ContainerIndicatorPage, false)
-
-              navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
-          }
-        }
-      }
         "must go to final border CYA page when customs office of transit is not present and container indicator is not present in IE170" in {
 
           forAll(arbitrary[UserAnswers]) {
@@ -684,72 +683,69 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-      }
-    }
-
-    "when on add another border page" - {
-
-      "must go to identification page when true" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(AddAnotherBorderModeOfTransportPage(activeIndex), true)
-
-            navigator
-              .nextPage(AddAnotherBorderModeOfTransportPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(routes.IdentificationController.onPageLoad(departureId, NormalMode, activeIndex))
-        }
-      }
-
-      "when no" - {
-        "and container indicator is true must go to container identification number page" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None)
-          )
-        .setValue(ContainerIndicatorPage, true)
-      navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
-                )
           }
         }
+      }
 
-        "and container indicator is false must go to Add Transport Equipment Yes/No page when" in {
+      "when on add another border page" - {
+
+        "must go to identification page when true" in {
+
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
-                  )
-                )
-                .setValue(ContainerIndicatorPage, false)
+                .setValue(AddAnotherBorderModeOfTransportPage(activeIndex), true)
 
               navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+                .nextPage(AddAnotherBorderModeOfTransportPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(routes.IdentificationController.onPageLoad(departureId, NormalMode, activeIndex))
+          }
+        }
+
+        "when no" - {
+          "and container indicator is true must go to container identification number page" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .copy(departureData = TestMessageData.messageData.copy(CustomsOfficeOfTransitDeclared = None))
+                  .setValue(ContainerIndicatorPage, true)
+                navigator
+                  .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                  .mustBe(
+                    controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                  )
+            }
+          }
+
+          "and container indicator is false must go to Add Transport Equipment Yes/No page when" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      CustomsOfficeOfTransitDeclared = None
+                    )
+                  )
+                  .setValue(ContainerIndicatorPage, false)
+
+                navigator
+                  .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                  .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+            }
+          }
+        }
+        "must go to final border CYA page when customs office of transit is not present and container indicator is not present in IE170" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
-      "must go to final border CYA page when customs office of transit is not present and container indicator is not present in IE170" in {
 
-    forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-      }
     }
-
   }
-}
 
 }
