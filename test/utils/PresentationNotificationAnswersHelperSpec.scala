@@ -27,7 +27,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, CountryPage, LocationPage, UnLocodePage}
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border.{BorderModeOfTransportPage, AddBorderMeansOfTransportYesNoPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
 
@@ -102,9 +102,9 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         s"when $ContainerIndicatorPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoLimitDateUserAnswers =
+              val ie015WithNoContainerIndicatorUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoContainerIndicatorUserAnswers, departureId, mode)
               val result = helper.containerIndicator
               result mustBe None
           }
@@ -509,6 +509,52 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               action.href mustBe controllers.loading.routes.LocationController.onPageLoad(departureId, mode).url
               action.visuallyHiddenText.get mustBe "location for the place of loading"
               action.id mustBe "change-location"
+          }
+        }
+      }
+    }
+
+    "addBorderMeansOfTransportYesNo" - {
+      "must return No when BorderMeansOfTransport has not been answered in ie15/ie13" - {
+        s"when $AddBorderMeansOfTransportYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
+                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mode)
+              val result = helper.addBorderMeansOfTransportYesNo().get
+
+              result.key.value mustBe "Do you want to add identification for the border means of transport?"
+              result.value.value mustBe "No"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
+              action.id mustBe "change-add-identification-for-the-border-means-of-transport"
+          }
+        }
+      }
+
+      "must return Yes when BorderMeansOfTransport has been answered in ie15/ie13" - {
+        s"when $AddBorderMeansOfTransportYesNoPage undefined" in {
+          forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
+            (mode, userAnswers) =>
+              val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
+              val result = helper.addBorderMeansOfTransportYesNo().get
+
+              result.key.value mustBe "Do you want to add identification for the border means of transport?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
+              action.id mustBe "change-add-identification-for-the-border-means-of-transport"
           }
         }
       }

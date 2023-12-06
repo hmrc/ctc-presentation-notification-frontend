@@ -67,6 +67,7 @@ case class MessageData(
         .map(_.map(_.referenceNumber))
         .getOrElse(Seq.empty)
 
+  val conveyanceRefNumberYesNoPresent: Boolean = TransitOperation.isSecurityTypeInSet && Consignment.modeOfTransportAtTheBorder == Option("4")
 }
 
 object MessageData {

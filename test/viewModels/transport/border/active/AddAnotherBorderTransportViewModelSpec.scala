@@ -302,6 +302,5 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
         }
 
     }
-
   }
 }

@@ -19,6 +19,9 @@ import models.reference.BorderMode
 import java.text.SimpleDateFormat
 import models.reference.{Country, CountryCode}
 
+import models.reference.{CustomsOffice, Nationality}
+import models.reference.transport.border.active.Identification
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -43,6 +46,12 @@ package object utils {
     //TODO: Fetch this from ref data instead
     def asCountry: Country =
       Country(CountryCode(value), "countryDesc")
+
+    def asIdentification: Identification = Identification(value, "")
+
+    def asNationality: Nationality = Nationality(value, "")
+
+    def asCustomsOffice: CustomsOffice = CustomsOffice(value, "", None)
 
   }
 
