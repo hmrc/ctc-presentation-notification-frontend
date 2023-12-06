@@ -26,4 +26,37 @@ class AddBorderModeOfTransportYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddBorderModeOfTransportYesNoPage)
     beRemovable[Boolean](AddBorderModeOfTransportYesNoPage)
   }
+
+  "cleanup" - {
+    "when no selected" - {
+      "must remove borderMode page in170" in {
+        forAll(arbitraryBorderModeOfTransport.arbitrary) {
+          borderMode =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddBorderModeOfTransportYesNoPage, true)
+              .setValue(BorderModeOfTransportPage, borderMode)
+
+            val result = userAnswers.setValue(AddBorderModeOfTransportYesNoPage, false)
+
+            result.get(BorderModeOfTransportPage) must not be defined
+
+        }
+      }
+
+      "must remove borderMode page in15/30" in {
+        forAll(arbitraryBorderModeOfTransport.arbitrary) {
+          borderMode =>
+            val userAnswers = emptyUserAnswers
+              .copy(departureData =
+                emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = Some("2")))
+              )
+
+            val result = userAnswers.setValue(AddBorderModeOfTransportYesNoPage, false)
+
+            result.departureData.Consignment.modeOfTransportAtTheBorder must not be defined
+
+        }
+      }
+    }
+  }
 }

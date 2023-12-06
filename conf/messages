@@ -270,6 +270,8 @@ transport.border.borderModeOfTransport.title = How is the transit crossing the b
 transport.border.borderModeOfTransport.heading = How is the transit crossing the border?
 transport.border.borderModeOfTransport.error.required = Select how the transit is crossing the border
 transport.border.borderModeOfTransport.caption = Border mode of transport
+transport.border.borderModeOfTransport.checkYourAnswersLabel = Mode
+transport.border.borderModeOfTransport.change.hidden = border mode of transport
 
 transport.limit.date.title = When do you expect the transit to arrive in {0}?
 transport.limit.date.heading = When do you expect the transit to arrive in {0}?

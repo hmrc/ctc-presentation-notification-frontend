@@ -22,7 +22,7 @@ import controllers.transport.border.active.{routes => borderActiveRoutes}
 import controllers.transport.border.{routes => borderRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -49,6 +49,9 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
   private lazy val addAnotherBorderTransportRoute =
     borderActiveRoutes.AddAnotherBorderTransportController.onPageLoad(departureId, mode).url
+
+  private lazy val addAnotherBorderTransportRouteCheckMode =
+    borderActiveRoutes.AddAnotherBorderTransportController.onPageLoad(departureId, CheckMode).url
 
   private val mockViewModelProvider = mock[AddAnotherBorderTransportViewModelProvider]
 
@@ -90,6 +93,25 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
         redirectLocation(result).value mustEqual
           borderRoutes.BorderModeOfTransportController.onPageLoad(departureId, mode).url //TODO: Change to /add-identification when built
+      }
+    }
+
+    "redirect to CYA page" - {
+      "when in check mode and addAnotherBorder is false" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherBorderTransportRouteCheckMode)
+          .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.routes.CheckYourAnswersController.onPageLoad(departureId).url
       }
     }
 

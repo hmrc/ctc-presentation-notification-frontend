@@ -44,7 +44,14 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val sections = firstSection.toSeq
+      val borderSection = Section(
+        rows = Seq(
+          helper.borderModeOfTransportYesNo,
+          helper.borderModeOfTransport
+        ).flatten
+      )
+
+      val sections = Seq(firstSection, borderSection)
 
       new PresentationNotificationAnswersViewModel(sections)
     }

@@ -17,8 +17,12 @@
 package utils
 
 import config.FrontendAppConfig
+import models.reference.BorderMode
 import models.{Mode, UserAnswers}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
+import pages.QuestionPage
+import pages.transport.LimitDatePage
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -46,6 +50,22 @@ class PresentationNotificationAnswersHelper(
     prefix = "transport.containers.containerIndicator",
     findValueInDepartureData = _.Consignment.containerIndicator.map(_.asBoolean),
     id = Some("change-container-indicator")
+  )
+
+  def borderModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddBorderModeOfTransportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.border.addBorderModeOfTransport",
+    findValueInDepartureData = _.Consignment.isTransportDefined,
+    id = Some("change-add-border-mode")
+  )
+
+  def borderModeOfTransport: Option[SummaryListRow] = getAnswerAndBuildRow[BorderMode](
+    page = BorderModeOfTransportPage,
+    formatAnswer = formatDynamicEnumAsText(_),
+    prefix = "transport.border.borderModeOfTransport",
+    findValueInDepartureData = message => message.Consignment.modeOfTransportAtTheBorder.map(_.asBorderMode),
+    id = Some("change-border-mode-of-transport")
   )
 
 }

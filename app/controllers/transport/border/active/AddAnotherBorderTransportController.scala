@@ -19,7 +19,7 @@ package controllers.transport.border.active
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.Mode
+import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -65,10 +65,12 @@ class AddAnotherBorderTransportController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
-          {
-            case true  => Redirect(routes.IdentificationController.onPageLoad(departureId, mode, viewModel.nextIndex))
-            case false => Redirect(Call("GET", "#")) // TODO redirect to Border CYA Controller
-          }
+          pageCondition =>
+            (mode, pageCondition) match {
+              case (_, true)           => Redirect(routes.IdentificationController.onPageLoad(departureId, mode, viewModel.nextIndex))
+              case (CheckMode, false)  => Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              case (NormalMode, false) => Redirect(Call("GET", "#")) // TODO redirect to relevant navigation
+            }
         )
   }
 }
