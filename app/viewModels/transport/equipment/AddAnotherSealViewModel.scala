@@ -48,12 +48,13 @@ object AddAnotherSealViewModel {
 
             val name = userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex))
 
-            val changeRoute = "#" // TODO Add change route when CYA page is done
+            val changeRoute =
+              controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url
 
             val removeRoute: Option[String] = if (userAnswers.get(AddSealYesNoPage(equipmentIndex)).isEmpty && sealIndex.isFirst) {
               None
             } else {
-              Some(Call("GET", "#").url) // TODO Update remove route when remove controller is added
+              Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url)
             }
 
             name.map(ListItem(_, changeRoute, removeRoute))

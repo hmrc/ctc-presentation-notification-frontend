@@ -19,7 +19,7 @@ package models.messages
 import models.{Enumerable, WithName}
 import play.api.libs.json.{JsError, JsString, JsSuccess, Reads}
 
-sealed trait AuthorisationType extends WithName
+sealed trait AuthorisationType
 
 object AuthorisationType extends Enumerable.Implicits {
 

@@ -19,10 +19,13 @@ package controllers.transport.border.active
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.Mode
+import models.requests.MandatoryDataRequest
+import models.{Index, Mode}
+import navigation.BorderNavigator
+import pages.transport.border.AddAnotherBorderModeOfTransportPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
@@ -30,6 +33,7 @@ import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.Add
 import views.html.transport.border.active.AddAnotherBorderTransportView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherBorderTransportController @Inject() (
   override val messagesApi: MessagesApi,
@@ -38,8 +42,9 @@ class AddAnotherBorderTransportController @Inject() (
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherBorderTransportViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddAnotherBorderTransportView
-)(implicit config: FrontendAppConfig)
+  view: AddAnotherBorderTransportView,
+  navigator: BorderNavigator
+)(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -49,26 +54,29 @@ class AddAnotherBorderTransportController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
-      viewModel.count match {
-        case 0 =>
-          Redirect(
-            controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode)
-          ) //TODO: Change to /add-identification when built
-        case _ => Ok(view(form(viewModel), departureId, viewModel))
-      }
-  }
+      Ok(view(form(viewModel), departureId, viewModel))
+  } //todo will have to refactor when 3901 built for the case when last one is removed
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       lazy val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
-          {
-            case true  => Redirect(routes.IdentificationController.onPageLoad(departureId, mode, viewModel.nextIndex))
-            case false => Redirect(Call("GET", "#")) // TODO redirect to Border CYA Controller
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          value => redirect(mode, value, departureId, viewModel.nextIndex)
         )
   }
+
+  private def redirect(
+    mode: Mode,
+    value: Boolean,
+    departureId: String,
+    activeIndex: Index
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherBorderModeOfTransportPage(activeIndex), value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(AddAnotherBorderModeOfTransportPage(activeIndex), updatedAnswers, departureId, mode))
+
 }

@@ -22,7 +22,9 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import viewModels.ListItem
 import viewModels.transport.equipment.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 
 class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -62,6 +64,71 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
           result.heading mustBe s"You have added ${formatter.format(seals)} seals"
           result.legend mustBe "Do you want to add another seal?"
           result.maxLimitLabel mustBe "You cannot add any more seals. To add another, you need to remove one first."
+      }
+    }
+
+    "with change and remove links" - {
+      "when AddSealYesNoPage has not been answered" in {
+        forAll(arbitrary[Mode], nonEmptyString) {
+          (mode, identificationNumber) =>
+            val userAnswers = (0 to 1).foldLeft(emptyUserAnswers) {
+              (acc, i) =>
+                acc
+                  .setValue(SealIdentificationNumberPage(equipmentIndex, Index(i)), s"$identificationNumber$i")
+            }
+
+            val result = new AddAnotherSealViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex)
+
+            result.listItems mustBe Seq(
+              ListItem(
+                name = s"${identificationNumber}0",
+                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                  .onPageLoad(departureId, mode, equipmentIndex, Index(0))
+                  .url,
+                removeUrl = None
+              ),
+              ListItem(
+                name = s"${identificationNumber}1",
+                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                  .onPageLoad(departureId, mode, equipmentIndex, Index(1))
+                  .url,
+                removeUrl =
+                  Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url)
+              )
+            )
+        }
+      }
+      "when AddSealYesNoPage has been answered" in {
+        val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), true)
+        forAll(arbitrary[Mode], nonEmptyString) {
+          (mode, identificationNumber) =>
+            val updatedUserAnswers = (0 to 1).foldLeft(userAnswers) {
+              (acc, i) =>
+                acc
+                  .setValue(SealIdentificationNumberPage(equipmentIndex, Index(i)), s"$identificationNumber$i")
+            }
+
+            val result = new AddAnotherSealViewModelProvider().apply(updatedUserAnswers, departureId, mode, equipmentIndex)
+
+            result.listItems mustBe Seq(
+              ListItem(
+                name = s"${identificationNumber}0",
+                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                  .onPageLoad(departureId, mode, equipmentIndex, Index(0))
+                  .url,
+                removeUrl =
+                  Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url)
+              ),
+              ListItem(
+                name = s"${identificationNumber}1",
+                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                  .onPageLoad(departureId, mode, equipmentIndex, Index(1))
+                  .url,
+                removeUrl =
+                  Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url)
+              )
+            )
+        }
       }
     }
   }

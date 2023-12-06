@@ -19,16 +19,21 @@ package controllers.transport.equipment
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
+import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
+import navigation.EquipmentNavigator
+import pages.transport.equipment.index.ApplyAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transport.equipment.ApplyAnotherItemViewModel
+import viewModels.transport.equipment.{ApplyAnotherItemViewModel, SelectItemsViewModel}
 import viewModels.transport.equipment.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
 import views.html.transport.equipment.ApplyAnotherItemView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ApplyAnotherItemController @Inject() (
   override val messagesApi: MessagesApi,
@@ -36,8 +41,10 @@ class ApplyAnotherItemController @Inject() (
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ApplyAnotherItemView,
-  viewModelProvider: ApplyAnotherItemViewModelProvider
-)(implicit config: FrontendAppConfig)
+  viewModelProvider: ApplyAnotherItemViewModelProvider,
+  sessionRepository: SessionRepository,
+  navigator: EquipmentNavigator
+)(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -46,7 +53,8 @@ class ApplyAnotherItemController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex)
+      val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
+      val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex, isNumberItemsZero)
       viewModel.count match {
         case 0 =>
           Redirect(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
@@ -54,19 +62,28 @@ class ApplyAnotherItemController @Inject() (
       }
   }
 
-  def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
+  def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex)
+      val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
+      val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex, isNumberItemsZero)
       form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, departureId, viewModel)),
-          {
-            case true =>
-              Redirect(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, viewModel.nextIndex))
-            case false =>
-              Redirect(routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          value => redirect(departureId, mode, value, equipmentIndex, viewModel.nextIndex)
         )
   }
+
+  private def redirect(
+    departureId: String,
+    mode: Mode,
+    value: Boolean,
+    equipmentIndex: Index,
+    itemIndex: Index
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplyAnotherItemPage(equipmentIndex, itemIndex), value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode))
+
 }
