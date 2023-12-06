@@ -34,6 +34,7 @@ class AddAnotherEquipmentViewSpec extends ListWithActionsViewBehaviours {
   private val viewModel            = arbitrary[AddAnotherEquipmentViewModel].sample.value
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val noMoreItemsViewModel = viewModel.copy(listItems = Nil, isNumberItemsZero = true)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 
@@ -47,6 +48,10 @@ class AddAnotherEquipmentViewSpec extends ListWithActionsViewBehaviours {
       .instanceOf[AddAnotherEquipmentView]
       .apply(formProvider(maxedOutViewModel), departureId, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
+  def applyNoMoreItemsView: HtmlFormat.Appendable = injector
+    .instanceOf[AddAnotherEquipmentView]
+    .apply(formProvider(noMoreItemsViewModel), departureId, noMoreItemsViewModel)(fakeRequest, messages, frontendAppConfig)
+
   override val prefix: String = "transport.equipment.addAnotherEquipment"
 
   behave like pageWithBackLink()
@@ -58,4 +63,15 @@ class AddAnotherEquipmentViewSpec extends ListWithActionsViewBehaviours {
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "page with no more items" - {
+
+    val doc = parseView(applyNoMoreItemsView)
+    behave like pageWithContent(
+      doc,
+      "p",
+      "You cannot add any more transport equipment as there are no more items to apply to it. To add another transport equipment, you need to add an item first."
+    )
+  }
+
 }

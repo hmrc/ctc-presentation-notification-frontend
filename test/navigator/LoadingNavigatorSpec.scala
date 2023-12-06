@@ -73,11 +73,13 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
         }
 
-        "to Location page when answer is No" in {
-          val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, false)
+        "to BorderMode of transport page when answer is No" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddExtraInformationYesNoPage, false)
+
           navigator
             .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(LocationPage.route(userAnswers, departureId, mode).value)
+            .mustBe(BorderModeOfTransportPage.route(userAnswers, departureId, mode).value)
         }
 
         "must go from CountryPage to LocationPage when limitDate exists" - {

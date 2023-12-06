@@ -449,6 +449,7 @@ transport.equipment.applyAnotherItem.plural.heading = You have applied {0} items
 transport.equipment.applyAnotherItem.label = Do any other items apply to transport equipment {0}?
 transport.equipment.applyAnotherItem.maxLimit.label = You cannot apply any more items. To apply another, you need to remove one first.
 transport.equipment.applyAnotherItem.error.required = Select yes if you want to apply any other items to transport equipment {0}
+transport.equipment.applyAnotherItem.noMoreItems.label = There are no items left to apply to this transport equipment.
 
 transport.equipment.addAnotherEquipment.singular.title = You have added 1 transport equipment
 transport.equipment.addAnotherEquipment.plural.title = You have added {0} transport equipment
@@ -457,6 +458,7 @@ transport.equipment.addAnotherEquipment.plural.heading = You have added {0} tran
 transport.equipment.addAnotherEquipment.label = Do you want to add any other transport equipment?
 transport.equipment.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 transport.equipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
+transport.equipment.addAnotherEquipment.noMoreItems.label = You cannot add any more transport equipment as there are no more items to apply to it. To add another transport equipment, you need to add an item first.
 
 transport.equipment.removeItem.title = Are you sure you want to remove this item from transport equipment {0}?
 transport.equipment.removeItem.heading = Are you sure you want to remove this item from transport equipment {0}?

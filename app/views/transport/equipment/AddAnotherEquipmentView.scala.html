@@ -47,7 +47,9 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(viewModel.allowMore) {
+        @if(viewModel.isNumberItemsZero) {
+        <p class="govuk-body" data-testId="noItems">@viewModel.noMoreItemsLabel</p>
+        }else if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
