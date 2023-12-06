@@ -16,9 +16,7 @@
 
 package models
 
-import models.messages.{Consignment, MessageData}
-import monocle.Lens
-import monocle.macros.GenLens
+import models.messages.MessageData
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -66,18 +64,24 @@ final case class UserAnswers(
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
   }
+
+  def remove[A](page: QuestionPage[A], departureDataPath: JsPath): Try[UserAnswers] = {
+    val updated170Data = data.removeObject(page.path).getOrElse(data)
+
+    val Ie15Data: JsObject                = Json.toJson(departureData).as[JsObject]
+    val updatedIe15DataJsObject: JsObject = Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
+
+    val updatedDepartureData = Json.fromJson[MessageData](updatedIe15DataJsObject) match {
+      case JsSuccess(value, _) => value
+      case JsError(errors)     => throw new RuntimeException(s"Failed to convert JsObject to MessageData: $errors")
+    }
+
+    val updatedAnswers = copy(data = updated170Data, departureData = updatedDepartureData)
+    page.cleanup(None, updatedAnswers)
+  }
 }
 
 object UserAnswers {
-
-  val departureDataLens: Lens[UserAnswers, MessageData] = GenLens[UserAnswers](_.departureData)
-  val consignmentLens: Lens[MessageData, Consignment]   = GenLens[MessageData](_.Consignment)
-
-  val modeOfTransportAtTheBorderLens: Lens[Consignment, Option[String]] =
-    GenLens[Consignment](_.modeOfTransportAtTheBorder)
-
-  val lensModeOfTransportAtTheBorder: Lens[UserAnswers, Option[String]] =
-    departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderLens)
 
   import play.api.libs.functional.syntax._
 
