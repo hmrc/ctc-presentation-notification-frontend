@@ -70,12 +70,14 @@ class BorderNavigator @Inject() () extends Navigator {
 
   private def addBorderModeOfTransportYesNoNavigation(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddBorderModeOfTransportYesNoPage) match {
-      case Some(true) =>
-        ua.get(BorderModeOfTransportPage) match {
-          case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          case None    => BorderModeOfTransportPage.route(ua, departureId, CheckMode)
-        }
-      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case Some(true) => borderModeOfTransportAlreadyAnswered(ua, departureId)
+      case _          => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    }
+
+  private def borderModeOfTransportAlreadyAnswered(ua: UserAnswers, departureId: String) =
+    (ua.get(BorderModeOfTransportPage), ua.departureData.Consignment.modeOfTransportAtTheBorder) match {
+      case (None, None) => BorderModeOfTransportPage.route(ua, departureId, CheckMode)
+      case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   private def borderModeNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] = {

@@ -24,6 +24,7 @@ import models._
 import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared}
 import models.reference.{BorderMode, CustomsOffice}
 import navigation.BorderNavigator
+import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.MoreInformationPage
@@ -263,16 +264,42 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
-        "to BorderModeOfTransportPage when Yes " in {
+        "to BorderModeOfTransportPage when Yes and there is no answer to border mode of transport" in {
 
           val userAnswers = emptyUserAnswers
             .setValue(AddBorderModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = None))
+            )
           navigator
             .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
             .mustBe(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
 
         }
 
+        "to CheckYourAnswers when Yes and there is an answer to border mode of transport in ie170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+            .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to border mode of transport in IE15/13" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = Some("test")))
+            )
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
       }
 
       "must go from BorderModeOfTransportPage to" - {
