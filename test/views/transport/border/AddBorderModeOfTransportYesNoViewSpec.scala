@@ -33,7 +33,7 @@ class AddBorderModeOfTransportYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption(messages("transport.border.subheading"))
+  behave like pageWithSectionCaption("Border mode of transport")
 
   behave like pageWithHeading()
 
