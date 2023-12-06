@@ -26,11 +26,14 @@ import pages._
 import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
-import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
+import pages.transport.border.{
+  AddAnotherBorderModeOfTransportPage,
+  AddBorderMeansOfTransportYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  BorderModeOfTransportPage
+}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
-import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
-
 import play.api.mvc.Call
 
 import javax.inject.Inject

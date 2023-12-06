@@ -17,10 +17,9 @@
 package pages.transport.border
 
 import models.reference.BorderMode
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
-import pages.sections.transport.border.{BorderActiveListSection, BorderActiveSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

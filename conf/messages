@@ -61,6 +61,8 @@ transport.value.container = container {0}
 transport.value.withoutContainer = no container identification number
 transport.item.prefix = Item {0}
 
+checkYourAnswers.placeOfLoading = Place of loading
+
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
@@ -238,6 +240,8 @@ loading.addUnLocodeYesNo.paragraph = This is a 5-character code used to identify
 loading.unLocode.title = What is the UN/LOCODE for the place of loading?
 loading.unLocode.heading = What is the UN/LOCODE for the place of loading?
 loading.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
+loading.unLocode.checkYourAnswersLabel = UN/LOCODE
+loading.unLocode.change.hidden  = UN/LOCODE for the place of loading
 loading.unLocode.hint = Enter the code,  like GBBRS or GBMNC.
 loading.unLocode.error.required = Enter the UN/LOCODE for the place of loading
 loading.unLocode.error.length = The UN/LOCODE must be 5 characters long
@@ -262,6 +266,8 @@ loading.country.error.required = Enter which country the place of loading is in
 loading.location.title = Where in {0} is the place of loading?
 loading.location.heading = Where in {0} is the place of loading?
 loading.location.hint = Enter the specific location, such as the warehouse, shed or wharf, where the goods are being loaded. This can be up to 35 characters long.
+loading.location.checkYourAnswersLabel = Location
+loading.location.change.hidden =  location for the place of loading
 loading.location.error.required = Enter the place of loading in {0}
 loading.location.error.length = The place of loading must be {0} characters or less
 loading.location.error.invalid = The place of loading must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
