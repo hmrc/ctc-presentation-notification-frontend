@@ -530,36 +530,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Container indicator is not captured AND " +
         "Authorisation is not C521 AND " +
         "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is 5" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
-                .setValue(ContainerIndicatorPage, None)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
-                  )
-                )
-
-              navigator
-                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          }
-        }
-
-      "must go from Phone Number Page to Check Your Answers when: " +
-        "Place of loading is present AND " +
-        "Container indicator is not captured AND " +
-        "Authorisation is not C521 AND " +
-        "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is not 5" in {
+        "Consignment Container Indicator is present" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -587,37 +558,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Authorisation is C521 AND " +
         "Transit Operation Limit Date is present AND " +
         "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is 5" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
-                .setValue(ContainerIndicatorPage, None)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Authorisation = Some(Seq(Authorisation(C521, "1234"))),
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails, limitDate = Some("limitDate")),
-                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
-                  )
-                )
-
-              navigator
-                .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          }
-        }
-
-      "must go from Phone Number Page to Check Your Answers when: " +
-        "Place of loading is present AND " +
-        "Container indicator is not captured AND " +
-        "Authorisation is C521 AND " +
-        "Transit Operation Limit Date is present AND " +
-        "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is not 5" in {
+        "Consignment Container Indicator is present" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -645,38 +586,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Container indicator is not captured AND " +
         "Authorisation is not C521 AND " +
         "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is 5" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(AddContactYesNoPage, false)
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
-                .setValue(ContainerIndicatorPage, None)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
-                  )
-                )
-
-              navigator
-                .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          }
-        }
-
-      "must go from AddContactYesNoPage to Check Your Answers when: " +
-        "the user selects No AND " +
-        "Place of loading is present AND " +
-        "Container indicator is not captured AND " +
-        "Authorisation is not C521 AND " +
-        "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is not 5" in {
+        "Consignment Container Indicator is present" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -706,39 +616,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Authorisation is C521 AND " +
         "Transit Operation Limit Date is present AND " +
         "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is 5" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(AddContactYesNoPage, false)
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
-                .setValue(ContainerIndicatorPage, None)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Authorisation = Some(Seq(Authorisation(C521, "1234"))),
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails, limitDate = Some("limitDate")),
-                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some("indicator"))
-                  )
-                )
-
-              navigator
-                .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          }
-        }
-
-      "must go from AddContactYesNoPage to Check Your Answers when: " +
-        "the user selects No AND " +
-        "Place of loading is present AND " +
-        "Container indicator is not captured AND " +
-        "Authorisation is C521 AND " +
-        "Transit Operation Limit Date is present AND " +
-        "Transit Operation Security is not in {1, 2, 3} AND " +
-        "Consignment Container Indicator is present AND " +
-        "Mode of transport is not 5" in {
+        "Consignment Container Indicator is presentD" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
