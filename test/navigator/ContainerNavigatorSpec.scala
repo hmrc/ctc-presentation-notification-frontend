@@ -99,7 +99,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       "to CYA Page" +
         "when security is '0'" +
-        "and containerIndicator has not been answered in IE170" ignore {
+        "and containerIndicator has not been answered in IE170" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
@@ -110,7 +110,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 )
               navigator
                 .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(???) // TODO should go to CYA
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
     }
