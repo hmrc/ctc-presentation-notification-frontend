@@ -29,10 +29,8 @@ case class Consignment(
   HouseConsignment: Seq[HouseConsignment]
 ) {
 
-  def isTransportDefined: Option[Boolean] = modeOfTransportAtTheBorder match {
-    case Some(value) => Some(true)
-    case None        => Some(false)
-  }
+  def isTransportDefined: Option[Boolean] = Some(modeOfTransportAtTheBorder.isDefined)
+
   def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
 
   val allItems: Seq[Item] =
