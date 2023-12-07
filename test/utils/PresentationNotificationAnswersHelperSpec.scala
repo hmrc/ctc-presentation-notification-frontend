@@ -41,11 +41,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "limitDate" - {
       "must return None when no limit date in ie15/170" - {
         s"when $LimitDatePage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithNoLimitDateUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, borderModes, mode)
               val result = helper.limitDate
               result mustBe None
           }
@@ -54,13 +54,13 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when $LimitDatePage defined in the ie170" in {
-          forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
-            (mode, customsOffice) =>
+          forAll(arbitrary[Mode], arbitrary[CustomsOffice], arbitrary[Seq[BorderMode]]) {
+            (mode, customsOffice, borderModes) =>
               when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
               val limitDate = LocalDate.of(2000: Int, 1: Int, 8: Int)
               val answers = emptyUserAnswers
                 .setValue(LimitDatePage, limitDate)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result = helper.limitDate.get
 
               result.key.value mustBe s"Estimated arrival date at the office of destination"
@@ -76,11 +76,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         s"when $LimitDatePage defined in the ie15" in {
-          forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
-            (mode, customsOffice) =>
+          forAll(arbitrary[Mode], arbitrary[CustomsOffice], arbitrary[Seq[BorderMode]]) {
+            (mode, customsOffice, borderModes) =>
               when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
               val ie015WithLimitDateUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                        = new PresentationNotificationAnswersHelper(ie015WithLimitDateUserAnswers, departureId, mode)
+              val helper                        = new PresentationNotificationAnswersHelper(ie015WithLimitDateUserAnswers, departureId, borderModes, mode)
               val result                        = helper.limitDate.get
 
               result.key.value mustBe s"Estimated arrival date at the office of destination"
@@ -100,11 +100,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "containerIndicator" - {
       "must return None when no container indicator in ie15/170" - {
         s"when $ContainerIndicatorPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithNoLimitDateUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, borderModes, mode)
               val result = helper.containerIndicator
               result mustBe None
           }
@@ -113,11 +113,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when $ContainerIndicatorPage defined in the ie170" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val answers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, true)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result = helper.containerIndicator.get
 
               result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
@@ -133,10 +133,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         s"when $ContainerIndicatorPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithContainerIndicatorUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, mode)
+              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, borderModes, mode)
               val result                                 = helper.containerIndicator.get
 
               result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
@@ -156,11 +156,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "addBorderModeOfTransportYesNo" - {
       "must return No" - {
         "when transport mode is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, borderModes, mode)
               val result = helper.borderModeOfTransportYesNo
               result.get.key.value mustBe s"Do you want to add a border mode of transport?"
               result.get.value.value mustBe "No"
@@ -179,11 +179,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "borderModeOfTransport" - {
       "must return None" - {
         "when ModeCrossingBorderPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, borderModes, mode)
               val result = helper.borderModeOfTransport
               result mustBe None
           }
@@ -192,11 +192,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when ModeCrossingBorderPage defined in the ie170" in {
-          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
-            (mode, borderModeOfTransport) =>
+          forAll(arbitrary[Mode], arbitrary[BorderMode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModeOfTransport, borderModes) =>
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result = helper.borderModeOfTransport
 
               result.get.key.value mustBe s"Mode"
@@ -212,10 +212,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         "when ModeCrossingBorderPage defined in ie15" in {
-          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
-            (mode, borderModeOfTransport) =>
+          forAll(arbitrary[Mode], arbitrary[BorderMode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModeOfTransport, borderModes) =>
               val answers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
-              val helper  = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper  = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result  = helper.borderModeOfTransport
 
               result.get.key.value mustBe s"Mode"

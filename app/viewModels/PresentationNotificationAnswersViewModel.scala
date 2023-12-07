@@ -17,6 +17,7 @@
 package viewModels
 
 import config.FrontendAppConfig
+import models.reference.BorderMode
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import utils.PresentationNotificationAnswersHelper
@@ -32,10 +33,12 @@ object PresentationNotificationAnswersViewModel {
   ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers, departureId: String)(implicit messages: Messages): PresentationNotificationAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, departureId: String, borderModes: Seq[BorderMode])(implicit
+      messages: Messages
+    ): PresentationNotificationAnswersViewModel = {
       val mode = CheckMode
 
-      val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
+      val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, borderModes, mode)
 
       val firstSection = Section(
         rows = Seq(
