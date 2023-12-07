@@ -236,11 +236,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "addUnlocodeYesNo" - {
       "must return None when no AddUnlocodeYesNo in ie15/170" - {
         s"when $AddUnLocodeYesNoPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithUnlocodeAddYesNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithUnlocodeAddYesNoUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithUnlocodeAddYesNoUserAnswers, departureId, borderModes, mode)
               val result = helper.addUnlocodeYesNo
               result mustBe None
           }
@@ -249,11 +249,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when $AddUnLocodeYesNoPage defined in the ie170" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderMode) =>
               val answers = emptyUserAnswers
                 .setValue(AddUnLocodeYesNoPage, true)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderMode, mode)
               val result = helper.addUnlocodeYesNo.get
 
               result.key.value mustBe s"Do you want to add a UN/LOCODE for the place of loading?"
@@ -269,10 +269,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         s"when $AddUnLocodeYesNoPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, mode)
+              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, borderModes, mode)
               val result                      = helper.addUnlocodeYesNo.get
 
               result.key.value mustBe s"Do you want to add a UN/LOCODE for the place of loading?"
@@ -292,11 +292,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "unlocode" - {
       "must return None when no unlocode in ie15/170" - {
         s"when $UnLocodePage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, borderModes, mode)
               val result = helper.unlocode
               result mustBe None
           }
@@ -305,11 +305,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when $UnLocodePage defined in the ie170" in {
-          forAll(arbitrary[Mode], arbitraryUnLocode.arbitrary) {
-            (mode, unlocode) =>
+          forAll(arbitrary[Mode], arbitraryUnLocode.arbitrary, arbitrary[Seq[BorderMode]]) {
+            (mode, unlocode, borderModes) =>
               val answers = emptyUserAnswers
                 .setValue(UnLocodePage, unlocode)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result = helper.unlocode.get
 
               result.key.value mustBe s"UN/LOCODE"
@@ -325,10 +325,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         s"when $UnLocodePage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, mode)
+              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, borderModes, mode)
               val result                      = helper.unlocode.get
 
               result.key.value mustBe s"UN/LOCODE"
@@ -348,11 +348,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "addExtraInformationYesNo" - {
       "must return None when no addExtraInformation in ie15/170" - {
         s"when $AddExtraInformationYesNoPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithNoLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, borderModes, mode)
               val result = helper.addExtraInformationYesNo
               result mustBe None
           }
@@ -361,11 +361,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when $AddExtraInformationYesNoPage defined in the ie170" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val answers = emptyUserAnswers
                 .setValue(AddExtraInformationYesNoPage, true)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result = helper.addExtraInformationYesNo.get
 
               result.key.value mustBe s"Do you want to add extra information for the place of loading?"
@@ -381,10 +381,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         s"when $AddExtraInformationYesNoPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, mode)
+              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, borderModes, mode)
               val result                      = helper.addExtraInformationYesNo.get
 
               result.key.value mustBe s"Do you want to add extra information for the place of loading?"
@@ -404,11 +404,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "country" - {
       "must return None when no country in ie15/170" - {
         s"when $CountryPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithNoLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, borderModes, mode)
               val result = helper.country
               result mustBe None
           }
@@ -417,11 +417,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when $CountryPage defined in the ie170" in {
-          forAll(arbitrary[Mode], arbitraryCountry.arbitrary) {
-            (mode, country) =>
+          forAll(arbitrary[Mode], arbitraryCountry.arbitrary, arbitrary[Seq[BorderMode]]) {
+            (mode, country, borderModes) =>
               val answers = emptyUserAnswers
                 .setValue(CountryPage, country)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result = helper.country.get
 
               result.key.value mustBe s"Country"
@@ -437,10 +437,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         s"when $CountryPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, mode)
+              val helper                      = new PresentationNotificationAnswersHelper(ie015WithLoadingUserAnswers, departureId, borderModes, mode)
               val result                      = helper.country.get
 
               result.key.value mustBe s"Country"
@@ -461,11 +461,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
     "location" - {
       "must return None when no location in ie15/170" - {
         s"when $LocationPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithNoLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, borderModes, mode)
               val result = helper.location
               result mustBe None
           }
@@ -474,11 +474,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when $LocationPage defined in the ie170" in {
-          forAll(arbitrary[Mode], nonEmptyString.sample.value) {
-            (mode, location) =>
+          forAll(arbitrary[Mode], nonEmptyString.sample.value, arbitrary[Seq[BorderMode]]) {
+            (mode, location, borderModes) =>
               val answers = emptyUserAnswers
                 .setValue(LocationPage, location)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
               val result = helper.location.get
 
               result.key.value mustBe s"Location"
@@ -494,10 +494,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         s"when $LocationPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
+          forAll(arbitrary[Mode], arbitrary[Seq[BorderMode]]) {
+            (mode, borderModes) =>
               val ie015WithContainerIndicatorUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, mode)
+              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, borderModes, mode)
               val result                                 = helper.location.get
 
               result.key.value mustBe s"Location"
