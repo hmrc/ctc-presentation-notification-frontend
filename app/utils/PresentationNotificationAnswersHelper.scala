@@ -32,6 +32,7 @@ import java.time.LocalDate
 class PresentationNotificationAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
+  borderModes: Seq[BorderMode],
   mode: Mode
 )(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, departureId, mode) {
@@ -64,7 +65,7 @@ class PresentationNotificationAnswersHelper(
     page = BorderModeOfTransportPage,
     formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transport.border.borderModeOfTransport",
-    findValueInDepartureData = message => message.Consignment.modeOfTransportAtTheBorder.map(_.asBorderMode),
+    findValueInDepartureData = message => message.Consignment.modeOfTransportAtTheBorder.map(_.asBorderMode(borderModes)),
     id = Some("change-border-mode-of-transport")
   )
 

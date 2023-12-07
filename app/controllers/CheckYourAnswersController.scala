@@ -20,26 +20,35 @@ import controllers.actions._
 import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TransportModeCodesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: PresentationNotificationAnswersViewModelProvider,
   navigator: Navigator,
+  borderModeService: TransportModeCodesService,
   view: CheckYourAnswersView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
+  def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val lrn      = request.userAnswers.lrn
-      val sections = viewModelProvider(request.userAnswers, departureId).sections
-      Ok(view(lrn, departureId, sections))
+      borderModeService.getBorderModes().map {
+        borderModeCodes =>
+          val lrn      = request.userAnswers.lrn
+          val sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes).sections
+
+          Ok(view(lrn, departureId, sections))
+      }
+
   }
 
   def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {

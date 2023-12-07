@@ -43,7 +43,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
   "CheckYourAnswersController" - {
     "return OK and the correct view for a GET" in {
 
-      when(mockViewModelProvider.apply(any(), any())(any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
         .thenReturn(PresentationNotificationAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
