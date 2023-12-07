@@ -38,8 +38,9 @@ import scala.concurrent.Future
 
 class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val lts = Gen.nonEmptyListOf(arbitrary[LocationType]).sample.value
-  private val lt  = lts.head
+  private val lts: Seq[LocationType] =
+    Gen.containerOfN[Seq, LocationType](2, arbitrary[LocationType]).sample.value
+  private val lt = lts.head
 
   private val formProvider                                 = new EnumerableFormProvider()
   private val form                                         = formProvider("locationOfGoods.locationType", lts)
