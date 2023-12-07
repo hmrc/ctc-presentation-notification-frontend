@@ -41,13 +41,11 @@ class CheckYourAnswersController @Inject() (
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      borderModeService.getBorderModes().map {
-        borderModeCodes =>
-          val lrn      = request.userAnswers.lrn
-          val sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes).sections
-
-          Ok(view(lrn, departureId, sections))
-      }
+      for {
+        borderModeCodes <- borderModeService.getBorderModes()
+        lrn      = request.userAnswers.lrn
+        sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes).sections
+      } yield Ok(view(lrn, departureId, sections))
 
   }
 
