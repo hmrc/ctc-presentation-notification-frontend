@@ -34,8 +34,6 @@ class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             viewModelProvider: PresentationNotificationAnswersViewModelProvider,
                                             navigator: Navigator,
-                                            borderModeService: TransportModeCodesService,
-                                            identificationTypeService: LocationOfGoodsIdentificationTypeService,
                                             view: CheckYourAnswersView
                                           )(implicit ec: ExecutionContext)
   extends FrontendBaseController
@@ -43,30 +41,20 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val presentationNotificationAnswersViewModel = for {
-        borderModeCodes <- borderModeService.getBorderModes()
-        identificationTypes <- request.userAnswers.departureData.Consignment.LocationOfGoods
-          .map(
-            goods => LocationType(goods.typeOfLocation, "")
-          ) match {
-          case Some(value) => identificationTypeService.getLocationOfGoodsIdentificationTypes(value)
-          case None => Future.successful(Seq[LocationOfGoodsIdentification]())
-        }
-        sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes, identificationTypes)
-      } yield sections
+
+      val presentationNotificationAnswersViewModel = viewModelProvider(request.userAnswers, departureId)
 
       presentationNotificationAnswersViewModel
-        .flatMap {
-          _.map {
-            viewModel =>
-              Ok(view(request.userAnswers.lrn, departureId, viewModel.sections))
-          }
+        .map {
+          viewModel =>
+            Ok(view(request.userAnswers.lrn, departureId, viewModel.sections))
         }
   }
 
 
-  def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
-    implicit request => //todo will redirect to Declaration submitted page once implemented
-      ???
+
+def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
+  implicit request => //todo will redirect to Declaration submitted page once implemented
+    ???
   }
 }

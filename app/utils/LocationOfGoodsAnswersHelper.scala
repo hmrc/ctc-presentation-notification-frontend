@@ -16,14 +16,11 @@
 
 package utils
 
-import cats.data.OptionT
 import config.FrontendAppConfig
-import models.messages.MessageData
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.{AuthorisationNumberPage, IdentificationPage, LocationTypePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
-import shapeless.T
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class LocationOfGoodsAnswersHelper(
                                     userAnswers: UserAnswers,
                                     departureId: String,
-                                    identificationTypes: Seq[LocationOfGoodsIdentification],
                                     checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
                                     mode: Mode
                                   )(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
@@ -49,12 +45,13 @@ class LocationOfGoodsAnswersHelper(
     args = Seq.empty
   )
 
-  def qualifierIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[LocationOfGoodsIdentification](
-    page = IdentificationPage,
-    formatAnswer = formatDynamicEnumAsText(_),
+  def qualifierIdentificationRow(answer: String): SummaryListRow = buildSimpleRow(
+    answer = Text(answer),
+    label = messages("locationOfGoods.identification"),
     prefix = "locationOfGoods.identification",
-    findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.qualifierOfIdentification.asQualifierIdentification),
-    id = Some("change-qualifier-identification")
+    id = Some("change-qualifier-identification"),
+    call = None,
+    args = Seq.empty
   )
 
   def authorisationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -70,22 +67,41 @@ class LocationOfGoodsAnswersHelper(
     userAnswers.get(LocationTypePage) match {
       case Some(value) => Future.successful(Some(value))
       case None =>
-        userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation) match {
-          case Some(value) => checkYourAnswersReferenceDataService.getLocationType(value)
+        userAnswers.departureData.Consignment.LocationOfGoods match {
+          case Some(value) => checkYourAnswersReferenceDataService.getLocationType(value.typeOfLocation)
+          case None => Future.successful(None)
+        }
+    }
+  }
+
+  def fetchQualifierOfIdentification: Future[Option[LocationOfGoodsIdentification]] = {
+    userAnswers.get(IdentificationPage) match {
+      case Some(value) => Future.successful(Some(value))
+      case None =>
+        userAnswers.departureData.Consignment.LocationOfGoods match {
+          case Some(value) => checkYourAnswersReferenceDataService.getQualifierOfIdentification(value.qualifierOfIdentification)
+          case None => Future.successful(None)
         }
     }
   }
 
   def locationOfGoodsSection: Future[Section] = {
 
-    val locationType = fetchLocationType.map(_.map(locType => locationTypeRow(locType.toString)))
+    val rows = for {
+      locationType <- fetchLocationType.map(_.map(locType => locationTypeRow(locType.toString)))
+      qualifierIdentification <- fetchQualifierOfIdentification.map(_.map(qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)))
+      rows = Seq(locationType, qualifierIdentification)
+    } yield rows
 
-    locationType.map {
-      locationType =>
-          Section(
-            sectionTitle = messages("checkYourAnswers.locationOfGoods"),
-            locationType.toSeq
-          )
+
+    val convertedRows = rows.map(_.flatten)
+
+    convertedRows.map {
+      convertedRows =>
+        Section(
+          sectionTitle = messages("checkYourAnswers.locationOfGoods"),
+          convertedRows
+        )
     }
   }
 }

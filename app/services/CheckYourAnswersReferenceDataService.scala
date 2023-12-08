@@ -18,7 +18,7 @@ package services
 
 import config.Constants._
 import connectors.ReferenceDataConnector
-import models.LocationType
+import models.{LocationOfGoodsIdentification, LocationType}
 import models.reference.BorderMode
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,5 +31,15 @@ class CheckYourAnswersReferenceDataService @Inject()(referenceDataConnector: Ref
     referenceDataConnector.getTypesOfLocation
       .map(_.find(x => x.`type` == `type`))
   }
+
+  def getQualifierOfIdentification(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[LocationOfGoodsIdentification]] = {
+    referenceDataConnector.getQualifierOfTheIdentifications
+      .map(_.find(x => x.code == code))
+  }
+
+  def getBorderMode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[BorderMode]] =
+    referenceDataConnector
+      .getBorderModeCodes()
+      .map(_.find(x => x.code == code))
 
 }

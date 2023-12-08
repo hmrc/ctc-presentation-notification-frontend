@@ -31,37 +31,28 @@ case class PresentationNotificationAnswersViewModel(sections: Seq[Section])
 
 object PresentationNotificationAnswersViewModel {
 
-  class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
-    val config: FrontendAppConfig,
-                                                                    checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
-  ) {
+  class PresentationNotificationAnswersViewModelProvider @Inject()(implicit
+                                                                   val config: FrontendAppConfig,
+                                                                   checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
+                                                                  ) {
 
     // scalastyle:off method.length
     def apply(userAnswers: UserAnswers,
-              departureId: String,
-              borderModes: Seq[BorderMode],
-              identificationTypes: Seq[LocationOfGoodsIdentification]
-    )(implicit
-      messages: Messages,
-      ec: ExecutionContext,
-      hc: HeaderCarrier
-    ): Future[PresentationNotificationAnswersViewModel] = {
+              departureId: String
+             )(implicit
+               messages: Messages,
+               ec: ExecutionContext,
+               hc: HeaderCarrier
+             ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, borderModes, mode)
-      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, identificationTypes, checkYourAnswersReferenceDataService, mode)
+      val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
+      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
 
       val firstSection = Section(
         rows = Seq(
           helper.limitDate,
           helper.containerIndicator
-        ).flatten
-      )
-
-      val borderSection = Section(
-        rows = Seq(
-          helper.borderModeOfTransportYesNo,
-          helper.borderModeOfTransport
         ).flatten
       )
 
@@ -76,16 +67,11 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val locationOfGoods = locationOfGoodsHelper.locationOfGoodsSection
-
-      locationOfGoods.map {
-        locationOfGoods =>
-
-          val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ locationOfGoods.toSeq
-
-          new PresentationNotificationAnswersViewModel(sections)
-      }
-
+      for {
+        borderSection <- helper.borderModeSection
+        locationOfGoods <- locationOfGoodsHelper.locationOfGoodsSection
+        sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ locationOfGoods.toSeq
+      } yield new PresentationNotificationAnswersViewModel(sections)
     }
     // scalastyle:on method.length
   }
