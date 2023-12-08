@@ -22,6 +22,7 @@ import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
+import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 
 class AnswersHelper(
@@ -51,5 +52,26 @@ class AnswersHelper(
       call = call,
       args = args: _*
     )
+
+  protected def getAnswerAndBuildRowFOO[T](
+                                         page: QuestionPage[T],
+                                         formatAnswer: T => Content,
+                                         prefix: String,
+                                         findValueInDepartureData: CheckYourAnswersReferenceDataService => T,
+                                         transformData: String => T,
+                                         id: Option[String],
+                                         args: Any*
+                                       )(implicit rds: Reads[T]): Option[SummaryListRow] =
+    for {
+      answer <- userAnswers.get(page).getOrElse(transformData(findValueInDepartureData))
+      call <- page.route(userAnswers, departureId, mode)
+    } yield buildRow(
+      prefix = prefix,
+      answer = formatAnswer(answer),
+      id = id,
+      call = call,
+      args = args: _*
+    )
+
 
 }

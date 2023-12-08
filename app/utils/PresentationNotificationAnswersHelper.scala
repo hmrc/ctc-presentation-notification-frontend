@@ -103,7 +103,7 @@ class PresentationNotificationAnswersHelper(
     page = BorderModeOfTransportPage,
     formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transport.border.borderModeOfTransport",
-    findValueInDepartureData = message => message.Consignment.modeOfTransportAtTheBorder.map(_.asBorderMode(borderModes)),
+    findValueInDepartureData = message => message.Consignment.modeOfTransportAtTheBorder.map(x => x _.asBorderMode(borderModes)),
     id = Some("change-border-mode-of-transport")
   )
 

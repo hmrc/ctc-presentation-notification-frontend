@@ -20,31 +20,36 @@ import config.FrontendAppConfig
 import models.reference.BorderMode
 import models.{CheckMode, LocationOfGoodsIdentification, LocationType, UserAnswers}
 import play.api.i18n.Messages
+import services.CheckYourAnswersReferenceDataService
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.{LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 case class PresentationNotificationAnswersViewModel(sections: Seq[Section])
 
 object PresentationNotificationAnswersViewModel {
 
   class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
-    val config: FrontendAppConfig
+    val config: FrontendAppConfig,
+                                                                    checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
   ) {
 
     // scalastyle:off method.length
     def apply(userAnswers: UserAnswers,
               departureId: String,
               borderModes: Seq[BorderMode],
-              locationTypes: Seq[LocationType],
               identificationTypes: Seq[LocationOfGoodsIdentification]
     )(implicit
-      messages: Messages
-    ): PresentationNotificationAnswersViewModel = {
+      messages: Messages,
+      ec: ExecutionContext,
+      hc: HeaderCarrier
+    ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
       val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, borderModes, mode)
-      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, locationTypes, identificationTypes, mode)
+      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, identificationTypes, checkYourAnswersReferenceDataService, mode)
 
       val firstSection = Section(
         rows = Seq(
@@ -71,16 +76,16 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val locationOfGoods = Section(
-        sectionTitle = messages("checkYourAnswers.locationOfGoods"),
-        rows = Seq(
-          locationOfGoodsHelper.locationType
-        ).flatten
-      )
+      val locationOfGoods = locationOfGoodsHelper.locationOfGoodsSection
 
-      val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ locationOfGoods.toSeq
+      locationOfGoods.map {
+        locationOfGoods =>
 
-      new PresentationNotificationAnswersViewModel(sections)
+          val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ locationOfGoods.toSeq
+
+          new PresentationNotificationAnswersViewModel(sections)
+      }
+
     }
     // scalastyle:on method.length
   }

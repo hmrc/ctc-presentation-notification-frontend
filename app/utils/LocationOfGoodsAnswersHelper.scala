@@ -16,33 +16,37 @@
 
 package utils
 
+import cats.data.OptionT
 import config.FrontendAppConfig
+import models.messages.MessageData
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.{AuthorisationNumberPage, IdentificationPage, LocationTypePage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+import services.CheckYourAnswersReferenceDataService
+import shapeless.T
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HeaderCarrier
+import viewModels.Section
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class LocationOfGoodsAnswersHelper(
-  userAnswers: UserAnswers,
-  departureId: String,
-  locationTypes: Seq[LocationType],
-  identificationTypes: Seq[LocationOfGoodsIdentification],
-  mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, departureId, mode) {
+                                    userAnswers: UserAnswers,
+                                    departureId: String,
+                                    identificationTypes: Seq[LocationOfGoodsIdentification],
+                                    checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
+                                    mode: Mode
+                                  )(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
+  extends AnswersHelper(userAnswers, departureId, mode) {
 
-  def locationType: Option[SummaryListRow] = getAnswerAndBuildRow[LocationType](
-    page = LocationTypePage,
-    formatAnswer = formatDynamicEnumAsText(_),
+  def locationTypeRow(answer: String): SummaryListRow = buildSimpleRow(
+    answer = Text(answer),
+    label = messages("locationOfGoods.locationType"),
     prefix = "locationOfGoods.locationType",
-    findValueInDepartureData = message =>
-      message.Consignment.LocationOfGoods.flatMap(
-        value =>
-          locationTypes.find {
-            lt => value.typeOfLocation == lt.`type`
-          }
-      ),
-    id = Some("change-location-type")
+    id = Some("change-location-type"),
+    call = None,
+    args = Seq.empty
   )
 
   def qualifierIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[LocationOfGoodsIdentification](
@@ -60,4 +64,28 @@ class LocationOfGoodsAnswersHelper(
     findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.authorisationNumber),
     id = Some("change-authorisation-number")
   )
+
+
+  def fetchLocationType: Future[Option[LocationType]] = {
+    userAnswers.get(LocationTypePage) match {
+      case Some(value) => Future.successful(Some(value))
+      case None =>
+        userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation) match {
+          case Some(value) => checkYourAnswersReferenceDataService.getLocationType(value)
+        }
+    }
+  }
+
+  def locationOfGoodsSection: Future[Section] = {
+
+    val locationType = fetchLocationType.map(_.map(locType => locationTypeRow(locType.toString)))
+
+    locationType.map {
+      locationType =>
+          Section(
+            sectionTitle = messages("checkYourAnswers.locationOfGoods"),
+            locationType.toSeq
+          )
+    }
+  }
 }

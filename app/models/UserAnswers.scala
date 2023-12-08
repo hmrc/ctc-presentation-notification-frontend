@@ -20,9 +20,11 @@ import models.messages.MessageData
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
+import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
+import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
@@ -39,6 +41,12 @@ final case class UserAnswers(
 
   def getOrElse[A](page: QuestionPage[A], findValueInDepartureData: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
     get(page) orElse findValueInDepartureData(departureData)
+
+  def getOrElseRefCall[A](page: QuestionPage[A], findValueInDepartureData: MessageData => String, transformFunction: String => Future[Option[A]])(implicit reads: Reads[A]): Future[Option[A]] =
+    get(page) orElse transformFunction(findValueInDepartureData(departureData))
+
+  def getOrElseRefCall[A](page: QuestionPage[A], findValueInDepartureDataRefCall: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
+    get(page) orElse findValueInDepartureDataRefCall(departureData)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
     lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {

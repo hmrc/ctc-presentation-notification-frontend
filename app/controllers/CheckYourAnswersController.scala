@@ -29,36 +29,41 @@ import views.html.CheckYourAnswersView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject() (
-  actions: Actions,
-  val controllerComponents: MessagesControllerComponents,
-  viewModelProvider: PresentationNotificationAnswersViewModelProvider,
-  navigator: Navigator,
-  borderModeService: TransportModeCodesService,
-  locationTypeService: LocationTypeService,
-  identificationTypeService: LocationOfGoodsIdentificationTypeService,
-  view: CheckYourAnswersView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+class CheckYourAnswersController @Inject()(
+                                            actions: Actions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            viewModelProvider: PresentationNotificationAnswersViewModelProvider,
+                                            navigator: Navigator,
+                                            borderModeService: TransportModeCodesService,
+                                            identificationTypeService: LocationOfGoodsIdentificationTypeService,
+                                            view: CheckYourAnswersView
+                                          )(implicit ec: ExecutionContext)
+  extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      for {
+      val presentationNotificationAnswersViewModel = for {
         borderModeCodes <- borderModeService.getBorderModes()
-        locationTypes   <- locationTypeService.getLocationTypes(false)
         identificationTypes <- request.userAnswers.departureData.Consignment.LocationOfGoods
           .map(
             goods => LocationType(goods.typeOfLocation, "")
           ) match {
           case Some(value) => identificationTypeService.getLocationOfGoodsIdentificationTypes(value)
-          case None        => Future.successful(Seq[LocationOfGoodsIdentification]())
+          case None => Future.successful(Seq[LocationOfGoodsIdentification]())
         }
-        lrn      = request.userAnswers.lrn
-        sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes, locationTypes, identificationTypes).sections
-      } yield Ok(view(lrn, departureId, sections))
+        sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes, identificationTypes)
+      } yield sections
 
+      presentationNotificationAnswersViewModel
+        .flatMap {
+          _.map {
+            viewModel =>
+              Ok(view(request.userAnswers.lrn, departureId, viewModel.sections))
+          }
+        }
   }
+
 
   def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
     implicit request => //todo will redirect to Declaration submitted page once implemented
