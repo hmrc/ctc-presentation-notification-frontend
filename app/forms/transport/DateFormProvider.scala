@@ -28,6 +28,7 @@ class DateFormProvider @Inject() extends Mappings {
   def apply(prefix: String, minimumDate: LocalDate, maximumDate: LocalDate): Form[LocalDate] =
     Form(
       "value" -> localDate(
+        numericKey = s"$prefix.error.numeric",
         invalidKey = s"$prefix.error.invalid",
         allRequiredKey = s"$prefix.error.required.all",
         twoRequiredKey = s"$prefix.error.required.two",
