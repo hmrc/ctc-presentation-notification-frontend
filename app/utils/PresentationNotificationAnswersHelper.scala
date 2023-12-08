@@ -107,7 +107,7 @@ class PresentationNotificationAnswersHelper(
 
   def borderModeOfTransportRow(answer: String): SummaryListRow = buildSimpleRow(
     answer = Text(answer),
-    label = messages("transport.border.borderModeOfTransport"),
+    label = messages("transport.border.borderModeOfTransport.checkYourAnswersLabel"),
     prefix = "transport.border.borderModeOfTransport",
     id = Some("change-border-mode-of-transport"),
     call = None,
@@ -131,8 +131,8 @@ class PresentationNotificationAnswersHelper(
     borderModeOfTransport.map {
       borderModeOfTransport =>
         Section(
-          sectionTitle = messages("checkYourAnswers.locationOfGoods"),
-          Seq(borderModeOfTransport, borderModeOfTransportYesNo).flatten
+          sectionTitle = messages("transport.border.borderModeOfTransport.caption"),
+          Seq(borderModeOfTransportYesNo, borderModeOfTransport).flatten
         )
     }
   }

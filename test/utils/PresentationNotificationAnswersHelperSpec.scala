@@ -30,13 +30,17 @@ import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, Countr
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
+import services.CheckYourAnswersReferenceDataService
 
 import java.time.{Instant, LocalDate}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "PresentationNotificationAnswersHelper" - {
+
+    val mockReferenceDataService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
+    implicit val ec: ExecutionContext = ExecutionContext
 
     "limitDate" - {
       "must return None when no limit date in ie15/170" - {
@@ -183,8 +187,8 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             (mode, borderModes) =>
               val ie015WithNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, borderModes, mode)
-              val result = helper.borderModeOfTransport
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+              val result = helper.borderModeOfTransportRow
               result mustBe None
           }
         }
@@ -192,16 +196,19 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
       "must return Some(Row)" - {
         s"when ModeCrossingBorderPage defined in the ie170" in {
+
+
+
           forAll(arbitrary[Mode], arbitrary[BorderMode], arbitrary[Seq[BorderMode]]) {
-            (mode, borderModeOfTransport, borderModes) =>
+            (mode, borderModeOfTransport) =>
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, borderModes, mode)
-              val result = helper.borderModeOfTransport
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
+              val result = helper.borderModeOfTransportRow("border")
 
-              result.get.key.value mustBe s"Mode"
-              result.get.value.value mustBe borderModeOfTransport.description
-              val actions = result.get.actions.get.items
+              result.key.value mustBe s"Mode"
+              result.value.value mustBe borderModeOfTransport.description
+              val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
