@@ -113,4 +113,5 @@ class PresentationNotificationAnswersHelper(
     findValueInDepartureData = message => Option(message.Consignment.ActiveBorderTransportMeans.isDefined),
     id = Some("change-add-identification-for-the-border-means-of-transport")
   )
+
 }
