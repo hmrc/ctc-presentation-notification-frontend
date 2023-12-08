@@ -35,7 +35,8 @@ case class AddConveyanceReferenceYesNoPage(activeIndex: Index) extends QuestionP
     Some(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val Ie015ConveyanceRefNumberPath: JsPath = JsPath \ "Consignment" \ "ActiveBorderTransportMeans" \ s"${activeIndex.position}" \ "conveyanceReferenceNumber"
+    val Ie015ConveyanceRefNumberPath: JsPath = JsPath \ "Consignment" \ "ActiveBorderTransportMeans" \ activeIndex.position \ "conveyanceReferenceNumber"
+
     value match {
       case Some(false) => userAnswers.remove(ConveyanceReferenceNumberPage(activeIndex), Ie015ConveyanceRefNumberPath)
       case _           => super.cleanup(value, userAnswers)
