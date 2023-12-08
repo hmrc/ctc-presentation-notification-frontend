@@ -17,31 +17,28 @@
 package controllers
 
 import controllers.actions._
-import models.{LocationOfGoodsIdentification, LocationType}
 import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{LocationOfGoodsIdentificationTypeService, LocationTypeService, TransportModeCodesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class CheckYourAnswersController @Inject()(
-                                            actions: Actions,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            viewModelProvider: PresentationNotificationAnswersViewModelProvider,
-                                            navigator: Navigator,
-                                            view: CheckYourAnswersView
-                                          )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+class CheckYourAnswersController @Inject() (
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  viewModelProvider: PresentationNotificationAnswersViewModelProvider,
+  navigator: Navigator,
+  view: CheckYourAnswersView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-
       val presentationNotificationAnswersViewModel = viewModelProvider(request.userAnswers, departureId)
 
       presentationNotificationAnswersViewModel
@@ -51,10 +48,8 @@ class CheckYourAnswersController @Inject()(
         }
   }
 
-
-
-def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
-  implicit request => //todo will redirect to Declaration submitted page once implemented
-    ???
+  def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
+    implicit request => //todo will redirect to Declaration submitted page once implemented
+      ???
   }
 }

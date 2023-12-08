@@ -25,21 +25,31 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersReferenceDataService @Inject()(referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getLocationType(`type`: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[LocationType]] = {
+  def getLocationType(`type`: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[LocationType]] =
     referenceDataConnector.getTypesOfLocation
-      .map(_.find(x => x.`type` == `type`))
-  }
+      .map(
+        _.find(
+          x => x.`type` == `type`
+        )
+      )
 
-  def getQualifierOfIdentification(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[LocationOfGoodsIdentification]] = {
+  def getQualifierOfIdentification(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[LocationOfGoodsIdentification]] =
     referenceDataConnector.getQualifierOfTheIdentifications
-      .map(_.find(x => x.code == code))
-  }
+      .map(
+        _.find(
+          x => x.code == code
+        )
+      )
 
   def getBorderMode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[BorderMode]] =
     referenceDataConnector
       .getBorderModeCodes()
-      .map(_.find(x => x.code == code))
+      .map(
+        _.find(
+          x => x.code == code
+        )
+      )
 
 }

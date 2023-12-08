@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-import models.{LocationOfGoodsIdentification, LocationType}
-import models.reference.BorderMode
-import models.reference.transport.border.active.Identification
-
-import java.text.SimpleDateFormat
-import models.reference.{Country, CountryCode}
+import models.LocationOfGoodsIdentification
+import models.reference.{BorderMode, Country, CountryCode}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

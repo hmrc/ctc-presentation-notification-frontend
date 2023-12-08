@@ -25,11 +25,13 @@ import play.api.libs.json.Reads
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 
+import scala.concurrent.Future
+
 class AnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig)
+)(implicit messages: Messages)
     extends SummaryListRowHelper {
 
   protected def lrn: String = userAnswers.lrn
@@ -53,25 +55,18 @@ class AnswersHelper(
       args = args: _*
     )
 
-  protected def getAnswerAndBuildRowFOO[T](
-                                         page: QuestionPage[T],
-                                         formatAnswer: T => Content,
-                                         prefix: String,
-                                         findValueInDepartureData: CheckYourAnswersReferenceDataService => T,
-                                         transformData: String => T,
-                                         id: Option[String],
-                                         args: Any*
-                                       )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    for {
-      answer <- userAnswers.get(page).getOrElse(transformData(findValueInDepartureData))
-      call <- page.route(userAnswers, departureId, mode)
-    } yield buildRow(
-      prefix = prefix,
-      answer = formatAnswer(answer),
-      id = id,
-      call = call,
-      args = args: _*
-    )
-
+  protected def fetchValue[T](
+    page: QuestionPage[T],
+    convertToReference: String => Future[Option[T]],
+    valueToConvert: Option[String]
+  )(implicit userAnswers: UserAnswers, rds: Reads[T]): Future[Option[T]] =
+    userAnswers.get(page) match {
+      case Some(value) => Future.successful(Some(value))
+      case None =>
+        valueToConvert match {
+          case Some(value) => convertToReference(value)
+          case None        => Future.successful(None)
+        }
+    }
 
 }

@@ -17,8 +17,7 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.reference.BorderMode
-import models.{CheckMode, LocationOfGoodsIdentification, LocationType, UserAnswers}
+import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,22 +30,20 @@ case class PresentationNotificationAnswersViewModel(sections: Seq[Section])
 
 object PresentationNotificationAnswersViewModel {
 
-  class PresentationNotificationAnswersViewModelProvider @Inject()(implicit
-                                                                   val config: FrontendAppConfig,
-                                                                   checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
-                                                                  ) {
+  class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
+    val config: FrontendAppConfig,
+    checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
+  ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers,
-              departureId: String
-             )(implicit
-               messages: Messages,
-               ec: ExecutionContext,
-               hc: HeaderCarrier
-             ): Future[PresentationNotificationAnswersViewModel] = {
+    def apply(userAnswers: UserAnswers, departureId: String)(implicit
+      messages: Messages,
+      ec: ExecutionContext,
+      hc: HeaderCarrier
+    ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
+      val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
       val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
 
       val firstSection = Section(
@@ -68,7 +65,7 @@ object PresentationNotificationAnswersViewModel {
       )
 
       for {
-        borderSection <- helper.borderModeSection
+        borderSection   <- helper.borderModeSection
         locationOfGoods <- locationOfGoodsHelper.locationOfGoodsSection
         sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)

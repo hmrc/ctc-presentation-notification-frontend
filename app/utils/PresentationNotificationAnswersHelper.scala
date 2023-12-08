@@ -19,6 +19,7 @@ package utils
 import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
 import models.{Mode, UserAnswers}
+import pages.QuestionPage
 import pages.loading._
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
@@ -33,12 +34,12 @@ import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class PresentationNotificationAnswersHelper(
-                                             userAnswers: UserAnswers,
-                                             departureId: String,
-                                             checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
-                                             mode: Mode
-                                           )(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
-  extends AnswersHelper(userAnswers, departureId, mode) {
+  userAnswers: UserAnswers,
+  departureId: String,
+  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
+  mode: Mode
+)(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
+    extends AnswersHelper(userAnswers, departureId, mode) {
 
   def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = LimitDatePage,
@@ -113,20 +114,19 @@ class PresentationNotificationAnswersHelper(
     args = Seq.empty
   )
 
-  def fetchBorderModeOfTransport: Future[Option[BorderMode]] = {
-    userAnswers.get(BorderModeOfTransportPage) match {
-      case Some(value) => Future.successful(Some(value))
-      case None =>
-        userAnswers.departureData.Consignment.modeOfTransportAtTheBorder match {
-          case Some(value) => checkYourAnswersReferenceDataService.getBorderMode(value)
-          case None => Future.successful(None)
-        }
-    }
-  }
-
   def borderModeSection: Future[Section] = {
 
-    val borderModeOfTransport = fetchBorderModeOfTransport.map(_.map(borderMode => borderModeOfTransportRow(borderMode.toString)))
+    val borderModeOfTransport =
+      fetchValue[BorderMode](
+        BorderModeOfTransportPage,
+        checkYourAnswersReferenceDataService.getBorderMode,
+        userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
+      )(userAnswers, BorderMode.format)
+        .map(
+          _.map(
+            borderMode => borderModeOfTransportRow(borderMode.toString)
+          )
+        )
 
     borderModeOfTransport.map {
       borderModeOfTransport =>

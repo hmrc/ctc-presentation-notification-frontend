@@ -29,12 +29,12 @@ import viewModels.Section
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocationOfGoodsAnswersHelper(
-                                    userAnswers: UserAnswers,
-                                    departureId: String,
-                                    checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
-                                    mode: Mode
-                                  )(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
-  extends AnswersHelper(userAnswers, departureId, mode) {
+  userAnswers: UserAnswers,
+  departureId: String,
+  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
+  mode: Mode
+)(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
+    extends AnswersHelper(userAnswers, departureId, mode) {
 
   def locationTypeRow(answer: String): SummaryListRow = buildSimpleRow(
     answer = Text(answer),
@@ -62,37 +62,41 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-authorisation-number")
   )
 
-
-  def fetchLocationType: Future[Option[LocationType]] = {
+  def fetchLocationType: Future[Option[LocationType]] =
     userAnswers.get(LocationTypePage) match {
       case Some(value) => Future.successful(Some(value))
       case None =>
         userAnswers.departureData.Consignment.LocationOfGoods match {
           case Some(value) => checkYourAnswersReferenceDataService.getLocationType(value.typeOfLocation)
-          case None => Future.successful(None)
+          case None        => Future.successful(None)
         }
     }
-  }
 
-  def fetchQualifierOfIdentification: Future[Option[LocationOfGoodsIdentification]] = {
+  def fetchQualifierOfIdentification: Future[Option[LocationOfGoodsIdentification]] =
     userAnswers.get(IdentificationPage) match {
       case Some(value) => Future.successful(Some(value))
       case None =>
         userAnswers.departureData.Consignment.LocationOfGoods match {
           case Some(value) => checkYourAnswersReferenceDataService.getQualifierOfIdentification(value.qualifierOfIdentification)
-          case None => Future.successful(None)
+          case None        => Future.successful(None)
         }
     }
-  }
 
   def locationOfGoodsSection: Future[Section] = {
 
     val rows = for {
-      locationType <- fetchLocationType.map(_.map(locType => locationTypeRow(locType.toString)))
-      qualifierIdentification <- fetchQualifierOfIdentification.map(_.map(qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)))
+      locationType <- fetchLocationType.map(
+        _.map(
+          locType => locationTypeRow(locType.toString)
+        )
+      )
+      qualifierIdentification <- fetchQualifierOfIdentification.map(
+        _.map(
+          qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
+        )
+      )
       rows = Seq(locationType, qualifierIdentification)
     } yield rows
-
 
     val convertedRows = rows.map(_.flatten)
 
