@@ -19,7 +19,6 @@ package utils
 import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
 import models.{Mode, UserAnswers}
-import pages.QuestionPage
 import pages.loading._
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
@@ -38,7 +37,7 @@ class PresentationNotificationAnswersHelper(
   departureId: String,
   checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](

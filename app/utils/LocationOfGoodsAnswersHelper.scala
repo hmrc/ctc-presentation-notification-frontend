@@ -16,7 +16,6 @@
 
 package utils
 
-import config.FrontendAppConfig
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.{AuthorisationNumberPage, IdentificationPage, LocationTypePage}
 import play.api.i18n.Messages
@@ -62,35 +61,23 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-authorisation-number")
   )
 
-  def fetchLocationType: Future[Option[LocationType]] =
-    userAnswers.get(LocationTypePage) match {
-      case Some(value) => Future.successful(Some(value))
-      case None =>
-        userAnswers.departureData.Consignment.LocationOfGoods match {
-          case Some(value) => checkYourAnswersReferenceDataService.getLocationType(value.typeOfLocation)
-          case None        => Future.successful(None)
-        }
-    }
-
-  def fetchQualifierOfIdentification: Future[Option[LocationOfGoodsIdentification]] =
-    userAnswers.get(IdentificationPage) match {
-      case Some(value) => Future.successful(Some(value))
-      case None =>
-        userAnswers.departureData.Consignment.LocationOfGoods match {
-          case Some(value) => checkYourAnswersReferenceDataService.getQualifierOfIdentification(value.qualifierOfIdentification)
-          case None        => Future.successful(None)
-        }
-    }
-
   def locationOfGoodsSection: Future[Section] = {
 
     val rows = for {
-      locationType <- fetchLocationType.map(
+      locationType <- fetchValue[LocationType](
+        LocationTypePage,
+        checkYourAnswersReferenceDataService.getLocationType,
+        userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+      )(userAnswers, LocationType.format).map(
         _.map(
           locType => locationTypeRow(locType.toString)
         )
       )
-      qualifierIdentification <- fetchQualifierOfIdentification.map(
+      qualifierIdentification <- fetchValue[LocationOfGoodsIdentification](
+        IdentificationPage,
+        checkYourAnswersReferenceDataService.getQualifierOfIdentification,
+        userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
+      )(userAnswers, LocationOfGoodsIdentification.format).map(
         _.map(
           qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
         )
