@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import models.reference.BorderMode
-
-import java.text.SimpleDateFormat
-import models.reference.{Country, CountryCode}
+import models.reference.{BorderMode, Country, CountryCode}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

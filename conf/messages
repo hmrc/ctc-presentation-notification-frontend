@@ -62,6 +62,7 @@ transport.value.withoutContainer = no container identification number
 transport.item.prefix = Item {0}
 
 checkYourAnswers.placeOfLoading = Place of loading
+checkYourAnswers.locationOfGoods = Location of goods
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
