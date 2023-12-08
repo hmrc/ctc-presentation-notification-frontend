@@ -18,7 +18,7 @@ package base
 
 import base.TestMessageData.messageData
 import config.FrontendAppConfig
-import models.{EoriNumber, Index, LocalReferenceNumber, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, LocationType, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -62,6 +62,9 @@ trait SpecBase
   val equipmentIndex: Index = Index(0)
   val itemIndex: Index      = Index(0)
   val sealIndex: Index      = Index(0)
+
+  val locationTypes =
+    Seq(LocationType("A", "Designated location"), LocationType("B", "Authorised place"), LocationType("C", "Approved place"), LocationType("D", "Other"))
 
   def injector: Injector = app.injector
 

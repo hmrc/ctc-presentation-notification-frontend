@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import models.{LocationOfGoodsIdentification, LocationType}
 import models.reference.BorderMode
+import models.reference.transport.border.active.Identification
 
 import java.text.SimpleDateFormat
 import models.reference.{Country, CountryCode}
@@ -33,6 +35,8 @@ package object utils {
     }
 
     def asBorderMode(borderModes: Seq[BorderMode]): BorderMode = BorderMode.getDescription(value, borderModes)
+
+    def asQualifierIdentification: LocationOfGoodsIdentification = LocationOfGoodsIdentification(value, "identificationDesc")
 
     def asLocalDate: LocalDate = {
       val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")

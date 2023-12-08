@@ -17,16 +17,17 @@
 package controllers
 
 import controllers.actions._
+import models.{LocationOfGoodsIdentification, LocationType}
 import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TransportModeCodesService
+import services.{LocationOfGoodsIdentificationTypeService, LocationTypeService, TransportModeCodesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject() (
   actions: Actions,
@@ -34,6 +35,8 @@ class CheckYourAnswersController @Inject() (
   viewModelProvider: PresentationNotificationAnswersViewModelProvider,
   navigator: Navigator,
   borderModeService: TransportModeCodesService,
+  locationTypeService: LocationTypeService,
+  identificationTypeService: LocationOfGoodsIdentificationTypeService,
   view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -43,8 +46,16 @@ class CheckYourAnswersController @Inject() (
     implicit request =>
       for {
         borderModeCodes <- borderModeService.getBorderModes()
+        locationTypes   <- locationTypeService.getLocationTypes(false)
+        identificationTypes <- request.userAnswers.departureData.Consignment.LocationOfGoods
+          .map(
+            goods => LocationType(goods.typeOfLocation, "")
+          ) match {
+          case Some(value) => identificationTypeService.getLocationOfGoodsIdentificationTypes(value)
+          case None        => Future.successful(Seq[LocationOfGoodsIdentification]())
+        }
         lrn      = request.userAnswers.lrn
-        sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes).sections
+        sections = viewModelProvider(request.userAnswers, departureId, borderModeCodes, locationTypes, identificationTypes).sections
       } yield Ok(view(lrn, departureId, sections))
 
   }

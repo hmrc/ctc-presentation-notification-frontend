@@ -18,9 +18,9 @@ package viewModels
 
 import config.FrontendAppConfig
 import models.reference.BorderMode
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, LocationOfGoodsIdentification, LocationType, UserAnswers}
 import play.api.i18n.Messages
-import utils.PresentationNotificationAnswersHelper
+import utils.{LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
 
 import javax.inject.Inject
 
@@ -33,12 +33,18 @@ object PresentationNotificationAnswersViewModel {
   ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers, departureId: String, borderModes: Seq[BorderMode])(implicit
+    def apply(userAnswers: UserAnswers,
+              departureId: String,
+              borderModes: Seq[BorderMode],
+              locationTypes: Seq[LocationType],
+              identificationTypes: Seq[LocationOfGoodsIdentification]
+    )(implicit
       messages: Messages
     ): PresentationNotificationAnswersViewModel = {
       val mode = CheckMode
 
-      val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, borderModes, mode)
+      val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, borderModes, mode)
+      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, locationTypes, identificationTypes, mode)
 
       val firstSection = Section(
         rows = Seq(
@@ -65,7 +71,14 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq
+      val locationOfGoods = Section(
+        sectionTitle = messages("checkYourAnswers.locationOfGoods"),
+        rows = Seq(
+          locationOfGoodsHelper.locationType
+        ).flatten
+      )
+
+      val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ locationOfGoods.toSeq
 
       new PresentationNotificationAnswersViewModel(sections)
     }
