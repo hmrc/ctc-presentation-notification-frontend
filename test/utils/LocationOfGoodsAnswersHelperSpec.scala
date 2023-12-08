@@ -17,50 +17,54 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, consignment, locationOfGoods, messageData}
+import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
+import config.Constants._
 import generators.Generators
 import models.messages.MessageData
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
-import org.objectweb.asm.util.Printer
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods.{AuthorisationNumberPage, IdentificationPage, LocationTypePage}
 import play.api.libs.json.Json
+import services.CheckYourAnswersReferenceDataService
 
 import java.time.Instant
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val refDataLocationTypes = locationTypes
+  val mockReferenceDataService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
+
+  val identifications: Seq[LocationOfGoodsIdentification] = Seq(
+    LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier"),
+    LocationOfGoodsIdentification(CustomsOfficeIdentifier, "CustomsOfficeIdentifier"),
+    LocationOfGoodsIdentification(EoriNumberIdentifier, "EoriNumber"),
+    LocationOfGoodsIdentification(AuthorisationNumberIdentifier, "AuthorisationNumberIdentifier"),
+    LocationOfGoodsIdentification(UnlocodeIdentifier, "UnlocodeIdentifier"),
+    LocationOfGoodsIdentification(CoordinatesIdentifier, "CoordinatesIdentifier"),
+    LocationOfGoodsIdentification(PostalCodeIdentifier, "PostalCode")
+  )
 
   "LocationOfGoodsAnswersHelper" - {
     "locationType" - {
-      "must return None" - {
-        "when locationType undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, refDataLocationTypes, mode)
-              val result = helper.locationType
-              result mustBe None
-          }
-        }
-      }
-
       "must return Some(Row)" - {
         s"when LocationTypePage defined in the ie170" in {
           forAll(arbitrary[Mode], arbitrary[LocationType]) {
             (mode, locationType) =>
+              when(mockReferenceDataService.getLocationType(any())(any(), any())).thenReturn(Future.successful(Some(locationType)))
+
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(LocationTypePage, locationType)
-              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, refDataLocationTypes, mode)
-              val result = helper.locationType
+              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val result = helper.locationTypeRow(locationType.toString)
 
-              result.get.key.value mustBe "Location type"
-              result.get.value.value mustBe locationType.description
-              val actions = result.get.actions.get.items
+              result.key.value mustBe "Location type"
+              result.value.value mustBe locationType.description
+              val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
@@ -73,6 +77,8 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         "when LocationTypePage defined in ie15" in {
           forAll(arbitrary[Mode], Gen.oneOf(locationTypes)) {
             (mode, locationType) =>
+              when(mockReferenceDataService.getLocationType(any())(any(), any())).thenReturn(Future.successful(Some(locationType)))
+
               val ie015UserAnswers = UserAnswers(
                 departureId,
                 eoriNumber,
@@ -83,12 +89,12 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                   messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(typeOfLocation = locationType.`type`)))
                 )
               )
-              val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, refDataLocationTypes, mode)
-              val result = helper.locationType
+              val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+              val result = helper.locationTypeRow(locationType.description)
 
-              result.get.key.value mustBe "Location type"
-              result.get.value.value mustBe locationType.description
-              val actions = result.get.actions.get.items
+              result.key.value mustBe "Location type"
+              result.value.value mustBe locationType.description
+              val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
@@ -101,31 +107,21 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
     }
 
     "qualifierIdentification" - {
-      "must return None" - {
-        "when identification undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, refDataLocationTypes, mode)
-              val result = helper.qualifierIdentification
-              result mustBe None
-          }
-        }
-      }
 
       "must return Some(Row)" - {
         s"when IdentificationPage defined in the ie170" in {
           forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
             (mode, identification) =>
+              when(mockReferenceDataService.getQualifierOfIdentification(any())(any(), any())).thenReturn(Future.successful(Some(identification)))
+
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(IdentificationPage, identification)
-              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, refDataLocationTypes, mode)
-              val result = helper.qualifierIdentification
+              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val result = helper.qualifierIdentificationRow(identification.toString)
 
-              result.get.key.value mustBe "Identifier type for the location of goods"
-              result.get.value.value mustBe identification.description
-              val actions = result.get.actions.get.items
+              result.key.value mustBe "Identifier type for the location of goods"
+              result.value.value mustBe identification.description
+              val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
@@ -136,15 +132,30 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
 
         "when IdentificationPage defined in ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithIdentificationUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                             = new LocationOfGoodsAnswersHelper(ie015WithIdentificationUserAnswers, departureId, refDataLocationTypes, mode)
-              val result                             = helper.qualifierIdentification
+          forAll(arbitrary[Mode], Gen.oneOf(identifications)) {
+            (mode, identification) =>
+              when(mockReferenceDataService.getQualifierOfIdentification(any())(any(), any())).thenReturn(Future.successful(Some(identification)))
 
-              result.get.key.value mustBe "Identifier type for the location of goods"
-              result.get.value.value mustBe "identificationDesc"
-              val actions = result.get.actions.get.items
+              val data = messageData.copy(Consignment =
+                messageData.Consignment.copy(LocationOfGoods =
+                  Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = identification.qualifier))
+                )
+              )
+              val ie015UserAnswers = UserAnswers(
+                departureId,
+                eoriNumber,
+                lrn.value,
+                Json.obj(),
+                Instant.now(),
+                data
+              )
+
+              val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+              val result = helper.qualifierIdentificationRow(identification.toString)
+
+              result.key.value mustBe "Identifier type for the location of goods"
+              result.value.value mustBe identification.description
+              val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
@@ -163,7 +174,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             mode =>
               val ie015WithNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, refDataLocationTypes, mode)
+              val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
               val result = helper.authorisationNumber
               result mustBe None
           }
@@ -176,7 +187,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             (mode, authorisationNumber) =>
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(AuthorisationNumberPage, authorisationNumber)
-              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, refDataLocationTypes, mode)
+              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
               val result = helper.authorisationNumber
 
               result.get.key.value mustBe "Authorisation number"
@@ -195,7 +206,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           forAll(arbitrary[Mode]) {
             mode =>
               val ie015WithAuthorisationNumberUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                                  = new LocationOfGoodsAnswersHelper(ie015WithAuthorisationNumberUserAnswers, departureId, refDataLocationTypes, mode)
+              val helper                                  = new LocationOfGoodsAnswersHelper(ie015WithAuthorisationNumberUserAnswers, departureId, mockReferenceDataService, mode)
               val result                                  = helper.authorisationNumber
 
               result.get.key.value mustBe "Authorisation number"

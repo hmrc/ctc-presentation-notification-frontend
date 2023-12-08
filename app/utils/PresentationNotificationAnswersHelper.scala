@@ -110,7 +110,7 @@ class PresentationNotificationAnswersHelper(
     label = messages("transport.border.borderModeOfTransport.checkYourAnswersLabel"),
     prefix = "transport.border.borderModeOfTransport",
     id = Some("change-border-mode-of-transport"),
-    call = None,
+    call = Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode)),
     args = Seq.empty
   )
 

@@ -33,24 +33,24 @@ class LocationOfGoodsAnswersHelper(
   departureId: String,
   checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def locationTypeRow(answer: String): SummaryListRow = buildSimpleRow(
     answer = Text(answer),
-    label = messages("locationOfGoods.locationType"),
+    label = messages("locationOfGoods.locationType.checkYourAnswersLabel"),
     prefix = "locationOfGoods.locationType",
     id = Some("change-location-type"),
-    call = None,
+    call = Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode)),
     args = Seq.empty
   )
 
   def qualifierIdentificationRow(answer: String): SummaryListRow = buildSimpleRow(
     answer = Text(answer),
-    label = messages("locationOfGoods.identification"),
+    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
     prefix = "locationOfGoods.identification",
     id = Some("change-qualifier-identification"),
-    call = None,
+    call = Some(controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode)),
     args = Seq.empty
   )
 
