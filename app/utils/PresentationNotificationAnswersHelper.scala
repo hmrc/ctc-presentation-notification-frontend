@@ -16,6 +16,7 @@
 
 package utils
 
+import cats.data.OptionT
 import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
 import models.{Mode, UserAnswers}
@@ -115,19 +116,19 @@ class PresentationNotificationAnswersHelper(
 
   def borderModeSection: Future[Section] = {
 
-    val borderModeOfTransport =
-      fetchValue[BorderMode](
-        BorderModeOfTransportPage,
-        checkYourAnswersReferenceDataService.getBorderMode,
-        userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
-      )(userAnswers, BorderMode.format)
-        .map(
-          _.map(
-            borderMode => borderModeOfTransportRow(borderMode.toString)
-          )
-        )
+    val borderModeOfTransport: OptionT[Future, SummaryListRow] = for {
+      borderMode <- OptionT(
+        fetchValue[BorderMode](
+          BorderModeOfTransportPage,
+          checkYourAnswersReferenceDataService.getBorderMode,
+          userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
+        )(userAnswers, BorderMode.format)
+      )
+      borderModeRow = borderModeOfTransportRow(borderMode.toString)
 
-    borderModeOfTransport.map {
+    } yield borderModeRow
+
+    borderModeOfTransport.value.map {
       borderModeOfTransport =>
         Section(
           sectionTitle = messages("transport.border.borderModeOfTransport.caption"),

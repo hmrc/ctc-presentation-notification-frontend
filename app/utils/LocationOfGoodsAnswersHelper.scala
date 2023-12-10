@@ -16,6 +16,7 @@
 
 package utils
 
+import cats.data.OptionT
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.{AuthorisationNumberPage, IdentificationPage, LocationTypePage}
 import play.api.i18n.Messages
@@ -63,29 +64,28 @@ class LocationOfGoodsAnswersHelper(
 
   def locationOfGoodsSection: Future[Section] = {
 
-    val rows = for {
-      locationType <- fetchValue[LocationType](
-        LocationTypePage,
-        checkYourAnswersReferenceDataService.getLocationType,
-        userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
-      )(userAnswers, LocationType.format).map(
-        _.map(
-          locType => locationTypeRow(locType.toString)
-        )
+    val rows: OptionT[Future, Seq[SummaryListRow]] = for {
+      locationType <- OptionT(
+        fetchValue[LocationType](
+          LocationTypePage,
+          checkYourAnswersReferenceDataService.getLocationType,
+          userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+        )(userAnswers, LocationType.format)
       )
-      qualifierIdentification <- fetchValue[LocationOfGoodsIdentification](
-        IdentificationPage,
-        checkYourAnswersReferenceDataService.getQualifierOfIdentification,
-        userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
-      )(userAnswers, LocationOfGoodsIdentification.format).map(
-        _.map(
-          qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
-        )
+      locationListRow = locationTypeRow(locationType.toString)
+      qualifierIdentification <- OptionT(
+        fetchValue[LocationOfGoodsIdentification](
+          IdentificationPage,
+          checkYourAnswersReferenceDataService.getQualifierOfIdentification,
+          userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
+        )(userAnswers, LocationOfGoodsIdentification.format)
       )
-      rows = Seq(locationType, qualifierIdentification)
+      identificationRow = qualifierIdentificationRow(qualifierIdentification.toString)
+      rows              = Seq(locationListRow, identificationRow)
+
     } yield rows
 
-    val convertedRows = rows.map(_.flatten)
+    val convertedRows = rows.value.map(_.toList.flatten)
 
     convertedRows.map {
       convertedRows =>
