@@ -25,12 +25,14 @@ import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, CountryPage, LocationPage, UnLocodePage}
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
+import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
 
 import java.time.{Instant, LocalDate}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -186,7 +188,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
           forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
-              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(Some(borderModeOfTransport)))
+              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(borderModeOfTransport))
 
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
@@ -208,7 +210,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         "when ModeCrossingBorderPage defined in ie15" in {
           forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
-              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(Some(borderModeOfTransport)))
+              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(borderModeOfTransport))
 
               val answers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
               val helper  = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
@@ -225,6 +227,35 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               action.id mustBe "change-border-mode-of-transport"
           }
         }
+      }
+      "future must return a failure" - {
+        s"when reference data call fails to find the code" in {
+
+          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
+            (mode, borderModeOfTransport) =>
+              val referenceDataNotFoundException =
+                new ReferenceDataNotFoundException(refName = "borderMode", refDataCode = borderModeOfTransport.code, listRefData = Nil)
+              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
+                Future.failed(referenceDataNotFoundException)
+              )
+
+              val answers =
+                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
+                  emptyUserAnswers.departureData.copy(Consignment =
+                    emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = Some(borderModeOfTransport.code))
+                  )
+                )
+
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val result = helper.borderModeSection
+
+              whenReady[Throwable, Assertion](result.failed) {
+                _ mustBe referenceDataNotFoundException
+              }
+
+          }
+        }
+
       }
 
     }

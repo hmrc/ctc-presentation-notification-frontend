@@ -19,6 +19,7 @@ package services
 import connectors.ReferenceDataConnector
 import models.{LocationOfGoodsIdentification, LocationType}
 import models.reference.BorderMode
+import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -26,22 +27,38 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getLocationType(code: String)(implicit hc: HeaderCarrier): Future[Option[LocationType]] =
+  def getLocationType(code: String)(implicit hc: HeaderCarrier): Future[LocationType] =
     for {
       locations <- referenceDataConnector.getTypesOfLocation
-      locationFound = locations.find(_.code == code)
+      locationFound = locations
+        .find(_.code == code)
+        .getOrElse(referenceDataException("locationType", code, locations))
     } yield locationFound
 
-  def getQualifierOfIdentification(code: String)(implicit hc: HeaderCarrier): Future[Option[LocationOfGoodsIdentification]] =
+  def getQualifierOfIdentification(code: String)(implicit hc: HeaderCarrier): Future[LocationOfGoodsIdentification] =
     for {
       qualifiers <- referenceDataConnector.getQualifierOfTheIdentifications
-      qualifierFound = qualifiers.find(_.code == code)
+      qualifierFound = qualifiers
+        .find(_.code == code)
+        .getOrElse(referenceDataException("qualifierOfIdentification", code, qualifiers))
     } yield qualifierFound
 
-  def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[Option[BorderMode]] =
+  def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[BorderMode] =
     for {
       borderModes <- referenceDataConnector.getBorderModeCodes()
-      modeFound = borderModes.find(_.code == code)
+      modeFound = borderModes
+        .find(_.code == code)
+        .getOrElse(referenceDataException("borderMode", code, borderModes))
+
     } yield modeFound
 
+  private def referenceDataException[T](refName: String, refDataCode: String, listRefData: Seq[T]) =
+    throw new ReferenceDataNotFoundException(refName, refDataCode, listRefData)
+
+}
+
+object CheckYourAnswersReferenceDataService {
+
+  class ReferenceDataNotFoundException[T](refName: String, refDataCode: String, listRefData: Seq[T])
+      extends Exception(s"Could not find the $refName code: '$refDataCode' from the available reference data: ${listRefData.mkString(", ")} ")
 }

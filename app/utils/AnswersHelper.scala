@@ -16,15 +16,15 @@
 
 package utils
 
-import config.FrontendAppConfig
 import models.messages.MessageData
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
+import cats.implicits._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AnswersHelper(
@@ -57,16 +57,12 @@ class AnswersHelper(
 
   protected def fetchValue[T](
     page: QuestionPage[T],
-    convertToReference: String => Future[Option[T]],
+    convertToReference: String => Future[T],
     valueToConvert: Option[String]
   )(implicit userAnswers: UserAnswers, rds: Reads[T]): Future[Option[T]] =
-    userAnswers.get(page) match {
-      case Some(value) => Future.successful(Some(value))
-      case None =>
-        valueToConvert match {
-          case Some(value) => convertToReference(value)
-          case None        => Future.successful(None)
-        }
-    }
+    for {
+      getFrom70         <- Future.successful(userAnswers.get(page))
+      referenceDataCall <- valueToConvert.map(convertToReference).sequence
+    } yield getFrom70.orElse(referenceDataCall)
 
 }
