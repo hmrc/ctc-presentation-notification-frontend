@@ -55,7 +55,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         s"when LocationTypePage defined in the ie170" in {
           forAll(arbitrary[Mode], arbitrary[LocationType]) {
             (mode, locationType) =>
-              when(mockReferenceDataService.getLocationType(any())(any(), any())).thenReturn(Future.successful(Some(locationType)))
+              when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(Some(locationType)))
 
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(LocationTypePage, locationType)
@@ -77,7 +77,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         "when LocationTypePage defined in ie15" in {
           forAll(arbitrary[Mode], Gen.oneOf(locationTypes)) {
             (mode, locationType) =>
-              when(mockReferenceDataService.getLocationType(any())(any(), any())).thenReturn(Future.successful(Some(locationType)))
+              when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(Some(locationType)))
 
               val ie015UserAnswers = UserAnswers(
                 departureId,
@@ -112,7 +112,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         s"when IdentificationPage defined in the ie170" in {
           forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
             (mode, identification) =>
-              when(mockReferenceDataService.getQualifierOfIdentification(any())(any(), any())).thenReturn(Future.successful(Some(identification)))
+              when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(Some(identification)))
 
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(IdentificationPage, identification)
@@ -134,7 +134,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         "when IdentificationPage defined in ie15" in {
           forAll(arbitrary[Mode], Gen.oneOf(identifications)) {
             (mode, identification) =>
-              when(mockReferenceDataService.getQualifierOfIdentification(any())(any(), any())).thenReturn(Future.successful(Some(identification)))
+              when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(Some(identification)))
 
               val data = messageData.copy(Consignment =
                 messageData.Consignment.copy(LocationOfGoods =

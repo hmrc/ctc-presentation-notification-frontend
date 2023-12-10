@@ -186,7 +186,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
           forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
-              when(mockReferenceDataService.getBorderMode(any())(any(), any())).thenReturn(Future.successful(Some(borderModeOfTransport)))
+              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(Some(borderModeOfTransport)))
 
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
@@ -208,7 +208,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         "when ModeCrossingBorderPage defined in ie15" in {
           forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
-              when(mockReferenceDataService.getBorderMode(any())(any(), any())).thenReturn(Future.successful(Some(borderModeOfTransport)))
+              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(Some(borderModeOfTransport)))
 
               val answers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
               val helper  = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)

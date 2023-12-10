@@ -16,7 +16,6 @@
 
 package services
 
-import config.Constants._
 import connectors.ReferenceDataConnector
 import models.{LocationOfGoodsIdentification, LocationType}
 import models.reference.BorderMode
@@ -27,29 +26,22 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getLocationType(`type`: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[LocationType]] =
-    referenceDataConnector.getTypesOfLocation
-      .map(
-        _.find(
-          x => x.`type` == `type`
-        )
-      )
+  def getLocationType(code: String)(implicit hc: HeaderCarrier): Future[Option[LocationType]] =
+    for {
+      locations <- referenceDataConnector.getTypesOfLocation
+      locationFound = locations.find(_.code == code)
+    } yield locationFound
 
-  def getQualifierOfIdentification(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[LocationOfGoodsIdentification]] =
-    referenceDataConnector.getQualifierOfTheIdentifications
-      .map(
-        _.find(
-          x => x.code == code
-        )
-      )
+  def getQualifierOfIdentification(code: String)(implicit hc: HeaderCarrier): Future[Option[LocationOfGoodsIdentification]] =
+    for {
+      qualifiers <- referenceDataConnector.getQualifierOfTheIdentifications
+      qualifierFound = qualifiers.find(_.code == code)
+    } yield qualifierFound
 
-  def getBorderMode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[BorderMode]] =
-    referenceDataConnector
-      .getBorderModeCodes()
-      .map(
-        _.find(
-          x => x.code == code
-        )
-      )
+  def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[Option[BorderMode]] =
+    for {
+      borderModes <- referenceDataConnector.getBorderModeCodes()
+      modeFound = borderModes.find(_.code == code)
+    } yield modeFound
 
 }

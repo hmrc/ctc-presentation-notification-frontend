@@ -20,11 +20,9 @@ import models.messages.MessageData
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
-import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
