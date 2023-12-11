@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import models.reference.BorderMode
-
-import java.text.SimpleDateFormat
-import models.reference.{Country, CountryCode}
+import models.LocationOfGoodsIdentification
+import models.reference.{BorderMode, Country, CountryCode}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -31,8 +29,6 @@ package object utils {
       case "1" => true
       case x   => throw new IllegalArgumentException(s"could not cast $x to boolean")
     }
-
-    def asBorderMode(borderModes: Seq[BorderMode]): BorderMode = BorderMode.getDescription(value, borderModes)
 
     def asLocalDate: LocalDate = {
       val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
