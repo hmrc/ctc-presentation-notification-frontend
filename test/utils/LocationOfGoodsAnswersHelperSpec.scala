@@ -59,8 +59,6 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when LocationTypePage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[LocationType]) {
               (mode, locationType) =>
-                when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
-
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                   .setValue(LocationTypePage, locationType)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
@@ -85,8 +83,6 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when IdentificationPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
               (mode, identification) =>
-                when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
-
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                   .setValue(IdentificationPage, identification)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
@@ -127,6 +123,22 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 action.id mustBe "change-authorisation-number"
             }
           }
+        }
+      }
+
+      "section should contain all the answer rows" in {
+        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String]) {
+          (mode, locationType, identification, authorisationNumber) =>
+            val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(LocationTypePage, locationType)
+              .setValue(IdentificationPage, identification)
+              .setValue(AuthorisationNumberPage, authorisationNumber)
+            val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+
+            whenReady(helper.locationOfGoodsSection) {
+              section =>
+                section.rows.size mustBe 3
+            }
         }
       }
     }
@@ -300,6 +312,39 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 action.id mustBe "change-authorisation-number"
             }
           }
+        }
+      }
+
+      "section should contain all the answer rows" in {
+        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String]) {
+          (mode, locationType, identification, authorisationNumber) =>
+            when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
+            when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
+
+            val ie015UserAnswers = UserAnswers(
+              departureId,
+              eoriNumber,
+              lrn.value,
+              Json.obj(),
+              Instant.now(),
+              messageData.copy(Consignment =
+                messageData.Consignment.copy(LocationOfGoods =
+                  Some(
+                    messageData.Consignment.LocationOfGoods.get.copy(
+                      typeOfLocation = locationType.`type`,
+                      qualifierOfIdentification = identification.qualifier
+                    )
+                  )
+                )
+              )
+            )
+
+            val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+
+            whenReady(helper.locationOfGoodsSection) {
+              section =>
+                section.rows.size mustBe 3
+            }
         }
       }
     }

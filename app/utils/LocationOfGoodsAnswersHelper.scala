@@ -85,7 +85,12 @@ class LocationOfGoodsAnswersHelper(
     val result: Seq[SummaryListRow] = (for {
       locationType            <- userAnswers.get(LocationTypePage)
       qualifierIdentification <- userAnswers.get(IdentificationPage)
-    } yield Seq(locationTypeRow(locationType.toString), qualifierIdentificationRow(qualifierIdentification.toString))).toList.flatten
+      authorisationNumberRow  <- authorisationNumber
+    } yield Seq(
+      locationTypeRow(locationType.toString),
+      qualifierIdentificationRow(qualifierIdentification.toString),
+      authorisationNumberRow
+    )).toList.flatten
     Future.successful(result)
   }
 
@@ -104,7 +109,8 @@ class LocationOfGoodsAnswersHelper(
           userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
         )
       )
-      identificationRow  = qualifierIdentificationRow(qualifierIdentification.toString)
-      identificationRows = Seq(locationListRow, identificationRow)
+      identificationRow = qualifierIdentificationRow(qualifierIdentification.toString)
+      authNumberRow <- OptionT(Future.successful(authorisationNumber))
+      identificationRows = Seq(locationListRow, identificationRow, authNumberRow)
     } yield identificationRows).value.map(_.toList.flatten)
 }
