@@ -64,30 +64,15 @@ class LocationOfGoodsAnswersHelper(
 
   def locationOfGoodsSection: Future[Section] = {
 
-    val rows: OptionT[Future, Seq[SummaryListRow]] = for {
-      locationType <- OptionT(
-        fetchValue[LocationType](
-          LocationTypePage,
-          checkYourAnswersReferenceDataService.getLocationType,
-          userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
-        )(userAnswers, LocationType.format)
-      )
-      locationListRow = locationTypeRow(locationType.toString)
-      qualifierIdentification <- OptionT(
-        fetchValue[LocationOfGoodsIdentification](
-          IdentificationPage,
-          checkYourAnswersReferenceDataService.getQualifierOfIdentification,
-          userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
-        )(userAnswers, LocationOfGoodsIdentification.format)
-      )
-      identificationRow = qualifierIdentificationRow(qualifierIdentification.toString)
-      rows              = Seq(locationListRow, identificationRow)
+    val isPresentInIE13orIE15 = userAnswers.departureData.Consignment.LocationOfGoods.isDefined
 
-    } yield rows
+    val rows: Future[Seq[SummaryListRow]] = if (isPresentInIE13orIE15) {
+      buildFromDepartureData
+    } else { //IE170
+      buildFromUserAnswers
+    }
 
-    val convertedRows = rows.value.map(_.toList.flatten)
-
-    convertedRows.map {
+    rows.map {
       convertedRows =>
         Section(
           sectionTitle = messages("checkYourAnswers.locationOfGoods"),
@@ -95,4 +80,31 @@ class LocationOfGoodsAnswersHelper(
         )
     }
   }
+
+  private def buildFromUserAnswers = {
+    val result: Seq[SummaryListRow] = (for {
+      locationType            <- userAnswers.get(LocationTypePage)
+      qualifierIdentification <- userAnswers.get(IdentificationPage)
+    } yield Seq(locationTypeRow(locationType.toString), qualifierIdentificationRow(qualifierIdentification.toString))).toList.flatten
+    Future.successful(result)
+  }
+
+  private def buildFromDepartureData =
+    (for {
+      locationType <- OptionT(
+        fetchValue[LocationType](
+          checkYourAnswersReferenceDataService.getLocationType,
+          userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+        )
+      )
+      locationListRow = locationTypeRow(locationType.toString)
+      qualifierIdentification <- OptionT(
+        fetchValue[LocationOfGoodsIdentification](
+          checkYourAnswersReferenceDataService.getQualifierOfIdentification,
+          userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
+        )
+      )
+      identificationRow  = qualifierIdentificationRow(qualifierIdentification.toString)
+      identificationRows = Seq(locationListRow, identificationRow)
+    } yield identificationRows).value.map(_.toList.flatten)
 }

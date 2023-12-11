@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, locationOfGoods, messageData}
+import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import config.Constants._
 import generators.Generators
 import models.messages.MessageData
@@ -52,239 +52,253 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
   )
 
   "LocationOfGoodsAnswersHelper" - {
-    "locationType" - {
-      "future must return a failure" - {
-        s"when reference data call fails to find the code" in {
 
-          forAll(arbitrary[Mode], arbitrary[LocationType]) {
-            (mode, location) =>
-              val referenceDataNotFoundException =
-                new ReferenceDataNotFoundException(refName = "locationType", refDataCode = location.code, listRefData = Nil)
-              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
-                Future.failed(referenceDataNotFoundException)
-              )
-              val answers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
-                  emptyUserAnswers.departureData.copy(Consignment =
-                    emptyUserAnswers.departureData.Consignment.copy(LocationOfGoods =
-                      emptyUserAnswers.departureData.Consignment.LocationOfGoods.map(
-                        locationOfGoods => locationOfGoods.copy(typeOfLocation = "loc")
-                      )
-                    )
-                  )
-                )
+    "when Location of Goods is present in IE170" - {
+      "locationType" - {
+        "must return Some(Row)" - {
+          s"when LocationTypePage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[LocationType]) {
+              (mode, locationType) =>
+                when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
 
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.borderModeSection
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(LocationTypePage, locationType)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationTypeRow(locationType.toString)
 
-              whenReady[Throwable, Assertion](result.failed) {
-                _ mustBe referenceDataNotFoundException
-              }
-
+                result.key.value mustBe "Location type"
+                result.value.value mustBe locationType.description
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "location type"
+                action.id mustBe "change-location-type"
+            }
           }
         }
-
       }
-      "must return Some(Row)" - {
-        s"when LocationTypePage defined in the ie170" in {
-          forAll(arbitrary[Mode], arbitrary[LocationType]) {
-            (mode, locationType) =>
-              when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
 
-              val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                .setValue(LocationTypePage, locationType)
-              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.locationTypeRow(locationType.toString)
+      "qualifierIdentification" - {
+        "must return Some(Row)" - {
+          s"when IdentificationPage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
+              (mode, identification) =>
+                when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
 
-              result.key.value mustBe "Location type"
-              result.value.value mustBe locationType.description
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "location type"
-              action.id mustBe "change-location-type"
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(IdentificationPage, identification)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.qualifierIdentificationRow(identification.toString)
+
+                result.key.value mustBe "Identifier type for the location of goods"
+                result.value.value mustBe identification.description
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "identifier type for the location of goods"
+                action.id mustBe "change-qualifier-identification"
+            }
           }
         }
+      }
 
-        "when LocationTypePage defined in ie15" in {
-          forAll(arbitrary[Mode], Gen.oneOf(locationTypes)) {
-            (mode, locationType) =>
-              when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
+      "authorisationNUmber" - {
+        "must return Some(Row)" - {
+          s"when AuthorisationNumberPage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[String]) {
+              (mode, authorisationNumber) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(AuthorisationNumberPage, authorisationNumber)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.authorisationNumber
 
-              val ie015UserAnswers = UserAnswers(
-                departureId,
-                eoriNumber,
-                lrn.value,
-                Json.obj(),
-                Instant.now(),
-                messageData.copy(Consignment =
-                  messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(typeOfLocation = locationType.`type`)))
-                )
-              )
-              val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
-              val result = helper.locationTypeRow(locationType.description)
-
-              result.key.value mustBe "Location type"
-              result.value.value mustBe locationType.description
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "location type"
-              action.id mustBe "change-location-type"
+                result.get.key.value mustBe "Authorisation number"
+                result.get.value.value mustBe authorisationNumber
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the authorisation number for the location of goods"
+                action.id mustBe "change-authorisation-number"
+            }
           }
         }
       }
     }
 
-    "qualifierIdentification" - {
+    "when Location of Goods is NOT present in IE170 and is present in departure data (IE13/15)" - {
+      "locationType" - {
+        "future must return a failure" - {
+          s"when reference data call fails to find the code" in {
 
-      "future must return a failure" - {
-        s"when reference data call fails to find the code" in {
-
-          forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
-            (mode, qualifier) =>
-              val referenceDataNotFoundException =
-                new ReferenceDataNotFoundException(refName = "qualifierOfIdentification", refDataCode = qualifier.code, listRefData = Nil)
-              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
-                Future.failed(referenceDataNotFoundException)
-              )
-              val answers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
-                  emptyUserAnswers.departureData.copy(Consignment =
-                    emptyUserAnswers.departureData.Consignment.copy(LocationOfGoods =
-                      emptyUserAnswers.departureData.Consignment.LocationOfGoods.map(
-                        locationOfGoods => locationOfGoods.copy(qualifierOfIdentification = "qual")
+            forAll(arbitrary[Mode], arbitrary[LocationType]) {
+              (mode, location) =>
+                val referenceDataNotFoundException =
+                  new ReferenceDataNotFoundException(refName = "locationType", refDataCode = location.code, listRefData = Nil)
+                when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
+                  Future.failed(referenceDataNotFoundException)
+                )
+                val answers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
+                    emptyUserAnswers.departureData.copy(Consignment =
+                      emptyUserAnswers.departureData.Consignment.copy(LocationOfGoods =
+                        emptyUserAnswers.departureData.Consignment.LocationOfGoods.map(
+                          locationOfGoods => locationOfGoods.copy(typeOfLocation = "loc")
+                        )
                       )
                     )
                   )
+
+                val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.borderModeSection
+
+                whenReady[Throwable, Assertion](result.failed) {
+                  _ mustBe referenceDataNotFoundException
+                }
+
+            }
+          }
+
+        }
+        "must return Some(Row)" - {
+          "when LocationTypePage defined in ie15" in {
+            forAll(arbitrary[Mode], Gen.oneOf(locationTypes)) {
+              (mode, locationType) =>
+                when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
+
+                val ie015UserAnswers = UserAnswers(
+                  departureId,
+                  eoriNumber,
+                  lrn.value,
+                  Json.obj(),
+                  Instant.now(),
+                  messageData.copy(Consignment =
+                    messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(typeOfLocation = locationType.`type`)))
+                  )
+                )
+                val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationTypeRow(locationType.description)
+
+                result.key.value mustBe "Location type"
+                result.value.value mustBe locationType.description
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "location type"
+                action.id mustBe "change-location-type"
+            }
+          }
+        }
+      }
+
+      "qualifierIdentification" - {
+        "future must return a failure" - {
+          s"when reference data call fails to find the code" in {
+
+            forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
+              (mode, qualifier) =>
+                val referenceDataNotFoundException =
+                  new ReferenceDataNotFoundException(refName = "qualifierOfIdentification", refDataCode = qualifier.code, listRefData = Nil)
+                when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
+                  Future.failed(referenceDataNotFoundException)
+                )
+                val answers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
+                    emptyUserAnswers.departureData.copy(Consignment =
+                      emptyUserAnswers.departureData.Consignment.copy(LocationOfGoods =
+                        emptyUserAnswers.departureData.Consignment.LocationOfGoods.map(
+                          locationOfGoods => locationOfGoods.copy(qualifierOfIdentification = "qual")
+                        )
+                      )
+                    )
+                  )
+
+                val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.borderModeSection
+
+                whenReady[Throwable, Assertion](result.failed) {
+                  _ mustBe referenceDataNotFoundException
+                }
+
+            }
+          }
+        }
+        "must return Some(Row)" - {
+          "when IdentificationPage defined in ie15" in {
+            forAll(arbitrary[Mode], Gen.oneOf(identifications)) {
+              (mode, identification) =>
+                when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
+
+                val data = messageData.copy(Consignment =
+                  messageData.Consignment.copy(LocationOfGoods =
+                    Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = identification.qualifier))
+                  )
+                )
+                val ie015UserAnswers = UserAnswers(
+                  departureId,
+                  eoriNumber,
+                  lrn.value,
+                  Json.obj(),
+                  Instant.now(),
+                  data
                 )
 
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.borderModeSection
+                val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.qualifierIdentificationRow(identification.toString)
 
-              whenReady[Throwable, Assertion](result.failed) {
-                _ mustBe referenceDataNotFoundException
-              }
-
-          }
-        }
-
-      }
-
-      "must return Some(Row)" - {
-        s"when IdentificationPage defined in the ie170" in {
-          forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
-            (mode, identification) =>
-              when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
-
-              val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                .setValue(IdentificationPage, identification)
-              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.qualifierIdentificationRow(identification.toString)
-
-              result.key.value mustBe "Identifier type for the location of goods"
-              result.value.value mustBe identification.description
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "identifier type for the location of goods"
-              action.id mustBe "change-qualifier-identification"
-          }
-        }
-
-        "when IdentificationPage defined in ie15" in {
-          forAll(arbitrary[Mode], Gen.oneOf(identifications)) {
-            (mode, identification) =>
-              when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
-
-              val data = messageData.copy(Consignment =
-                messageData.Consignment.copy(LocationOfGoods =
-                  Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = identification.qualifier))
-                )
-              )
-              val ie015UserAnswers = UserAnswers(
-                departureId,
-                eoriNumber,
-                lrn.value,
-                Json.obj(),
-                Instant.now(),
-                data
-              )
-
-              val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
-              val result = helper.qualifierIdentificationRow(identification.toString)
-
-              result.key.value mustBe "Identifier type for the location of goods"
-              result.value.value mustBe identification.description
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "identifier type for the location of goods"
-              action.id mustBe "change-qualifier-identification"
-          }
-        }
-      }
-    }
-
-    "authorisationNUmber" - {
-      "must return None" - {
-        "when authorisationNumber undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
-              val result = helper.authorisationNumber
-              result mustBe None
+                result.key.value mustBe "Identifier type for the location of goods"
+                result.value.value mustBe identification.description
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "identifier type for the location of goods"
+                action.id mustBe "change-qualifier-identification"
+            }
           }
         }
       }
 
-      "must return Some(Row)" - {
-        s"when AuthorisationNumberPage defined in the ie170" in {
-          forAll(arbitrary[Mode], arbitrary[String]) {
-            (mode, authorisationNumber) =>
-              val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                .setValue(AuthorisationNumberPage, authorisationNumber)
-              val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.authorisationNumber
+      "authorisationNUmber" - {
 
-              result.get.key.value mustBe "Authorisation number"
-              result.get.value.value mustBe authorisationNumber
-              val actions = result.get.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "the authorisation number for the location of goods"
-              action.id mustBe "change-authorisation-number"
+        "must return None" - {
+          "when authorisationNumber undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.authorisationNumber
+                result mustBe None
+            }
           }
         }
+        "must return Some(Row)" - {
+          "when AuthorisationNumberPage defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithAuthorisationNumberUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper                                  = new LocationOfGoodsAnswersHelper(ie015WithAuthorisationNumberUserAnswers, departureId, mockReferenceDataService, mode)
+                val result                                  = helper.authorisationNumber
 
-        "when AuthorisationNumberPage defined in ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithAuthorisationNumberUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                                  = new LocationOfGoodsAnswersHelper(ie015WithAuthorisationNumberUserAnswers, departureId, mockReferenceDataService, mode)
-              val result                                  = helper.authorisationNumber
-
-              result.get.key.value mustBe "Authorisation number"
-              result.get.value.value mustBe messageData.Consignment.LocationOfGoods.get.authorisationNumber.get
-              val actions = result.get.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "the authorisation number for the location of goods"
-              action.id mustBe "change-authorisation-number"
+                result.get.key.value mustBe "Authorisation number"
+                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.get.authorisationNumber.get
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the authorisation number for the location of goods"
+                action.id mustBe "change-authorisation-number"
+            }
           }
         }
       }

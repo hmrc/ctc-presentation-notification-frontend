@@ -56,13 +56,8 @@ class AnswersHelper(
     )
 
   protected def fetchValue[T](
-    page: QuestionPage[T],
     convertToReference: String => Future[T],
     valueToConvert: Option[String]
-  )(implicit userAnswers: UserAnswers, rds: Reads[T]): Future[Option[T]] =
-    for {
-      getFrom70         <- Future.successful(userAnswers.get(page))
-      referenceDataCall <- valueToConvert.map(convertToReference).sequence
-    } yield getFrom70.orElse(referenceDataCall)
+  ): Future[Option[T]] = valueToConvert.map(convertToReference).sequence
 
 }

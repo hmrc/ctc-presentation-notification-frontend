@@ -17,7 +17,6 @@
 package utils
 
 import cats.data.OptionT
-import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
 import models.{Mode, UserAnswers}
 import pages.loading._
@@ -116,19 +115,15 @@ class PresentationNotificationAnswersHelper(
 
   def borderModeSection: Future[Section] = {
 
-    val borderModeOfTransport: OptionT[Future, SummaryListRow] = for {
-      borderMode <- OptionT(
-        fetchValue[BorderMode](
-          BorderModeOfTransportPage,
-          checkYourAnswersReferenceDataService.getBorderMode,
-          userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
-        )(userAnswers, BorderMode.format)
-      )
-      borderModeRow = borderModeOfTransportRow(borderMode.toString)
+    val isPresentInIE13orIE15 = userAnswers.departureData.Consignment.modeOfTransportAtTheBorder.isDefined
 
-    } yield borderModeRow
+    val borderModeRows: Future[Seq[SummaryListRow]] = if (isPresentInIE13orIE15) {
+      buildFromDepartureData
+    } else {
+      buildFromUserAnswers
+    }
 
-    borderModeOfTransport.value.map {
+    borderModeRows.map {
       borderModeOfTransport =>
         Section(
           sectionTitle = messages("transport.border.borderModeOfTransport.caption"),
@@ -136,4 +131,22 @@ class PresentationNotificationAnswersHelper(
         )
     }
   }
+
+  private def buildFromUserAnswers = {
+    val result: Seq[SummaryListRow] = (for {
+      borderMode <- userAnswers.get(BorderModeOfTransportPage)
+    } yield Seq(borderModeOfTransportRow(borderMode.toString))).toList.flatten
+    Future.successful(result)
+  }
+
+  private def buildFromDepartureData =
+    (for {
+      borderMode <- OptionT(
+        fetchValue[BorderMode](
+          checkYourAnswersReferenceDataService.getBorderMode,
+          userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
+        )
+      )
+      rows = Seq(borderModeOfTransportRow(borderMode.toString))
+    } yield rows).value.map(_.toList.flatten)
 }
