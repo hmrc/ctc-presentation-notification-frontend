@@ -30,10 +30,6 @@ package object utils {
       case x   => throw new IllegalArgumentException(s"could not cast $x to boolean")
     }
 
-    def asBorderMode(borderModes: Seq[BorderMode]): BorderMode = BorderMode.getDescription(value, borderModes)
-
-    def asQualifierIdentification: LocationOfGoodsIdentification = LocationOfGoodsIdentification(value, "identificationDesc")
-
     def asLocalDate: LocalDate = {
       val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
