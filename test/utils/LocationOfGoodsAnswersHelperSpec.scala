@@ -236,7 +236,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode).url
-                action.visuallyHiddenText.get mustBe "coordinates"
+                action.visuallyHiddenText.get mustBe "coordinates for the location of goods"
                 action.id mustBe "change-coordinates"
             }
           }
@@ -498,7 +498,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode).url
-                action.visuallyHiddenText.get mustBe "coordinates"
+                action.visuallyHiddenText.get mustBe "coordinates for the location of goods"
                 action.id mustBe "change-coordinates"
             }
           }
