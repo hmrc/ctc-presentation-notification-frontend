@@ -522,7 +522,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
               val helper = new PresentationNotificationAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mode)
-              val result = helper.addBorderMeansOfTransportYesNo().get
+              val result = helper.addBorderMeansOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add identification for the border means of transport?"
               result.value.value mustBe "No"
@@ -543,7 +543,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, userAnswers) =>
               val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
-              val result = helper.addBorderMeansOfTransportYesNo().get
+              val result = helper.addBorderMeansOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add identification for the border means of transport?"
               result.value.value mustBe "Yes"

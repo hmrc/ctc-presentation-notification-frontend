@@ -30,6 +30,14 @@ package object models {
     def encrypt: SensitiveString = Json.toJson(messageData).encrypt
   }
 
+  implicit class RichJsArray(arr: JsArray) {
+
+    def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
+      x => (x._1, Index(x._2))
+    )
+
+  }
+
   implicit class RichJsObject(jsObject: JsObject) {
 
     def setObject(path: JsPath, value: JsValue): JsResult[JsObject] =
@@ -45,6 +53,15 @@ package object models {
       arr.flatMap(_.validate[T].asOpt)
 
     def length: Int = arr.getOrElse(JsArray()).value.length
+
+    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
+      arr
+        .map {
+          _.zipWithIndex.flatMap {
+            case (value, i) => f(value, i)
+          }
+        }
+        .getOrElse(Nil)
 
   }
 

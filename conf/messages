@@ -62,6 +62,10 @@ transport.value.withoutContainer = no container identification number
 transport.item.prefix = Item {0}
 
 checkYourAnswers.placeOfLoading = Place of loading
+checkYourAnswers.transportMeans.active = Border means of transport {0}
+checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
+checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
+
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration

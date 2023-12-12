@@ -16,6 +16,7 @@
 
 package pages.transport.border.active
 
+import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 

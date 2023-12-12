@@ -68,8 +68,14 @@ final case class UserAnswers(
   def remove[A](page: QuestionPage[A], departureDataPath: JsPath): Try[UserAnswers] = {
     val updated170Data = data.removeObject(page.path).getOrElse(data)
 
-    val Ie15Data: JsObject                = Json.toJson(departureData).as[JsObject]
-    val updatedIe15DataJsObject: JsObject = Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
+    val Ie15Data: JsObject                  = Json.toJson(departureData).as[JsObject]
+    val extractedIe15Value: Option[JsValue] = departureDataPath.asSingleJson(Ie15Data).toOption
+    val updatedIe15DataJsObject: JsObject = extractedIe15Value match {
+      case Some(_) => Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
+      case None    => Ie15Data
+    }
+////    val updatedIe15DataJsObject: JsObject = Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
+//    val updatedIe15DataJsObject: JsObject = Ie15Data.removeObject(Ie15Data, departureDataPath)
 
     val updatedDepartureData = Json.fromJson[MessageData](updatedIe15DataJsObject) match {
       case JsSuccess(value, _) => value

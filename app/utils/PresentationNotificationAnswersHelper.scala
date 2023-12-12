@@ -18,8 +18,9 @@ package utils
 
 import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.loading._
+import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
@@ -106,7 +107,7 @@ class PresentationNotificationAnswersHelper(
     id = Some("change-border-mode-of-transport")
   )
 
-  def addBorderMeansOfTransportYesNo(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addBorderMeansOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddBorderMeansOfTransportYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.border.addBorderMeansOfTransportYesNo",

@@ -18,11 +18,14 @@ package utils
 
 import config.FrontendAppConfig
 import models.messages.MessageData
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
+import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import play.api.libs.json.{JsArray, JsValue, Reads}
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
+import viewModels.Link
 
 class AnswersHelper(
   userAnswers: UserAnswers,
@@ -51,5 +54,8 @@ class AnswersHelper(
       call = call,
       args = args: _*
     )
+
+  protected def buildLink(section: Section[JsArray])(link: => Link): Option[Link] =
+    if (userAnswers.get(section).isDefined) Some(link) else None
 
 }

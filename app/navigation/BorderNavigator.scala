@@ -54,15 +54,16 @@ class BorderNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddBorderModeOfTransportYesNoPage            => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
-    case BorderModeOfTransportPage                    => ua => borderModeOfTransportCheckRoute(ua, departureId, mode)
-    case IdentificationPage(activeIndex)              => ua => identificationCheckRoute(ua, departureId, activeIndex)
-    case IdentificationNumberPage(activeIndex)        => ua => identificationNumberCheckRoute(ua, departureId, activeIndex)
-    case NationalityPage(activeIndex)                 => ua => nationalityCheckRoute(ua, departureId, activeIndex)
-    case CustomsOfficeActiveBorderPage(activeIndex)   => ua => customsOfficeCheckRoute(ua, departureId, activeIndex)
-    case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigationCheckRoute(ua, departureId, activeIndex)
-    case ConveyanceReferenceNumberPage(_)             => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case AddBorderMeansOfTransportYesNoPage           => ua => addBorderMeansOfTransportYesNoCheckRoute(ua, departureId)
+    case AddBorderModeOfTransportYesNoPage                => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
+    case BorderModeOfTransportPage                        => ua => borderModeOfTransportCheckRoute(ua, departureId, mode)
+    case IdentificationPage(activeIndex)                  => ua => identificationCheckRoute(ua, departureId, activeIndex)
+    case IdentificationNumberPage(activeIndex)            => ua => identificationNumberCheckRoute(ua, departureId, activeIndex)
+    case NationalityPage(activeIndex)                     => ua => nationalityCheckRoute(ua, departureId, activeIndex)
+    case CustomsOfficeActiveBorderPage(activeIndex)       => ua => customsOfficeCheckRoute(ua, departureId, activeIndex)
+    case AddConveyanceReferenceYesNoPage(activeIndex)     => ua => addConveyanceNavigationCheckRoute(ua, departureId, activeIndex)
+    case ConveyanceReferenceNumberPage(_)                 => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddBorderMeansOfTransportYesNoPage               => ua => addBorderMeansOfTransportYesNoCheckRoute(ua, departureId)
+    case AddAnotherBorderModeOfTransportPage(activeIndex) => ua => addAnotherBorderNavigation(ua, departureId, mode, activeIndex)
   }
 
   private def addBorderMeansOfTransportYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {

@@ -17,9 +17,12 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
+import pages.sections.transport.border.BorderActiveListSection
 import play.api.i18n.Messages
-import utils.PresentationNotificationAnswersHelper
+import play.api.libs.json.{JsArray, Json}
+import utils.{ActiveBorderTransportMeansAnswersHelper, PresentationNotificationAnswersHelper}
+import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import javax.inject.Inject
 
@@ -27,7 +30,9 @@ case class PresentationNotificationAnswersViewModel(sections: Seq[Section])
 
 object PresentationNotificationAnswersViewModel {
 
-  class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
+  class PresentationNotificationAnswersViewModelProvider @Inject() (
+    activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider
+  )(implicit
     val config: FrontendAppConfig
   ) {
 
@@ -62,7 +67,29 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq
+      val addBorderMeansActiveSection = Section(
+        rows = Seq(
+          helper.addBorderMeansOfTransportYesNo
+        ).flatten
+      )
+
+      val activeBorderTransportMeansSection: Seq[Section] =
+        userAnswers
+          .get(BorderActiveListSection)
+          .getOrElse(
+            userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
+              case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
+              case None                             => JsArray()
+            }
+          )
+          .value
+          .zipWithIndex
+          .flatMap {
+            case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, mode, Index(i)).sections
+          }
+          .toSeq
+
+      val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ addBorderMeansActiveSection.toSeq ++ activeBorderTransportMeansSection
 
       new PresentationNotificationAnswersViewModel(sections)
     }

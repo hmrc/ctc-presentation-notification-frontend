@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import models.reference.{CustomsOffice, Nationality}
 import models.reference.transport.border.active.Identification
 import models.{Index, Mode, UserAnswers}
+import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.active.{
   AddConveyanceReferenceYesNoPage,
   ConveyanceReferenceNumberPage,
@@ -31,6 +32,7 @@ import pages.transport.border.active.{
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.Link
 
 class ActiveBorderTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
@@ -119,4 +121,12 @@ class ActiveBorderTransportMeansAnswersHelper(
       ),
     id = Some("change-conveyance-reference-number")
   )
+
+  def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = buildLink(BorderActiveListSection) {
+    Link(
+      id = "add-or-remove-border-means-of-transport",
+      text = messages("checkYourAnswers.transportMeans.addOrRemove"),
+      href = controllers.transport.border.active.routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode).url
+    )
+  }
 }
