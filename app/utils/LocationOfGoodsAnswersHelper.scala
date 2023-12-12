@@ -185,7 +185,6 @@ class LocationOfGoodsAnswersHelper(
           Future.successful(locationOfGoodsContactYesNo),
           Future.successful(locationOfGoodsContactPersonName),
           Future.successful(locationOfGoodsContactPersonNumber)
-
         )
       )
       .map(_.flatten)
