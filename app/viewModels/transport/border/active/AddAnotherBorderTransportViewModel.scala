@@ -42,6 +42,10 @@ object AddAnotherBorderTransportViewModel {
   class AddAnotherBorderTransportViewModelProvider() {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode)(implicit messages: Messages): AddAnotherBorderTransportViewModel = {
+      val isSectionMandatory = userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail) ||
+        userAnswers.departureData.TransitOperation.isSecurityTypeInSet ||
+        userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined
+
       val listItems = userAnswers
         .get(BorderActiveListSection)
         .getOrElse(JsArray())
@@ -50,27 +54,22 @@ object AddAnotherBorderTransportViewModel {
         .flatMap {
           case (_, i) =>
             val index = Index(i)
-            val name = (userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
+            ((userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
               case (Some(identification), Some(identificationNumber)) => Some(s"${identification.asString} - $identificationNumber")
               case (Some(identification), None)                       => Some(identification.asString)
               case (None, Some(identificationNumber))                 => Some(identificationNumber)
               case _                                                  => None
+            }).map {
+              name =>
+                ListItem(
+                  name = name,
+                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url,
+                  removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, index).url)
+                )
             }
-
-            val changeRoute                             = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, index).url
-            val lessThan2BorderModeOfTransport: Boolean = userAnswers.get(BorderActiveListSection).map(_.value.length).getOrElse(0) < 2
-            val removeRoute =
-              if (
-                lessThan2BorderModeOfTransport
-                && (userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail)
-                  || userAnswers.departureData.TransitOperation.isSecurityTypeInSet
-                  || userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined)
-              )
-                None
-              else Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, index).url)
-            name.map(ListItem(_, changeRoute, removeRoute))
         }
         .toSeq
+        .checkRemoveLinks(isSectionMandatory)
 
       new AddAnotherBorderTransportViewModel(
         listItems,
