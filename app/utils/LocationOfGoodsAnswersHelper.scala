@@ -16,9 +16,8 @@
 
 package utils
 
-import cats.data.OptionT
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
-import pages.locationOfGoods.{AuthorisationNumberPage, IdentificationPage, LocationTypePage}
+import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, IdentificationPage, LocationTypePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -62,6 +61,14 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-authorisation-number")
   )
 
+  def additionalIdentifier: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddIdentifierYesNoPage,
+    formatAnswer = formatAsText(_),
+    prefix = "locationOfGoods.additionalIdentifier",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined),
+    id = Some("change-additional-identifier")
+  )
+
   def locationOfGoodsSection: Future[Section] = {
 
     val isPresentInIE13orIE15 = userAnswers.departureData.Consignment.LocationOfGoods.isDefined
@@ -82,35 +89,51 @@ class LocationOfGoodsAnswersHelper(
   }
 
   private def buildFromUserAnswers = {
-    val result: Seq[SummaryListRow] = (for {
-      locationType            <- userAnswers.get(LocationTypePage)
-      qualifierIdentification <- userAnswers.get(IdentificationPage)
-      authorisationNumberRow  <- authorisationNumber
-    } yield Seq(
-      locationTypeRow(locationType.toString),
-      qualifierIdentificationRow(qualifierIdentification.toString),
-      authorisationNumberRow
-    )).toList.flatten
+    val result: Seq[SummaryListRow] = Seq(
+      userAnswers
+        .get(LocationTypePage)
+        .map(
+          locationType => locationTypeRow(locationType.toString)
+        ),
+      userAnswers
+        .get(IdentificationPage)
+        .map(
+          qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
+        ),
+      authorisationNumber,
+      additionalIdentifier
+    ).flatten
     Future.successful(result)
   }
 
-  private def buildFromDepartureData =
-    (for {
-      locationType <- OptionT(
-        fetchValue[LocationType](
-          checkYourAnswersReferenceDataService.getLocationType,
-          userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+  private def buildFromDepartureData: Future[List[SummaryListRow]] = {
+    val locationTypeRowOption = fetchValue[LocationType](
+      checkYourAnswersReferenceDataService.getLocationType,
+      userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+    ).map {
+      _.map(
+        locationType => locationTypeRow(locationType.toString)
+      )
+    }
+
+    val qualifierIdentificationRowOption = fetchValue[LocationOfGoodsIdentification](
+      checkYourAnswersReferenceDataService.getQualifierOfIdentification,
+      userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
+    ).map {
+      _.map(
+        qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
+      )
+    }
+
+    Future
+      .sequence(
+        List(
+          locationTypeRowOption,
+          qualifierIdentificationRowOption,
+          Future.successful(authorisationNumber),
+          Future.successful(additionalIdentifier)
         )
       )
-      locationListRow = locationTypeRow(locationType.toString)
-      qualifierIdentification <- OptionT(
-        fetchValue[LocationOfGoodsIdentification](
-          checkYourAnswersReferenceDataService.getQualifierOfIdentification,
-          userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
-        )
-      )
-      identificationRow = qualifierIdentificationRow(qualifierIdentification.toString)
-      authNumberRow <- OptionT(Future.successful(authorisationNumber))
-      identificationRows = Seq(locationListRow, identificationRow, authNumberRow)
-    } yield identificationRows).value.map(_.toList.flatten)
+      .map(_.flatten)
+  }
 }

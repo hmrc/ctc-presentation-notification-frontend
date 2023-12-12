@@ -28,7 +28,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{AuthorisationNumberPage, IdentificationPage, LocationTypePage}
+import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, IdentificationPage, LocationTypePage}
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
 import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
@@ -126,18 +126,43 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "additionalIdentifier" - {
+        "must return Some(Row)" - {
+          s"when AddIdentifierYesNoPage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[Boolean]) {
+              (mode, additionalIdentifier) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(AddIdentifierYesNoPage, additionalIdentifier)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.additionalIdentifier
+
+                result.get.key.value mustBe "Additional identifier"
+                result.get.value.value mustBe additionalIdentifier.toString
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "additional identifier"
+                action.id mustBe "change-additional-identifier"
+            }
+          }
+        }
+      }
+
       "section should contain all the answer rows" in {
-        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String]) {
-          (mode, locationType, identification, authorisationNumber) =>
+        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String], arbitrary[Boolean]) {
+          (mode, locationType, identification, authorisationNumber, additionalIdentifier) =>
             val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
               .setValue(LocationTypePage, locationType)
               .setValue(IdentificationPage, identification)
               .setValue(AuthorisationNumberPage, authorisationNumber)
+              .setValue(AddIdentifierYesNoPage, additionalIdentifier)
             val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 3
+                section.rows.size mustBe 4
             }
         }
       }
@@ -315,9 +340,45 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "additionalIdentifier" - {
+
+        "must return None" - {
+          "when additionalIdentifier undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.additionalIdentifier
+                result mustBe None
+            }
+          }
+        }
+        "must return Some(Row)" - {
+          "when AddIdentifierYesNoPage defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithAdditionalIdentifierUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper                                   = new LocationOfGoodsAnswersHelper(ie015WithAdditionalIdentifierUserAnswers, departureId, mockReferenceDataService, mode)
+                val result                                   = helper.additionalIdentifier
+
+                result.get.key.value mustBe "Additional identifier"
+                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.exists(_.additionalIdentifier.isDefined).toString
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "additional identifier"
+                action.id mustBe "change-additional-identifier"
+            }
+          }
+        }
+      }
+
       "section should contain all the answer rows" in {
-        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String]) {
-          (mode, locationType, identification, authorisationNumber) =>
+        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification]) {
+          (mode, locationType, identification) =>
             when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
             when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
 
@@ -343,7 +404,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 3
+                section.rows.size mustBe 4
             }
         }
       }
