@@ -28,7 +28,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, EoriPage, IdentificationPage, LocationTypePage}
+import pages.locationOfGoods._
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
 import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
