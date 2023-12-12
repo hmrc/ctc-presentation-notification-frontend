@@ -21,7 +21,7 @@ import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import config.Constants._
 import generators.Generators
 import models.messages.MessageData
-import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import models.{Coordinates, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -201,6 +201,44 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 action.href mustBe controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
                 action.visuallyHiddenText.get mustBe "additional identifier"
                 action.id mustBe "change-additional-identifier"
+            }
+          }
+        }
+      }
+
+      "coordinates" - {
+
+        "must return None" - {
+          "when coordinates is undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val answers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.coordinates
+                result mustBe None
+            }
+          }
+        }
+
+        "must return Some(Row)" - {
+          s"when CoordinatesPage is defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[Coordinates]) {
+              (mode, coordinates) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(CoordinatesPage, coordinates)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.coordinates
+
+                result.get.key.value mustBe "Coordinates"
+                result.get.value.value mustBe coordinates.toString
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "coordinates for the location of goods"
+                action.id mustBe "change-coordinates"
             }
           }
         }
@@ -603,20 +641,51 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "coordinates" - {
+
+        "must return None" - {
+          "when coordinates is undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.coordinates
+                result mustBe None
+            }
+          }
+        }
+        "must return Some(Row)" - {
+          "when coordinates is defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithAdditionalIdentifierUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper                                   = new LocationOfGoodsAnswersHelper(ie015WithAdditionalIdentifierUserAnswers, departureId, mockReferenceDataService, mode)
+                val result                                   = helper.coordinates
+
+                result.get.key.value mustBe "Coordinates"
+                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.flatMap(_.GNSS).get.toString
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "coordinates for the location of goods"
+                action.id mustBe "change-coordinates"
+            }
+          }
+        }
+      }
+
       "section should contain all the answer rows" in {
-        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String], arbitrary[String]) {
-          (mode, locationType, identification, authorisationNumber, locationOfGoodsEoriNumber) =>
-            val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              .setValue(LocationTypePage, locationType)
-              .setValue(IdentificationPage, identification)
-              .setValue(AuthorisationNumberPage, authorisationNumber)
-              .setValue(AuthorisationNumberPage, authorisationNumber)
-              .setValue(EoriPage, locationOfGoodsEoriNumber)
-            val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+        forAll(arbitrary[Mode]) {
+          mode =>
+            val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+            val helper  = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 4
+                section.rows.size mustBe 6
             }
         }
       }

@@ -19,6 +19,8 @@ package utils
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.locationOfGoods.{AddContactYesNoPage, AddIdentifierYesNoPage, AddressPage, AuthorisationNumberPage, EoriPage, IdentificationPage, LocationTypePage}
+import models.{Coordinates, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import pages.locationOfGoods._
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -76,6 +78,14 @@ class LocationOfGoodsAnswersHelper(
     prefix = "locationOfGoods.additionalIdentifier",
     findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined),
     id = Some("change-additional-identifier")
+  )
+
+  def coordinates: Option[SummaryListRow] = getAnswerAndBuildRow[Coordinates](
+    page = CoordinatesPage,
+    formatAnswer = formatAsText,
+    prefix = "locationOfGoods.coordinates",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.GNSS),
+    id = Some("change-coordinates")
   )
 
   def locationOfGoodsContactYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -136,6 +146,7 @@ class LocationOfGoodsAnswersHelper(
       authorisationNumber,
       eoriNumber,
       additionalIdentifier,
+      coordinates,
       locationOfGoodsContactYesNo,
       locationOfGoodsContactPersonName,
       locationOfGoodsContactPersonNumber
@@ -170,9 +181,11 @@ class LocationOfGoodsAnswersHelper(
           Future.successful(authorisationNumber),
           Future.successful(additionalIdentifier),
           Future.successful(eoriNumber),
+          Future.successful(coordinates),
           Future.successful(locationOfGoodsContactYesNo),
           Future.successful(locationOfGoodsContactPersonName),
           Future.successful(locationOfGoodsContactPersonNumber)
+
         )
       )
       .map(_.flatten)

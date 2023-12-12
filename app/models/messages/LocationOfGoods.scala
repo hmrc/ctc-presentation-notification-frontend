@@ -16,6 +16,7 @@
 
 package models.messages
 
+import models.Coordinates
 import play.api.libs.json.{Json, OFormat}
 
 case class LocationOfGoods(
@@ -25,7 +26,7 @@ case class LocationOfGoods(
   additionalIdentifier: Option[String],
   UNLocode: Option[String],
   CustomsOffice: Option[CustomsOffice],
-  GNSS: Option[GNSS],
+  GNSS: Option[Coordinates],
   EconomicOperator: Option[EconomicOperator],
   Address: Option[Address],
   PostcodeAddress: Option[PostcodeAddress],
