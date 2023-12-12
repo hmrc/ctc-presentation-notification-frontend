@@ -16,8 +16,8 @@
 
 package utils
 
-import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
-import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, EoriPage, IdentificationPage, LocationTypePage}
+import models.{Coordinates, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import pages.locationOfGoods._
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -77,6 +77,14 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-additional-identifier")
   )
 
+  def coordinates: Option[SummaryListRow] = getAnswerAndBuildRow[Coordinates](
+    page = CoordinatesPage,
+    formatAnswer = formatAsText,
+    prefix = "locationOfGoods.coordinates",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.GNSS),
+    id = Some("change-coordinates")
+  )
+
   def locationOfGoodsSection: Future[Section] = {
 
     val isPresentInIE13orIE15 = userAnswers.departureData.Consignment.LocationOfGoods.isDefined
@@ -110,7 +118,8 @@ class LocationOfGoodsAnswersHelper(
         ),
       authorisationNumber,
       eoriNumber,
-      additionalIdentifier
+      additionalIdentifier,
+      coordinates
     ).flatten
     Future.successful(result)
   }
@@ -141,7 +150,8 @@ class LocationOfGoodsAnswersHelper(
           qualifierIdentificationRowOption,
           Future.successful(authorisationNumber),
           Future.successful(additionalIdentifier),
-          Future.successful(eoriNumber)
+          Future.successful(eoriNumber),
+          Future.successful(coordinates)
         )
       )
       .map(_.flatten)

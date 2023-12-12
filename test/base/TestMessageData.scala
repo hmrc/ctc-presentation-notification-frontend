@@ -17,6 +17,7 @@
 package base
 
 import config.Constants.EntrySummaryDeclarationSecurityDetails
+import models.Coordinates
 import models.messages.AuthorisationType.{C521, Other}
 import models.messages._
 import play.api.libs.json.{JsValue, Json}
@@ -36,7 +37,7 @@ object TestMessageData {
   val customsOffice: CustomsOffice =
     CustomsOffice("GB000068")
 
-  val gnss: GNSS = GNSS("44.968046", "-94.420307")
+  val coordinates: Coordinates = Coordinates("44.968046", "-94.420307")
 
   val economicOperator: EconomicOperator = EconomicOperator("ECO247")
 
@@ -53,7 +54,7 @@ object TestMessageData {
     Some("ADD1"),
     Some("FG345UNLOCODE"),
     Some(customsOffice),
-    Some(gnss),
+    Some(coordinates),
     Some(economicOperator),
     Some(address),
     Some(postcodeAddress),
