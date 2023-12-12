@@ -17,7 +17,8 @@
 package utils
 
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
-import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, EoriPage, IdentificationPage, LocationTypePage}
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
+import pages.locationOfGoods.{AddContactYesNoPage, AddIdentifierYesNoPage, AddressPage, AuthorisationNumberPage, EoriPage, IdentificationPage, LocationTypePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -77,6 +78,30 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-additional-identifier")
   )
 
+  def locationOfGoodsContactYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddContactYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "locationOfGoods.addContact",
+    findValueInDepartureData = _.Consignment.LocationOfGoods.map(_.ContactPerson.isDefined),
+    id = Some("change-add-contact")
+  )
+
+  def locationOfGoodsContactPersonName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = NamePage,
+    formatAnswer = formatAsText(_),
+    prefix = "locationOfGoods.contact.name",
+    findValueInDepartureData = _.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.name)),
+    id = Some("change-person-name")
+  )
+
+  def locationOfGoodsContactPersonNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = PhoneNumberPage,
+    formatAnswer = formatAsText(_),
+    prefix = "locationOfGoods.contactPhoneNumber",
+    findValueInDepartureData = _.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.phoneNumber)),
+    id = Some("change-person-number")
+  )
+
   def locationOfGoodsSection: Future[Section] = {
 
     val isPresentInIE13orIE15 = userAnswers.departureData.Consignment.LocationOfGoods.isDefined
@@ -110,7 +135,10 @@ class LocationOfGoodsAnswersHelper(
         ),
       authorisationNumber,
       eoriNumber,
-      additionalIdentifier
+      additionalIdentifier,
+      locationOfGoodsContactYesNo,
+      locationOfGoodsContactPersonName,
+      locationOfGoodsContactPersonNumber
     ).flatten
     Future.successful(result)
   }
@@ -141,7 +169,10 @@ class LocationOfGoodsAnswersHelper(
           qualifierIdentificationRowOption,
           Future.successful(authorisationNumber),
           Future.successful(additionalIdentifier),
-          Future.successful(eoriNumber)
+          Future.successful(eoriNumber),
+          Future.successful(locationOfGoodsContactYesNo),
+          Future.successful(locationOfGoodsContactPersonName),
+          Future.successful(locationOfGoodsContactPersonNumber)
         )
       )
       .map(_.flatten)

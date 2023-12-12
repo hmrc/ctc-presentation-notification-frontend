@@ -29,6 +29,7 @@ import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods._
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
 import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
@@ -205,6 +206,174 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "locationOfGoodsContactYesNo" - {
+        "must return Some(Row)" - {
+          "when locationOfGoodsContactYesNo defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithAcontactPageUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper                           = new LocationOfGoodsAnswersHelper(ie015WithAcontactPageUserAnswers, departureId, mockReferenceDataService, mode)
+                val result                           = helper.locationOfGoodsContactYesNo
+
+                result.get.key.value mustBe "Do you want to add a contact for the location of goods?"
+                result.get.value.value mustBe "Yes"
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "if you want to add a contact for the location of goods"
+                action.id mustBe "change-add-contact"
+            }
+          }
+          s"when locationOfGoodsContactYesNo defined in the ie170" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(AddContactYesNoPage, true)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactYesNo
+
+                result.get.key.value mustBe "Do you want to add a contact for the location of goods?"
+                result.get.value.value mustBe "Yes"
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "if you want to add a contact for the location of goods"
+                action.id mustBe "change-add-contact"
+            }
+          }
+        }
+
+        "must return None" - {
+          "when locationOfGoodsContactYesNo undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactYesNo
+                result mustBe None
+            }
+          }
+        }
+      }
+
+      "locationOfGoodsContactPersonName" - {
+        "must return Some(Row)" - {
+          "when locationOfGoodsContactYesNo defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithlocationOfGoodsContactPersonNameUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithlocationOfGoodsContactPersonNameUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactPersonName
+
+                result.get.key.value mustBe "Contact’s name"
+                result.get.value.value mustBe "Paul Sully"
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the contact for the location of goods"
+                action.id mustBe "change-person-name"
+            }
+          }
+          s"when locationOfGoodsContactPersonName defined in the ie170" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(NamePage, "Han Solo")
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactPersonName
+
+                result.get.key.value mustBe "Contact’s name"
+                result.get.value.value mustBe "Han Solo"
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the contact for the location of goods"
+                action.id mustBe "change-person-name"
+            }
+          }
+        }
+
+        "must return None" - {
+          "when locationOfGoodsContactPersonName undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactPersonName
+                result mustBe None
+            }
+          }
+        }
+      }
+
+      "locationOfGoodsContactPersonNumber" - {
+        "must return Some(Row)" - {
+          "when locationOfGoodsContactPersonNumber defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithlocationOfGoodsContactPersonNumberUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper =
+                  new LocationOfGoodsAnswersHelper(ie015WithlocationOfGoodsContactPersonNumberUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactPersonNumber
+
+                result.get.key.value mustBe "Contact’s phone number"
+                result.get.value.value mustBe "07508994566"
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "contact’s phone number for the location of goods"
+                action.id mustBe "change-person-number"
+            }
+          }
+          s"when locationOfGoodsContactPersonNumber defined in the ie170" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(PhoneNumberPage, "999")
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactPersonNumber
+
+                result.get.key.value mustBe "Contact’s phone number"
+                result.get.value.value mustBe "999"
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "contact’s phone number for the location of goods"
+                action.id mustBe "change-person-number"
+            }
+          }
+        }
+
+        "must return None" - {
+          "when locationOfGoodsContactPersonNumber undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.locationOfGoodsContactPersonNumber
+                result mustBe None
+            }
+          }
+        }
+      }
+
       "section should contain all the answer rows" in {
         forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String], arbitrary[Boolean]) {
           (mode, locationType, identification, authorisationNumber, additionalIdentifier) =>
@@ -213,11 +382,14 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(IdentificationPage, identification)
               .setValue(AuthorisationNumberPage, authorisationNumber)
               .setValue(AddIdentifierYesNoPage, additionalIdentifier)
+              .setValue(AddContactYesNoPage, true)
+              .setValue(PhoneNumberPage, "999")
+              .setValue(NamePage, "Han Solo")
             val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 4
+                section.rows.size mustBe 7
             }
         }
       }

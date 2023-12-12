@@ -204,7 +204,7 @@ locationOfGoods.addContact.change.hidden = if you want to add a contact for the 
 
 locationOfGoods.contact.name.title = Who is the contact for the location of goods?
 locationOfGoods.contact.name.heading = Who is the contact for the location of goods?
-locationOfGoods.contact.name.checkYourAnswersLabel = Who is the contact for the location of goods?
+locationOfGoods.contact.name.checkYourAnswersLabel = Contact’s name
 locationOfGoods.contact.name.hint = Enter the full name of the individual or organisation.
 locationOfGoods.contact.name.change.hidden = the contact for the location of goods
 locationOfGoods.contact.name.error.required = Enter the contact for the location of goods
