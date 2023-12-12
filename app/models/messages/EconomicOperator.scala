@@ -18,7 +18,9 @@ package models.messages
 
 import play.api.libs.json.{Json, OFormat}
 
-case class EconomicOperator(identificationNumber: String)
+case class EconomicOperator(identificationNumber: String) {
+  override def toString: String = identificationNumber
+}
 
 object EconomicOperator {
   implicit val format: OFormat[EconomicOperator] = Json.format[EconomicOperator]

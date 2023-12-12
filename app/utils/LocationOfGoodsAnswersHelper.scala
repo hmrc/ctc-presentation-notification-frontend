@@ -17,7 +17,7 @@
 package utils
 
 import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
-import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, IdentificationPage, LocationTypePage}
+import pages.locationOfGoods.{AddIdentifierYesNoPage, AuthorisationNumberPage, EoriPage, IdentificationPage, LocationTypePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -61,6 +61,14 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-authorisation-number")
   )
 
+  def eoriNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = EoriPage,
+    formatAnswer = formatAsText(_),
+    prefix = "locationOfGoods.eori",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.EconomicOperator.get.toString),
+    id = Some("change-eori")
+  )
+
   def additionalIdentifier: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddIdentifierYesNoPage,
     formatAnswer = formatAsText(_),
@@ -101,6 +109,7 @@ class LocationOfGoodsAnswersHelper(
           qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
         ),
       authorisationNumber,
+      eoriNumber,
       additionalIdentifier
     ).flatten
     Future.successful(result)
@@ -131,7 +140,8 @@ class LocationOfGoodsAnswersHelper(
           locationTypeRowOption,
           qualifierIdentificationRowOption,
           Future.successful(authorisationNumber),
-          Future.successful(additionalIdentifier)
+          Future.successful(additionalIdentifier),
+          Future.successful(eoriNumber)
         )
       )
       .map(_.flatten)
