@@ -17,6 +17,7 @@
 package viewModels.transport.equipment
 
 import config.FrontendAppConfig
+import controllers.transport.equipment.index.seals.routes
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.equipment.SealsSection
 import pages.transport.equipment.index.AddSealYesNoPage
@@ -45,21 +46,17 @@ object AddAnotherSealViewModel {
         .flatMap {
           case (_, i) =>
             val sealIndex = Index(i)
-
-            val name = userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex))
-
-            val changeRoute =
-              controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url
-
-            val removeRoute: Option[String] = if (userAnswers.get(AddSealYesNoPage(equipmentIndex)).isEmpty && sealIndex.isFirst) {
-              None
-            } else {
-              Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url)
+            userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)).map {
+              name =>
+                ListItem(
+                  name = name,
+                  changeUrl = routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url,
+                  removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, sealIndex).url)
+                )
             }
-
-            name.map(ListItem(_, changeRoute, removeRoute))
         }
         .toSeq
+        .checkRemoveLinks(userAnswers.get(AddSealYesNoPage(equipmentIndex)).isEmpty)
 
       new AddAnotherSealViewModel(
         listItems,

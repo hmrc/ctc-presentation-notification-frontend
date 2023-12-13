@@ -17,6 +17,7 @@
 package viewModels.transport.equipment
 
 import base.SpecBase
+import controllers.transport.equipment.index.seals.routes
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -67,65 +68,90 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
       }
     }
 
-    "with change and remove links" - {
-      "when AddSealYesNoPage has not been answered" in {
+    "when section is mandatory" - {
+      "and one seal" in {
         forAll(arbitrary[Mode], nonEmptyString) {
           (mode, identificationNumber) =>
-            val userAnswers = (0 to 1).foldLeft(emptyUserAnswers) {
-              (acc, i) =>
-                acc
-                  .setValue(SealIdentificationNumberPage(equipmentIndex, Index(i)), s"$identificationNumber$i")
-            }
+            val userAnswers = emptyUserAnswers
+              .setValue(SealIdentificationNumberPage(equipmentIndex, Index(0)), identificationNumber)
 
             val result = new AddAnotherSealViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex)
 
             result.listItems mustBe Seq(
               ListItem(
-                name = s"${identificationNumber}0",
-                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(departureId, mode, equipmentIndex, Index(0))
-                  .url,
+                name = identificationNumber,
+                changeUrl = routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
                 removeUrl = None
-              ),
-              ListItem(
-                name = s"${identificationNumber}1",
-                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(departureId, mode, equipmentIndex, Index(1))
-                  .url,
-                removeUrl =
-                  Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url)
               )
             )
         }
       }
-      "when AddSealYesNoPage has been answered" in {
-        val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), true)
-        forAll(arbitrary[Mode], nonEmptyString) {
-          (mode, identificationNumber) =>
-            val updatedUserAnswers = (0 to 1).foldLeft(userAnswers) {
-              (acc, i) =>
-                acc
-                  .setValue(SealIdentificationNumberPage(equipmentIndex, Index(i)), s"$identificationNumber$i")
-            }
 
-            val result = new AddAnotherSealViewModelProvider().apply(updatedUserAnswers, departureId, mode, equipmentIndex)
+      "and multiple seals" in {
+        forAll(arbitrary[Mode], nonEmptyString, nonEmptyString) {
+          (mode, identificationNumber1, identificationNumber2) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(SealIdentificationNumberPage(equipmentIndex, Index(0)), identificationNumber1)
+              .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), identificationNumber2)
+
+            val result = new AddAnotherSealViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex)
 
             result.listItems mustBe Seq(
               ListItem(
-                name = s"${identificationNumber}0",
-                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(departureId, mode, equipmentIndex, Index(0))
-                  .url,
-                removeUrl =
-                  Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url)
+                name = identificationNumber1,
+                changeUrl = routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
+                removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url)
               ),
               ListItem(
-                name = s"${identificationNumber}1",
-                changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(departureId, mode, equipmentIndex, Index(1))
-                  .url,
-                removeUrl =
-                  Some(controllers.transport.equipment.index.seals.routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url)
+                name = identificationNumber2,
+                changeUrl = routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url,
+                removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url)
+              )
+            )
+        }
+      }
+    }
+
+    "when section is optional" - {
+      "and one seal" in {
+        forAll(arbitrary[Mode], nonEmptyString) {
+          (mode, identificationNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddSealYesNoPage(equipmentIndex), true)
+              .setValue(SealIdentificationNumberPage(equipmentIndex, Index(0)), identificationNumber)
+
+            val result = new AddAnotherSealViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex)
+
+            result.listItems mustBe Seq(
+              ListItem(
+                name = identificationNumber,
+                changeUrl = routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
+                removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url)
+              )
+            )
+        }
+      }
+
+      "and multiple seals" in {
+        forAll(arbitrary[Mode], nonEmptyString, nonEmptyString) {
+          (mode, identificationNumber1, identificationNumber2) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddSealYesNoPage(equipmentIndex), true)
+              .setValue(SealIdentificationNumberPage(equipmentIndex, Index(0)), identificationNumber1)
+              .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), identificationNumber2)
+
+            val result = new AddAnotherSealViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex)
+
+            result.listItems mustBe Seq(
+              ListItem(
+                name = identificationNumber1,
+                changeUrl = routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
+                removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url)
+              ),
+              ListItem(
+                name = identificationNumber2,
+                changeUrl = routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url,
+                removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(departureId, mode, equipmentIndex, Index(1)).url)
               )
             )
         }
