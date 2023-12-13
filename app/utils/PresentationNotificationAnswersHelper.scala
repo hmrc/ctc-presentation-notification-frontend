@@ -17,11 +17,10 @@
 package utils
 
 import cats.data.OptionT
-import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
 import models.{Mode, UserAnswers}
 import pages.loading._
-import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
@@ -112,14 +111,6 @@ class PresentationNotificationAnswersHelper(
     id = Some("change-border-mode-of-transport"),
     call = Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode)),
     args = Seq.empty
-  )
-
-  def addBorderMeansOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddBorderMeansOfTransportYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transport.border.addBorderMeansOfTransportYesNo",
-    findValueInDepartureData = message => Option(message.Consignment.ActiveBorderTransportMeans.isDefined),
-    id = Some("change-add-identification-for-the-border-means-of-transport")
   )
 
   def borderModeSection: Future[Section] = {

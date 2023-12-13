@@ -541,52 +541,5 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
       }
     }
 
-    "addBorderMeansOfTransportYesNo" - {
-      "must return No when BorderMeansOfTransport has not been answered in ie15/ie13" - {
-        s"when $AddBorderMeansOfTransportYesNoPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper =
-                new PresentationNotificationAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mockReferenceDataService, mode)
-              val result = helper.addBorderMeansOfTransportYesNo.get
-
-              result.key.value mustBe "Do you want to add identification for the border means of transport?"
-              result.value.value mustBe "No"
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
-              action.id mustBe "change-add-identification-for-the-border-means-of-transport"
-          }
-        }
-      }
-
-      "must return Yes when BorderMeansOfTransport has been answered in ie15/ie13" - {
-        s"when $AddBorderMeansOfTransportYesNoPage undefined" in {
-          forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
-            (mode, userAnswers) =>
-              val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, mockReferenceDataService, mode)
-              val result = helper.addBorderMeansOfTransportYesNo.get
-
-              result.key.value mustBe "Do you want to add identification for the border means of transport?"
-              result.value.value mustBe "Yes"
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
-              action.id mustBe "change-add-identification-for-the-border-means-of-transport"
-          }
-        }
-      }
-    }
-
   }
 }

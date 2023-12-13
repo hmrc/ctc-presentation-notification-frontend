@@ -21,6 +21,7 @@ import models.reference.transport.border.active.Identification
 import models.reference.{CustomsOffice, Nationality}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
+import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import pages.transport.border.active._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -34,6 +35,14 @@ class ActiveBorderTransportMeansAnswersHelper(
   activeIndex: Index
 )(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, departureId, mode) {
+
+  def addBorderMeansOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddBorderMeansOfTransportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.border.addBorderMeansOfTransportYesNo",
+    findValueInDepartureData = message => Option(message.Consignment.ActiveBorderTransportMeans.isDefined),
+    id = Some("change-add-identification-for-the-border-means-of-transport")
+  )
 
   def identificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(activeIndex),

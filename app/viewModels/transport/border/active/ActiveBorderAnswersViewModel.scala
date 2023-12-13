@@ -42,15 +42,27 @@ object ActiveBorderAnswersViewModel {
 
       val activeBorderSection =
         Section(
-          sectionTitle = messages("checkYourAnswers.transportMeans.active", index.display),
-          rows = Seq(
-            helper.identificationType,
-            helper.identificationNumber,
-            helper.nationality,
-            helper.customsOffice,
-            helper.conveyanceReferenceNumberYesNo,
-            helper.conveyanceReferenceNumber
-          ).flatten,
+          sectionTitle = messages("checkYourAnswers.transportMeans.active.withIndex", index.display),
+          rows = if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) {
+            Seq(
+              helper.addBorderMeansOfTransportYesNo,
+              helper.identificationType,
+              helper.identificationNumber,
+              helper.nationality,
+              helper.customsOffice,
+              helper.conveyanceReferenceNumberYesNo,
+              helper.conveyanceReferenceNumber
+            ).flatten
+          } else {
+            Seq(
+              helper.identificationType,
+              helper.identificationNumber,
+              helper.nationality,
+              helper.customsOffice,
+              helper.conveyanceReferenceNumberYesNo,
+              helper.conveyanceReferenceNumber
+            ).flatten
+          },
           addAnotherLink = (userAnswers.departureData.CustomsOfficeOfTransitDeclared, lastIndex == index) match {
             case (Some(_), true) => helper.addOrRemoveActiveBorderTransportsMeans()
             case _               => None

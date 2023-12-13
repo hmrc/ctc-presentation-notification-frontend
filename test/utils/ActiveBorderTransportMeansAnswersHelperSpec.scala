@@ -25,6 +25,7 @@ import models.reference.{CustomsOffice, Nationality}
 import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import pages.transport.border.active._
 import play.api.libs.json.Json
 
@@ -33,6 +34,53 @@ import java.time.Instant
 class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "ActiveBorderTransportMeansAnswersHelper" - {
+
+    "addBorderMeansOfTransportYesNo" - {
+      "must return No when BorderMeansOfTransport has not been answered in ie15/ie13" - {
+        s"when $AddBorderMeansOfTransportYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
+                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              val helper =
+                new ActiveBorderTransportMeansAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mode, activeIndex)
+              val result = helper.addBorderMeansOfTransportYesNo.get
+
+              result.key.value mustBe "Do you want to add identification for the border means of transport?"
+              result.value.value mustBe "No"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
+              action.id mustBe "change-add-identification-for-the-border-means-of-transport"
+          }
+        }
+      }
+
+      "must return Yes when BorderMeansOfTransport has been answered in ie15/ie13" - {
+        s"when $AddBorderMeansOfTransportYesNoPage undefined" in {
+          forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
+            (mode, userAnswers) =>
+              val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, activeIndex)
+              val result = helper.addBorderMeansOfTransportYesNo.get
+
+              result.key.value mustBe "Do you want to add identification for the border means of transport?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
+              action.id mustBe "change-add-identification-for-the-border-means-of-transport"
+          }
+        }
+      }
+    }
 
     "identificationType" - {
       "must return None when no identification type in ie13/ie15/170" - {

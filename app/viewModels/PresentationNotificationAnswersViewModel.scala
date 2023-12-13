@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
+import utils.{ActiveBorderTransportMeansAnswersHelper, LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import javax.inject.Inject
@@ -49,6 +49,7 @@ object PresentationNotificationAnswersViewModel {
 
       val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
       val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
+      val activeBorderHelper    = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0))
 
       val firstSection = Section(
         rows = Seq(
@@ -68,33 +69,35 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val addBorderMeansActiveSection = Section(
-        rows = Seq(
-          helper.addBorderMeansOfTransportYesNo
-        ).flatten
-      )
-
-      val activeBorderTransportMeansSection: Seq[Section] =
-        userAnswers
-          .get(BorderActiveListSection)
-          .getOrElse(
-            userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
-              case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
-              case None                             => JsArray()
-            }
-          )
-          .value
-          .zipWithIndex
-          .flatMap {
-            case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, mode, Index(i)).sections
-          }
-          .toSeq
+      val activeBorderTransportMeansSection: Seq[Section] = {
+        (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
+          case (None, false) =>
+            Section(sectionTitle = messages("checkYourAnswers.transportMeans.active.withoutIndex"),
+                    rows = Seq(activeBorderHelper.addBorderMeansOfTransportYesNo).flatten
+            ).toSeq
+          case _ =>
+            userAnswers
+              .get(BorderActiveListSection)
+              .getOrElse(
+                userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
+                  case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
+                  case None                             => JsArray()
+                }
+              )
+              .value
+              .zipWithIndex
+              .flatMap {
+                case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, mode, Index(i)).sections
+              }
+              .toSeq
+        }
+      }
 
       for {
         borderSection   <- helper.borderModeSection
         locationOfGoods <- locationOfGoodsHelper.locationOfGoodsSection
         sections =
-          firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ addBorderMeansActiveSection.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
+          firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }
