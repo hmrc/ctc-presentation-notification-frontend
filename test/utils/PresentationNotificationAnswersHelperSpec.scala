@@ -110,7 +110,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val ie015WithNoContainerIndicatorUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoContainerIndicatorUserAnswers, departureId,mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoContainerIndicatorUserAnswers, departureId, mockReferenceDataService, mode)
               val result = helper.containerIndicator
               result mustBe None
           }
@@ -166,7 +166,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val ie015WithNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService,mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
               val result = helper.borderModeOfTransportYesNo
               result.get.key.value mustBe s"Do you want to add a border mode of transport?"
               result.get.value.value mustBe "No"
@@ -548,7 +548,8 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId,mockReferenceDataService, mode)
+              val helper =
+                new PresentationNotificationAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mockReferenceDataService, mode)
               val result = helper.addBorderMeansOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add identification for the border means of transport?"

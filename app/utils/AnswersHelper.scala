@@ -16,7 +16,6 @@
 
 package utils
 
-
 import models.messages.MessageData
 import models.{Mode, UserAnswers}
 import pages.QuestionPage

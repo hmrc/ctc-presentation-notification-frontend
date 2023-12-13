@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import models.LocationOfGoodsIdentification
-import models.reference.{BorderMode, Country, CountryCode}
 import models.reference.transport.border.active.Identification
 import models.reference._
 

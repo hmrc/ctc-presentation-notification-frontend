@@ -21,11 +21,10 @@ import models.{CheckMode, Index, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
-import utils.{ActiveBorderTransportMeansAnswersHelper, PresentationNotificationAnswersHelper}
-import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
+import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -75,7 +74,6 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-
       val activeBorderTransportMeansSection: Seq[Section] =
         userAnswers
           .get(BorderActiveListSection)
@@ -93,14 +91,13 @@ object PresentationNotificationAnswersViewModel {
           .toSeq
 
       for {
-        borderSection <- helper.borderModeSection
+        borderSection   <- helper.borderModeSection
         locationOfGoods <- locationOfGoodsHelper.locationOfGoodsSection
-        sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ addBorderMeansActiveSection.toSeq ++ activeBorderTransportMeansSection ++  locationOfGoods.toSeq
+        sections =
+          firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ addBorderMeansActiveSection.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)
 
-
     }
-
 
     // scalastyle:on method.length
   }

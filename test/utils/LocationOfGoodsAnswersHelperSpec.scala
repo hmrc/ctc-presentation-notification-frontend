@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, locationOfGoods, messageData}
+import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import config.Constants._
 import generators.Generators
 import models.messages.MessageData

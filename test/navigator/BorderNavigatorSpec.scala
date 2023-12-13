@@ -16,7 +16,7 @@
 
 package navigator
 
-import base.TestMessageData.{allOptionsNoneJsonValue, consignment, customsOfficeOfTransitDeclared, messageData, transitOperation}
+import base.TestMessageData.{allOptionsNoneJsonValue, consignment, customsOfficeOfTransitDeclared, transitOperation}
 import base.{SpecBase, TestMessageData}
 import config.Constants._
 import controllers.transport.border.active.routes
@@ -30,12 +30,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
-import pages.transport.border.{
-  AddAnotherBorderModeOfTransportPage,
-  AddBorderMeansOfTransportYesNoPage,
-  AddBorderModeOfTransportYesNoPage,
-  BorderModeOfTransportPage
-}
+import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.libs.json.Json

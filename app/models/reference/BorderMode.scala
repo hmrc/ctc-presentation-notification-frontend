@@ -19,7 +19,6 @@ package models.reference
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
-import config.Constants._
 
 case class BorderMode(code: String, description: String) extends Radioable[BorderMode] {
 

@@ -18,7 +18,6 @@ package models
 
 import models.messages.MessageData
 import pages.QuestionPage
-import pages.sections.Section
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
