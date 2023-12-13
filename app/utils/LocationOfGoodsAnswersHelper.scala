@@ -166,6 +166,7 @@ class LocationOfGoodsAnswersHelper(
           qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
         ),
       authorisationNumber,
+      address,
       eoriNumber,
       additionalIdentifierYesNo,
       additionalIdentifierRow,
@@ -210,7 +211,8 @@ class LocationOfGoodsAnswersHelper(
           Future.successful(coordinates),
           Future.successful(locationOfGoodsContactYesNo),
           Future.successful(locationOfGoodsContactPersonName),
-          Future.successful(locationOfGoodsContactPersonNumber)
+          Future.successful(locationOfGoodsContactPersonNumber),
+          Future.successful(address)
         )
       )
       .map(_.flatten)

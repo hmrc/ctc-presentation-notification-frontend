@@ -25,11 +25,14 @@ case class Address(
   city: String,
   country: String
 ) {
+
   def toDynamicAddress: DynamicAddress = DynamicAddress(
     numberAndStreet = streetAndNumber,
     city = city,
     postalCode = postcode
   )
+}
+
 object Address {
   implicit val format: OFormat[Address] = Json.format[Address]
 }
