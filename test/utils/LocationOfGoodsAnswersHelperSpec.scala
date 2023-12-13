@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.{ allOptionsNoneJsonValue, messageData}
+import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import config.Constants._
 import generators.Generators
 import models.messages.MessageData
@@ -473,32 +473,35 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val result = helper.address
 
                 result.get.key.value mustBe "Address"
-                result.get.value.value mustBe "Address Line 1<br>Newcastle<br>NE53KL"
+                result.get.value.value mustBe ie015WithAddressUserAnswers.departureData.Consignment.LocationOfGoods
+                  .flatMap(_.Address.map(_.toDynamicAddress))
+                  .get
+                  .toString
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, mode).url
-                action.visuallyHiddenText.get mustBe "address for the incident"
+                action.visuallyHiddenText.get mustBe "address for the location of goods"
                 action.id mustBe "change-location-of-goods-address"
             }
           }
           s"when address defined in the ie170" in {
-            forAll(arbitrary[Mode]) {
-              mode =>
+            forAll(arbitrary[Mode], arbitrary[DynamicAddress]) {
+              (mode, addressData) =>
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                  .setValue(AddressPage, DynamicAddress(numberAndStreet = "1 belvue", city = "Newcastle", postalCode = Some("ll53")))
+                  .setValue(AddressPage, addressData)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
                 val result = helper.address
 
                 result.get.key.value mustBe "Address"
-                result.get.value.value mustBe "1 belvue<br>Newcastle<br>ll53"
+                result.get.value.value mustBe addressData.toString
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, mode).url
-                action.visuallyHiddenText.get mustBe "address for the incident"
+                action.visuallyHiddenText.get mustBe "address for the location of goods"
                 action.id mustBe "change-location-of-goods-address"
             }
           }
