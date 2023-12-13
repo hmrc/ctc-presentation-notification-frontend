@@ -18,12 +18,11 @@ package utils
 
 import config.FrontendAppConfig
 import models.messages.MessageData
-import models.{Index, Mode, RichOptionalJsArray, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsValue, Reads}
-import play.api.mvc.Call
+import play.api.libs.json.{JsArray, Reads}
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewModels.Link
 
@@ -31,7 +30,7 @@ class AnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig)
+)(implicit messages: Messages)
     extends SummaryListRowHelper {
 
   protected def lrn: String = userAnswers.lrn
@@ -55,7 +54,7 @@ class AnswersHelper(
       args = args: _*
     )
 
-  protected def buildLink(section: Section[JsArray])(link: => Link): Option[Link] =
-    if (userAnswers.get(section).isDefined) Some(link) else None
+  protected def buildLink[T](section: Section[JsArray], doesSectionExistInDepartureData: Boolean)(link: => Link): Option[Link] =
+    if (userAnswers.get(section).isDefined || doesSectionExistInDepartureData) Some(link) else None
 
 }

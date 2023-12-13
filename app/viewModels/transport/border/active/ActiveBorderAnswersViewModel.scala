@@ -32,8 +32,13 @@ object ActiveBorderAnswersViewModel {
   class ActiveBorderAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, index: Index)(implicit messages: Messages): ActiveBorderAnswersViewModel = {
-      val helper    = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, index)
-      val lastIndex = Index(userAnswers.get(BorderActiveListSection).map(_.value.length - 1).getOrElse(0))
+      val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, index)
+      val lastIndex = Index(
+        userAnswers
+          .get(BorderActiveListSection)
+          .map(_.value.length - 1)
+          .getOrElse(userAnswers.departureData.Consignment.ActiveBorderTransportMeans.map(_.length - 1).getOrElse(0))
+      )
 
       val activeBorderSection =
         Section(

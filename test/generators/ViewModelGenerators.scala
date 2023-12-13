@@ -19,6 +19,7 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import pages.sections.transport.border.BorderActiveSection
 import play.api.mvc.Call
 import play.twirl.api.Html
 import viewModels.Section

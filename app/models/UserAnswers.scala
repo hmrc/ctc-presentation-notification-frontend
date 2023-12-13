@@ -18,6 +18,7 @@ package models
 
 import models.messages.MessageData
 import pages.QuestionPage
+import pages.sections.Section
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -37,7 +38,7 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def getOrElse[A](page: QuestionPage[A], findValueInDepartureData: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
+  def getOrElse[A](page: Gettable[A], findValueInDepartureData: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
     get(page) orElse findValueInDepartureData(departureData)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
@@ -74,8 +75,6 @@ final case class UserAnswers(
       case Some(_) => Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
       case None    => Ie15Data
     }
-////    val updatedIe15DataJsObject: JsObject = Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
-//    val updatedIe15DataJsObject: JsObject = Ie15Data.removeObject(Ie15Data, departureDataPath)
 
     val updatedDepartureData = Json.fromJson[MessageData](updatedIe15DataJsObject) match {
       case JsSuccess(value, _) => value

@@ -63,6 +63,9 @@ package object models {
         }
         .getOrElse(Nil)
 
+    def lastIndexOption: Option[Int] =
+      arr.map(_.value.length - 1)
+
   }
 
   implicit class RichJsValue(jsValue: JsValue) {

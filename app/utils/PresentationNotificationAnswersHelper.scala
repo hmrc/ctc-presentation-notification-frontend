@@ -18,9 +18,8 @@ package utils
 
 import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.loading._
-import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages

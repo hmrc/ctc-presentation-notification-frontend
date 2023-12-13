@@ -341,6 +341,11 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = None
+                  )
+                )
                 .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
               navigator
                 .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
@@ -372,8 +377,14 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
+              val userAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = None
+                  )
+                )
               navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), userAnswers, departureId, NormalMode)
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
@@ -823,7 +834,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       "must go from ConveyanceRefNumberPage to CheckYourAnswers page" in {
         navigator
-          .nextPage(ConveyanceReferenceNumberPage(activeIndex), emptyUserAnswers, departureId, NormalMode)
+          .nextPage(ConveyanceReferenceNumberPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
           .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       }
 
