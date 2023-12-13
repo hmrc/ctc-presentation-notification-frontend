@@ -68,7 +68,7 @@ class LocationOfGoodsAnswersHelper(
     page = EoriPage,
     formatAnswer = formatAsText(_),
     prefix = "locationOfGoods.eori",
-    findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.EconomicOperator.get.toString),
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.EconomicOperator.map(_.toString)),
     id = Some("change-eori")
   )
 
