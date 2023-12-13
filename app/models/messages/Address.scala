@@ -17,6 +17,7 @@
 package models.messages
 
 import models.DynamicAddress
+import models.reference.{Country, CountryCode}
 import play.api.libs.json.{Json, OFormat}
 
 case class Address(
@@ -25,6 +26,8 @@ case class Address(
   city: String,
   country: String
 ) {
+
+  def toCountry = Country(code = CountryCode(country), description = "")
 
   def toDynamicAddress: DynamicAddress = DynamicAddress(
     numberAndStreet = streetAndNumber,

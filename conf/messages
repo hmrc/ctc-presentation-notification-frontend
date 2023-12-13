@@ -127,6 +127,7 @@ locationOfGoods.country.title = In which country is the location of goods?
 locationOfGoods.country.heading = In which country is the location of goods?
 locationOfGoods.country.hint = Enter the country, like Italy or Spain.
 locationOfGoods.country.error.required = Enter which country the location of goods is in
+locationOfGoods.country.checkYourAnswersLabel = Country
 
 checkInformation.title = Confirmation needed to complete declaration
 checkInformation.heading = Confirmation needed to complete declaration

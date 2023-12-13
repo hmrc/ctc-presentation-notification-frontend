@@ -452,7 +452,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               val result = helper.country.get
 
               result.key.value mustBe s"Country"
-              result.value.value mustBe country.toString
+              result.value.value mustBe country.description
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -472,7 +472,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
               result.key.value mustBe s"Country"
               //TODO: Change once we pull ref data to format country answer in the 15
-              result.value.value mustBe s"countryDesc - ${messageData.Consignment.PlaceOfLoading.flatMap(_.country).get}"
+              result.value.value mustBe s"countryDesc"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

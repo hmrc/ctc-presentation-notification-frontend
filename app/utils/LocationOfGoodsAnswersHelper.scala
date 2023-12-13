@@ -16,6 +16,7 @@
 
 package utils
 
+import models.reference.Country
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.locationOfGoods._
@@ -126,6 +127,14 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-person-number")
   )
 
+  def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryPage,
+    formatAnswer = formatAsCountry,
+    prefix = "locationOfGoods.country",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.Address.map(_.toCountry)),
+    id = Some("change-location-of-goods-country")
+  )
+
   def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
     page = AddressPage,
     formatAnswer = formatAsDynamicAddress,
@@ -166,6 +175,7 @@ class LocationOfGoodsAnswersHelper(
           qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
         ),
       authorisationNumber,
+      country,
       address,
       eoriNumber,
       additionalIdentifierYesNo,
@@ -212,6 +222,7 @@ class LocationOfGoodsAnswersHelper(
           Future.successful(locationOfGoodsContactYesNo),
           Future.successful(locationOfGoodsContactPersonName),
           Future.successful(locationOfGoodsContactPersonNumber),
+          Future.successful(country),
           Future.successful(address)
         )
       )
