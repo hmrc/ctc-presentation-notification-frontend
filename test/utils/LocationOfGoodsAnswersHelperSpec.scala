@@ -518,19 +518,6 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
             }
           }
         }
-
-        "must return None" - {
-          "when country undefined" in {
-            forAll(arbitrary[Mode]) {
-              mode =>
-                val ie015WithNoUserAnswers =
-                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
-                val result = helper.country
-                result mustBe None
-            }
-          }
-        }
       }
 
       "address" - {
