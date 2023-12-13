@@ -808,7 +808,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 11
+                section.rows.size mustBe 12
             }
         }
       }
