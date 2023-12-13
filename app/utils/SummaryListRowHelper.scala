@@ -16,7 +16,7 @@
 
 package utils
 
-import models.Radioable
+import models.{DynamicAddress, Radioable}
 import models.reference.Country
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -44,6 +44,9 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   protected def formatAsCountry(country: Country): Content = country.toString.toText
 
   protected def formatDynamicEnumAsString[T <: Radioable[T]](answer: T): String = answer.asString
+
+  protected def formatAsDynamicAddress(address: DynamicAddress): Content =
+    HtmlContent(address.toString)
 
   protected def formatDynamicEnumAsText[T <: Radioable[T]](answer: T): Content = formatDynamicEnumAsString(answer).toText
 

@@ -99,6 +99,7 @@ locationOfGoods.eori.error.required = Enter the EORI number or Trader Identifica
 locationOfGoods.eori.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
 locationOfGoods.eori.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 locationOfGoods.eori.change.hidden = EORI number or Trader Identification Number (TIN) for the location of goods
+locationOfGoods.address.change.hidden = the address for the location of goods
 
 locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
 locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?

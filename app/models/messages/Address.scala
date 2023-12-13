@@ -16,6 +16,7 @@
 
 package models.messages
 
+import models.DynamicAddress
 import play.api.libs.json.{Json, OFormat}
 
 case class Address(
@@ -23,8 +24,12 @@ case class Address(
   postcode: Option[String],
   city: String,
   country: String
-)
-
+) {
+  def toDynamicAddress: DynamicAddress = DynamicAddress(
+    numberAndStreet = streetAndNumber,
+    city = city,
+    postalCode = postcode
+  )
 object Address {
   implicit val format: OFormat[Address] = Json.format[Address]
 }

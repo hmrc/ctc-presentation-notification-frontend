@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{Coordinates, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
@@ -124,6 +124,14 @@ class LocationOfGoodsAnswersHelper(
     prefix = "locationOfGoods.contactPhoneNumber",
     findValueInDepartureData = _.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.phoneNumber)),
     id = Some("change-person-number")
+  )
+
+  def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
+    page = AddressPage,
+    formatAnswer = formatAsDynamicAddress,
+    prefix = "locationOfGoods.address",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.Address.map(_.toDynamicAddress)),
+    id = Some("change-location-of-goods-address")
   )
 
   def locationOfGoodsSection: Future[Section] = {
