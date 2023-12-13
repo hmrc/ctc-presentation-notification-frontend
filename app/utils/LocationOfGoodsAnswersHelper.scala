@@ -16,10 +16,8 @@
 
 package utils
 
-import models.{LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
-import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import pages.locationOfGoods.{AddContactYesNoPage, AddIdentifierYesNoPage, AddressPage, AuthorisationNumberPage, EoriPage, IdentificationPage, LocationTypePage}
 import models.{Coordinates, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.locationOfGoods._
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
@@ -72,12 +70,28 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-eori")
   )
 
-  def additionalIdentifier: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def additionalIdentifierYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddIdentifierYesNoPage,
     formatAnswer = formatAsText(_),
-    prefix = "locationOfGoods.additionalIdentifier",
+    prefix = "locationOfGoods.addIdentifierYesNo",
     findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined),
+    id = Some("change-add-additional-identifier")
+  )
+
+  def additionalIdentifierRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = AdditionalIdentifierPage,
+    formatAnswer = formatAsText(_),
+    prefix = "locationOfGoods.additionalIdentifier",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.additionalIdentifier),
     id = Some("change-additional-identifier")
+  )
+
+  def unLocode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = UnLocodePage,
+    formatAnswer = formatAsText(_),
+    prefix = "locationOfGoods.unLocode",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.UNLocode),
+    id = Some("change-unLocode")
   )
 
   def coordinates: Option[SummaryListRow] = getAnswerAndBuildRow[Coordinates](
@@ -145,7 +159,9 @@ class LocationOfGoodsAnswersHelper(
         ),
       authorisationNumber,
       eoriNumber,
-      additionalIdentifier,
+      additionalIdentifierYesNo,
+      additionalIdentifierRow,
+      unLocode,
       coordinates,
       locationOfGoodsContactYesNo,
       locationOfGoodsContactPersonName,
@@ -179,7 +195,9 @@ class LocationOfGoodsAnswersHelper(
           locationTypeRowOption,
           qualifierIdentificationRowOption,
           Future.successful(authorisationNumber),
-          Future.successful(additionalIdentifier),
+          Future.successful(additionalIdentifierYesNo),
+          Future.successful(additionalIdentifierRow),
+          Future.successful(unLocode),
           Future.successful(eoriNumber),
           Future.successful(coordinates),
           Future.successful(locationOfGoodsContactYesNo),

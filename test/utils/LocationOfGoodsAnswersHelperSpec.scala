@@ -182,7 +182,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
-      "additionalIdentifier" - {
+      "additionalIdentifierYesNo" - {
         "must return Some(Row)" - {
           s"when AddIdentifierYesNoPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[Boolean]) {
@@ -190,17 +190,66 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                   .setValue(AddIdentifierYesNoPage, additionalIdentifier)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.additionalIdentifier
+                val result = helper.additionalIdentifierYesNo
 
-                result.get.key.value mustBe "Additional identifier"
+                result.get.key.value mustBe "Do you want to add another identifier for the location of goods?"
                 result.get.value.value mustBe additionalIdentifier.toString
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "if you want to add another identifier for the location of goods"
+                action.id mustBe "change-add-additional-identifier"
+            }
+          }
+        }
+      }
+
+      "additionalIdentifier" - {
+        "must return Some(Row)" - {
+          s"when AddIdentifierYesNoPage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[String]) {
+              (mode, additionalIdentifier) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(AddIdentifierYesNoPage, true)
+                  .setValue(AdditionalIdentifierPage, additionalIdentifier)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.additionalIdentifierRow
+
+                result.get.key.value mustBe "Additional identifier"
+                result.get.value.value mustBe additionalIdentifier
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, mode).url
                 action.visuallyHiddenText.get mustBe "additional identifier"
                 action.id mustBe "change-additional-identifier"
+            }
+          }
+        }
+      }
+
+      "unLocode" - {
+        "must return Some(Row)" - {
+          s"when UnLocodePage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[String]) {
+              (mode, unLocode) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(UnLocodePage, unLocode)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.unLocode
+
+                result.get.key.value mustBe "UN/LOCODE"
+                result.get.value.value mustBe unLocode
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "UN/LOCODE for the location of goods"
+                action.id mustBe "change-unLocode"
             }
           }
         }
@@ -413,13 +462,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       }
 
       "section should contain all the answer rows" in {
-        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String], arbitrary[Boolean]) {
-          (mode, locationType, identification, authorisationNumber, additionalIdentifier) =>
+        forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String], arbitrary[Boolean], arbitrary[String]) {
+          (mode, locationType, identification, authorisationNumber, additionalIdentifierYesNo, additionalIdentifier) =>
             val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
               .setValue(LocationTypePage, locationType)
               .setValue(IdentificationPage, identification)
               .setValue(AuthorisationNumberPage, authorisationNumber)
-              .setValue(AddIdentifierYesNoPage, additionalIdentifier)
+              .setValue(AddIdentifierYesNoPage, additionalIdentifierYesNo)
+              .setValue(AdditionalIdentifierPage, additionalIdentifier)
+              .setValue(UnLocodePage, "unLocode")
               .setValue(AddContactYesNoPage, true)
               .setValue(PhoneNumberPage, "999")
               .setValue(NamePage, "Han Solo")
@@ -427,7 +478,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 7
+                section.rows.size mustBe 9
             }
         }
       }
@@ -605,6 +656,42 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "additionalIdentifierYesNo" - {
+
+        "must return None" - {
+          "when additionalIdentifier undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.additionalIdentifierYesNo
+                result mustBe None
+            }
+          }
+        }
+        "must return Some(Row)" - {
+          "when additional identifier defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithAdditionalIdentifierUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper                                   = new LocationOfGoodsAnswersHelper(ie015WithAdditionalIdentifierUserAnswers, departureId, mockReferenceDataService, mode)
+                val result                                   = helper.additionalIdentifierYesNo
+
+                result.get.key.value mustBe "Do you want to add another identifier for the location of goods?"
+                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.exists(_.additionalIdentifier.isDefined).toString
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "if you want to add another identifier for the location of goods"
+                action.id mustBe "change-add-additional-identifier"
+            }
+          }
+        }
+      }
+
       "additionalIdentifier" - {
 
         "must return None" - {
@@ -614,28 +701,64 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val ie015WithNoUserAnswers =
                   UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
-                val result = helper.additionalIdentifier
+                val result = helper.additionalIdentifierRow
                 result mustBe None
             }
           }
         }
         "must return Some(Row)" - {
-          "when AddIdentifierYesNoPage defined in ie15" in {
+          "when additional identifier defined in ie15" in {
             forAll(arbitrary[Mode]) {
               mode =>
                 val ie015WithAdditionalIdentifierUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
                 val helper                                   = new LocationOfGoodsAnswersHelper(ie015WithAdditionalIdentifierUserAnswers, departureId, mockReferenceDataService, mode)
-                val result                                   = helper.additionalIdentifier
+                val result                                   = helper.additionalIdentifierRow
 
                 result.get.key.value mustBe "Additional identifier"
-                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.exists(_.additionalIdentifier.isDefined).toString
+                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.get.additionalIdentifier.get
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
                 action.content.value mustBe "Change"
-                action.href mustBe controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
+                action.href mustBe controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, mode).url
                 action.visuallyHiddenText.get mustBe "additional identifier"
                 action.id mustBe "change-additional-identifier"
+            }
+          }
+        }
+      }
+
+      "unLocode" - {
+
+        "must return None" - {
+          "when unLocode undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.unLocode
+                result mustBe None
+            }
+          }
+        }
+        "must return Some(Row)" - {
+          "when unLocode defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper           = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+                val result           = helper.unLocode
+
+                result.get.key.value mustBe "UN/LOCODE"
+                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.get.UNLocode.get
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "UN/LOCODE for the location of goods"
+                action.id mustBe "change-unLocode"
             }
           }
         }
@@ -685,7 +808,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 9
+                section.rows.size mustBe 11
             }
         }
       }

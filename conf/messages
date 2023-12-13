@@ -134,6 +134,8 @@ checkInformation.paragraph2 = Check your answers and confirm if these details ar
 
 locationOfGoods.unLocode.title = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goods?
+locationOfGoods.unLocode.checkYourAnswersLabel = UN/LOCODE
+locationOfGoods.unLocode.change.hidden = UN/LOCODE for the location of goods
 locationOfGoods.unLocode.paragraph = This is a 5-character code used to identify a transit-related location, like a port or clearance depot.
 locationOfGoods.unLocode.hint = Enter the code, like DEBER or ESMAD.
 locationOfGoods.unLocode.error.required = Enter the UN/LOCODE for the location of goods
