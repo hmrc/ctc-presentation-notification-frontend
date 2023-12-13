@@ -54,18 +54,6 @@ package object models {
 
     def length: Int = arr.getOrElse(JsArray()).value.length
 
-    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
-      arr
-        .map {
-          _.zipWithIndex.flatMap {
-            case (value, i) => f(value, i)
-          }
-        }
-        .getOrElse(Nil)
-
-    def lastIndexOption: Option[Int] =
-      arr.map(_.value.length - 1)
-
   }
 
   implicit class RichJsValue(jsValue: JsValue) {
