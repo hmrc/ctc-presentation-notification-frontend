@@ -27,6 +27,8 @@ case class Address(
   country: String
 ) {
 
+  def toCountry = Country(code = CountryCode(country), description = "")
+
   def toDynamicAddress: DynamicAddress = DynamicAddress(
     numberAndStreet = streetAndNumber,
     city = city,
