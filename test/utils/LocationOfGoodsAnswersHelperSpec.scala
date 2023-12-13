@@ -20,7 +20,8 @@ import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import config.Constants._
 import generators.Generators
-import models.messages.MessageData
+import models.messages.{Address, MessageData}
+import models.reference.{Country, CountryCode}
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -461,6 +462,77 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "country" - {
+        "must return Some(Row)" - {
+          "when country defined in ie15" in {
+            forAll(arbitrary[Mode], arbitrary[Country]) {
+              (mode, countryType) =>
+                when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(countryType))
+
+                val ie015UserAnswers = UserAnswers(
+                  departureId,
+                  eoriNumber,
+                  lrn.value,
+                  Json.obj(),
+                  Instant.now(),
+                  messageData.copy(Consignment =
+                    messageData.Consignment.copy(LocationOfGoods =
+                      Some(
+                        messageData.Consignment.LocationOfGoods.get
+                          .copy(Address = Some(Address(streetAndNumber = "", postcode = None, city = "", country = countryType.code.code)))
+                      )
+                    )
+                  )
+                )
+                val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.countryTypeRow(countryType.description)
+
+                result.key.value mustBe "Country"
+                result.value.value mustBe countryType.description
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "country for the location of goods"
+                action.id mustBe "change-location-of-goods-country"
+            }
+          }
+          s"when LocationTypePage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[Country]) {
+              (mode, countryType) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(CountryPage, countryType)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.countryTypeRow(countryType.description)
+
+                result.key.value mustBe "Country"
+                result.value.value mustBe countryType.description
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "country for the location of goods"
+                action.id mustBe "change-location-of-goods-country"
+            }
+          }
+        }
+
+        "must return None" - {
+          "when country undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.country
+                result mustBe None
+            }
+          }
+        }
+      }
+
       "address" - {
         "must return Some(Row)" - {
           "when address defined in ie15" in {
@@ -861,6 +933,10 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       }
 
       "section should contain all the answer rows" in {
+        when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(LocationType("A", "a desc")))
+        when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(Country(CountryCode("GB"), "United Kingdom")))
+        when(mockReferenceDataService.getQualifierOfIdentification(any())(any()))
+          .thenReturn(Future.successful(LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier")))
         forAll(arbitrary[Mode]) {
           mode =>
             val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
@@ -868,7 +944,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 12
+                section.rows.size mustBe 13
             }
         }
       }

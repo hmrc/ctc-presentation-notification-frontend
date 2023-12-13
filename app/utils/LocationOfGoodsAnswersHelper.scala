@@ -16,6 +16,7 @@
 
 package utils
 
+import models.reference.Country
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.locationOfGoods._
@@ -126,6 +127,15 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-person-number")
   )
 
+  def countryTypeRow(answer: String): SummaryListRow = buildSimpleRow(
+    answer = Text(answer),
+    label = messages("locationOfGoods.country.checkYourAnswersLabel"),
+    prefix = "locationOfGoods.country",
+    id = Some("change-location-of-goods-country"),
+    call = Some(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode)),
+    args = Seq.empty
+  )
+
   def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
     page = AddressPage,
     formatAnswer = formatAsDynamicAddress,
@@ -165,6 +175,11 @@ class LocationOfGoodsAnswersHelper(
         .map(
           qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
         ),
+      userAnswers
+        .get(CountryPage)
+        .map(
+          country => countryTypeRow(country.toString)
+        ),
       authorisationNumber,
       address,
       eoriNumber,
@@ -186,6 +201,15 @@ class LocationOfGoodsAnswersHelper(
     ).map {
       _.map(
         locationType => locationTypeRow(locationType.toString)
+      )
+    }
+
+    val countryTypeRowOption = fetchValue[Country](
+      checkYourAnswersReferenceDataService.getCountry,
+      userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.country))
+    ).map {
+      _.map(
+        country => countryTypeRow(country.description)
       )
     }
 
@@ -212,6 +236,7 @@ class LocationOfGoodsAnswersHelper(
           Future.successful(locationOfGoodsContactYesNo),
           Future.successful(locationOfGoodsContactPersonName),
           Future.successful(locationOfGoodsContactPersonNumber),
+          countryTypeRowOption,
           Future.successful(address)
         )
       )

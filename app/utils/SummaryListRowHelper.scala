@@ -41,7 +41,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatAsText[T](answer: T): Content = s"$answer".toText
 
-  protected def formatAsCountry(country: Country): Content = country.toString.toText
+  protected def formatAsCountry(country: Country): Content = country.description.toText
 
   protected def formatDynamicEnumAsString[T <: Radioable[T]](answer: T): String = answer.asString
 

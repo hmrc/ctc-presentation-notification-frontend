@@ -17,6 +17,7 @@
 package models.messages
 
 import models.DynamicAddress
+import models.reference.{Country, CountryCode}
 import play.api.libs.json.{Json, OFormat}
 
 case class Address(
