@@ -25,6 +25,7 @@ import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificat
 import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject() (
   actions: Actions,
@@ -32,14 +33,19 @@ class CheckYourAnswersController @Inject() (
   viewModelProvider: PresentationNotificationAnswersViewModelProvider,
   navigator: Navigator,
   view: CheckYourAnswersView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
+  def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val lrn      = request.userAnswers.lrn
-      val sections = viewModelProvider(request.userAnswers, departureId).sections
-      Ok(view(lrn, departureId, sections))
+      val presentationNotificationAnswersViewModel = viewModelProvider(request.userAnswers, departureId)
+
+      presentationNotificationAnswersViewModel
+        .map {
+          viewModel =>
+            Ok(view(request.userAnswers.lrn, departureId, viewModel.sections))
+        }
   }
 
   def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {

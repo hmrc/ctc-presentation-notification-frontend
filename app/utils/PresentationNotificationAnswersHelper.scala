@@ -16,6 +16,7 @@
 
 package utils
 
+import cats.data.OptionT
 import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
 import models.{Mode, UserAnswers}
@@ -23,15 +24,21 @@ import pages.loading._
 import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+import services.CheckYourAnswersReferenceDataService
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HeaderCarrier
+import viewModels.Section
 
 import java.time.LocalDate
+import scala.concurrent.{ExecutionContext, Future}
 
 class PresentationNotificationAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
+  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig)
+)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
@@ -98,12 +105,13 @@ class PresentationNotificationAnswersHelper(
     id = Some("change-add-border-mode")
   )
 
-  def borderModeOfTransport: Option[SummaryListRow] = getAnswerAndBuildRow[BorderMode](
-    page = BorderModeOfTransportPage,
-    formatAnswer = formatDynamicEnumAsText(_),
+  def borderModeOfTransportRow(answer: String): SummaryListRow = buildSimpleRow(
+    answer = Text(answer),
+    label = messages("transport.border.borderModeOfTransport.checkYourAnswersLabel"),
     prefix = "transport.border.borderModeOfTransport",
-    findValueInDepartureData = message => message.Consignment.modeOfTransportAtTheBorder.map(_.asBorderMode),
-    id = Some("change-border-mode-of-transport")
+    id = Some("change-border-mode-of-transport"),
+    call = Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode)),
+    args = Seq.empty
   )
 
   def addBorderMeansOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -114,4 +122,26 @@ class PresentationNotificationAnswersHelper(
     id = Some("change-add-identification-for-the-border-means-of-transport")
   )
 
+  def borderModeSection: Future[Section] = {
+
+    val borderModeOfTransport: OptionT[Future, SummaryListRow] = for {
+      borderMode <- OptionT(
+        fetchValue[BorderMode](
+          BorderModeOfTransportPage,
+          checkYourAnswersReferenceDataService.getBorderMode,
+          userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
+        )(userAnswers, BorderMode.format)
+      )
+      borderModeRow = borderModeOfTransportRow(borderMode.toString)
+
+    } yield borderModeRow
+
+    borderModeOfTransport.value.map {
+      borderModeOfTransport =>
+        Section(
+          sectionTitle = messages("transport.border.borderModeOfTransport.caption"),
+          Seq(borderModeOfTransportYesNo, borderModeOfTransport).flatten
+        )
+    }
+  }
 }

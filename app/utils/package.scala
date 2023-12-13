@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import models.LocationOfGoodsIdentification
+import models.reference.{BorderMode, Country, CountryCode}
 import models.reference.transport.border.active.Identification
 import models.reference._
 
@@ -29,8 +31,6 @@ package object utils {
       case "1" => true
       case x   => throw new IllegalArgumentException(s"could not cast $x to boolean")
     }
-
-    def asBorderMode: BorderMode = BorderMode.getDescription(value)
 
     def asLocalDate: LocalDate = {
       val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")

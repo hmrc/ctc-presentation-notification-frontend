@@ -23,36 +23,38 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import utils.{ActiveBorderTransportMeansAnswersHelper, PresentationNotificationAnswersHelper}
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
+import services.CheckYourAnswersReferenceDataService
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.{LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 case class PresentationNotificationAnswersViewModel(sections: Seq[Section])
 
 object PresentationNotificationAnswersViewModel {
 
-  class PresentationNotificationAnswersViewModelProvider @Inject() (
-    activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider
-  )(implicit
-    val config: FrontendAppConfig
+  class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
+    val config: FrontendAppConfig,
+    activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider,
+    checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
   ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers, departureId: String)(implicit messages: Messages): PresentationNotificationAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, departureId: String)(implicit
+      messages: Messages,
+      ec: ExecutionContext,
+      hc: HeaderCarrier
+    ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
+      val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
+      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
 
       val firstSection = Section(
         rows = Seq(
           helper.limitDate,
           helper.containerIndicator
-        ).flatten
-      )
-
-      val borderSection = Section(
-        rows = Seq(
-          helper.borderModeOfTransportYesNo,
-          helper.borderModeOfTransport
         ).flatten
       )
 
@@ -73,6 +75,7 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
+
       val activeBorderTransportMeansSection: Seq[Section] =
         userAnswers
           .get(BorderActiveListSection)
@@ -89,10 +92,16 @@ object PresentationNotificationAnswersViewModel {
           }
           .toSeq
 
-      val sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ addBorderMeansActiveSection.toSeq ++ activeBorderTransportMeansSection
+      for {
+        borderSection <- helper.borderModeSection
+        locationOfGoods <- locationOfGoodsHelper.locationOfGoodsSection
+        sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ addBorderMeansActiveSection.toSeq ++ activeBorderTransportMeansSection ++  locationOfGoods.toSeq
+      } yield new PresentationNotificationAnswersViewModel(sections)
 
-      new PresentationNotificationAnswersViewModel(sections)
+
     }
+
+
     // scalastyle:on method.length
   }
 }

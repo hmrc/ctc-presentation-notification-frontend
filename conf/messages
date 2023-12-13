@@ -66,6 +66,7 @@ checkYourAnswers.transportMeans.active = Border means of transport {0}
 checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
 checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
 
+checkYourAnswers.locationOfGoods = Location of goods
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration

@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,6 +29,8 @@ import play.api.test.Helpers._
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import viewModels.{PresentationNotificationAnswersViewModel, Section}
 import views.html.CheckYourAnswersView
+
+import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with PageBehaviours {
 
@@ -43,18 +45,16 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
   "CheckYourAnswersController" - {
     "return OK and the correct view for a GET" in {
 
-      when(mockViewModelProvider.apply(any(), any())(any()))
-        .thenReturn(PresentationNotificationAnswersViewModel(sampleSections))
+      when(mockViewModelProvider.apply(any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(PresentationNotificationAnswersViewModel(sampleSections)))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.copy(departureData = TestMessageData.messageData))
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(departureId).url)
 
       val result = route(app, request).value
 
       val view = app.injector.instanceOf[CheckYourAnswersView]
-
-      println(result)
 
       status(result) mustBe OK
 

@@ -31,12 +31,10 @@ case class BorderMode(code: String, description: String) extends Radioable[Borde
 object BorderMode extends DynamicEnumerableType[BorderMode] {
 
   //TODO: update this to use reference data calls
-  def getDescription(value: String): BorderMode = value match {
-    case Maritime => BorderMode(Maritime, "Maritime")
-    case Rail     => BorderMode(Rail, "Rail")
-    case Road     => BorderMode(Road, "Road")
-    case Air      => BorderMode(Air, "Air")
-  }
+  def getDescription(value: String, borderModes: Seq[BorderMode]): BorderMode = borderModes
+    .find(_.code == value)
+    .getOrElse(throw new Exception(s"Could not find the border code '$value' in the border modes from reference data: ${borderModes.mkString(", ")}"))
+
   implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
   val messageKeyPrefix = "transport.border.borderModeOfTransport"
