@@ -203,7 +203,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val result = helper.additionalIdentifierYesNo
 
                 result.get.key.value mustBe "Do you want to add another identifier for the location of goods?"
-                result.get.value.value mustBe additionalIdentifier.toString
+                result.get.value.value mustBe (if (additionalIdentifier) "Yes" else "No")
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head
@@ -881,7 +881,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val result                                   = helper.additionalIdentifierYesNo
 
                 result.get.key.value mustBe "Do you want to add another identifier for the location of goods?"
-                result.get.value.value mustBe messageData.Consignment.LocationOfGoods.exists(_.additionalIdentifier.isDefined).toString
+                result.get.value.value mustBe (if (messageData.Consignment.LocationOfGoods.exists(_.additionalIdentifier.isDefined)) "Yes" else "No")
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head

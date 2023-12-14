@@ -16,9 +16,8 @@
 
 package utils
 
-import models.reference.transport.border.active.Identification
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages
@@ -79,7 +78,7 @@ class LocationOfGoodsAnswersHelper(
 
   def additionalIdentifierYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddIdentifierYesNoPage,
-    formatAnswer = formatAsText(_),
+    formatAnswer = formatAsYesOrNo,
     prefix = "locationOfGoods.addIdentifierYesNo",
     findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined),
     id = Some("change-add-additional-identifier")

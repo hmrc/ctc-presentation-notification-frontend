@@ -47,13 +47,17 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case LimitDatePage           => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case LocationTypePage        => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case IdentificationPage      => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case AuthorisationNumberPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case AddContactYesNoPage     => ua => addContactYesNoNavigation(ua, departureId, mode)
-    case NamePage                => ua => PhoneNumberPage.route(ua, departureId, mode)
-    case PhoneNumberPage         => ua => phoneNumberPageNavigation(ua, departureId, mode)
+    case LimitDatePage               => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case LocationTypePage            => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddIdentifierYesNoPage      => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AdditionalIdentifierPage    => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case UnLocodePage                => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case CustomsOfficeIdentifierPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case IdentificationPage          => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AuthorisationNumberPage     => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddContactYesNoPage         => ua => addContactYesNoNavigation(ua, departureId, mode)
+    case NamePage                    => ua => PhoneNumberPage.route(ua, departureId, mode)
+    case PhoneNumberPage             => ua => phoneNumberPageNavigation(ua, departureId, mode)
   }
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =

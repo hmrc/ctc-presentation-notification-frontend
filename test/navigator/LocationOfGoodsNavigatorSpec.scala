@@ -27,7 +27,6 @@ import models.reference.BorderMode
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
 import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -35,6 +34,7 @@ import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
+import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -701,7 +701,42 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .nextPage(AuthorisationNumberPage, answers, departureId, CheckMode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
+      }
 
+      "must go from AddIdentifierYesNoPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AddIdentifierYesNoPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from AdditionalIdentifierPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AdditionalIdentifierPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from UnLocodePage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(UnLocodePage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from CustomsOfficeIdentifierPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(CustomsOfficeIdentifierPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
       }
 
       "when on AddContactYesNoPage" - {
