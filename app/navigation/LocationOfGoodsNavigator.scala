@@ -47,9 +47,10 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case LimitDatePage      => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case LocationTypePage   => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case IdentificationPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case LimitDatePage           => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case LocationTypePage        => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case IdentificationPage      => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AuthorisationNumberPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
