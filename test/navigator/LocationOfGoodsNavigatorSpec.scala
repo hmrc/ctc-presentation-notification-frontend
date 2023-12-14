@@ -703,6 +703,40 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
 
       }
+
+      "when on AddContactYesNoPage" - {
+        "must go from AddContactYesNoPage to check your answers page when no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswersSet = answers.setValue(AddContactYesNoPage, false)
+              navigator
+                .nextPage(AddContactYesNoPage, userAnswersSet, departureId, CheckMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+
+        }
+        "must go from AddContactYesNoPage to name page when yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswersSet = answers.setValue(AddContactYesNoPage, true)
+              navigator
+                .nextPage(AddContactYesNoPage, userAnswersSet, departureId, CheckMode)
+                .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, CheckMode))
+          }
+
+        }
+      }
+
+      "must go from PhoneNumberPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(PhoneNumberPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+      }
+
     }
   }
 }

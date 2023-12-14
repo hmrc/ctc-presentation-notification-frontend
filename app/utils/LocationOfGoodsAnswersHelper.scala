@@ -52,7 +52,7 @@ class LocationOfGoodsAnswersHelper(
 
   def qualifierIdentificationRow(answer: String): Option[SummaryListRow] = getAnswerAndBuildRow[LocationOfGoodsIdentification](
     page = IdentificationPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "locationOfGoods.identification",
     findValueInDepartureData = message =>
       message.Consignment.LocationOfGoods.map(

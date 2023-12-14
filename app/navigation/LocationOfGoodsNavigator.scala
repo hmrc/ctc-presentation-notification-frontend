@@ -51,6 +51,9 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case LocationTypePage        => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case IdentificationPage      => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AuthorisationNumberPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddContactYesNoPage     => ua => addContactYesNoNavigation(ua, departureId, mode)
+    case NamePage                => ua => PhoneNumberPage.route(ua, departureId, mode)
+    case PhoneNumberPage         => ua => phoneNumberPageNavigation(ua, departureId, mode)
   }
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
@@ -87,16 +90,29 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     }
 
   private def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(AddContactYesNoPage) match {
-      case Some(true)  => NamePage.route(userAnswers, departureId, mode)
-      case Some(false) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    mode match {
+      case NormalMode =>
+        userAnswers.get(AddContactYesNoPage) match {
+          case Some(true)  => NamePage.route(userAnswers, departureId, mode)
+          case Some(false) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
+          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+        }
+      case CheckMode =>
+        userAnswers.get(AddContactYesNoPage) match {
+          case Some(true)  => NamePage.route(userAnswers, departureId, mode)
+          case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+        }
     }
 
   private def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.departureData.Consignment.PlaceOfLoading match {
-      case Some(_) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
-      case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
+    mode match {
+      case NormalMode =>
+        userAnswers.departureData.Consignment.PlaceOfLoading match {
+          case Some(_) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
+          case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
+        }
+      case CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
