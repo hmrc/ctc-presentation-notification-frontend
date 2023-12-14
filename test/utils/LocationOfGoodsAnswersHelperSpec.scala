@@ -97,7 +97,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                   .setValue(IdentificationPage, identification)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.qualifierIdentificationRow(identification)
+                val result = helper.qualifierIdentificationRow(identification.description).get
 
                 result.key.value mustBe "Identifier type for the location of goods"
                 result.value.value mustBe identification.description
@@ -688,6 +688,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
         "must return Some(Row)" - {
           "when locationType defined in ie15" in {
+
             forAll(arbitrary[Mode], Gen.oneOf(locationTypes)) {
               (mode, locationType) =>
                 when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
@@ -772,7 +773,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 )
 
                 val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
-                val result = helper.qualifierIdentificationRow(identification)
+                val result = helper.qualifierIdentificationRow(identification.description).get
 
                 result.key.value mustBe "Identifier type for the location of goods"
                 result.value.value mustBe identification.description
@@ -804,10 +805,10 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 )
 
                 val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
-                val result = helper.qualifierIdentificationRow(LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier"))
+                val result = helper.qualifierIdentificationRow("AddressIdentifier").get
 
                 result.key.value mustBe "Identifier type for the location of goods"
-                result.value.value mustBe "Address"
+                result.value.value mustBe "AddressIdentifier"
                 val actions = result.actions.get.items
                 actions.size mustBe 1
                 val action = actions.head

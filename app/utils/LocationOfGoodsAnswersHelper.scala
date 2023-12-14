@@ -16,8 +16,9 @@
 
 package utils
 
+import models.reference.transport.border.active.Identification
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages
@@ -49,17 +50,15 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-location-type")
   )
 
-  def qualifierIdentificationRow(q: LocationOfGoodsIdentification): SummaryListRow = buildSimpleRow(
-    answer = if (q.code == "Z") {
-      Text(messages("locationOfGoods.identification.Z"))
-    } else {
-      Text(q.description)
-    },
-    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
+  def qualifierIdentificationRow(answer: String): Option[SummaryListRow] = getAnswerAndBuildRow[LocationOfGoodsIdentification](
+    page = IdentificationPage,
+    formatAnswer = formatAsText,
     prefix = "locationOfGoods.identification",
-    id = Some("change-qualifier-identification"),
-    call = Some(controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode)),
-    args = Seq.empty
+    findValueInDepartureData = message =>
+      message.Consignment.LocationOfGoods.map(
+        x => LocationOfGoodsIdentification(x.qualifierOfIdentification, answer)
+      ),
+    id = Some("change-qualifier-identification")
   )
 
   def authorisationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -194,8 +193,8 @@ class LocationOfGoodsAnswersHelper(
         ),
       userAnswers
         .get(IdentificationPage)
-        .map(
-          qualifierIdentification => qualifierIdentificationRow(qualifierIdentification)
+        .flatMap(
+          qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
         ),
       userAnswers
         .get(CountryPage)
@@ -276,8 +275,8 @@ class LocationOfGoodsAnswersHelper(
       checkYourAnswersReferenceDataService.getQualifierOfIdentification,
       userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
     ).map {
-      _.map(
-        qualifierIdentification => qualifierIdentificationRow(qualifierIdentification)
+      _.flatMap(
+        qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
       )
     }
 
