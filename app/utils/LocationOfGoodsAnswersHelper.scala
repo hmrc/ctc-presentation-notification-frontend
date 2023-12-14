@@ -48,8 +48,11 @@ class LocationOfGoodsAnswersHelper(
   )
 
   def qualifierIdentificationRow(answer: String): SummaryListRow = buildSimpleRow(
-    answer = Text(answer),
-    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
+    answer = if (answer == "Free text") {
+      Text("Address")
+    } else {
+      Text(answer)
+    },    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
     prefix = "locationOfGoods.identification",
     id = Some("change-qualifier-identification"),
     call = Some(controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode)),
