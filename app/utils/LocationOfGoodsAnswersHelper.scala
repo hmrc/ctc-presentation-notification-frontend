@@ -55,7 +55,6 @@ class LocationOfGoodsAnswersHelper(
     } else {
       Text(q.description)
     },
-
     label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
     prefix = "locationOfGoods.identification",
     id = Some("change-qualifier-identification"),
@@ -228,7 +227,7 @@ class LocationOfGoodsAnswersHelper(
   }
 
   private def buildFromDepartureData: Future[List[SummaryListRow]] = {
-    val locationTypeRowFuture            = fetchLocationTypeRow.map(_.flatten)
+    val locationTypeRowFuture            = fetchLocationTypeRow
     val countryTypeRowFuture             = fetchCountryTypeRow
     val qualifierIdentificationRowFuture = fetchQualifierIdentificationRow
     val customsOfficeIdentifierRowOption = fetchCustomsOfficeIdentifierRow
@@ -297,7 +296,7 @@ class LocationOfGoodsAnswersHelper(
       checkYourAnswersReferenceDataService.getLocationType,
       userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
     ).map {
-      _.map(
+      _.flatMap(
         locationType => locationTypeRow(locationType.toString)
       )
     }
