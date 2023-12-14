@@ -20,7 +20,7 @@ import play.api.libs.json.{Format, Json}
 
 case class LocationOfGoodsIdentification(qualifier: String, description: String) extends Radioable[LocationOfGoodsIdentification] {
   override val messageKeyPrefix: String = LocationOfGoodsIdentification.messageKeyPrefix
-  override def toString: String         = s"$description"
+  override def toString: String         = s"$qualifier $description"
 
   override val code: String = qualifier
 

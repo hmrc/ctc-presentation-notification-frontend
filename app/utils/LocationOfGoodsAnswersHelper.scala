@@ -47,12 +47,13 @@ class LocationOfGoodsAnswersHelper(
     args = Seq.empty
   )
 
-  def qualifierIdentificationRow(answer: String): SummaryListRow = buildSimpleRow(
-    answer = if (answer == "Free text") {
-      Text("Address")
+  def qualifierIdentificationRow(q: LocationOfGoodsIdentification): SummaryListRow = buildSimpleRow(
+    answer = if (q.code == "Z") {
+      Text(messages("locationOfGoods.identification.Z"))
     } else {
-      Text(answer)
-    },    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
+      Text(q.description)
+    },
+    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
     prefix = "locationOfGoods.identification",
     id = Some("change-qualifier-identification"),
     call = Some(controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode)),
@@ -192,7 +193,7 @@ class LocationOfGoodsAnswersHelper(
       userAnswers
         .get(IdentificationPage)
         .map(
-          qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
+          qualifierIdentification => qualifierIdentificationRow(qualifierIdentification)
         ),
       userAnswers
         .get(CountryPage)
@@ -258,7 +259,7 @@ class LocationOfGoodsAnswersHelper(
       .map(_.flatten)
   }
 
-  def fetchCustomsOfficeIdentifierRow =
+  def fetchCustomsOfficeIdentifierRow: Future[Option[SummaryListRow]] =
     fetchValue[CustomsOffice](
       checkYourAnswersReferenceDataService.getCustomsOffice(userAnswers.departureData.countryOfDeparture),
       userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice.map(_.referenceNumber))
@@ -268,17 +269,17 @@ class LocationOfGoodsAnswersHelper(
       )
     }
 
-  def fetchQualifierIdentificationRow =
+  def fetchQualifierIdentificationRow: Future[Option[SummaryListRow]] =
     fetchValue[LocationOfGoodsIdentification](
       checkYourAnswersReferenceDataService.getQualifierOfIdentification,
       userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
     ).map {
       _.map(
-        qualifierIdentification => qualifierIdentificationRow(qualifierIdentification.toString)
+        qualifierIdentification => qualifierIdentificationRow(qualifierIdentification)
       )
     }
 
-  def fetchCountryTypeRow =
+  private def fetchCountryTypeRow =
     fetchValue[Country](
       checkYourAnswersReferenceDataService.getCountry,
       userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.country))
@@ -288,7 +289,7 @@ class LocationOfGoodsAnswersHelper(
       )
     }
 
-  def fetchLocationTypeRow =
+  def fetchLocationTypeRow: Future[Option[SummaryListRow]] =
     fetchValue[LocationType](
       checkYourAnswersReferenceDataService.getLocationType,
       userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
