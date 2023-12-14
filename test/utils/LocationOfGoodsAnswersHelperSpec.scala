@@ -53,6 +53,15 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
     LocationOfGoodsIdentification(PostalCodeIdentifier, "PostalCode")
   )
 
+  val identificationsExcludingAddress: Seq[LocationOfGoodsIdentification] = Seq(
+    LocationOfGoodsIdentification(CustomsOfficeIdentifier, "CustomsOfficeIdentifier"),
+    LocationOfGoodsIdentification(EoriNumberIdentifier, "EoriNumber"),
+    LocationOfGoodsIdentification(AuthorisationNumberIdentifier, "AuthorisationNumberIdentifier"),
+    LocationOfGoodsIdentification(UnlocodeIdentifier, "UnlocodeIdentifier"),
+    LocationOfGoodsIdentification(CoordinatesIdentifier, "CoordinatesIdentifier"),
+    LocationOfGoodsIdentification(PostalCodeIdentifier, "PostalCode")
+  )
+
   "LocationOfGoodsAnswersHelper" - {
 
     "when Location of Goods is present in IE170" - {
@@ -88,7 +97,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                   .setValue(IdentificationPage, identification)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.qualifierIdentificationRow(identification.toString)
+                val result = helper.qualifierIdentificationRow(identification)
 
                 result.key.value mustBe "Identifier type for the location of goods"
                 result.value.value mustBe identification.description
@@ -743,14 +752,14 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           }
         }
         "must return Some(Row)" - {
-          "when qualifierIdentification defined in ie15" in {
-            forAll(arbitrary[Mode], Gen.oneOf(identifications)) {
+          "when qualifierIdentification defined in ie15 and is not FreeText/Address" in {
+            forAll(arbitrary[Mode], Gen.oneOf(identificationsExcludingAddress)) {
               (mode, identification) =>
                 when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
 
                 val data = messageData.copy(Consignment =
                   messageData.Consignment.copy(LocationOfGoods =
-                    Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = identification.qualifier))
+                    Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = identification.description))
                   )
                 )
                 val ie015UserAnswers = UserAnswers(
@@ -763,7 +772,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 )
 
                 val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
-                val result = helper.qualifierIdentificationRow(identification.toString)
+                val result = helper.qualifierIdentificationRow(identification)
 
                 result.key.value mustBe "Identifier type for the location of goods"
                 result.value.value mustBe identification.description
@@ -776,6 +785,39 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 action.id mustBe "change-qualifier-identification"
             }
           }
+          "when qualifierIdentification defined in ie15 and is FreeText/Address" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                when(mockReferenceDataService.getQualifierOfIdentification(any())(any()))
+                  .thenReturn(Future.successful(LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier")))
+
+                val data = messageData.copy(Consignment =
+                  messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = "Address")))
+                )
+                val ie015UserAnswers = UserAnswers(
+                  departureId,
+                  eoriNumber,
+                  lrn.value,
+                  Json.obj(),
+                  Instant.now(),
+                  data
+                )
+
+                val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.qualifierIdentificationRow(LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier"))
+
+                result.key.value mustBe "Identifier type for the location of goods"
+                result.value.value mustBe "Address"
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "identifier type for the location of goods"
+                action.id mustBe "change-qualifier-identification"
+            }
+          }
+
         }
       }
 
