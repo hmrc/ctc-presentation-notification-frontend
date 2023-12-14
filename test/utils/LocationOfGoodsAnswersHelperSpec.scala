@@ -21,7 +21,7 @@ import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import config.Constants._
 import generators.Generators
 import models.messages.{Address, MessageData}
-import models.reference.{Country, CountryCode}
+import models.reference.{Country, CountryCode, CustomsOffice}
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -251,6 +251,46 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 action.href mustBe controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode).url
                 action.visuallyHiddenText.get mustBe "UN/LOCODE for the location of goods"
                 action.id mustBe "change-unLocode"
+            }
+          }
+        }
+      }
+
+      "Customs Office" - {
+        "Customs Office title row" - {
+          "must return Some(Row) when CustomsOfficeIdentifierPage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
+              (mode, customsOffice) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(CustomsOfficeIdentifierPage, customsOffice)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.customsOfficeIdentifierTitleRow()
+
+                result.key.value mustBe "Customs Office"
+                result.value.value mustBe ""
+                result.actions mustBe None
+            }
+          }
+        }
+
+        "Customs Office identifier row" - {
+          "must return Some(Row) when CustomsOfficeIdentifierPage defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
+              (mode, customsOffice) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(CustomsOfficeIdentifierPage, customsOffice)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.customsOfficeIdentifierRow(customsOffice.toString)
+
+                result.key.value mustBe "What is the customs office identifier for the location of goods?"
+                result.value.value mustBe customsOffice.toString
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the customs office identifier for the location of goods"
+                action.id mustBe "change-customs-office-identifier"
             }
           }
         }
@@ -498,7 +538,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 action.id mustBe "change-location-of-goods-country"
             }
           }
-          s"when LocationTypePage defined in the ie170" in {
+          s"when CountryPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[Country]) {
               (mode, countryType) =>
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
@@ -590,6 +630,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(AddIdentifierYesNoPage, additionalIdentifierYesNo)
               .setValue(AdditionalIdentifierPage, additionalIdentifier)
               .setValue(UnLocodePage, "unLocode")
+              .setValue(CustomsOfficeIdentifierPage, CustomsOffice("id", "name", None))
               .setValue(AddContactYesNoPage, true)
               .setValue(PhoneNumberPage, "999")
               .setValue(NamePage, "Han Solo")
@@ -597,7 +638,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 9
+                section.rows.size mustBe 11
             }
         }
       }
@@ -612,7 +653,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               (mode, location) =>
                 val referenceDataNotFoundException =
                   new ReferenceDataNotFoundException(refName = "locationType", refDataCode = location.code, listRefData = Nil)
-                when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
+                when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(
                   Future.failed(referenceDataNotFoundException)
                 )
                 val answers =
@@ -626,8 +667,8 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                     )
                   )
 
-                val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.borderModeSection
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.fetchLocationTypeRow
 
                 whenReady[Throwable, Assertion](result.failed) {
                   _ mustBe referenceDataNotFoundException
@@ -635,10 +676,9 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             }
           }
-
         }
         "must return Some(Row)" - {
-          "when LocationTypePage defined in ie15" in {
+          "when locationType defined in ie15" in {
             forAll(arbitrary[Mode], Gen.oneOf(locationTypes)) {
               (mode, locationType) =>
                 when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(Future.successful(locationType))
@@ -678,7 +718,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               (mode, qualifier) =>
                 val referenceDataNotFoundException =
                   new ReferenceDataNotFoundException(refName = "qualifierOfIdentification", refDataCode = qualifier.code, listRefData = Nil)
-                when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
+                when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(
                   Future.failed(referenceDataNotFoundException)
                 )
                 val answers =
@@ -692,8 +732,8 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                     )
                   )
 
-                val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.borderModeSection
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.fetchQualifierIdentificationRow
 
                 whenReady[Throwable, Assertion](result.failed) {
                   _ mustBe referenceDataNotFoundException
@@ -703,7 +743,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           }
         }
         "must return Some(Row)" - {
-          "when IdentificationPage defined in ie15" in {
+          "when qualifierIdentification defined in ie15" in {
             forAll(arbitrary[Mode], Gen.oneOf(identifications)) {
               (mode, identification) =>
                 when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(Future.successful(identification))
@@ -754,7 +794,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           }
         }
         "must return Some(Row)" - {
-          "when AuthorisationNumberPage defined in ie15" in {
+          "when authorisationNumber defined in ie15" in {
             forAll(arbitrary[Mode]) {
               mode =>
                 val ie015WithAuthorisationNumberUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
@@ -883,6 +923,73 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "customsOfficeIdentifier" - {
+        "future must return a failure" - {
+          s"when reference data call fails to find the code" in {
+
+            forAll(arbitrary[Mode], arbitrary[String]) {
+              (mode, customsOfficeId) =>
+                val referenceDataNotFoundException =
+                  new ReferenceDataNotFoundException(refName = "customsOffice", refDataCode = customsOfficeId, listRefData = Nil)
+                when(mockReferenceDataService.getCustomsOffice(any())(any())(any())).thenReturn(
+                  Future.failed(referenceDataNotFoundException)
+                )
+                val answers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
+                    emptyUserAnswers.departureData.copy(Consignment =
+                      emptyUserAnswers.departureData.Consignment.copy(LocationOfGoods =
+                        emptyUserAnswers.departureData.Consignment.LocationOfGoods.map(
+                          locationOfGoods => locationOfGoods.copy(CustomsOffice = Some(models.messages.CustomsOffice(customsOfficeId)))
+                        )
+                      )
+                    )
+                  )
+
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.fetchCustomsOfficeIdentifierRow
+
+                whenReady[Throwable, Assertion](result.failed) {
+                  _ mustBe referenceDataNotFoundException
+                }
+
+            }
+          }
+        }
+        "must return Some(Row)" - {
+          "when customs office identifier defined in ie15" in {
+            forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
+              (mode, customsOffice) =>
+                when(mockReferenceDataService.getCustomsOffice(any())(any())(any())).thenReturn(Future.successful(customsOffice))
+
+                val ie015UserAnswers = UserAnswers(
+                  departureId,
+                  eoriNumber,
+                  lrn.value,
+                  Json.obj(),
+                  Instant.now(),
+                  messageData.copy(Consignment =
+                    messageData.Consignment.copy(LocationOfGoods =
+                      Some(messageData.Consignment.LocationOfGoods.get.copy(CustomsOffice = Some(models.messages.CustomsOffice(customsOffice.id))))
+                    )
+                  )
+                )
+                val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.customsOfficeIdentifierRow(customsOffice.toString)
+
+                result.key.value mustBe "What is the customs office identifier for the location of goods?"
+                result.value.value mustBe customsOffice.toString
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the customs office identifier for the location of goods"
+                action.id mustBe "change-customs-office-identifier"
+            }
+          }
+        }
+      }
+
       "coordinates" - {
 
         "must return None" - {
@@ -924,6 +1031,8 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(Country(CountryCode("GB"), "United Kingdom")))
         when(mockReferenceDataService.getQualifierOfIdentification(any())(any()))
           .thenReturn(Future.successful(LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier")))
+        when(mockReferenceDataService.getCustomsOffice(any())(any())(any()))
+          .thenReturn(Future.successful(CustomsOffice("id", "name", None)))
         forAll(arbitrary[Mode]) {
           mode =>
             val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
@@ -931,7 +1040,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 13
+                section.rows.size mustBe 15
             }
         }
       }

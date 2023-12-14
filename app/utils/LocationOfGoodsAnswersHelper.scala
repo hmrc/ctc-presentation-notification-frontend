@@ -16,13 +16,14 @@
 
 package utils
 
-import models.reference.Country
+import models.reference.{Country, CustomsOffice}
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
-import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.locationOfGoods._
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Empty
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
@@ -93,6 +94,21 @@ class LocationOfGoodsAnswersHelper(
     prefix = "locationOfGoods.unLocode",
     findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.UNLocode),
     id = Some("change-unLocode")
+  )
+
+  def customsOfficeIdentifierTitleRow(): SummaryListRow = buildRowWithNoChangeLink(
+    answer = Empty,
+    prefix = "locationOfGoods.customsOfficeIdentifierTitle",
+    args = Seq.empty
+  )
+
+  def customsOfficeIdentifierRow(answer: String): SummaryListRow = buildSimpleRow(
+    answer = Text(answer),
+    label = messages("locationOfGoods.customsOfficeIdentifier.checkYourAnswersLabel"),
+    prefix = "locationOfGoods.customsOfficeIdentifier",
+    id = Some("change-customs-office-identifier"),
+    call = Some(controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode)),
+    args = Seq.empty
   )
 
   def coordinates: Option[SummaryListRow] = getAnswerAndBuildRow[Coordinates](
@@ -186,6 +202,16 @@ class LocationOfGoodsAnswersHelper(
       additionalIdentifierYesNo,
       additionalIdentifierRow,
       unLocode,
+      userAnswers
+        .get(CustomsOfficeIdentifierPage)
+        .map(
+          _ => customsOfficeIdentifierTitleRow()
+        ),
+      userAnswers
+        .get(CustomsOfficeIdentifierPage)
+        .map(
+          customsOffice => customsOfficeIdentifierRow(customsOffice.toString)
+        ),
       coordinates,
       locationOfGoodsContactYesNo,
       locationOfGoodsContactPersonName,
@@ -195,25 +221,52 @@ class LocationOfGoodsAnswersHelper(
   }
 
   private def buildFromDepartureData: Future[List[SummaryListRow]] = {
-    val locationTypeRowOption = fetchValue[LocationType](
-      checkYourAnswersReferenceDataService.getLocationType,
-      userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+    val locationTypeRowFuture            = fetchLocationTypeRow
+    val countryTypeRowFuture             = fetchCountryTypeRow
+    val qualifierIdentificationRowFuture = fetchQualifierIdentificationRow
+    val customsOfficeIdentifierRowOption = fetchCustomsOfficeIdentifierRow
+
+    Future
+      .sequence(
+        List(
+          locationTypeRowFuture,
+          qualifierIdentificationRowFuture,
+          Future.successful(authorisationNumber),
+          Future.successful(additionalIdentifierYesNo),
+          Future.successful(additionalIdentifierRow),
+          Future.successful(unLocode),
+          Future.successful(
+            userAnswers.departureData.Consignment.LocationOfGoods
+              .flatMap(_.CustomsOffice.map(_.referenceNumber))
+              .map(
+                _ => customsOfficeIdentifierTitleRow()
+              )
+          ),
+          customsOfficeIdentifierRowOption,
+          Future.successful(eoriNumber),
+          Future.successful(coordinates),
+          Future.successful(locationOfGoodsContactYesNo),
+          Future.successful(locationOfGoodsContactPersonName),
+          Future.successful(locationOfGoodsContactPersonNumber),
+          countryTypeRowFuture,
+          Future.successful(address)
+        )
+      )
+      .map(_.flatten)
+  }
+
+  def fetchCustomsOfficeIdentifierRow =
+    fetchValue[CustomsOffice](
+      checkYourAnswersReferenceDataService.getCustomsOffice(userAnswers.departureData.countryOfDeparture),
+      userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice.map(_.referenceNumber))
     ).map {
       _.map(
-        locationType => locationTypeRow(locationType.toString)
+        customsOffice => customsOfficeIdentifierRow(customsOffice.toString)
       )
     }
 
-    val countryTypeRowOption = fetchValue[Country](
-      checkYourAnswersReferenceDataService.getCountry,
-      userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.country))
-    ).map {
-      _.map(
-        country => countryTypeRow(country.description)
-      )
-    }
-
-    val qualifierIdentificationRowOption = fetchValue[LocationOfGoodsIdentification](
+  def fetchQualifierIdentificationRow =
+    fetchValue[LocationOfGoodsIdentification](
       checkYourAnswersReferenceDataService.getQualifierOfIdentification,
       userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
     ).map {
@@ -222,24 +275,23 @@ class LocationOfGoodsAnswersHelper(
       )
     }
 
-    Future
-      .sequence(
-        List(
-          locationTypeRowOption,
-          qualifierIdentificationRowOption,
-          Future.successful(authorisationNumber),
-          Future.successful(additionalIdentifierYesNo),
-          Future.successful(additionalIdentifierRow),
-          Future.successful(unLocode),
-          Future.successful(eoriNumber),
-          Future.successful(coordinates),
-          Future.successful(locationOfGoodsContactYesNo),
-          Future.successful(locationOfGoodsContactPersonName),
-          Future.successful(locationOfGoodsContactPersonNumber),
-          countryTypeRowOption,
-          Future.successful(address)
-        )
+  def fetchCountryTypeRow =
+    fetchValue[Country](
+      checkYourAnswersReferenceDataService.getCountry,
+      userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.country))
+    ).map {
+      _.map(
+        country => countryTypeRow(country.description)
       )
-      .map(_.flatten)
-  }
+    }
+
+  def fetchLocationTypeRow =
+    fetchValue[LocationType](
+      checkYourAnswersReferenceDataService.getLocationType,
+      userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+    ).map {
+      _.map(
+        locationType => locationTypeRow(locationType.toString)
+      )
+    }
 }
