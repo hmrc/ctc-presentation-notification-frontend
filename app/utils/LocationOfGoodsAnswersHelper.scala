@@ -38,13 +38,15 @@ class LocationOfGoodsAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
-  def locationTypeRow(answer: String): SummaryListRow = buildSimpleRow(
-    answer = Text(answer),
-    label = messages("locationOfGoods.locationType.checkYourAnswersLabel"),
+  def locationTypeRow(answer: String): Option[SummaryListRow] = getAnswerAndBuildRow[LocationType](
+    page = LocationTypePage,
+    formatAnswer = formatAsText,
     prefix = "locationOfGoods.locationType",
-    id = Some("change-location-type"),
-    call = Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode)),
-    args = Seq.empty
+    findValueInDepartureData = message =>
+      message.Consignment.LocationOfGoods.map(
+        x => LocationType(x.typeOfLocation, answer)
+      ),
+    id = Some("change-location-type")
   )
 
   def qualifierIdentificationRow(answer: String): SummaryListRow = buildSimpleRow(
@@ -52,7 +54,8 @@ class LocationOfGoodsAnswersHelper(
       Text("Address")
     } else {
       Text(answer)
-    },    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
+    },
+    label = messages("locationOfGoods.identification.checkYourAnswersLabel"),
     prefix = "locationOfGoods.identification",
     id = Some("change-qualifier-identification"),
     call = Some(controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode)),
@@ -186,7 +189,7 @@ class LocationOfGoodsAnswersHelper(
     val result: Seq[SummaryListRow] = Seq(
       userAnswers
         .get(LocationTypePage)
-        .map(
+        .flatMap(
           locationType => locationTypeRow(locationType.toString)
         ),
       userAnswers
@@ -224,7 +227,7 @@ class LocationOfGoodsAnswersHelper(
   }
 
   private def buildFromDepartureData: Future[List[SummaryListRow]] = {
-    val locationTypeRowFuture            = fetchLocationTypeRow
+    val locationTypeRowFuture            = fetchLocationTypeRow.map(_.flatten)
     val countryTypeRowFuture             = fetchCountryTypeRow
     val qualifierIdentificationRowFuture = fetchQualifierIdentificationRow
     val customsOfficeIdentifierRowOption = fetchCustomsOfficeIdentifierRow
