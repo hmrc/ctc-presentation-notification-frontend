@@ -225,40 +225,34 @@ class LocationOfGoodsAnswersHelper(
     Future.successful(result)
   }
 
-  private def buildFromDepartureData: Future[List[SummaryListRow]] = {
-    val locationTypeRowFuture            = fetchLocationTypeRow
-    val countryTypeRowFuture             = fetchCountryTypeRow
-    val qualifierIdentificationRowFuture = fetchQualifierIdentificationRow
-    val customsOfficeIdentifierRowOption = fetchCustomsOfficeIdentifierRow
-
-    Future
-      .sequence(
-        List(
-          locationTypeRowFuture,
-          qualifierIdentificationRowFuture,
-          Future.successful(authorisationNumber),
-          Future.successful(additionalIdentifierYesNo),
-          Future.successful(additionalIdentifierRow),
-          Future.successful(unLocode),
-          Future.successful(
-            userAnswers.departureData.Consignment.LocationOfGoods
-              .flatMap(_.CustomsOffice.map(_.referenceNumber))
-              .map(
-                _ => customsOfficeIdentifierTitleRow()
-              )
-          ),
-          customsOfficeIdentifierRowOption,
-          Future.successful(eoriNumber),
-          Future.successful(coordinates),
-          Future.successful(locationOfGoodsContactYesNo),
-          Future.successful(locationOfGoodsContactPersonName),
-          Future.successful(locationOfGoodsContactPersonNumber),
-          countryTypeRowFuture,
-          Future.successful(address)
+  private def buildFromDepartureData: Future[Seq[SummaryListRow]] =
+    for {
+      locationType <- fetchLocationTypeRow
+      qualifierId  <- fetchQualifierIdentificationRow
+      customsTitle = userAnswers.departureData.Consignment.LocationOfGoods
+        .flatMap(_.CustomsOffice.map(_.referenceNumber))
+        .map(
+          _ => customsOfficeIdentifierTitleRow()
         )
-      )
-      .map(_.flatten)
-  }
+      customsOffice <- fetchCustomsOfficeIdentifierRow
+      countryType   <- fetchCountryTypeRow
+    } yield Seq(
+      locationType,
+      qualifierId,
+      authorisationNumber,
+      additionalIdentifierYesNo,
+      additionalIdentifierRow,
+      unLocode,
+      customsTitle,
+      customsOffice,
+      eoriNumber,
+      coordinates,
+      locationOfGoodsContactYesNo,
+      locationOfGoodsContactPersonName,
+      locationOfGoodsContactPersonNumber,
+      countryType,
+      address
+    ).flatten
 
   def fetchCustomsOfficeIdentifierRow: Future[Option[SummaryListRow]] =
     fetchValue[CustomsOffice](
