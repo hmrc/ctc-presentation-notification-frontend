@@ -17,7 +17,7 @@
 package utils
 
 import models.reference.{Country, CountryCode, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, PostalCodeAddress, UserAnswers}
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages
@@ -169,6 +169,14 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-location-of-goods-address")
   )
 
+  def postCodeAddress: Option[SummaryListRow] = getAnswerAndBuildRow[PostalCodeAddress](
+    page = PostalCodePage,
+    formatAnswer = formatAsPostalCode,
+    prefix = "locationOfGoods.postalCode",
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.PostcodeAddress.map(_.toPostalCode)),
+    id = Some("change-location-of-goods-postalCode")
+  )
+
   def locationOfGoodsSection: Future[Section] = {
 
     val isPresentInIE13orIE15 = userAnswers.departureData.Consignment.LocationOfGoods.isDefined
@@ -207,6 +215,7 @@ class LocationOfGoodsAnswersHelper(
         ),
       authorisationNumber,
       address,
+      postCodeAddress,
       eoriNumber,
       additionalIdentifierYesNo,
       additionalIdentifierRow,
@@ -255,7 +264,8 @@ class LocationOfGoodsAnswersHelper(
       locationOfGoodsContactPersonName,
       locationOfGoodsContactPersonNumber,
       countryType,
-      address
+      address,
+      postCodeAddress
     ).flatten
 
   def fetchCustomsOfficeIdentifierRow: Future[Option[SummaryListRow]] =

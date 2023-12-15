@@ -22,7 +22,7 @@ import config.Constants._
 import generators.Generators
 import models.messages.{Address, MessageData}
 import models.reference.{Country, CountryCode, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, PostalCodeAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -629,6 +629,66 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+      "postCodeAddress" - {
+        "must return Some(Row)" - {
+          "when postCodeAddress defined in ie15" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithAddressUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+                val helper =
+                  new LocationOfGoodsAnswersHelper(ie015WithAddressUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.postCodeAddress
+
+                result.get.key.value mustBe "Postcode Address"
+                result.get.value.value mustBe ie015WithAddressUserAnswers.departureData.Consignment.LocationOfGoods
+                  .flatMap(_.PostcodeAddress.map(_.toPostalCode))
+                  .get
+                  .toString
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the address for the location of goods"
+                action.id mustBe "change-location-of-goods-postalCode"
+            }
+          }
+          s"when postCodeAddress defined in the ie170" in {
+            forAll(arbitrary[Mode], arbitrary[PostalCodeAddress]) {
+              (mode, addressData) =>
+                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(PostalCodePage, addressData)
+                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+                val result = helper.postCodeAddress
+
+                result.get.key.value mustBe "Postcode Address"
+                result.get.value.value mustBe addressData.toString
+                val actions = result.get.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode).url
+                action.visuallyHiddenText.get mustBe "the address for the location of goods"
+                action.id mustBe "change-location-of-goods-postalCode"
+            }
+          }
+        }
+
+        "must return None" - {
+          "when postCodeAddress undefined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val ie015WithNoUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val helper = new LocationOfGoodsAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+                val result = helper.postCodeAddress
+                result mustBe None
+            }
+          }
+        }
+      }
+
       "section should contain all the answer rows" in {
         forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String], arbitrary[Boolean], arbitrary[String]) {
           (mode, locationType, identification, authorisationNumber, additionalIdentifierYesNo, additionalIdentifier) =>
@@ -1083,7 +1143,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 15
+                section.rows.size mustBe 16
             }
         }
       }
