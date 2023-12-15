@@ -56,11 +56,17 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case IdentificationPage          => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AuthorisationNumberPage     => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddContactYesNoPage         => ua => addContactYesNoNavigation(ua, departureId, mode)
-    case NamePage                    => ua => PhoneNumberPage.route(ua, departureId, mode)
+    case NamePage                    => ua => namePageNavigation(ua, departureId, mode)
     case PhoneNumberPage             => ua => phoneNumberPageNavigation(ua, departureId, mode)
     case CountryPage                 => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddressPage                 => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
+
+  def namePageNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    (ua.get(PhoneNumberPage).isEmpty, ua.get(AddContactYesNoPage).contains(true)) match {
+      case (true, true) => Some(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode))
+      case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    }
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.get(IdentificationPage).map {
@@ -105,9 +111,8 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
         }
       case CheckMode =>
         userAnswers.get(AddContactYesNoPage) match {
-          case Some(true)  => NamePage.route(userAnswers, departureId, mode)
-          case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+          case Some(true) if userAnswers.get(NamePage).isEmpty => NamePage.route(userAnswers, departureId, mode)
+          case _                                               => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
     }
 
