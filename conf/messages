@@ -276,9 +276,11 @@ transport.limit.date.heading = When do you expect the transit to arrive in {0}?
 transport.limit.date.paragraph = This has to be before {0}.
 transport.limit.date.caption = Estimated arrival date
 transport.limit.date.error.required.all = Enter the estimated arrival date at the office of destination
-transport.limit.date.error.required.two = The arrival date must include a {0} and {1}
+transport.limit.date.error.required.multiple = The arrival date must include a {0} and {1}
 transport.limit.date.error.required = The arrival date must include a {0}
-transport.limit.date.error.invalid = Enter a real arrival date at the office of destination
+transport.limit.date.error.invalid.all = The arrival date must only include numbers 0 to 9
+transport.limit.date.error.invalid.multiple = The arrival date {0} and {1} must only include numbers 0 to 9
+transport.limit.date.error.invalid = The arrival date {0} must only include numbers 0 to 9
 transport.limit.date.error.min.date = The arrival date must be today or in the future
 transport.limit.date.error.max.date = The arrival date must be before {0}
 
