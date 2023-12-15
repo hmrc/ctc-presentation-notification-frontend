@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
-import models.{LocationOfGoodsIdentification, LocationType, Mode}
+import models.{CheckMode, LocationOfGoodsIdentification, LocationType, Mode, NormalMode}
 import navigation.LocationOfGoodsNavigator
 import pages._
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}

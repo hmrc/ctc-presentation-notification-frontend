@@ -51,7 +51,10 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case LocationTypePage       => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddIdentifierYesNoPage => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case EoriPage | AuthorisationNumberPage =>
-      ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId)) //TODO route AddIdentifierYesNoPage   AddIdentifierYesNoPage.route(ua, departureId, mode)
+      ua =>
+        Some(
+          controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
+        ) //TODO route AddIdentifierYesNoPage   AddIdentifierYesNoPage.route(ua, departureId, mode)
     case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage =>
       ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case CustomsOfficeIdentifierPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
@@ -60,6 +63,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case NamePage                    => ua => namePageNavigation(ua, departureId, mode)
     case PhoneNumberPage             => ua => phoneNumberPageNavigation(ua, departureId, mode)
     case CountryPage                 => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case InferredIdentificationPage  => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 
   def namePageNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
