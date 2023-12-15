@@ -16,7 +16,7 @@
 
 package utils
 
-import models.reference.{Country, CustomsOffice}
+import models.reference.{Country, CountryCode, CustomsOffice}
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -147,13 +147,18 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-person-number")
   )
 
-  def countryTypeRow(answer: String): SummaryListRow = buildSimpleRow(
-    answer = Text(answer),
-    label = messages("locationOfGoods.country.checkYourAnswersLabel"),
+  def countryTypeRow(answer: String): Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryPage,
+    formatAnswer = formatAsCountry,
     prefix = "locationOfGoods.country",
-    id = Some("change-location-of-goods-country"),
-    call = Some(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode)),
-    args = Seq.empty
+    findValueInDepartureData = message =>
+      message.Consignment.LocationOfGoods.flatMap(
+        x =>
+          x.Address.map(
+            x => Country(CountryCode(x.country), answer)
+          )
+      ),
+    id = Some("change-location-of-goods-country")
   )
 
   def address: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
@@ -197,7 +202,7 @@ class LocationOfGoodsAnswersHelper(
         ),
       userAnswers
         .get(CountryPage)
-        .map(
+        .flatMap(
           country => countryTypeRow(country.toString)
         ),
       authorisationNumber,
@@ -273,12 +278,12 @@ class LocationOfGoodsAnswersHelper(
       )
     }
 
-  private def fetchCountryTypeRow =
+  private def fetchCountryTypeRow: Future[Option[SummaryListRow]] =
     fetchValue[Country](
       checkYourAnswersReferenceDataService.getCountry,
       userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.country))
     ).map {
-      _.map(
+      _.flatMap(
         country => countryTypeRow(country.description)
       )
     }

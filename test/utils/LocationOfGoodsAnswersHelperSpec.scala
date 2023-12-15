@@ -534,7 +534,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                   )
                 )
                 val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
-                val result = helper.countryTypeRow(countryType.description)
+                val result = helper.countryTypeRow(countryType.description).get
 
                 result.key.value mustBe "Country"
                 result.value.value mustBe countryType.description
@@ -553,7 +553,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                   .setValue(CountryPage, countryType)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.countryTypeRow(countryType.description)
+                val result = helper.countryTypeRow(countryType.description).get
 
                 result.key.value mustBe "Country"
                 result.value.value mustBe countryType.description

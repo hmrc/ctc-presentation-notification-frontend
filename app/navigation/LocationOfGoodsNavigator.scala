@@ -58,6 +58,8 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case AddContactYesNoPage         => ua => addContactYesNoNavigation(ua, departureId, mode)
     case NamePage                    => ua => PhoneNumberPage.route(ua, departureId, mode)
     case PhoneNumberPage             => ua => phoneNumberPageNavigation(ua, departureId, mode)
+    case CountryPage                 => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddressPage                 => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =

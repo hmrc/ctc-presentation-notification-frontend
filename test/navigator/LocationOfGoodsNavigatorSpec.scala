@@ -772,6 +772,26 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       }
 
+      "must go from CountryPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(pages.locationOfGoods.CountryPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+      }
+
+      "must go from AddressPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AddressPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+      }
+
     }
   }
 }
