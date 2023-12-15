@@ -49,10 +49,12 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case LimitDatePage               => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case LocationTypePage            => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case AddIdentifierYesNoPage      => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddIdentifierYesNoPage      => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case AdditionalIdentifierPage    => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case UnLocodePage                => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case CustomsOfficeIdentifierPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case CoordinatesPage             => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case EoriPage                    => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case IdentificationPage          => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AuthorisationNumberPage     => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddContactYesNoPage         => ua => addContactYesNoNavigation(ua, departureId, mode)
@@ -93,10 +95,19 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     }
 
   private def addIdentifierYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(AddIdentifierYesNoPage) match {
-      case Some(true)  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
-      case Some(false) => AddContactYesNoPage.route(userAnswers, departureId, mode)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    mode match {
+      case NormalMode =>
+        userAnswers.get(AddIdentifierYesNoPage) match {
+          case Some(true)  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
+          case Some(false) => AddContactYesNoPage.route(userAnswers, departureId, mode)
+          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+        }
+      case CheckMode =>
+        val maybeBoolean = userAnswers.get(AddIdentifierYesNoPage)
+        maybeBoolean match {
+          case Some(true) if userAnswers.get(AdditionalIdentifierPage).isEmpty => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
+          case _                                                               => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
     }
 
   private def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =

@@ -703,12 +703,42 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from AddIdentifierYesNoPage to check your answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(AddIdentifierYesNoPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      "must go from AddIdentifierYesNoPage" - {
+        "to AdditionalIdentifierPage if answer is Yes and AdditionalIdentifierPage doesn't exist" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              (for {
+                updatedAnswers                         <- answers.set(AddIdentifierYesNoPage, true)
+                answersWithoutAdditionalIdentifierPage <- updatedAnswers.remove(AdditionalIdentifierPage)
+              } yield navigator
+                .nextPage(AddIdentifierYesNoPage, answersWithoutAdditionalIdentifierPage, departureId, CheckMode)
+                .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
+          }
+        }
+        "to CYA page if answer is Yes but AdditionalIdentifierPage already exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              (for {
+                updatedAnswers                      <- answers.set(AddIdentifierYesNoPage, true)
+                answersWithAdditionalIdentifierPage <- updatedAnswers.set(AdditionalIdentifierPage, "identifier")
+              } yield navigator
+                .nextPage(AddIdentifierYesNoPage, answersWithAdditionalIdentifierPage, departureId, CheckMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))).get
+          }
+        }
+        "to CYA page if answer is No" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              answers
+                .set(AddIdentifierYesNoPage, false)
+                .map {
+                  updatedAnswers =>
+                    navigator
+                      .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, CheckMode)
+                      .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                }
+                .get
+          }
         }
       }
 
@@ -735,6 +765,24 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(CustomsOfficeIdentifierPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from EoriPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(EoriPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from CoordinatesPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(CoordinatesPage, answers, departureId, CheckMode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
