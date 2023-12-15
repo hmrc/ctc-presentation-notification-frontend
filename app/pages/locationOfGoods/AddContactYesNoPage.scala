@@ -34,10 +34,12 @@ case object AddContactYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddContactYesNoController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val jsonPathFor15 = JsPath \ "Consignment" \ "LocationOfGoods" \ "Address"
     value match {
-      case Some(false) => userAnswers.remove(LocationOfGoodsContactSection)
+      case Some(false) => userAnswers.remove(LocationOfGoodsContactSection, jsonPathFor15)
       case _           => super.cleanup(value, userAnswers)
     }
+  }
 
 }

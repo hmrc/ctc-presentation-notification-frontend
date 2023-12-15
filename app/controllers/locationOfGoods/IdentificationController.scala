@@ -18,13 +18,14 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.requests.SpecificDataRequestProvider1
+import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{LocationOfGoodsIdentification, LocationType, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages._
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.LocationOfGoodsIdentificationTypeService
@@ -55,19 +56,34 @@ class IdentificationController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(LocationTypePage, InferredLocationTypePage))
     .async {
       implicit request =>
-        locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(request.arg).flatMap {
-          case identifier :: Nil =>
-            redirect(mode, InferredIdentificationPage, identifier, departureId)
-          case identifiers =>
-            val preparedForm = request.userAnswers.get(IdentificationPage) match {
-              case None        => form(identifiers)
-              case Some(value) => form(identifiers).fill(value)
-            }
+        val getLocationType: Option[LocationType] = request.userAnswers
+          .get(LocationTypePage)
+          .orElse(
+            request.userAnswers
+              .get(InferredLocationTypePage)
+          )
+          .orElse(
+            request.userAnswers.departureData.Consignment.LocationOfGoods.map(
+              x => LocationType(x.typeOfLocation, "")
+            )
+          )
 
-            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
+        getLocationType match {
+          case Some(value) =>
+            locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(value).flatMap {
+              case identifier :: Nil =>
+                redirect(mode, InferredIdentificationPage, identifier, departureId)
+              case identifiers =>
+                val preparedForm = request.userAnswers.get(IdentificationPage) match {
+                  case None        => form(identifiers)
+                  case Some(value) => form(identifiers).fill(value)
+                }
+
+                Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
+            }
+          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         }
     }
 
@@ -92,7 +108,7 @@ class IdentificationController @Inject() (
     page: QuestionPage[LocationOfGoodsIdentification],
     value: LocationOfGoodsIdentification,
     departureId: String
-  )(implicit request: Request): Future[Result] =
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -23,7 +23,7 @@ import generators.Generators
 import models._
 import models.messages.AuthorisationType.{C521, C523}
 import models.messages.{Authorisation, MessageData}
-import models.reference.BorderMode
+import models.reference.{BorderMode, Country}
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -687,9 +687,10 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       "must go from IdentificationPage to check your answers page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.setValue(IdentificationPage, LocationOfGoodsIdentification(PostalCodeIdentifier, s"$PostalCodeIdentifier - desc"))
             navigator
-              .nextPage(IdentificationPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .nextPage(IdentificationPage, updatedAnswers, departureId, CheckMode)
+              .mustBe(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, CheckMode))
         }
 
       }
@@ -706,8 +707,9 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       "must go from AddIdentifierYesNoPage to check your answers page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.setValue(AddIdentifierYesNoPage, false)
             navigator
-              .nextPage(AddIdentifierYesNoPage, answers, departureId, CheckMode)
+              .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, CheckMode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
@@ -750,6 +752,18 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           }
 
         }
+        "must remove from userAnswers when AddContactYesNoPage is set to no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswersSet = answers.setValue(AddContactYesNoPage, false)
+
+              userAnswersSet.get(CountryPage).mustBe(None)
+
+              userAnswersSet.departureData.Consignment.LocationOfGoods.flatMap(_.Address) mustBe None
+
+          }
+        }
+
         "must go from AddContactYesNoPage to name page when yes" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
