@@ -37,7 +37,7 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def getOrElse[A](page: QuestionPage[A], findValueInDepartureData: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
+  def getOrElse[A](page: Gettable[A], findValueInDepartureData: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
     get(page) orElse findValueInDepartureData(departureData)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
@@ -68,8 +68,12 @@ final case class UserAnswers(
   def remove[A](page: QuestionPage[A], departureDataPath: JsPath): Try[UserAnswers] = {
     val updated170Data = data.removeObject(page.path).getOrElse(data)
 
-    val Ie15Data: JsObject                = Json.toJson(departureData).as[JsObject]
-    val updatedIe15DataJsObject: JsObject = Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
+    val Ie15Data: JsObject                  = Json.toJson(departureData).as[JsObject]
+    val extractedIe15Value: Option[JsValue] = departureDataPath.asSingleJson(Ie15Data).toOption
+    val updatedIe15DataJsObject: JsObject = extractedIe15Value match {
+      case Some(_) => Ie15Data.removeObject(departureDataPath).getOrElse(Ie15Data)
+      case None    => Ie15Data
+    }
 
     val updatedDepartureData = Json.fromJson[MessageData](updatedIe15DataJsObject) match {
       case JsSuccess(value, _) => value

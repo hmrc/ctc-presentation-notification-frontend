@@ -17,7 +17,6 @@
 package utils
 
 import cats.data.OptionT
-import config.FrontendAppConfig
 import models.reference.{BorderMode, Country}
 import models.{Mode, UserAnswers}
 import pages.loading._

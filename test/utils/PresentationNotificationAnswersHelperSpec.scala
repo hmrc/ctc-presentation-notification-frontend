@@ -28,7 +28,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, CountryPage, LocationPage, UnLocodePage}
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
@@ -108,9 +108,9 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         s"when $ContainerIndicatorPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoLimitDateUserAnswers =
+              val ie015WithNoContainerIndicatorUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoContainerIndicatorUserAnswers, departureId, mockReferenceDataService, mode)
               val result = helper.containerIndicator
               result mustBe None
           }

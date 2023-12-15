@@ -31,5 +31,5 @@ case class Identification(code: String, description: String) extends Radioable[I
 object Identification extends DynamicEnumerableType[Identification] {
   implicit val format: Format[Identification] = Json.format[Identification]
 
-  val messageKeyPrefix = "border.identification"
+  val messageKeyPrefix = "transport.border.active.identification"
 }

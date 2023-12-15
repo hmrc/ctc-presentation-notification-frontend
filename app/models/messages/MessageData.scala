@@ -17,6 +17,7 @@
 package models.messages
 
 import cats.implicits._
+import models.Constants.modeOfTransportIsAir
 import models.messages.AuthorisationType.{C521, C523}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -67,6 +68,7 @@ case class MessageData(
         .map(_.map(_.referenceNumber))
         .getOrElse(Seq.empty)
 
+  val conveyanceRefNumberYesNoPresent: Boolean = TransitOperation.isSecurityTypeInSet && Consignment.modeOfTransportAtTheBorder == Option(modeOfTransportIsAir)
 }
 
 object MessageData {

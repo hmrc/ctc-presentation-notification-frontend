@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import models.LocationOfGoodsIdentification
-import models.reference.{BorderMode, Country, CountryCode}
+import models.reference.transport.border.active.Identification
+import models.reference._
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -39,6 +39,12 @@ package object utils {
     //TODO: Fetch this from ref data instead
     def asCountry: Country =
       Country(CountryCode(value), "countryDesc")
+
+    def asIdentification: Identification = Identification(value, "")
+
+    def asNationality: Nationality = Nationality(value, "")
+
+    def asCustomsOffice: CustomsOffice = CustomsOffice(value, "", None)
 
   }
 

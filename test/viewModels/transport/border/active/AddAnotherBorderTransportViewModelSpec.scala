@@ -95,12 +95,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -129,12 +129,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -161,12 +161,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -194,12 +194,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -228,7 +228,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url,
                   removeUrl = None
                 )
@@ -255,12 +255,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -288,12 +288,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -302,6 +302,5 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
         }
 
     }
-
   }
 }

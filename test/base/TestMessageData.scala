@@ -105,7 +105,7 @@ object TestMessageData {
   val customsOfficeOfDestination: String = "GB000012"
 
   val messageData: MessageData =
-    MessageData(customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation, Some(authorisation), None, None, consignment)
+    MessageData(customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation, Some(authorisation), customsOfficeOfTransitDeclared, None, consignment)
 
   val jsonValue: JsValue = Json.parse(
     s"""
@@ -116,6 +116,11 @@ object TestMessageData {
        |    "CustomsOfficeOfDestinationDeclared": {
        |        "referenceNumber": "GB000012"
        |    },
+       |    "CustomsOfficeOfTransitDeclared": [
+       |        {
+       |        "referenceNumber": "GB000013"
+       |        }
+       |    ],
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
        |        "security": "1"

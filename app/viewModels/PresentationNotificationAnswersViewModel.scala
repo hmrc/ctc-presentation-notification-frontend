@@ -17,11 +17,14 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
+import pages.sections.transport.border.BorderActiveListSection
 import play.api.i18n.Messages
+import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
+import utils.{ActiveBorderTransportMeansAnswersHelper, LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper}
+import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,6 +35,7 @@ object PresentationNotificationAnswersViewModel {
 
   class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
     val config: FrontendAppConfig,
+    activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider,
     checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
   ) {
 
@@ -45,6 +49,7 @@ object PresentationNotificationAnswersViewModel {
 
       val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
       val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
+      val activeBorderHelper    = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0))
 
       val firstSection = Section(
         rows = Seq(
@@ -64,12 +69,39 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
+      val activeBorderTransportMeansSection: Seq[Section] = {
+        (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
+          case (None, false) =>
+            Section(sectionTitle = messages("checkYourAnswers.transportMeans.active.withoutIndex"),
+                    rows = Seq(activeBorderHelper.addBorderMeansOfTransportYesNo).flatten
+            ).toSeq
+          case _ =>
+            userAnswers
+              .get(BorderActiveListSection)
+              .getOrElse(
+                userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
+                  case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
+                  case None                             => JsArray()
+                }
+              )
+              .value
+              .zipWithIndex
+              .flatMap {
+                case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, mode, Index(i)).sections
+              }
+              .toSeq
+        }
+      }
+
       for {
         borderSection   <- helper.borderModeSection
         locationOfGoods <- locationOfGoodsHelper.locationOfGoodsSection
-        sections = firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ locationOfGoods.toSeq
+        sections =
+          firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)
+
     }
+
     // scalastyle:on method.length
   }
 }
