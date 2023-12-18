@@ -23,7 +23,6 @@ import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Empty
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
@@ -98,12 +97,6 @@ class LocationOfGoodsAnswersHelper(
     prefix = "locationOfGoods.unLocode",
     findValueInDepartureData = message => message.Consignment.LocationOfGoods.flatMap(_.UNLocode),
     id = Some("change-unLocode")
-  )
-
-  def customsOfficeIdentifierTitleRow(): SummaryListRow = buildRowWithNoChangeLink(
-    answer = Empty,
-    prefix = "locationOfGoods.customsOfficeIdentifierTitle",
-    args = Seq.empty
   )
 
   def customsOfficeIdentifierRow(answer: String): SummaryListRow = buildSimpleRow(
@@ -223,11 +216,6 @@ class LocationOfGoodsAnswersHelper(
       userAnswers
         .get(CustomsOfficeIdentifierPage)
         .map(
-          _ => customsOfficeIdentifierTitleRow()
-        ),
-      userAnswers
-        .get(CustomsOfficeIdentifierPage)
-        .map(
           customsOffice => customsOfficeIdentifierRow(customsOffice.toString)
         ),
       coordinates,
@@ -240,13 +228,8 @@ class LocationOfGoodsAnswersHelper(
 
   private def buildFromDepartureData: Future[Seq[SummaryListRow]] =
     for {
-      locationType <- fetchLocationTypeRow
-      qualifierId  <- fetchQualifierIdentificationRow
-      customsTitle = userAnswers.departureData.Consignment.LocationOfGoods
-        .flatMap(_.CustomsOffice.map(_.referenceNumber))
-        .map(
-          _ => customsOfficeIdentifierTitleRow()
-        )
+      locationType  <- fetchLocationTypeRow
+      qualifierId   <- fetchQualifierIdentificationRow
       customsOffice <- fetchCustomsOfficeIdentifierRow
       countryType   <- fetchCountryTypeRow
     } yield Seq(
@@ -254,7 +237,6 @@ class LocationOfGoodsAnswersHelper(
       qualifierId,
       authorisationNumber,
       unLocode,
-      customsTitle,
       customsOffice,
       eoriNumber,
       coordinates,
