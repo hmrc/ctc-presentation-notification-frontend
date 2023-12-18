@@ -17,15 +17,16 @@
 package models
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
+import base.TestMessageData.{allOptionsNoneJsonValue, jsonValue, messageData}
 import models.messages.MessageData
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.QuestionPage
 import pages.locationOfGoods.IdentificationPage
 import play.api.libs.json.{Format, JsPath, JsValue, Json}
 import play.api.test.Helpers.running
 
 import java.time.Instant
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class UserAnswersSpec extends SpecBase {
 
@@ -51,6 +52,36 @@ class UserAnswersSpec extends SpecBase {
   }
 
   "UserAnswers" - {
+
+    "remove" - {
+
+      "should remove Address from MessageData" in {
+
+        val userAnswers = UserAnswers("id", EoriNumber("123"), "LRN123", Json.obj("key" -> "value"), Instant.now(), jsonValue.as[MessageData])
+
+        val customsOfficeOfDeparturePath: Set[JsPath] = Set(JsPath \ "Consignment" \ "LocationOfGoods" \ "Address")
+
+        val updatedUserAnswersResult: Try[UserAnswers] = userAnswers.remove(IdentificationPage, customsOfficeOfDeparturePath)
+
+        updatedUserAnswersResult shouldBe a[Success[_]]
+        val updatedUserAnswers = updatedUserAnswersResult.get
+        updatedUserAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address) shouldBe None
+      }
+
+      "shouldremove nothing when removing non-existing path" in {
+
+        val userAnswers = UserAnswers("id", EoriNumber("123"), "LRN123", Json.obj("key" -> "value"), Instant.now(), jsonValue.as[MessageData])
+
+        val nonExistingPaths: Set[JsPath] = Set(JsPath \ "NonExistingPath")
+
+        val updatedUserAnswersResult: Try[UserAnswers] = userAnswers.remove(IdentificationPage, nonExistingPaths)
+
+        updatedUserAnswersResult shouldBe a[Success[_]]
+        val updatedUserAnswers = updatedUserAnswersResult.get
+        updatedUserAnswers.departureData shouldBe jsonValue.as[MessageData]
+      }
+
+    }
 
     "set" - {
       "must run cleanup when given a new answer" in {

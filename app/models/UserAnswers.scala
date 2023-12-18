@@ -85,25 +85,10 @@ final case class UserAnswers(
 
     val Ie15Data: JsObject = Json.toJson(departureData).as[JsObject]
     val updatedIe15DataJsObject: JsObject = departureDataPaths.foldLeft(Ie15Data) {
-      (current, toRemove) => current.removeObject(toRemove).getOrElse(Ie15Data)
+      (current, toRemove) => current.removeObjectStandard(toRemove).getOrElse(Ie15Data)
     }
 
-    //TODO this is a hack because the remove method inserts a key with an empty jsobject - fix there
-    val isLocationOfGoodsNonEmpty: Boolean = (JsPath \ "Consignment" \ "LocationOfGoods").apply(updatedIe15DataJsObject) match {
-      case seq: Seq[JsValue] =>
-        seq.exists {
-          case obj: JsObject => obj.values.nonEmpty
-          case _             => false
-        }
-      case _ => false
-    }
-    val finalUpdatedIe15DataJsObject: JsObject = if (!isLocationOfGoodsNonEmpty) {
-      updatedIe15DataJsObject.transform((JsPath \ "Consignment" \ "LocationOfGoods").json.prune).getOrElse(updatedIe15DataJsObject)
-    } else {
-      updatedIe15DataJsObject
-    }
-
-    val updatedDepartureData = Json.fromJson[MessageData](finalUpdatedIe15DataJsObject) match {
+    val updatedDepartureData = Json.fromJson[MessageData](updatedIe15DataJsObject) match {
       case JsSuccess(value, _) => value
       case JsError(errors)     => throw new RuntimeException(s"Failed to convert JsObject to MessageData: $errors")
     }
