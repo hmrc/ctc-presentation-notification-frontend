@@ -62,7 +62,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case AddContactYesNoPage         => ua => addContactYesNoNavigation(ua, departureId, mode)
     case NamePage                    => ua => namePageNavigation(ua, departureId, mode)
     case PhoneNumberPage             => ua => phoneNumberPageNavigation(ua, departureId, mode)
-    case CountryPage                 => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case CountryPage                 => ua => AddressPage.route(ua, departureId, mode)
     case InferredIdentificationPage  => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 

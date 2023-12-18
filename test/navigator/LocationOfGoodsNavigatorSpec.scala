@@ -839,7 +839,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(pages.locationOfGoods.CountryPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, CheckMode))
         }
 
       }

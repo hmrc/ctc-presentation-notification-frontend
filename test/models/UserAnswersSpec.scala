@@ -17,8 +17,10 @@
 package models
 
 import base.SpecBase
-import base.TestMessageData.messageData
+import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
+import models.messages.MessageData
 import pages.QuestionPage
+import pages.locationOfGoods.IdentificationPage
 import play.api.libs.json.{Format, JsPath, JsValue, Json}
 import play.api.test.Helpers.running
 
@@ -61,6 +63,16 @@ class UserAnswersSpec extends SpecBase {
         )
 
         result.data mustBe expectedData
+      }
+
+      "must remove a field from a nested object without setting as empty" in {
+
+        val userAnswers =
+          UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+
+        val result: UserAnswers = userAnswers.remove(IdentificationPage, Set(JsPath \ "Consignment" \ "LocationOfGoods" \ "authorisationNumber")).success.value
+
+        result.departureData.Consignment.LocationOfGoods mustBe None
       }
 
       "must run cleanup when given a different answer" in {
