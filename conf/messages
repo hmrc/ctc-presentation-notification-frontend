@@ -463,6 +463,13 @@ transport.equipment.removeItem.heading = Are you sure you want to remove this it
 transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
 
+transport.addInlandModeOfTransport.caption = Inland mode of transport
+transport.addInlandModeOfTransport.heading = Do you want to add an inland mode of transport?
+transport.addInlandModeOfTransport.title = Do you want to add an inland mode of transport?
+transport.addInlandModeOfTransport.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
+transport.addInlandModeOfTransport.no = No - the goods are already at the port or airport
+transport.addInlandModeOfTransport.error.required = Select yes if you want to add an inland mode of transport
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 checkYourAnswers.paragraph1 = The information below combines parts of your initial declaration with the answers you just provided. Check this and confirm whether the details are still correct.
