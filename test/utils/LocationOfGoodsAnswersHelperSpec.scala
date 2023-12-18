@@ -707,7 +707,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 11
+                section.rows.size mustBe 10
             }
         }
       }
@@ -737,7 +737,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                   )
 
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.fetchLocationTypeRow
+                val result = helper.fetchLocationTypeRow(answers)
 
                 whenReady[Throwable, Assertion](result.failed) {
                   _ mustBe referenceDataNotFoundException
@@ -803,7 +803,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                   )
 
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.fetchQualifierIdentificationRow
+                val result = helper.fetchQualifierIdentificationRow(emptyUserAnswers)
 
                 whenReady[Throwable, Assertion](result.failed) {
                   _ mustBe referenceDataNotFoundException
@@ -1049,7 +1049,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                   )
 
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.fetchCustomsOfficeIdentifierRow
+                val result = helper.fetchCustomsOfficeIdentifierRow(emptyUserAnswers)
 
                 whenReady[Throwable, Assertion](result.failed) {
                   _ mustBe referenceDataNotFoundException
@@ -1143,7 +1143,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             whenReady(helper.locationOfGoodsSection) {
               section =>
-                section.rows.size mustBe 16
+                section.rows.size mustBe 15
             }
         }
       }

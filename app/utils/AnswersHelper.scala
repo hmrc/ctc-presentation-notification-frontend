@@ -56,8 +56,13 @@ class AnswersHelper(
     )
 
   protected def fetchValue[T](
+    page: QuestionPage[T],
     convertToReference: String => Future[T],
     valueToConvert: Option[String]
-  ): Future[Option[T]] = valueToConvert.map(convertToReference).sequence
+  )(implicit userAnswers: UserAnswers, rds: Reads[T]): Future[Option[T]] =
+    userAnswers.get(page) match {
+      case Some(value) => Future.successful(Some(value))
+      case None        => valueToConvert.map(convertToReference).sequence
+    }
 
 }
