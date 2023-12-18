@@ -253,19 +253,19 @@ class LocationOfGoodsAnswersHelper(
       locationType,
       qualifierId,
       authorisationNumber,
-      additionalIdentifierYesNo,
-      additionalIdentifierRow,
       unLocode,
       customsTitle,
       customsOffice,
       eoriNumber,
       coordinates,
+      countryType,
+      address,
+      postCodeAddress,
       locationOfGoodsContactYesNo,
       locationOfGoodsContactPersonName,
       locationOfGoodsContactPersonNumber,
-      countryType,
-      address,
-      postCodeAddress
+      additionalIdentifierYesNo,
+      additionalIdentifierRow
     ).flatten
 
   def fetchCustomsOfficeIdentifierRow: Future[Option[SummaryListRow]] =
