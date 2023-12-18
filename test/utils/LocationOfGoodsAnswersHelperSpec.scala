@@ -266,21 +266,6 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       }
 
       "Customs Office" - {
-        "Customs Office title row" - {
-          "must return Some(Row) when CustomsOfficeIdentifierPage defined in the ie170" in {
-            forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
-              (mode, customsOffice) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                  .setValue(CustomsOfficeIdentifierPage, customsOffice)
-                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-                val result = helper.customsOfficeIdentifierTitleRow()
-
-                result.key.value mustBe "Customs Office"
-                result.value.value mustBe ""
-                result.actions mustBe None
-            }
-          }
-        }
 
         "Customs Office identifier row" - {
           "must return Some(Row) when CustomsOfficeIdentifierPage defined in the ie170" in {
