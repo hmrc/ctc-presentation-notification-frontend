@@ -38,38 +38,62 @@ class PhoneNumberController @Inject() (
   formProvider: TelephoneNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: PhoneNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId)
-    .andThen(getMandatoryPage(NamePage)) {
+    .requireData(departureId) {
       implicit request =>
-        val contactName = request.arg
-        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-        val preparedForm = request.userAnswers.get(PhoneNumberPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+        val getName: Option[String] = request.userAnswers
+          .get(NamePage)
+          .orElse(
+            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+              _.ContactPerson.map(
+                _.name
+              )
+            )
+          )
+
+        getName match {
+          case Some(contactName) =>
+            val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
+            val preparedForm = request.userAnswers.get(PhoneNumberPage) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
+            Ok(view(preparedForm, departureId, contactName, mode))
+          case None => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
         }
-        Ok(view(preparedForm, departureId, contactName, mode))
+
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(NamePage))
     .async {
       implicit request =>
-        val contactName = request.arg
-        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
-            value => redirect(mode, value, departureId)
+        val getName: Option[String] = request.userAnswers
+          .get(NamePage)
+          .orElse(
+            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+              _.ContactPerson.map(
+                _.name
+              )
+            )
           )
+
+        getName match {
+          case Some(contactName) =>
+            val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
+                value => redirect(mode, value, departureId)
+              )
+          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        }
 
     }
 

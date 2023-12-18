@@ -695,12 +695,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       }
 
-      "must go from AuthorisationNumberPage to check your answers page" in {
+      "must go from AuthorisationNumberPage to add identifier page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(AuthorisationNumberPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -716,18 +716,18 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
           }
         }
-        //TODO talking to Ken this should follow on to other navigation
-//        "to CYA page if answer is Yes but AdditionalIdentifierPage already exists" in {
-//          forAll(arbitrary[UserAnswers]) {
-//            answers =>
-//              (for {
-//                updatedAnswers                      <- answers.set(AddIdentifierYesNoPage, true)
-//                answersWithAdditionalIdentifierPage <- updatedAnswers.set(AdditionalIdentifierPage, "identifier")
-//              } yield navigator
-//                .nextPage(AddIdentifierYesNoPage, answersWithAdditionalIdentifierPage, departureId, CheckMode)
-//                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))).get
-//          }
-//        }
+
+        "to CYA page if answer is Yes but AdditionalIdentifierPage already exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              (for {
+                updatedAnswers                      <- answers.set(AddIdentifierYesNoPage, true)
+                answersWithAdditionalIdentifierPage <- updatedAnswers.set(AdditionalIdentifierPage, "identifier")
+              } yield navigator
+                .nextPage(AddIdentifierYesNoPage, answersWithAdditionalIdentifierPage, departureId, CheckMode)
+                .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
+          }
+        }
         "to CYA page if answer is No" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -771,12 +771,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from EoriPage to check your answers page" in {
+      "must go from EoriPage to add isentifier page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(EoriPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -807,7 +807,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               userAnswersSet.get(CountryPage).mustBe(None)
 
-              userAnswersSet.departureData.Consignment.LocationOfGoods.flatMap(_.Address) mustBe None
+              userAnswersSet.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson) mustBe None
 
           }
         }

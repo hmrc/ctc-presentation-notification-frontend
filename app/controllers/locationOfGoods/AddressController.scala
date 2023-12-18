@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.DynamicAddressFormProvider
-import models.reference.Country
+import models.reference.{Country, CountryCode}
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{DynamicAddress, Mode}
 import navigation.LocationOfGoodsNavigator
@@ -40,7 +40,6 @@ class AddressController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DynamicAddressFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
@@ -51,41 +50,66 @@ class AddressController @Inject() (
 
   private type Request = SpecificDataRequestProvider1[Country]#SpecificDataRequest[_]
 
-  private def country(implicit request: Request): Country = request.arg
-
-  private def form(isPostalCodeRequired: Boolean)(implicit request: Request): Form[DynamicAddress] =
-    formProvider("locationOfGoods.address", isPostalCodeRequired)
+  private def form(isPostalCodeRequired: Boolean)(implicit request: MandatoryDataRequest[_]): Form[DynamicAddress] =
+    formProvider("locationOfGoods.address", isPostalCodeRequired)(request.request.messages(messagesApi))
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(CountryPage))
     .async {
       implicit request =>
-        countriesService.doesCountryRequireZip(country).map {
-          isPostalCodeRequired =>
-            val preparedForm = request.userAnswers.get(AddressPage) match {
-              case None        => form(isPostalCodeRequired)
-              case Some(value) => form(isPostalCodeRequired).fill(value)
-            }
+        val getCountry: Option[Country] = request.userAnswers
+          .get(CountryPage)
+          .orElse(
+            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+              _.Address.map(
+                x => Country(CountryCode(x.country), "")
+              )
+            )
+          )
 
-            Ok(view(preparedForm, departureId, mode, isPostalCodeRequired))
+        getCountry match {
+          case Some(country) =>
+            countriesService.doesCountryRequireZip(country).map {
+              isPostalCodeRequired =>
+                val preparedForm = request.userAnswers.get(AddressPage) match {
+                  case None        => form(isPostalCodeRequired)
+                  case Some(value) => form(isPostalCodeRequired).fill(value)
+                }
+
+                Ok(view(preparedForm, departureId, mode, isPostalCodeRequired))
+            }
+          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         }
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(CountryPage))
     .async {
       implicit request =>
-        countriesService.doesCountryRequireZip(country).flatMap {
-          isPostalCodeRequired =>
-            form(isPostalCodeRequired)
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, isPostalCodeRequired))),
-                value => redirect(mode, AddressPage, value, departureId)
+        val getCountry: Option[Country] = request.userAnswers
+          .get(CountryPage)
+          .orElse(
+            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+              _.Address.map(
+                x => Country(CountryCode(x.country), "")
               )
+            )
+          )
+
+        getCountry match {
+          case Some(country) =>
+            countriesService.doesCountryRequireZip(country).flatMap {
+              isPostalCodeRequired =>
+                form(isPostalCodeRequired)
+                  .bindFromRequest()
+                  .fold(
+                    formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, isPostalCodeRequired))),
+                    value => redirect(mode, AddressPage, value, departureId)
+                  )
+            }
+          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         }
+
     }
 
   private def redirect(
