@@ -46,7 +46,6 @@ class PhoneNumberController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId) {
       implicit request =>
-
         getName match {
           case Some(contactName) =>
             val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
@@ -64,7 +63,6 @@ class PhoneNumberController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-
         getName match {
           case Some(contactName) =>
             val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
