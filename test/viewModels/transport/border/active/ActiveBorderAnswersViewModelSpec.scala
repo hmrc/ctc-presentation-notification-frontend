@@ -32,6 +32,7 @@ import play.api.libs.json.Json
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import java.time.Instant
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

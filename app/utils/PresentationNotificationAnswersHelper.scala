@@ -114,20 +114,20 @@ class PresentationNotificationAnswersHelper(
   )
 
   def borderModeSection: Future[Section] = {
+    implicit val ua: UserAnswers = userAnswers
+    val rows = for {
 
-    val borderModeOfTransport: OptionT[Future, SummaryListRow] = for {
-      borderMode <- OptionT(
-        fetchValue[BorderMode](
-          BorderModeOfTransportPage,
-          checkYourAnswersReferenceDataService.getBorderMode,
-          userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
-        )(userAnswers, BorderMode.format)
+      border <- fetchValue(BorderModeOfTransportPage,
+                           checkYourAnswersReferenceDataService.getBorderMode,
+                           userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
       )
-      borderModeRow = borderModeOfTransportRow(borderMode.toString)
+      borderMode = border.map(
+        lt => borderModeOfTransportRow(lt.toString)
+      )
 
-    } yield borderModeRow
+    } yield Seq(borderMode).flatten
 
-    borderModeOfTransport.value.map {
+    rows.map {
       borderModeOfTransport =>
         Section(
           sectionTitle = messages("transport.border.borderModeOfTransport.caption"),
@@ -135,4 +135,5 @@ class PresentationNotificationAnswersHelper(
         )
     }
   }
+
 }

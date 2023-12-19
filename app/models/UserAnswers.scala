@@ -89,8 +89,9 @@ final case class UserAnswers(
 
     val Ie15Data: JsObject = Json.toJson(departureData).as[JsObject]
     val updatedIe15DataJsObject: JsObject = departureDataPaths.foldLeft(Ie15Data) {
-      (current, toRemove) => current.removeObject(toRemove).getOrElse(Ie15Data)
+      (current, toRemove) => current.removeObjectStandard(toRemove).getOrElse(Ie15Data)
     }
+
     val updatedDepartureData = Json.fromJson[MessageData](updatedIe15DataJsObject) match {
       case JsSuccess(value, _) => value
       case JsError(errors)     => throw new RuntimeException(s"Failed to convert JsObject to MessageData: $errors")

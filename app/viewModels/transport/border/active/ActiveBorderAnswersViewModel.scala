@@ -24,12 +24,13 @@ import utils.ActiveBorderTransportMeansAnswersHelper
 import viewModels.Section
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 case class ActiveBorderAnswersViewModel(sections: Seq[Section])
 
 object ActiveBorderAnswersViewModel {
 
-  class ActiveBorderAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
+  class ActiveBorderAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext) {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, index: Index)(implicit messages: Messages): ActiveBorderAnswersViewModel = {
       val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, index)

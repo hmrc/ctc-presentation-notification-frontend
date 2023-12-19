@@ -45,6 +45,11 @@ package object models {
 
     def removeObject(path: JsPath): JsResult[JsObject] =
       jsObject.remove(path).flatMap(_.validate[JsObject])
+
+    def removeObjectStandard(path: JsPath): JsResult[JsObject] = {
+      val transformer = path.json.prune
+      jsObject.transform(transformer)
+    }
   }
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {

@@ -16,13 +16,17 @@
 
 package models.messages
 
+import models.PostalCodeAddress
+import models.reference.{Country, CountryCode}
 import play.api.libs.json.{Json, OFormat}
 
 case class PostcodeAddress(
   houseNumber: Option[String],
   postcode: String,
   country: String
-)
+) {
+  def toPostalCode: PostalCodeAddress = PostalCodeAddress(houseNumber.getOrElse(""), postcode, Country(CountryCode(country), ""))
+}
 
 object PostcodeAddress {
   implicit val format: OFormat[PostcodeAddress] = Json.format[PostcodeAddress]

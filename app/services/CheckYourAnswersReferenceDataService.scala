@@ -18,7 +18,7 @@ package services
 
 import connectors.ReferenceDataConnector
 import models.{LocationOfGoodsIdentification, LocationType}
-import models.reference.BorderMode
+import models.reference.{BorderMode, Country, CustomsOffice}
 import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -43,12 +43,29 @@ class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: Re
         .getOrElse(referenceDataException("qualifierOfIdentification", code, qualifiers))
     } yield qualifierFound
 
+  def getCustomsOffice(countryCode: String)(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
+    for {
+      customsOffices <- referenceDataConnector.getCustomsOfficesOfDepartureForCountry(countryCode)
+      customsOffice = customsOffices
+        .find(_.id == id)
+        .getOrElse(referenceDataException("customsOffice", id, customsOffices))
+    } yield customsOffice
+
   def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[BorderMode] =
     for {
       borderModes <- referenceDataConnector.getBorderModeCodes()
       modeFound = borderModes
         .find(_.code == code)
         .getOrElse(referenceDataException("borderMode", code, borderModes))
+
+    } yield modeFound
+
+  def getCountry(code: String)(implicit hc: HeaderCarrier): Future[Country] =
+    for {
+      countryCodes <- referenceDataConnector.getCountries("CountryCodesFullList")
+      modeFound = countryCodes
+        .find(_.code.code == code)
+        .getOrElse(referenceDataException("countries", code, countryCodes))
 
     } yield modeFound
 

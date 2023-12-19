@@ -23,11 +23,10 @@ import generators.Generators
 import models._
 import models.messages.AuthorisationType.{C521, C523}
 import models.messages.{Authorisation, MessageData}
-import models.reference.BorderMode
+import models.reference.{BorderMode, Country}
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
 import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -35,6 +34,8 @@ import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
+import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
+import play.api.libs.json.JsPath
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -673,6 +674,192 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
 
       }
+
+      "must go from LocationTypePage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(LocationTypePage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+      }
+
+      "must go from IdentificationPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.setValue(IdentificationPage, LocationOfGoodsIdentification(PostalCodeIdentifier, s"$PostalCodeIdentifier - desc"))
+            navigator
+              .nextPage(IdentificationPage, updatedAnswers, departureId, CheckMode)
+              .mustBe(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, CheckMode))
+        }
+
+      }
+
+      "must go from AuthorisationNumberPage to add identifier page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AuthorisationNumberPage, answers, departureId, CheckMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
+        }
+      }
+
+      "must go from AddIdentifierYesNoPage" - {
+        "to AdditionalIdentifierPage if answer is Yes and AdditionalIdentifierPage doesn't exist" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              (for {
+                updatedAnswers                         <- answers.set(AddIdentifierYesNoPage, true)
+                answersWithoutAdditionalIdentifierPage <- updatedAnswers.remove(AdditionalIdentifierPage)
+              } yield navigator
+                .nextPage(AddIdentifierYesNoPage, answersWithoutAdditionalIdentifierPage, departureId, CheckMode)
+                .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
+          }
+        }
+
+        "to CYA page if answer is Yes but AdditionalIdentifierPage already exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              (for {
+                updatedAnswers                      <- answers.set(AddIdentifierYesNoPage, true)
+                answersWithAdditionalIdentifierPage <- updatedAnswers.set(AdditionalIdentifierPage, "identifier")
+              } yield navigator
+                .nextPage(AddIdentifierYesNoPage, answersWithAdditionalIdentifierPage, departureId, CheckMode)
+                .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
+          }
+        }
+        "to CYA page if answer is No" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              answers
+                .set(AddIdentifierYesNoPage, false)
+                .map {
+                  updatedAnswers =>
+                    navigator
+                      .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, CheckMode)
+                      .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                }
+                .get
+          }
+        }
+      }
+
+      "must go from AdditionalIdentifierPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AdditionalIdentifierPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from UnLocodePage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(UnLocodePage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from CustomsOfficeIdentifierPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(CustomsOfficeIdentifierPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from EoriPage to add isentifier page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(EoriPage, answers, departureId, CheckMode)
+              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
+        }
+      }
+
+      "must go from CoordinatesPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(CoordinatesPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "when on AddContactYesNoPage" - {
+        "must go from AddContactYesNoPage to check your answers page when no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswersSet = answers.setValue(AddContactYesNoPage, false)
+              navigator
+                .nextPage(AddContactYesNoPage, userAnswersSet, departureId, CheckMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+
+        }
+        "must remove from userAnswers when AddContactYesNoPage is set to no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val ans = answers.setValue(PhoneNumberPage, "999").setValue(NamePage, "Bob")
+              (ans.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe true
+              (ans.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe true
+              val userAnswersSet = ans.setValue(AddContactYesNoPage, false)
+
+              userAnswersSet.get(CountryPage).mustBe(None)
+
+              userAnswersSet.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson) mustBe None
+              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe false
+              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe false
+
+          }
+        }
+
+        "must go from AddContactYesNoPage to name page when yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswersSet = answers.setValue(AddContactYesNoPage, true)
+              navigator
+                .nextPage(AddContactYesNoPage, userAnswersSet, departureId, CheckMode)
+                .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, CheckMode))
+          }
+
+        }
+      }
+
+      "must go from PhoneNumberPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(PhoneNumberPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+      }
+
+      "must go from CountryPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(pages.locationOfGoods.CountryPage, answers, departureId, CheckMode)
+              .mustBe(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, CheckMode))
+        }
+
+      }
+
+      "must go from AddressPage to check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(AddressPage, answers, departureId, CheckMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+      }
+
     }
   }
 }

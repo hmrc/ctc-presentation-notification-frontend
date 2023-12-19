@@ -34,11 +34,23 @@ trait BaseIdentificationPage extends QuestionPage[LocationOfGoodsIdentification]
 
   def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
 
-  override def cleanup(value: Option[LocationOfGoodsIdentification], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[LocationOfGoodsIdentification], userAnswers: UserAnswers): Try[UserAnswers] = {
+
+    val setOfPaths = Set(
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "authorisationNumber",
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "additionalIdentifier",
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "UNLocode",
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "CustomsOffice",
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "GNSS",
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "EconomicOperator",
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "Address",
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "PostcodeAddress"
+    )
     value match {
-      case Some(_) => userAnswers.remove(QualifierOfIdentificationDetailsSection).flatMap(cleanup)
+      case Some(_) => userAnswers.remove(QualifierOfIdentificationDetailsSection, setOfPaths).flatMap(cleanup)
       case None    => super.cleanup(value, userAnswers)
     }
+  }
 }
 
 case object IdentificationPage extends BaseIdentificationPage {
