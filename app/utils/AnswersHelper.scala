@@ -24,14 +24,13 @@ import play.api.libs.json.Reads
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import cats.implicits._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages)
+)(implicit messages: Messages, executionContext: ExecutionContext)
     extends SummaryListRowHelper {
 
   protected def lrn: String = userAnswers.lrn

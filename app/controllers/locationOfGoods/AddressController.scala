@@ -48,8 +48,6 @@ class AddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[Country]#SpecificDataRequest[_]
-
   private def form(isPostalCodeRequired: Boolean)(implicit request: MandatoryDataRequest[_]): Form[DynamicAddress] =
     formProvider("locationOfGoods.address", isPostalCodeRequired)(request.request.messages(messagesApi))
 
@@ -109,9 +107,11 @@ class AddressController @Inject() (
       .map(_.code)
       .orElse(
         request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-          _.Address.map(
-            c => CountryCode(c.country)
-          )
+          _.Address
+            .map(
+              _.country
+            )
+            .map(CountryCode(_))
         )
       )
 

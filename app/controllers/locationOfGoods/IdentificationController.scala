@@ -48,8 +48,6 @@ class IdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[LocationType]#SpecificDataRequest[_]
-
   private def form(locationOfGoodsIdentification: Seq[LocationOfGoodsIdentification]): Form[LocationOfGoodsIdentification] =
     formProvider("locationOfGoods.identification", locationOfGoodsIdentification)
 
@@ -105,8 +103,8 @@ class IdentificationController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 
-  private def getLocationType(implicit request: DataRequest[AnyContent]): Option[String] = {
-    val getLocationType: Option[String] = request.userAnswers
+  private def getLocationType(implicit request: DataRequest[AnyContent]): Option[String] =
+    request.userAnswers
       .get(LocationTypePage)
       .map(_.`type`)
       .orElse(
@@ -116,9 +114,8 @@ class IdentificationController @Inject() (
       )
       .orElse(
         request.userAnswers.departureData.Consignment.LocationOfGoods.map(
-          x => x.typeOfLocation
+          _.typeOfLocation
         )
       )
-    getLocationType
-  }
+
 }
