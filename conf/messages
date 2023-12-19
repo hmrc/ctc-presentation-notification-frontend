@@ -470,6 +470,11 @@ transport.addInlandModeOfTransport.paragraph = This is the mode of transport use
 transport.addInlandModeOfTransport.no = No - the goods are already at the port or airport
 transport.addInlandModeOfTransport.error.required = Select yes if you want to add an inland mode of transport
 
+transport.inlandModeOfTransport.heading = Which inland mode of transport are you using?
+transport.inlandModeOfTransport.caption = Transport details - Inland mode of transport
+transport.inlandModeOfTransport.title = Which inland mode of transport are you using?
+transport.inlandModeOfTransport.error.required = Select which inland mode of transport you’re using
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 checkYourAnswers.paragraph1 = The information below combines parts of your initial declaration with the answers you just provided. Check this and confirm whether the details are still correct.

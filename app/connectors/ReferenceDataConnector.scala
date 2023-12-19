@@ -109,6 +109,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[BorderMode]](url, headers = version2Header)
   }
 
+  def getInlandModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[InlandMode]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[InlandMode]](url, headers = version2Header)
+  }
+
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Identification]] = {
     val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
     http.GET[Seq[Identification]](url, headers = version2Header)

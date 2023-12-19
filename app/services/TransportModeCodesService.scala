@@ -18,7 +18,7 @@ package services
 
 import config.Constants._
 import connectors.ReferenceDataConnector
-import models.reference.BorderMode
+import models.reference.{BorderMode, InlandMode}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -30,7 +30,13 @@ class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceData
     referenceDataConnector
       .getBorderModeCodes()
       .map(filterBorderModes)
-      .map(sort)
+      .map(sortBorderModes)
+
+  def getInlandModes()(implicit hc: HeaderCarrier): Future[Seq[InlandMode]] =
+    referenceDataConnector
+      .getInlandModeCodes()
+      .map(_.filterNot(_.code == Unknown))
+      .map(sortInlandModes)
 
   private def filterBorderModes(
     borderModeTypes: Seq[BorderMode]
@@ -42,6 +48,9 @@ class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceData
     )
   }
 
-  private def sort(transportModeCodes: Seq[BorderMode]): Seq[BorderMode] =
+  private def sortBorderModes(transportModeCodes: Seq[BorderMode]): Seq[BorderMode] =
+    transportModeCodes.sortBy(_.code.toLowerCase)
+
+  private def sortInlandModes(transportModeCodes: Seq[InlandMode]): Seq[InlandMode] =
     transportModeCodes.sortBy(_.code.toLowerCase)
 }

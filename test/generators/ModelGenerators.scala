@@ -169,6 +169,14 @@ trait ModelGenerators {
       } yield BorderMode(code, description)
     }
 
+  implicit lazy val arbitraryInlandModeOfTransport: Arbitrary[InlandMode] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
+    }
+
   implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
     Arbitrary {
       for {

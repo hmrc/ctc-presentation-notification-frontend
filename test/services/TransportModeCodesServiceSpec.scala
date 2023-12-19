@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.reference.BorderMode
+import models.reference.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -57,6 +57,28 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
         verify(mockRefDataConnector).getBorderModeCodes()(any(), any())
+      }
+    }
+
+    "getInlandModeCodes" - {
+
+      val inlandMode1 = InlandMode("8", "Inland waterway")
+      val inlandMode2 = InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
+      val inlandMode3 = InlandMode("5", "Mail (active mode of transport unknown)")
+      val inlandMode4 = InlandMode("4", "Air")
+      val inlandMode5 = InlandMode("3", "Road")
+      val inlandMode6 = InlandMode("2", "Rail")
+      val inlandMode7 = InlandMode("1", "Maritime")
+      val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
+
+      "must return the agreed list of sorted inland modes" in {
+        when(mockRefDataConnector.getInlandModeCodes()(any(), any()))
+          .thenReturn(Future.successful(Seq(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
+
+        service.getInlandModes().futureValue mustBe
+          Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
+
+        verify(mockRefDataConnector).getInlandModeCodes()(any(), any())
       }
     }
   }
