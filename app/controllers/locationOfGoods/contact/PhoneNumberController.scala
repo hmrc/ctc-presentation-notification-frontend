@@ -19,7 +19,7 @@ package controllers.locationOfGoods.contact
 import controllers.actions._
 import forms.TelephoneNumberFormProvider
 import models.Mode
-import models.requests.MandatoryDataRequest
+import models.requests.{DataRequest, MandatoryDataRequest}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,15 +46,6 @@ class PhoneNumberController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId) {
       implicit request =>
-        val getName: Option[String] = request.userAnswers
-          .get(NamePage)
-          .orElse(
-            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-              _.ContactPerson.map(
-                _.name
-              )
-            )
-          )
 
         getName match {
           case Some(contactName) =>
@@ -73,15 +64,6 @@ class PhoneNumberController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val getName: Option[String] = request.userAnswers
-          .get(NamePage)
-          .orElse(
-            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-              _.ContactPerson.map(
-                _.name
-              )
-            )
-          )
 
         getName match {
           case Some(contactName) =>
@@ -106,4 +88,16 @@ class PhoneNumberController @Inject() (
       updatedAnswers <- Future.fromTry(request.userAnswers.set(PhoneNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(PhoneNumberPage, updatedAnswers, departureId, mode))
+
+  private def getName(implicit request: DataRequest[AnyContent]): Option[String] =
+    request.userAnswers
+      .get(NamePage)
+      .orElse(
+        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+          _.ContactPerson.map(
+            _.name
+          )
+        )
+      )
+
 }
