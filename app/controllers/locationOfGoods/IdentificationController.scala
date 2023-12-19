@@ -40,7 +40,6 @@ class IdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,
   locationOfGoodsIdentificationTypeService: LocationOfGoodsIdentificationTypeService,
   val controllerComponents: MessagesControllerComponents,
