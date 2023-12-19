@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.transport
 
-import models.{DynamicEnumerableType, Radioable}
-import org.apache.commons.text.StringEscapeUtils
-import play.api.libs.json.{Format, Json}
+import models.reference.TransportMode.InlandMode
+import pages.behaviours.PageBehaviours
 
-case class BorderMode(code: String, description: String) extends Radioable[BorderMode] {
+class InlandModePageSpec extends PageBehaviours {
 
-  override def toString: String = StringEscapeUtils.unescapeXml(description)
+  "InlandModePage" - {
 
-  override val messageKeyPrefix: String = BorderMode.messageKeyPrefix
-}
+    beRetrievable[InlandMode](InlandModePage)
 
-object BorderMode extends DynamicEnumerableType[BorderMode] {
-  implicit val format: Format[BorderMode] = Json.format[BorderMode]
+    beSettable[InlandMode](InlandModePage)
 
-  val messageKeyPrefix = "transport.border.borderModeOfTransport"
+    beRemovable[InlandMode](InlandModePage)
+  }
 }
