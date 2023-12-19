@@ -28,9 +28,9 @@ class LocationOfGoodsIdentificationTypeService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  def getLocationOfGoodsIdentificationTypes(locationType: LocationType)(implicit hc: HeaderCarrier): Future[Seq[LocationOfGoodsIdentification]] = {
+  def getLocationOfGoodsIdentificationTypes(locationType: String)(implicit hc: HeaderCarrier): Future[Seq[LocationOfGoodsIdentification]] = {
     def filter(locationOfGoods: Seq[LocationOfGoodsIdentification]): Seq[LocationOfGoodsIdentification] =
-      locationType.code match {
+      locationType match {
         case DesignatedLocation =>
           locationOfGoods.filter(_.qualifierIsOneOf(CustomsOfficeIdentifier, UnlocodeIdentifier))
         case AuthorisedPlace =>
