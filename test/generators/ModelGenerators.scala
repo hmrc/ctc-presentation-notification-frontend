@@ -215,6 +215,21 @@ trait ModelGenerators {
       )
     }
 
+  lazy val arbitraryActiveBorderTransportMeansWithoutConveyanceRefNo: Arbitrary[Option[List[ActiveBorderTransportMeans]]] =
+    Arbitrary {
+      for {
+        sequenceNumber                       <- nonEmptyString
+        customsOfficeAtBorderReferenceNumber <- Gen.option(nonEmptyString)
+        typeOfIdentification                 <- Gen.option(nonEmptyString)
+        identificationNumber                 <- Gen.option(nonEmptyString)
+        nationality                          <- Gen.option(nonEmptyString)
+      } yield Some(
+        List(
+          ActiveBorderTransportMeans(sequenceNumber, customsOfficeAtBorderReferenceNumber, typeOfIdentification, identificationNumber, nationality, None)
+        )
+      )
+    }
+
   implicit lazy val arbitraryIdentificationActive: Arbitrary[active.Identification] =
     Arbitrary {
       for {

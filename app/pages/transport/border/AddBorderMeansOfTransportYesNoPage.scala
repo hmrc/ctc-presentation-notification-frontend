@@ -20,8 +20,11 @@ import controllers.transport.border.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
+import pages.sections.transport.border.BorderActiveListSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object AddBorderMeansOfTransportYesNoPage extends QuestionPage[Boolean] {
 
@@ -32,5 +35,13 @@ case object AddBorderMeansOfTransportYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
 
-  //TODO: Add clean up logic
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val Ie015ActiveBorderMeansListPath: JsPath = JsPath \ "Consignment" \ "ActiveBorderTransportMeans"
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(BorderActiveListSection, Ie015ActiveBorderMeansListPath)
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
 }

@@ -19,12 +19,16 @@ package utils
 import models.messages.MessageData
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
+import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import play.api.libs.json.{JsArray, Reads}
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import viewModels.Link
 
 class AnswersHelper(
   userAnswers: UserAnswers,
@@ -63,5 +67,8 @@ class AnswersHelper(
       case Some(value) => Future.successful(Some(value))
       case None        => valueToConvert.map(convertToReference).sequence
     }
+
+  protected def buildLink[T](section: Section[JsArray], doesSectionExistInDepartureData: Boolean)(link: => Link): Option[Link] =
+    if (userAnswers.get(section).isDefined || doesSectionExistInDepartureData) Some(link) else None
 
 }

@@ -21,12 +21,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import play.twirl.api.Html
-import viewModels.Section
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.{Link, ListItem}
-import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel, ApplyAnotherItemViewModel}
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
+import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel, ApplyAnotherItemViewModel}
+import viewModels.{Link, ListItem, Section}
 
 trait ViewModelGenerators {
   self: Generators =>

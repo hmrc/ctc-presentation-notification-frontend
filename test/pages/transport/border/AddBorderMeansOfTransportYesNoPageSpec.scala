@@ -17,6 +17,15 @@
 package pages.transport.border
 
 import pages.behaviours.PageBehaviours
+import pages.sections.transport.border.BorderActiveListSection
+import pages.transport.border.active.{
+  AddConveyanceReferenceYesNoPage,
+  ConveyanceReferenceNumberPage,
+  CustomsOfficeActiveBorderPage,
+  IdentificationNumberPage,
+  IdentificationPage,
+  NationalityPage
+}
 
 class AddBorderMeansOfTransportYesNoPageSpec extends PageBehaviours {
 
@@ -25,5 +34,29 @@ class AddBorderMeansOfTransportYesNoPageSpec extends PageBehaviours {
     beRetrievable[Boolean](AddBorderMeansOfTransportYesNoPage)
     beSettable[Boolean](AddBorderMeansOfTransportYesNoPage)
     beRemovable[Boolean](AddBorderMeansOfTransportYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove ActiveBorderList in 15/13/170" in {
+          forAll(arbitraryIdentificationActive.arbitrary, nonEmptyString, arbitraryNationality.arbitrary, arbitraryCustomsOffice.arbitrary, nonEmptyString) {
+            (identification, identificationNumber, nationality, customsOffice, conveyanceRefNumber) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddBorderMeansOfTransportYesNoPage, true)
+                .setValue(IdentificationPage(activeIndex), identification)
+                .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
+                .setValue(NationalityPage(activeIndex), nationality)
+                .setValue(CustomsOfficeActiveBorderPage(activeIndex), customsOffice)
+                .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
+                .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
+
+              val result = userAnswers.setValue(AddBorderMeansOfTransportYesNoPage, false)
+
+              result.get(BorderActiveListSection) must not be defined
+              result.departureData.Consignment.ActiveBorderTransportMeans must not be defined
+
+          }
+        }
+      }
+    }
   }
 }

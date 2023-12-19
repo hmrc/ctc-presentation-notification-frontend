@@ -62,6 +62,11 @@ transport.value.withoutContainer = no container identification number
 transport.item.prefix = Item {0}
 
 checkYourAnswers.placeOfLoading = Place of loading
+checkYourAnswers.transportMeans.active.withIndex = Border means of transport {0}
+checkYourAnswers.transportMeans.active.withoutIndex = Border means of transport
+checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
+checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
+
 checkYourAnswers.locationOfGoods = Location of goods
 
 moreInformation.title = More information needed to complete declaration
@@ -321,7 +326,7 @@ transport.border.active.addConveyanceReference.heading = Do you want to add a co
 transport.border.active.addConveyanceReference.paragraph = This is a unique reference provided by the carrier to identify the means of transport.
 transport.border.active.addConveyanceReference.checkYourAnswersLabel = Do you want to add a conveyance reference number?
 transport.border.active.addConveyanceReference.error.required = Select yes if you want to add a conveyance reference number
-transport.border.active.addConveyanceReference.change.hidden = if you want to add a conveyance reference number for the border means of transport
+transport.border.active.addConveyanceReference.change.hidden = if you want to add a conveyance reference number
 
 transport.border.active.conveyanceReferenceNumber.title = What is the conveyance reference number?
 transport.border.active.conveyanceReferenceNumber.heading = What is the conveyance reference number?
@@ -359,6 +364,7 @@ transport.border.active.identificationNumber.title = What is the identification 
 transport.border.active.identificationNumber.heading = What is the identification number for this vehicle?
 transport.border.active.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 transport.border.active.identificationNumber.checkYourAnswersLabel = Identification number
+transport.border.active.identificationNumber.change.hidden = identification number for the border means of transport
 transport.border.active.identificationNumber.error.length = The identification number must be 35 characters or less
 transport.border.active.identificationNumber.error.required = Enter the identification number for this vehicle
 transport.border.active.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9

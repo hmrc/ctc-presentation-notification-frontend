@@ -29,7 +29,7 @@ class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: Re
 
   def getLocationType(code: String)(implicit hc: HeaderCarrier): Future[LocationType] =
     for {
-      locations <- referenceDataConnector.getTypesOfLocation
+      locations <- referenceDataConnector.getTypesOfLocation()
       locationFound = locations
         .find(_.code == code)
         .getOrElse(referenceDataException("locationType", code, locations))
@@ -37,7 +37,7 @@ class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: Re
 
   def getQualifierOfIdentification(code: String)(implicit hc: HeaderCarrier): Future[LocationOfGoodsIdentification] =
     for {
-      qualifiers <- referenceDataConnector.getQualifierOfTheIdentifications
+      qualifiers <- referenceDataConnector.getQualifierOfTheIdentifications()
       qualifierFound = qualifiers
         .find(_.code == code)
         .getOrElse(referenceDataException("qualifierOfIdentification", code, qualifiers))
