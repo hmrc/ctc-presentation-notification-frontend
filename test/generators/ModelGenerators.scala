@@ -21,6 +21,7 @@ import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
 import models.messages.ActiveBorderTransportMeans
+import models.reference.TransportMode._
 import models.reference._
 import models.reference.transport.border.active
 import org.scalacheck.Arbitrary.arbitrary

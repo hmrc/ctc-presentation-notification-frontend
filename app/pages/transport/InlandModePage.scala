@@ -16,7 +16,7 @@
 
 package pages.transport
 
-import models.reference.InlandMode
+import models.reference.TransportMode.InlandMode
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection

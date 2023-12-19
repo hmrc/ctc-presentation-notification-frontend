@@ -21,7 +21,7 @@ import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.NormalMode
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
