@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import helper.WireMockServerHandler
 import models.LocationType
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -367,6 +368,112 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getNationalities())
+      }
+    }
+
+    "getTransportModeCodes" - {
+      val url: String = s"/$baseUrl/lists/TransportModeCode"
+
+      "when inland modes" - {
+
+        "must return Seq of inland modes when successful" in {
+          val responseJson: String =
+            """
+              |{
+              |  "_links": {
+              |    "self": {
+              |      "href": "/customs-reference-data/lists/TransportModeCode"
+              |    }
+              |  },
+              |  "meta": {
+              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+              |    "snapshotDate": "2023-01-01"
+              |  },
+              |  "id": "TransportModeCode",
+              |  "data": [
+              |    {
+              |      "code": "1",
+              |      "description": "Maritime Transport"
+              |    },
+              |    {
+              |      "code": "2",
+              |      "description": "Rail Transport"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
+
+          server.stubFor(
+            get(urlEqualTo(url))
+              .willReturn(okJson(responseJson))
+          )
+
+          val expectedResult: Seq[InlandMode] = Seq(
+            InlandMode("1", "Maritime Transport"),
+            InlandMode("2", "Rail Transport")
+          )
+
+          connector.getTransportModeCodes[InlandMode]().futureValue mustEqual expectedResult
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode]())
+        }
+
+        "must return an exception when an error response is returned" in {
+          checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
+        }
+      }
+
+      "when border modes" - {
+
+        "must return Seq of border modes when successful" in {
+          val responseJson: String =
+            """
+              |{
+              |  "_links": {
+              |    "self": {
+              |      "href": "/customs-reference-data/lists/TransportModeCode"
+              |    }
+              |  },
+              |  "meta": {
+              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+              |    "snapshotDate": "2023-01-01"
+              |  },
+              |  "id": "TransportModeCode",
+              |  "data": [
+              |    {
+              |      "code": "1",
+              |      "description": "Maritime Transport"
+              |    },
+              |    {
+              |      "code": "2",
+              |      "description": "Rail Transport"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
+
+          server.stubFor(
+            get(urlEqualTo(url))
+              .willReturn(okJson(responseJson))
+          )
+
+          val expectedResult: Seq[BorderMode] = Seq(
+            BorderMode("1", "Maritime Transport"),
+            BorderMode("2", "Rail Transport")
+          )
+
+          connector.getTransportModeCodes[BorderMode]().futureValue mustEqual expectedResult
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode]())
+        }
+
+        "must return an exception when an error response is returned" in {
+          checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
+        }
       }
     }
 

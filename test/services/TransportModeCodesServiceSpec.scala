@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.reference.{BorderMode, InlandMode}
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -50,13 +50,13 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val borderMode8 = BorderMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted border modes" in {
-        when(mockRefDataConnector.getBorderModeCodes()(any(), any()))
+        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any()))
           .thenReturn(Future.successful(Seq(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
 
         service.getBorderModes().futureValue mustBe
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
-        verify(mockRefDataConnector).getBorderModeCodes()(any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any())
       }
     }
 
@@ -72,13 +72,13 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted inland modes" in {
-        when(mockRefDataConnector.getInlandModeCodes()(any(), any()))
+        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any()))
           .thenReturn(Future.successful(Seq(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
 
         service.getInlandModes().futureValue mustBe
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
 
-        verify(mockRefDataConnector).getInlandModeCodes()(any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any())
       }
     }
   }

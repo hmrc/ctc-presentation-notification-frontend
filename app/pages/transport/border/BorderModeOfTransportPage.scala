@@ -16,7 +16,7 @@
 
 package pages.transport.border
 
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection

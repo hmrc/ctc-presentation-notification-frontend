@@ -18,7 +18,7 @@ package views.transport
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.reference.InlandMode
+import models.reference.TransportMode.InlandMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem

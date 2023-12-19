@@ -18,7 +18,7 @@ package controllers.transport
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.reference.InlandMode
+import models.reference.TransportMode.InlandMode
 import models.requests.MandatoryDataRequest
 import models.Mode
 import navigation.BorderNavigator

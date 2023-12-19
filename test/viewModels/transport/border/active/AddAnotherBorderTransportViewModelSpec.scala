@@ -19,7 +19,7 @@ package viewModels.transport.border.active
 import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models.messages.TransitOperation
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary

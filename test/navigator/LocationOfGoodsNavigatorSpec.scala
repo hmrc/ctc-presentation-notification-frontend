@@ -23,7 +23,7 @@ import generators.Generators
 import models._
 import models.messages.AuthorisationType.{C521, C523}
 import models.messages.{Authorisation, MessageData}
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
