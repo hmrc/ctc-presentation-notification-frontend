@@ -18,5 +18,5 @@ POST       /inland-mode-of-transport/change-add/:departureId              contro
 
 GET        /inland-mode-of-transport/:departureId                         controllers.transport.InlandModeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /inland-mode-of-transport/:departureId                         controllers.transport.InlandModeController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /inland-mode-of-transport/:departureId                         controllers.transport.InlandModeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /inland-mode-of-transport/:departureId                         controllers.transport.InlandModeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+GET        /change-inland-mode-of-transport/:departureId                  controllers.transport.InlandModeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-inland-mode-of-transport/:departureId                  controllers.transport.InlandModeController.onSubmit(departureId: String, mode: Mode = CheckMode)
