@@ -26,8 +26,6 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import viewModels.Link
 
 class AnswersHelper(

@@ -27,13 +27,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.Link
+import scala.concurrent.ExecutionContext
 
 class ActiveBorderTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode,
   activeIndex: Index
-)(implicit messages: Messages, appConfig: FrontendAppConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig, executionContext: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def addBorderMeansOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
