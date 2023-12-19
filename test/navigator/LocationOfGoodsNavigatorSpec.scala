@@ -35,6 +35,7 @@ import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
+import play.api.libs.json.JsPath
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -803,11 +804,16 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "must remove from userAnswers when AddContactYesNoPage is set to no" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val userAnswersSet = answers.setValue(AddContactYesNoPage, false)
+              val ans = answers.setValue(PhoneNumberPage, "999").setValue(NamePage, "Bob")
+              (ans.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe true
+              (ans.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe true
+              val userAnswersSet = ans.setValue(AddContactYesNoPage, false)
 
               userAnswersSet.get(CountryPage).mustBe(None)
 
               userAnswersSet.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson) mustBe None
+              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe false
+              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe false
 
           }
         }
