@@ -106,7 +106,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
           val country = Arbitrary.arbitrary[Country].retryUntil(!countries.contains(_)).sample.value
 
-          val result = service.doesCountryRequireZip(country).futureValue
+          val result = service.doesCountryRequireZip(country.code).futureValue
 
           result mustBe true
 
@@ -120,7 +120,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
           val country = countries.head
 
-          val result = service.doesCountryRequireZip(country).futureValue
+          val result = service.doesCountryRequireZip(country.code).futureValue
 
           result mustBe false
 

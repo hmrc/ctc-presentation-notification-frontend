@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import forms.DynamicAddressFormProvider
 import models.reference.{Country, CountryCode}
-import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
+import models.requests.{DataRequest, MandatoryDataRequest, SpecificDataRequestProvider1}
 import models.{DynamicAddress, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
@@ -57,17 +57,7 @@ class AddressController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val getCountry: Option[Country] = request.userAnswers
-          .get(CountryPage)
-          .orElse(
-            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-              _.Address.map(
-                x => Country(CountryCode(x.country), "")
-              )
-            )
-          )
-
-        getCountry match {
+        getCountryCode match {
           case Some(country) =>
             countriesService.doesCountryRequireZip(country).map {
               isPostalCodeRequired =>
@@ -86,17 +76,7 @@ class AddressController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val getCountry: Option[Country] = request.userAnswers
-          .get(CountryPage)
-          .orElse(
-            request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-              _.Address.map(
-                x => Country(CountryCode(x.country), "")
-              )
-            )
-          )
-
-        getCountry match {
+        getCountryCode match {
           case Some(country) =>
             countriesService.doesCountryRequireZip(country).flatMap {
               isPostalCodeRequired =>
@@ -122,4 +102,17 @@ class AddressController @Inject() (
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
+
+  private def getCountryCode(implicit request: DataRequest[AnyContent]): Option[CountryCode] =
+    request.userAnswers
+      .get(CountryPage)
+      .map(_.code)
+      .orElse(
+        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+          _.Address.map(
+            c => CountryCode(c.country)
+          )
+        )
+      )
+
 }
