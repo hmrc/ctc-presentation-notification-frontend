@@ -37,3 +37,7 @@ GET        /:departureId                                                      co
 GET        /check-answers/:departureId                                        controllers.CheckYourAnswersController.onPageLoad(departureId: String)
 POST       /check-answers/:departureId                                        controllers.CheckYourAnswersController.onSubmit(departureId: String)
 
+GET        /representative/acting/:departureId                       controllers.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /representative/acting/:departureId                       controllers.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /representative/change-acting/:departureId                controllers.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /representative/change-acting/:departureId                controllers.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = CheckMode)
