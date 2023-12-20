@@ -36,7 +36,7 @@ case object ActingAsRepresentativePage extends QuestionPage[Boolean] {
     }
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = Some(
-    controllers.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode)
+    controllers.representative.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode)
   )
 
 }

@@ -37,7 +37,7 @@ class ActingAsRepresentativeControllerSpec extends SpecBase with AppWithDefaultM
   private val formProvider                   = new YesNoFormProvider()
   private val form                           = formProvider("traderDetails.actingRepresentative")
   private val mode                           = NormalMode
-  private lazy val actingRepresentativeRoute = routes.ActingAsRepresentativeController.onPageLoad(departureId, mode).url
+  private lazy val actingRepresentativeRoute = representative.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

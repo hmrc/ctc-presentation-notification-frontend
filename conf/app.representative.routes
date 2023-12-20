@@ -1,0 +1,4 @@
+GET        /representative/acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /representative/acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /representative/change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /representative/change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = CheckMode)

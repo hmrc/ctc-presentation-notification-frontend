@@ -476,13 +476,7 @@ checkYourAnswers.paragraph1 = The information below combines parts of your initi
 checkYourAnswers.subHeading = Send this information for your departure declaration
 checkYourAnswers.paragraph2 = By sending this, you are confirming that these details are correct to the best of your knowledge.
 
-
-traderDetails.caption = Trader details
-traderDetails.holderOfTransit.caption = Trader details - Transit holder
-traderDetails.representative.caption = Trader details - Representative
-traderDetails.consignment.consignor.caption = Trader details - Consignor
-traderDetails.consignment.consignee.caption = Trader details - Consignee
-
+traderDetails.representative.caption = Representative
 traderDetails.actingRepresentative.title = Are you acting as a representative?
 traderDetails.actingRepresentative.heading = Are you acting as a representative?
 traderDetails.actingRepresentative.checkYourAnswersLabel = Are you acting as a representative?
