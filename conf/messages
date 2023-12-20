@@ -480,3 +480,11 @@ checkYourAnswers.heading = Check your answers
 checkYourAnswers.paragraph1 = The information below combines parts of your initial declaration with the answers you just provided. Check this and confirm whether the details are still correct.
 checkYourAnswers.subHeading = Send this information for your departure declaration
 checkYourAnswers.paragraph2 = By sending this, you are confirming that these details are correct to the best of your knowledge.
+
+traderDetails.representative.caption = Representative
+traderDetails.actingRepresentative.title = Are you acting as a representative?
+traderDetails.actingRepresentative.heading = Are you acting as a representative?
+traderDetails.actingRepresentative.checkYourAnswersLabel = Are you acting as a representative?
+traderDetails.actingRepresentative.error.required = Select yes if you are acting as a representative
+traderDetails.actingRepresentative.paragraph = This means moving the goods for someone else or completing the declaration on behalf of a transit holder.
+traderDetails.actingRepresentative.change.hidden = if you are acting as a representative
