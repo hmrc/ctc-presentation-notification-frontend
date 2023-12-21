@@ -17,6 +17,7 @@
 package controllers.locationOfGoods
 
 import controllers.actions._
+import controllers.locationOfGoods.AddressController.getCountryCode
 import forms.SelectableFormProvider
 import models.Mode
 import models.reference.Country
@@ -56,9 +57,16 @@ class CountryController @Inject() (
         service.getCountries().map {
           countryList =>
             val form = formProvider(prefix, countryList)
-            val preparedForm = request.userAnswers.get(CountryPage) match {
-              case None        => form
-              case Some(value) => form.fill(value)
+            val preparedForm = getCountryCode match {
+              case None => form
+              case Some(countryCode) =>
+                countryList.values.find(
+                  _.code == countryCode
+                ) match {
+                  case Some(country) => form.fill(country)
+                  case None          => form
+                }
+
             }
 
             Ok(view(preparedForm, departureId, countryList.values, mode))

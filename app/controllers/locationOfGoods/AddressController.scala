@@ -17,6 +17,7 @@
 package controllers.locationOfGoods
 
 import controllers.actions._
+import controllers.locationOfGoods.AddressController.getCountryCode
 import forms.DynamicAddressFormProvider
 import models.reference.{Country, CountryCode}
 import models.requests.{DataRequest, MandatoryDataRequest, SpecificDataRequestProvider1}
@@ -24,6 +25,7 @@ import models.{DynamicAddress, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
 import pages.locationOfGoods.{AddressPage, CountryPage}
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -46,7 +48,8 @@ class AddressController @Inject() (
   view: AddressView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private def form(isPostalCodeRequired: Boolean)(implicit request: MandatoryDataRequest[_]): Form[DynamicAddress] =
     formProvider("locationOfGoods.address", isPostalCodeRequired)(request.request.messages(messagesApi))
@@ -59,7 +62,13 @@ class AddressController @Inject() (
           case Some(country) =>
             countriesService.doesCountryRequireZip(country).map {
               isPostalCodeRequired =>
-                val preparedForm = request.userAnswers.get(AddressPage) match {
+                val getCountry = request.userAnswers
+                  .get(AddressPage)
+                  .orElse {
+                    logger.info(s"Retrieved Address answer from IE015 journey")
+                    request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.toDynamicAddress))
+                  }
+                val preparedForm = getCountry match {
                   case None        => form(isPostalCodeRequired)
                   case Some(value) => form(isPostalCodeRequired).fill(value)
                 }
@@ -100,12 +109,16 @@ class AddressController @Inject() (
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
+}
 
-  private def getCountryCode(implicit request: DataRequest[AnyContent]): Option[CountryCode] =
+object AddressController extends Logging {
+
+  private[locationOfGoods] def getCountryCode(implicit request: DataRequest[AnyContent]): Option[CountryCode] =
     request.userAnswers
       .get(CountryPage)
       .map(_.code)
-      .orElse(
+      .orElse {
+        logger.info(s"Retrieved Address answer from IE015 journey")
         request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
           _.Address
             .map(
@@ -113,6 +126,5 @@ class AddressController @Inject() (
             )
             .map(CountryCode(_))
         )
-      )
-
+      }
 }

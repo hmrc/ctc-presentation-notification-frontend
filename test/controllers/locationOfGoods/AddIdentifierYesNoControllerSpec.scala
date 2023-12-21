@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -47,7 +47,7 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addIdentifierYesNoRoute)
       val result  = route(app, request).value
@@ -64,6 +64,26 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
       val userAnswers = emptyUserAnswers.setValue(AddIdentifierYesNoPage, true)
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addIdentifierYesNoRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddIdentifierYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      val userAnswers15 =
+        UserAnswers.lensLocationOfGoods.set(Some(UserAnswers.lensAdditionalIdentifier.set(Some("ab12"))(emptyLocationOfGoods)))(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addIdentifierYesNoRoute)
 

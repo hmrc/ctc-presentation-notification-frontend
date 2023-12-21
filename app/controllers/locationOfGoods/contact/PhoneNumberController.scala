@@ -31,6 +31,7 @@ import views.html.locationOfGoods.contact.PhoneNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.Logging
 
 class PhoneNumberController @Inject() (
   override val messagesApi: MessagesApi,
@@ -90,21 +91,25 @@ class PhoneNumberController @Inject() (
 
 }
 
-object PhoneNumberController {
+object PhoneNumberController extends Logging {
 
   private[contact] def getName(implicit request: DataRequest[AnyContent]): Option[String] =
     request.userAnswers
       .get(NamePage)
-      .orElse(
+      .orElse {
+        logger.info(s"Retrieved Name answer from IE015 journey")
         request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
           _.ContactPerson.map(
             _.name
           )
         )
-      )
+      }
 
   private[contact] def getNumber(implicit request: DataRequest[AnyContent]): Option[String] =
     request.userAnswers
       .get(PhoneNumberPage)
-      .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.phoneNumber)))
+      .orElse {
+        logger.info(s"Retrieved Number answer from IE015 journey")
+        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.phoneNumber))
+      }
 }

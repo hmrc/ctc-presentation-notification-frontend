@@ -16,7 +16,7 @@
 
 package models
 
-import models.messages.{Consignment, ContactPerson, LocationOfGoods, MessageData}
+import models.messages.{Address, Consignment, ContactPerson, LocationOfGoods, MessageData, PostcodeAddress}
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -124,6 +124,10 @@ object UserAnswers {
   val lensAdditionalIdentifier: Lens[LocationOfGoods, Option[String]] = GenLens[LocationOfGoods](_.additionalIdentifier)
 
   val lensContactPerson: Lens[LocationOfGoods, Option[ContactPerson]] = GenLens[LocationOfGoods](_.ContactPerson)
+
+  val lensAddress: Lens[LocationOfGoods, Option[Address]] = GenLens[LocationOfGoods](_.Address)
+
+  val lensPostCodeAddress: Lens[LocationOfGoods, Option[PostcodeAddress]] = GenLens[LocationOfGoods](_.PostcodeAddress)
 
   import play.api.libs.functional.syntax._
 
