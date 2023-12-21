@@ -15,7 +15,9 @@ object AppDependencies {
     "com.chuusai"                %% "shapeless"                  % "2.3.10",
     "org.typelevel"              %% "cats-core"                  % "2.9.0",
     "uk.gov.hmrc"                %% "crypto-json-play-28"        % "7.6.0",
-    "org.apache.commons"          % "commons-text"               % "1.10.0"
+    "org.apache.commons"          % "commons-text"               % "1.10.0",
+    "com.github.julien-truffaut" %% "monocle-core" % "2.1.0",
+    "com.github.julien-truffaut" %% "monocle-macro" % monocleVersion
   )
 
   val test: Seq[ModuleID] = Seq(

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import controllers.transport.border.{routes => borderRoutes}
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -47,7 +47,7 @@ class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.lensModeOfTransportAtTheBorder.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
       val result  = route(app, request).value
@@ -64,6 +64,25 @@ class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
 
       val userAnswers = emptyUserAnswers.setValue(AddBorderModeOfTransportYesNoPage, true)
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddBorderModeOfTransportYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously  been answered in the IE015" in {
+
+      val userAnswers15 = UserAnswers.lensModeOfTransportAtTheBorder.set(Some("1"))(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
 
