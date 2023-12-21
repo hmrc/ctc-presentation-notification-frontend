@@ -17,6 +17,7 @@
 package controllers.locationOfGoods.contact
 
 import controllers.actions._
+import controllers.locationOfGoods.contact.PhoneNumberController.getName
 import forms.NameFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
@@ -47,7 +48,7 @@ class NameController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NamePage) match {
+      val preparedForm = getName match {
         case None        => form
         case Some(value) => form.fill(value)
       }

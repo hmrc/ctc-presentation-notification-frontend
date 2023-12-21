@@ -17,6 +17,7 @@
 package controllers.locationOfGoods.contact
 
 import controllers.actions._
+import controllers.locationOfGoods.contact.PhoneNumberController.{getName, getNumber}
 import forms.TelephoneNumberFormProvider
 import models.Mode
 import models.requests.{DataRequest, MandatoryDataRequest}
@@ -49,7 +50,7 @@ class PhoneNumberController @Inject() (
         getName match {
           case Some(contactName) =>
             val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-            val preparedForm = request.userAnswers.get(PhoneNumberPage) match {
+            val preparedForm = getNumber match {
               case None        => form
               case Some(value) => form.fill(value)
             }
@@ -87,7 +88,11 @@ class PhoneNumberController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(PhoneNumberPage, updatedAnswers, departureId, mode))
 
-  private def getName(implicit request: DataRequest[AnyContent]): Option[String] =
+}
+
+object PhoneNumberController {
+
+  private[contact] def getName(implicit request: DataRequest[AnyContent]): Option[String] =
     request.userAnswers
       .get(NamePage)
       .orElse(
@@ -98,4 +103,8 @@ class PhoneNumberController @Inject() (
         )
       )
 
+  private[contact] def getNumber(implicit request: DataRequest[AnyContent]): Option[String] =
+    request.userAnswers
+      .get(PhoneNumberPage)
+      .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.phoneNumber)))
 }

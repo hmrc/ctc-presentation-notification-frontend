@@ -16,7 +16,7 @@
 
 package models
 
-import models.messages.{Consignment, MessageData}
+import models.messages.{Consignment, ContactPerson, LocationOfGoods, MessageData}
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -24,7 +24,7 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
-import monocle.Lens
+import monocle.{Lens, PLens, POptional}
 import monocle.macros.GenLens
 
 final case class UserAnswers(
@@ -105,15 +105,25 @@ final case class UserAnswers(
 }
 
 object UserAnswers {
-
+  import monocle.std.option._
   private val departureDataLens: Lens[UserAnswers, MessageData] = GenLens[UserAnswers](_.departureData)
   private val consignmentLens: Lens[MessageData, Consignment]   = GenLens[MessageData](_.Consignment)
 
   private val modeOfTransportAtTheBorderLens: Lens[Consignment, Option[String]] =
     GenLens[Consignment](_.modeOfTransportAtTheBorder)
 
+  private val locationOfGoodsLens: Lens[Consignment, Option[LocationOfGoods]] =
+    GenLens[Consignment](_.LocationOfGoods)
+
   val lensModeOfTransportAtTheBorder: Lens[UserAnswers, Option[String]] =
     departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderLens)
+
+  val lensLocationOfGoods: Lens[UserAnswers, Option[LocationOfGoods]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(locationOfGoodsLens)
+
+  val lensAdditionalIdentifier: Lens[LocationOfGoods, Option[String]] = GenLens[LocationOfGoods](_.additionalIdentifier)
+
+  val lensContactPerson: Lens[LocationOfGoods, Option[ContactPerson]] = GenLens[LocationOfGoods](_.ContactPerson)
 
   import play.api.libs.functional.syntax._
 

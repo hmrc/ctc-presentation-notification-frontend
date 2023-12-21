@@ -18,6 +18,7 @@ package base
 
 import base.TestMessageData.messageData
 import config.FrontendAppConfig
+import models.messages.LocationOfGoods
 import models.{EoriNumber, Index, LocalReferenceNumber, LocationType, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -52,6 +53,20 @@ trait SpecBase
   val eoriNumber: EoriNumber     = EoriNumber("eoriNumber")
 
   def emptyUserAnswers: UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+
+  val emptyLocationOfGoods: LocationOfGoods = LocationOfGoods(
+    typeOfLocation = "",
+    qualifierOfIdentification = "",
+    authorisationNumber = None,
+    additionalIdentifier = None,
+    UNLocode = None,
+    CustomsOffice = None,
+    GNSS = None,
+    EconomicOperator = None,
+    Address = None,
+    PostcodeAddress = None,
+    ContactPerson = None
+  )
 
   val departureId: String = "651431d7e3b05b21"
 

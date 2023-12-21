@@ -20,7 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.contact.{routes => contactRoutes}
 import controllers.routes
 import forms.NameFormProvider
-import models.NormalMode
+import models.messages.ContactPerson
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.contact.NamePage
@@ -46,7 +47,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, nameRoute)
 
@@ -64,6 +65,27 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val userAnswers = emptyUserAnswers.setValue(NamePage, "test string")
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, nameRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "test string"))
+
+      val view = injector.instanceOf[NameView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      val userAnswers15 =
+        UserAnswers.lensLocationOfGoods
+          .set(Some(UserAnswers.lensContactPerson.set(Some(ContactPerson("test string", "", None)))(emptyLocationOfGoods)))(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, nameRoute)
 

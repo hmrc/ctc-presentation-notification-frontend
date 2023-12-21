@@ -47,7 +47,17 @@ class AddContactYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddContactYesNoPage) match {
+      val getContactYesNo = request.userAnswers
+        .get(AddContactYesNoPage)
+        .orElse(
+          request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+            _.ContactPerson.map(
+              _ => true
+            )
+          )
+        )
+
+      val preparedForm = getContactYesNo match {
         case None        => form
         case Some(value) => form.fill(value)
       }

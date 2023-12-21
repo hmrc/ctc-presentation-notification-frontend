@@ -19,7 +19,8 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.messages.ContactPerson
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.AddContactYesNoPage
@@ -45,7 +46,7 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addContactYesNoRoute)
 
@@ -63,6 +64,28 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, true)
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addContactYesNoRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddContactYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      val userAnswers15 =
+        UserAnswers.lensLocationOfGoods
+          .set(Some(UserAnswers.lensContactPerson.set(Some(ContactPerson("name", "number", None)))(emptyLocationOfGoods)))(emptyUserAnswers)
+
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addContactYesNoRoute)
 
