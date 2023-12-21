@@ -236,7 +236,6 @@ locationOfGoods.customsOfficeIdentifier.placeholder = Select a customs office id
 locationOfGoods.customsOfficeIdentifier.change.hidden = the customs office identifier for the location of goods
 locationOfGoods.customsOfficeIdentifier.checkYourAnswersLabel = What is the customs office identifier for the location of goods?
 locationOfGoods.customsOfficeIdentifier.error.required = Enter the customs office identifier for the location of goods
-locationOfGoods.customsOfficeIdentifierTitle.checkYourAnswersLabel = Customs Office
 
 addPlaceOfLoadingYesNo.title = Do you want to add a place of loading?
 addPlaceOfLoadingYesNo.heading = Do you want to add a place of loading?
@@ -491,6 +490,14 @@ addRepresentativeYesNo.paragraph = This includes your name and phone number for 
 addRepresentativeYesNo.checkYourAnswersLabel = Do you want to add your details?
 addRepresentativeYesNo.change.hidden = if you want to add your details
 addRepresentativeYesNo.error.required = Select yes if you want to add your details
+
+checkYourAnswers.transitHolder = Transit holder
+transitHolder.eoriYesNo.checkYourAnswersLabel = Do you know the transit holder’s EORI number?
+transitHolder.eori.checkYourAnswersLabel = EORI number
+transitHolder.tirIdentification.checkYourAnswersLabel = TIR holder’s identification number
+transitHolder.name.checkYourAnswersLabel = Transit holder’s name
+transitHolder.country.checkYourAnswersLabel = Transit holder’s country
+transitHolder.address.checkYourAnswersLabel = Transit holder’s address
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers

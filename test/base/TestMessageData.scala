@@ -105,8 +105,24 @@ object TestMessageData {
 
   val customsOfficeOfDestination: String = "GB000012"
 
+  val holderOfTheTransitProcedure = HolderOfTheTransitProcedure(
+    identificationNumber = Some("identificationNumber"),
+    TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
+    ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
+    Address = Some(Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB"))
+  )
+
   val messageData: MessageData =
-    MessageData(customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation, Some(authorisation), customsOfficeOfTransitDeclared, None, consignment)
+    MessageData(
+      customsOfficeOfDeparture,
+      customsOfficeOfDestination,
+      transitOperation,
+      Some(authorisation),
+      holderOfTheTransitProcedure,
+      customsOfficeOfTransitDeclared,
+      None,
+      consignment
+    )
 
   val jsonValue: JsValue = Json.parse(
     s"""
@@ -136,6 +152,22 @@ object TestMessageData {
        |            "referenceNumber": "CD123"
        |        }
        |    ],
+       |    "HolderOfTheTransitProcedure": {
+       |        "identificationNumber": "identificationNumber",
+       |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
+       |        "ContactPerson": {
+       |            "name": "name",
+       |            "phoneNumber": "phone",
+       |            "eMailAddress": "email"
+       |        },
+       |        "Address": {
+       |            "streetAndNumber": "Address Line 1",
+       |            "postcode": "NE53KL",
+       |            "city":
+       |            "Newcastle",
+       |            "country": "GB"
+       |        }
+       |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
@@ -252,6 +284,8 @@ object TestMessageData {
        |            "referenceNumber": "CD123"
        |        }
        |    ],
+       |    "HolderOfTheTransitProcedure": {
+       |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
@@ -357,6 +391,8 @@ object TestMessageData {
        |        "limitDate": "2023-06-09",
        |        "security": "1"
        |    },
+       |    "HolderOfTheTransitProcedure": {
+       |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
@@ -450,6 +486,8 @@ object TestMessageData {
        |    },
        |    "TransitOperation": {
        |        "security": "1"
+       |    },
+       |    "HolderOfTheTransitProcedure": {
        |    },
        |    "Consignment": {
        |        "HouseConsignment": [

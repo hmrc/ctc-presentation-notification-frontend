@@ -16,9 +16,11 @@
 
 import models.reference.transport.border.active.Identification
 import models.reference._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import scala.concurrent.{ExecutionContext, Future}
 
 package object utils {
 
@@ -48,4 +50,15 @@ package object utils {
     def formatForText: String = localDate.format(DateTimeFormatter.ofPattern("dd MM yyyy"))
   }
 
+  implicit class SummaryRowOptionImplicit(row: Option[SummaryListRow]) {
+    def toFuture: Future[Option[SummaryListRow]] = Future.successful(row)
+  }
+
+  implicit class SummaryRowOptionFutureImplicit(row: Option[Future[SummaryListRow]]) {
+
+    def toFuture(implicit ec: ExecutionContext): Future[Option[SummaryListRow]] = row match {
+      case Some(value) => value.map(Some(_))
+      case None        => Future.successful(None)
+    }
+  }
 }

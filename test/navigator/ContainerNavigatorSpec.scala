@@ -42,13 +42,15 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         forAll(securityGen) {
           security =>
             val messageData: MessageData =
-              MessageData(customsOfficeOfDeparture,
-                          customsOfficeOfDestination,
-                          transitOperation.copy(security = security),
-                          Some(authorisation),
-                          None,
-                          None,
-                          consignment
+              MessageData(
+                customsOfficeOfDeparture,
+                customsOfficeOfDestination,
+                transitOperation.copy(security = security),
+                Some(authorisation),
+                holderOfTheTransitProcedure,
+                None,
+                None,
+                consignment
               )
             val userAnswers = emptyUserAnswers.copy(departureData = messageData)
             navigator
