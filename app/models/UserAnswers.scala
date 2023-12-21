@@ -16,7 +16,7 @@
 
 package models
 
-import models.messages.MessageData
+import models.messages.{Consignment, MessageData}
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -24,6 +24,8 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
+import monocle.Lens
+import monocle.macros.GenLens
 
 final case class UserAnswers(
   id: String,
@@ -103,6 +105,15 @@ final case class UserAnswers(
 }
 
 object UserAnswers {
+
+  private val departureDataLens: Lens[UserAnswers, MessageData] = GenLens[UserAnswers](_.departureData)
+  private val consignmentLens: Lens[MessageData, Consignment]   = GenLens[MessageData](_.Consignment)
+
+  private val modeOfTransportAtTheBorderLens: Lens[Consignment, Option[String]] =
+    GenLens[Consignment](_.modeOfTransportAtTheBorder)
+
+  val lensModeOfTransportAtTheBorder: Lens[UserAnswers, Option[String]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderLens)
 
   import play.api.libs.functional.syntax._
 

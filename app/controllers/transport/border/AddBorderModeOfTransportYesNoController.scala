@@ -22,6 +22,7 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
 import pages.transport.border.AddBorderModeOfTransportYesNoPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -41,13 +42,23 @@ class AddBorderModeOfTransportYesNoController @Inject() (
   view: AddBorderModeOfTransportYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val form = formProvider("transport.border.addBorderModeOfTransport")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddBorderModeOfTransportYesNoPage) match {
+      val borderModeYesNo: Option[Boolean] =
+        request.userAnswers
+          .get(AddBorderModeOfTransportYesNoPage)
+          .orElse(
+            request.userAnswers.departureData.Consignment.modeOfTransportAtTheBorder.map {
+              logger.info(s"Retrieved BorderMode answer from IE015 journey")
+              _ => true
+            }
+          )
+      val preparedForm = borderModeYesNo match {
         case None        => form
         case Some(value) => form.fill(value)
       }
