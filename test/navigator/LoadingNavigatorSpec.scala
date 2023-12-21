@@ -18,6 +18,7 @@ package navigator
 
 import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, consignment, messageData, transitOperation}
+import controllers.loading.routes
 import generators.Generators
 import models._
 import models.messages.{Authorisation, AuthorisationType, MessageData}
@@ -193,13 +194,12 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
-        "to CYA page when answer is NO" in {
-
+        "to Country page when answer is No" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddUnLocodeYesNoPage, false)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustBe(routes.CountryController.onPageLoad(departureId, mode))
         }
       }
 

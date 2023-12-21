@@ -41,7 +41,7 @@ class LoadingNavigator extends Navigator {
     case AddUnLocodeYesNoPage         => ua => addUnlocodeCheckRoute(ua, departureId)
     case UnLocodePage                 => ua => unLocodeCheckRoute(ua, departureId)
     case AddExtraInformationYesNoPage => ua => addExtraInformationYesNoCheckRoute(ua, departureId)
-    case CountryPage                  => ua => countryCheckRoute(ua, departureId)
+    case CountryPage                  => ua => LocationPage.route(ua, departureId, CheckMode)
     case LocationPage                 => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 
@@ -66,7 +66,7 @@ class LoadingNavigator extends Navigator {
           case (None, false) => UnLocodePage.route(ua, departureId, CheckMode)
           case _             => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
-      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _ => CountryPage.route(ua, departureId, CheckMode)
     }
 
   private def addExtraInformationYesNoNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
@@ -87,14 +87,6 @@ class LoadingNavigator extends Navigator {
         }
       case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-
-  private def countryCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
-    (ua.get(LocationPage), ua.departureData.Consignment.PlaceOfLoading.flatMap(_.location)) match {
-      case (None, None) =>
-        LocationPage.route(ua, departureId, CheckMode)
-      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    }
-
 }
 
 object LoadingNavigator {

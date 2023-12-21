@@ -50,12 +50,19 @@ class CountryController @Inject() (
     implicit request =>
       countriesService.getCountries().map {
         countryList =>
+          val countryIE15 = request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
+            pol =>
+              pol.country match {
+                case Some(country) => countryList.values.find(_.code.code == country)
+                case None          => None
+              }
+          )
           val form = formProvider("loading.country", countryList)
-          val preparedForm = request.userAnswers.get(CountryPage) match {
-            case None        => form
-            case Some(value) => form.fill(value)
+          val preparedForm = (request.userAnswers.get(CountryPage), countryIE15) match {
+            case (None, None)        => form
+            case (Some(value), _)    => form.fill(value)
+            case (None, Some(value)) => form.fill(value)
           }
-
           Ok(view(preparedForm, departureId, countryList.values, mode))
       }
   }
