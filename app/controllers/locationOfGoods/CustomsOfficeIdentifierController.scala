@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -74,7 +74,7 @@ class CustomsOfficeIdentifierController @Inject() (
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeIdentifierPage, value))
-                    _              <- sessionRepository.set(updatedAnswers)
+                    _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
                   } yield Redirect(navigator.nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, mode))
               )
         }

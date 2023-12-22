@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import forms.locationOfGoods.CoordinatesFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Coordinates, Mode}
+import models.{CheckMode, Coordinates, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
 import pages.locationOfGoods.CoordinatesPage
@@ -77,7 +77,7 @@ class CoordinatesController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 
 }

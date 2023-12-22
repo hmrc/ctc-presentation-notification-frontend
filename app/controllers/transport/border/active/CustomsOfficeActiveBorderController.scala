@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.CustomsOffice
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode, SelectableList}
+import models.{CheckMode, Index, Mode, SelectableList}
 import navigation.BorderNavigator
 import pages.transport.border.active.CustomsOfficeActiveBorderPage
 import play.api.data.Form
@@ -85,7 +85,7 @@ class CustomsOfficeActiveBorderController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeActiveBorderPage(activeIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(CustomsOfficeActiveBorderPage(activeIndex), updatedAnswers, departureId, mode))
 
 }

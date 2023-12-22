@@ -18,7 +18,7 @@ package controllers.loading
 
 import controllers.actions._
 import forms.UnLocodeFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.UnLocodePage
@@ -67,7 +67,8 @@ class UnLocodeController @Inject() (
           value =>
             service.doesUnLocodeExist(value).flatMap {
               case true =>
-                redirect(mode, value, departureId)
+                val isCYANext = if (mode == CheckMode) isNextPageCYA(departureId) else false
+                redirect(mode, value, departureId, isCYANext)
               case false =>
                 val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
                 Future.successful(BadRequest(view(formWithErrors, departureId, mode)))
@@ -75,13 +76,21 @@ class UnLocodeController @Inject() (
         )
   }
 
+  private def isNextPageCYA(
+    departureId: String
+  )(implicit request: MandatoryDataRequest[_]): Boolean = {
+    val nextPage = navigator.nextPage(UnLocodePage, request.userAnswers, departureId, CheckMode)
+    nextPage == controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
+  }
+
   private def redirect(
     mode: Mode,
     value: String,
-    departureId: String
+    departureId: String,
+    isCYAPage: Boolean
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(UnLocodePage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if ((mode != CheckMode) || isCYAPage) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(UnLocodePage, updatedAnswers, departureId, mode))
 }

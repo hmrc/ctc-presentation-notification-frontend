@@ -18,7 +18,7 @@ package controllers.loading
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.Mode
+import models.{CheckMode, Mode, SelectableList}
 import models.reference.Country
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
@@ -76,19 +76,30 @@ class CountryController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, countryList.values, mode))),
-              value => redirect(mode, value, departureId)
+              value => {
+                val isCYANext = if (mode == CheckMode) isNextPageCYA(departureId) else false
+                redirect(mode, value, departureId, isCYANext)
+              }
             )
       }
+  }
+
+  private def isNextPageCYA(
+    departureId: String
+  )(implicit request: MandatoryDataRequest[_]): Boolean = {
+    val nextPage = navigator.nextPage(CountryPage, request.userAnswers, departureId, CheckMode)
+    nextPage == controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
   }
 
   private def redirect(
     mode: Mode,
     value: Country,
-    departureId: String
+    departureId: String,
+    isCYAPage: Boolean
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryPage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if ((mode != CheckMode) || isCYAPage) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(CountryPage, updatedAnswers, departureId, mode))
 
 }

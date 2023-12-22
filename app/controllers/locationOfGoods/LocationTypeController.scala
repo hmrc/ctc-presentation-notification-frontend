@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import forms.EnumerableFormProvider
 import models.requests.MandatoryDataRequest
-import models.{LocationType, Mode}
+import models.{CheckMode, LocationType, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
 import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
@@ -94,6 +94,6 @@ class LocationTypeController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.reference.transport.border.active.Identification
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigation.BorderNavigator
 import pages.QuestionPage
 import pages.transport.border.BorderModeOfTransportPage
@@ -94,6 +94,6 @@ class IdentificationController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page(index), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(page(index), updatedAnswers, departureId, mode))
 }

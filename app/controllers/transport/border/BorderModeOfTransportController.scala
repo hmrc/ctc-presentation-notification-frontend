@@ -18,7 +18,7 @@ package controllers.transport.border
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.reference.BorderMode
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
@@ -103,7 +103,7 @@ class BorderModeOfTransportController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 
 }

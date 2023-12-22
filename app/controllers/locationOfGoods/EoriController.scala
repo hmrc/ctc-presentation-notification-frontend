@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions.Actions
 import forms.EoriNumberFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
@@ -74,6 +74,6 @@ class EoriController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 }

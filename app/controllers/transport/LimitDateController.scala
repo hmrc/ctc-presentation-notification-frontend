@@ -19,7 +19,7 @@ package controllers.transport
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.transport.DateFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import navigation.Navigator
 import pages.transport.LimitDatePage
 import play.api.data.Form
@@ -93,7 +93,7 @@ class LimitDateController @Inject() (
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(LimitDatePage, value))
-                    _              <- sessionRepository.set(updatedAnswers)
+                    _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
                   } yield Redirect(navigator.nextPage(LimitDatePage, updatedAnswers, departureId, mode))
               )
         }

@@ -19,7 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import forms.locationOfGoods.PostalCodeFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Mode, PostalCodeAddress}
+import models.{CheckMode, Mode, PostalCodeAddress}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.PostalCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -87,6 +87,6 @@ class PostalCodeController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(PostalCodePage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(PostalCodePage, updatedAnswers, departureId, mode))
 }

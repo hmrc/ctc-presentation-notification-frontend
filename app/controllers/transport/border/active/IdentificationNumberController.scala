@@ -18,7 +18,7 @@ package controllers.transport.border.active
 
 import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
@@ -84,7 +84,7 @@ class IdentificationNumberController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(IdentificationNumberPage(activeIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(IdentificationNumberPage(activeIndex), updatedAnswers, departureId, mode))
 
 }

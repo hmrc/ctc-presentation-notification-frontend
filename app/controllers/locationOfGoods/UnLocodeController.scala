@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.UnLocodeFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.UnLocodePage
@@ -82,6 +82,6 @@ class UnLocodeController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(UnLocodePage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(UnLocodePage, updatedAnswers, departureId, mode))
 }

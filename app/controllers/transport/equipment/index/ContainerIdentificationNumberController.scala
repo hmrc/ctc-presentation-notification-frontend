@@ -19,7 +19,7 @@ package controllers.transport.equipment.index
 import controllers.actions._
 import forms.transport.equipment.ContainerIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{Index, Mode, RichOptionalJsArray}
+import models.{CheckMode, Index, Mode, RichOptionalJsArray}
 import navigation.EquipmentNavigator
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
@@ -85,6 +85,6 @@ class ContainerIdentificationNumberController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(equipmentIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode))
 }

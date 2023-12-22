@@ -19,7 +19,7 @@ package controllers.loading
 import controllers.actions._
 import forms.Constants.loadingLocationMaxLength
 import forms.loading.LoadingLocationFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.{CountryPage, LocationPage}
@@ -80,6 +80,6 @@ class LocationController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(LocationPage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(LocationPage, updatedAnswers, departureId, mode))
 }

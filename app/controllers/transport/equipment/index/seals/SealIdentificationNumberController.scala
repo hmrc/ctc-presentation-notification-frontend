@@ -19,7 +19,7 @@ package controllers.transport.equipment.index.seals
 import controllers.actions._
 import forms.transport.equipment.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{Index, Mode, RichOptionalJsArray}
+import models.{CheckMode, Index, Mode, RichOptionalJsArray}
 import navigation.EquipmentNavigator
 import pages.sections.transport.equipment.SealsSection
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
@@ -88,6 +88,6 @@ class SealIdentificationNumberController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode))
 }

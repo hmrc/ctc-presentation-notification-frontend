@@ -18,10 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-
 import pages.AddPlaceOfLoadingYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -73,7 +72,7 @@ class AddPlaceOfLoadingYesNoController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPlaceOfLoadingYesNoPage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(AddPlaceOfLoadingYesNoPage, updatedAnswers, departureId, mode))
 
 }

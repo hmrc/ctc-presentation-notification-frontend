@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigation.BorderNavigator
 import pages.transport.border.AddAnotherBorderModeOfTransportPage
 import play.api.data.Form
@@ -76,7 +76,7 @@ class AddAnotherBorderTransportController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherBorderModeOfTransportPage(activeIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(AddAnotherBorderModeOfTransportPage(activeIndex), updatedAnswers, departureId, mode))
 
 }

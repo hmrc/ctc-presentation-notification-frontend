@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DynamicAddressFormProvider
 import models.reference.{Country, CountryCode}
 import models.requests.{DataRequest, MandatoryDataRequest, SpecificDataRequestProvider1}
-import models.{DynamicAddress, Mode}
+import models.{CheckMode, DynamicAddress, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage
 import pages.locationOfGoods.{AddressPage, CountryPage}
@@ -98,7 +98,7 @@ class AddressController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 
   private def getCountryCode(implicit request: DataRequest[AnyContent]): Option[CountryCode] =

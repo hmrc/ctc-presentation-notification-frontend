@@ -18,7 +18,7 @@ package controllers.transport.equipment
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigation.EquipmentNavigator
 import pages.transport.equipment.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -69,7 +69,7 @@ class SelectItemsController @Inject() (
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(equipmentIndex, itemIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
+              _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
             } yield Redirect(navigator.nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode))
         )
   }

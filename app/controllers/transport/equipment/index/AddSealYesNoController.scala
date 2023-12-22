@@ -19,7 +19,7 @@ package controllers.transport.equipment.index
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigation.EquipmentNavigator
 import pages.transport.equipment.index.AddSealYesNoPage
 import play.api.data.Form
@@ -77,6 +77,6 @@ class AddSealYesNoController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSealYesNoPage(equipmentIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(AddSealYesNoPage(equipmentIndex), updatedAnswers, departureId, mode))
 }

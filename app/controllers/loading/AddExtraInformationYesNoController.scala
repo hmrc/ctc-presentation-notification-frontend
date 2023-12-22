@@ -18,7 +18,7 @@ package controllers.loading
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.AddExtraInformationYesNoPage
@@ -61,17 +61,28 @@ class AddExtraInformationYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
-          value => redirect(mode, value, departureId)
+          value => {
+            val isCYANext = if (mode == CheckMode) isNextPageCYA(departureId) else false
+            redirect(mode, value, departureId, isCYANext)
+          }
         )
+  }
+
+  private def isNextPageCYA(
+    departureId: String
+  )(implicit request: MandatoryDataRequest[_]): Boolean = {
+    val nextPage = navigator.nextPage(AddExtraInformationYesNoPage, request.userAnswers, departureId, CheckMode)
+    nextPage == controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
   }
 
   private def redirect(
     mode: Mode,
     value: Boolean,
-    departureId: String
+    departureId: String,
+    isCYAPage: Boolean
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddExtraInformationYesNoPage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if ((mode != CheckMode) || isCYAPage) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(AddExtraInformationYesNoPage, updatedAnswers, departureId, mode))
 }

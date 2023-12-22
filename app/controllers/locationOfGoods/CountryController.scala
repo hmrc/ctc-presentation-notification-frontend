@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.reference.Country
 import models.requests.MandatoryDataRequest
 import navigation.LocationOfGoodsNavigator
@@ -87,6 +87,6 @@ class CountryController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 }

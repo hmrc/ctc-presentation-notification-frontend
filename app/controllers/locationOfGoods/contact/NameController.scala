@@ -18,7 +18,7 @@ package controllers.locationOfGoods.contact
 
 import controllers.actions._
 import forms.NameFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.contact.NamePage
@@ -71,6 +71,6 @@ class NameController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(NamePage, updatedAnswers, departureId, mode))
 }

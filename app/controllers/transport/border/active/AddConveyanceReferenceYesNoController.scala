@@ -19,7 +19,7 @@ package controllers.transport.border.active
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigation.BorderNavigator
 import pages.transport.border.active.AddConveyanceReferenceYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -73,7 +73,7 @@ class AddConveyanceReferenceYesNoController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConveyanceReferenceYesNoPage(activeIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, mode))
 
 }

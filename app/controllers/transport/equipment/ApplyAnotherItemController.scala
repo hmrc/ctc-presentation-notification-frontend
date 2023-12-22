@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigation.EquipmentNavigator
 import pages.transport.equipment.index.ApplyAnotherItemPage
 import play.api.data.Form
@@ -83,7 +83,7 @@ class ApplyAnotherItemController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplyAnotherItemPage(equipmentIndex, itemIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode))
 
 }

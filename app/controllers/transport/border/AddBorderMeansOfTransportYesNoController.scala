@@ -18,7 +18,7 @@ package controllers.transport.border
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
@@ -72,6 +72,6 @@ class AddBorderMeansOfTransportYesNoController @Inject() (
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddBorderMeansOfTransportYesNoPage, value))
-      _              <- sessionRepository.set(updatedAnswers)
+      _              <- if (mode != CheckMode) sessionRepository.set(updatedAnswers) else Future.unit
     } yield Redirect(navigator.nextPage(AddBorderMeansOfTransportYesNoPage, updatedAnswers, departureId, mode))
 }
