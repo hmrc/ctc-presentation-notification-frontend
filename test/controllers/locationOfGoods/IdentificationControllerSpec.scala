@@ -16,6 +16,7 @@
 
 package controllers.locationOfGoods
 
+import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
@@ -30,11 +31,13 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.LocationOfGoodsIdentificationTypeService
 import views.html.locationOfGoods.IdentificationView
 
+import java.time.Instant
 import scala.concurrent.Future
 
 class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -179,6 +182,34 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "must get answer IE015 if not available in IE170" in {
+      when(mockLocationIdentifierService.getLocationOfGoodsIdentificationTypes(any())(any())).thenReturn(Future.successful(ids))
+      val ie015UserAnswers = UserAnswers(
+        departureId,
+        eoriNumber,
+        lrn.value,
+        Json.obj(),
+        Instant.now(),
+        messageData.copy(Consignment =
+          messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = id1.code)))
+        )
+      )
+      setExistingUserAnswers(ie015UserAnswers)
+
+      val request = FakeRequest(GET, identificationRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> id1.code))
+
+      val view = injector.instanceOf[IdentificationView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, ids, mode)(request, messages).toString
     }
   }
 

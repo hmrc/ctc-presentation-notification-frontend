@@ -48,7 +48,9 @@ class CoordinatesController @Inject() (
     .requireData(departureId) {
       implicit request =>
         val form = formProvider("locationOfGoods.coordinates")
-        val preparedForm = request.userAnswers.get(CoordinatesPage) match {
+        val preparedForm = request.userAnswers
+          .get(CoordinatesPage)
+          .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.GNSS)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }

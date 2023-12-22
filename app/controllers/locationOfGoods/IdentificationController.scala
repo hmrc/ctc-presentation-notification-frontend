@@ -18,14 +18,13 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.requests.{DataRequest, MandatoryDataRequest, SpecificDataRequestProvider1}
-import models.{CheckMode, LocationOfGoodsIdentification, LocationType, Mode, NormalMode}
+import models.requests.{DataRequest, MandatoryDataRequest}
+import models.{LocationOfGoodsIdentification, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages._
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.LocationOfGoodsIdentificationTypeService
@@ -55,13 +54,21 @@ class IdentificationController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
+        val ie170Identification = request.userAnswers.get(IdentificationPage)
+        def ie15Identification  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
+
+        def findInIe15(identifiers: Seq[LocationOfGoodsIdentification]) =
+          identifiers.find(
+            identification => ie15Identification.contains(identification.code)
+          )
+
         getLocationType match {
           case Some(location) =>
             locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(location).flatMap {
               case identifier :: Nil =>
                 redirect(mode, InferredIdentificationPage, identifier, departureId)
               case identifiers =>
-                val preparedForm = request.userAnswers.get(IdentificationPage) match {
+                val preparedForm = ie170Identification.orElse(findInIe15(identifiers)) match {
                   case None        => form(identifiers)
                   case Some(value) => form(identifiers).fill(value)
                 }
