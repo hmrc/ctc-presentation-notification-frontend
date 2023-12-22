@@ -22,6 +22,7 @@ import models.requests.MandatoryDataRequest
 import models.{Mode, PostalCodeAddress}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.PostalCodePage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -43,7 +44,8 @@ class PostalCodeController @Inject() (
   view: PostalCodeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val prefix: String = "locationOfGoods.postalCode"
 
@@ -53,8 +55,14 @@ class PostalCodeController @Inject() (
       implicit request =>
         countriesService.getAddressPostcodeBasedCountries().map {
           countryList =>
+            val postalCode = request.userAnswers
+              .get(PostalCodePage)
+              .orElse {
+                logger.info(s"Retrieved PostalCode answer from IE015 journey")
+                request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.PostcodeAddress.map(_.toPostalCode))
+              }
             val form = formProvider(prefix, countryList)
-            val preparedForm = request.userAnswers.get(PostalCodePage) match {
+            val preparedForm = postalCode match {
               case None        => form
               case Some(value) => form.fill(value)
             }

@@ -22,6 +22,7 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.AddContactYesNoPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -41,13 +42,25 @@ class AddContactYesNoController @Inject() (
   view: AddContactYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val form = formProvider("locationOfGoods.addContact")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddContactYesNoPage) match {
+      val getContactYesNo = request.userAnswers
+        .get(AddContactYesNoPage)
+        .orElse {
+          logger.info(s"Retrieved AddContactYesNo answer from IE015 journey")
+          request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+            _.ContactPerson.map(
+              _ => true
+            )
+          )
+        }
+
+      val preparedForm = getContactYesNo match {
         case None        => form
         case Some(value) => form.fill(value)
       }

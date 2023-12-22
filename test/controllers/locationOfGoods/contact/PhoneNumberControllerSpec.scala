@@ -20,7 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.contact.{routes => contactRoutes}
 import controllers.routes
 import forms.TelephoneNumberFormProvider
-import models.NormalMode
+import models.messages.ContactPerson
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -47,8 +48,7 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   "TelephoneNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.setValue(NamePage, contactName)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers).setValue(NamePage, contactName))
 
       val request = FakeRequest(GET, telephoneNumberRoute)
 
@@ -68,6 +68,25 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         .setValue(NamePage, contactName)
         .setValue(PhoneNumberPage, validAnswer)
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, telephoneNumberRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> validAnswer))
+
+      val view = injector.instanceOf[PhoneNumberView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, contactName, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      val userAnswers15 = UserAnswers.setContactPersonOnUserAnswersLens.set(ContactPerson(contactName, validAnswer, None))(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, telephoneNumberRoute)
 

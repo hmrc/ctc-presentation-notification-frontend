@@ -47,7 +47,7 @@ class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.lensModeOfTransportAtTheBorder.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
       val result  = route(app, request).value
@@ -81,7 +81,7 @@ class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
 
     "must populate the view correctly on a GET when the question has previously  been answered in the IE015" in {
 
-      val userAnswers15 = UserAnswers.lensModeOfTransportAtTheBorder.set(Some("1"))(emptyUserAnswers)
+      val userAnswers15 = UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some("1"))(emptyUserAnswers)
       setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
