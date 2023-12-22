@@ -54,17 +54,24 @@ class LocationTypeController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val isSimplified = request.userAnswers.departureData.isSimplified
+        val isSimplified      = request.userAnswers.departureData.isSimplified
+        val ie170LocationType = request.userAnswers.get(LocationTypePage)
+        val ie15LocationType  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+
+        def findInIe15(refDataLocationTypes: Seq[LocationType]) =
+          refDataLocationTypes.find(
+            lt => ie15LocationType.contains(lt.code)
+          )
 
         locationTypeService.getLocationTypes(isSimplified).flatMap {
           case locationType :: Nil =>
             redirect(mode, InferredLocationTypePage, locationType, departureId)
-          case locationTypes =>
-            val preparedForm = request.userAnswers.get(LocationTypePage) match {
-              case None        => form(locationTypes)
-              case Some(value) => form(locationTypes).fill(value)
+          case refDataLocationTypes =>
+            val preparedForm = ie170LocationType.orElse(findInIe15(refDataLocationTypes)) match {
+              case None               => form(refDataLocationTypes)
+              case Some(locationType) => form(refDataLocationTypes).fill(locationType)
             }
-            Future.successful(Ok(view(preparedForm, departureId, locationTypes, mode)))
+            Future.successful(Ok(view(preparedForm, departureId, refDataLocationTypes, mode)))
         }
     }
 

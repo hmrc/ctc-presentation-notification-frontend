@@ -16,20 +16,23 @@
 
 package controllers.locationOfGoods
 
+import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.locationOfGoods.CoordinatesFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{Coordinates, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.CoordinatesPage
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.CoordinatesView
 
+import java.time.Instant
 import scala.concurrent.Future
 
 class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -50,7 +53,7 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.copy(departureData = messageData.copy(Consignment = messageData.Consignment.copy(LocationOfGoods = None))))
 
       val request = FakeRequest(GET, coordinatesRoute)
       val result  = route(app, request).value
@@ -153,6 +156,41 @@ class CoordinatesControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "must get answer IE015 if not available in IE170" in {
+      val ie015UserAnswers = UserAnswers(
+        departureId,
+        eoriNumber,
+        lrn.value,
+        Json.obj(),
+        Instant.now(),
+        messageData.copy(Consignment =
+          messageData.Consignment.copy(LocationOfGoods =
+            Some(messageData.Consignment.LocationOfGoods.get.copy(GNSS = Some(Coordinates(testCoordinates.latitude, testCoordinates.longitude))))
+          )
+        )
+      )
+
+      setExistingUserAnswers(ie015UserAnswers)
+
+      val request = FakeRequest(GET, coordinatesRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(
+        Map(
+          "latitude"  -> testCoordinates.latitude,
+          "longitude" -> testCoordinates.longitude
+        )
+      )
+
+      val view = injector.instanceOf[CoordinatesView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
     }
   }
 }
