@@ -55,7 +55,7 @@ class IdentificationController @Inject() (
     .async {
       implicit request =>
         val ie170Identification = request.userAnswers.get(IdentificationPage)
-        val ie15Identification  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
+        def ie15Identification  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
 
         def findInIe15(identifiers: Seq[LocationOfGoodsIdentification]) =
           identifiers.find(

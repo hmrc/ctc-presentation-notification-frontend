@@ -56,7 +56,7 @@ class LocationTypeController @Inject() (
       implicit request =>
         val isSimplified      = request.userAnswers.departureData.isSimplified
         val ie170LocationType = request.userAnswers.get(LocationTypePage)
-        val ie15LocationType  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
+        def ie15LocationType  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
 
         def findInIe15(refDataLocationTypes: Seq[LocationType]) =
           refDataLocationTypes.find(

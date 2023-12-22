@@ -50,7 +50,7 @@ class CustomsOfficeIdentifierController @Inject() (
     .async {
       implicit request =>
         val ie170CustomsOffice = request.userAnswers.get(CustomsOfficeIdentifierPage)
-        val ie15CustomsOffice  = request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice.map(_.referenceNumber))
+        def ie15CustomsOffice  = request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice.map(_.referenceNumber))
 
         def findInIe15(customsOffices: Seq[CustomsOffice]) =
           customsOffices.find(
