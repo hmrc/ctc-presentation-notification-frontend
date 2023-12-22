@@ -50,7 +50,7 @@ class EoriController @Inject() (
     implicit request =>
       val preparedForm = request.userAnswers
         .get(EoriPage)
-        .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.EconomicOperator.map(_.toString))) match {
+        .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.EconomicOperator.map(_.identificationNumber))) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
