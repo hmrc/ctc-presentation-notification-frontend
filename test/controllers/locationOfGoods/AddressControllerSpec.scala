@@ -65,7 +65,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(userAnswers))
+        setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value
@@ -86,7 +86,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(userAnswers))
+        setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value
@@ -179,13 +179,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers15 =
-          UserAnswers.lensLocationOfGoods
-            .set(
-              Some(
-                UserAnswers.lensAddress
-                  .set(Some(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, "")))(emptyLocationOfGoods)
-              )
-            )(emptyUserAnswers)
+          UserAnswers.setAddressOnUserAnswersLens.set(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, ""))(emptyUserAnswers)
 
         setExistingUserAnswers(userAnswers15)
 
@@ -217,13 +211,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers15 =
-          UserAnswers.lensLocationOfGoods
-            .set(
-              Some(
-                UserAnswers.lensAddress
-                  .set(Some(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, "")))(emptyLocationOfGoods)
-              )
-            )(emptyUserAnswers)
+          UserAnswers.setAddressOnUserAnswersLens.set(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, ""))(emptyUserAnswers)
 
         setExistingUserAnswers(userAnswers15)
 

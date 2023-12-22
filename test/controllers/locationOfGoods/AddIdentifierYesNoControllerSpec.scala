@@ -47,7 +47,7 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addIdentifierYesNoRoute)
       val result  = route(app, request).value
@@ -81,8 +81,8 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
 
-      val userAnswers15 =
-        UserAnswers.lensLocationOfGoods.set(Some(UserAnswers.lensAdditionalIdentifier.set(Some("ab12"))(emptyLocationOfGoods)))(emptyUserAnswers)
+      val userAnswers15 = UserAnswers.setAdditionalIdentifierOnUserAnswersLens.set("ab12")(emptyUserAnswers)
+
       setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addIdentifierYesNoRoute)

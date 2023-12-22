@@ -60,7 +60,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
-      setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, postalCodeRoute)
       val result  = route(app, request).value
@@ -107,17 +107,9 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
       val userAnswers15 =
-        UserAnswers.lensLocationOfGoods
-          .set(
-            Some(
-              UserAnswers.lensPostCodeAddress
-                .set(
-                  Some(
-                    PostcodeAddress(houseNumber = Some(testAddress.streetNumber), postcode = testAddress.postalCode, country = testAddress.country.code.code)
-                  )
-                )(emptyLocationOfGoods)
-            )
-          )(emptyUserAnswers)
+        UserAnswers.setPostAddressOnUserAnswersLens.set(
+          PostcodeAddress(houseNumber = Some(testAddress.streetNumber), postcode = testAddress.postalCode, country = testAddress.country.code.code)
+        )(emptyUserAnswers)
 
       setExistingUserAnswers(userAnswers15)
 

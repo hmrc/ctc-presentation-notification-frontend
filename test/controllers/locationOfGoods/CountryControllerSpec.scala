@@ -57,7 +57,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must return OK and the correct view for a GET" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, countryRoute)
 
@@ -94,14 +94,8 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      val userAnswers15 =
-        UserAnswers.lensLocationOfGoods
-          .set(
-            Some(
-              UserAnswers.lensAddress
-                .set(Some(Address(streetAndNumber = "street", postcode = None, city = "city", country = country1.code.code)))(emptyLocationOfGoods)
-            )
-          )(emptyUserAnswers)
+      val userAnswers15 = UserAnswers.setAddressOnUserAnswersLens.set(Address("street", None, "city", country1.code.code))(emptyUserAnswers)
+
       setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, countryRoute)

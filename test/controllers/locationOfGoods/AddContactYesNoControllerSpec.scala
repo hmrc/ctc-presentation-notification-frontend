@@ -46,7 +46,7 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.lensLocationOfGoods.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addContactYesNoRoute)
 
@@ -81,9 +81,7 @@ class AddContactYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
 
-      val userAnswers15 =
-        UserAnswers.lensLocationOfGoods
-          .set(Some(UserAnswers.lensContactPerson.set(Some(ContactPerson("name", "number", None)))(emptyLocationOfGoods)))(emptyUserAnswers)
+      val userAnswers15 = UserAnswers.setContactPersonOnUserAnswersLens.set(ContactPerson("name", "number", None))(emptyUserAnswers)
 
       setExistingUserAnswers(userAnswers15)
 

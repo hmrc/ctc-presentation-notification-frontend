@@ -63,7 +63,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.lensModeOfTransportAtTheBorder.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, borderModeOfTransportRoute)
 
@@ -98,7 +98,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
       when(mockTransportModeCodesService.getBorderModes()(any())).thenReturn(Future.successful(borderModes))
-      val userAnswers15 = UserAnswers.lensModeOfTransportAtTheBorder.set(Some(borderModes.head.code))(emptyUserAnswers)
+      val userAnswers15 = UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some(borderModes.head.code))(emptyUserAnswers)
       setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, borderModeOfTransportRoute)

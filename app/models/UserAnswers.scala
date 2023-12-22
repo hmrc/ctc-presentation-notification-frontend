@@ -24,7 +24,7 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
-import monocle.{Lens, PLens, POptional}
+import monocle.{Lens, Optional}
 import monocle.macros.GenLens
 
 final case class UserAnswers(
@@ -109,25 +109,39 @@ object UserAnswers {
   private val departureDataLens: Lens[UserAnswers, MessageData] = GenLens[UserAnswers](_.departureData)
   private val consignmentLens: Lens[MessageData, Consignment]   = GenLens[MessageData](_.Consignment)
 
-  private val modeOfTransportAtTheBorderLens: Lens[Consignment, Option[String]] =
+  private val modeOfTransportAtTheBorderConsignmentLens: Lens[Consignment, Option[String]] =
     GenLens[Consignment](_.modeOfTransportAtTheBorder)
 
-  private val locationOfGoodsLens: Lens[Consignment, Option[LocationOfGoods]] =
+  private val locationOfGoodsConsignmentLens: Lens[Consignment, Option[LocationOfGoods]] =
     GenLens[Consignment](_.LocationOfGoods)
 
-  val lensModeOfTransportAtTheBorder: Lens[UserAnswers, Option[String]] =
-    departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderLens)
+  private val addressLocationLens: Lens[LocationOfGoods, Option[Address]] =
+    GenLens[LocationOfGoods](_.Address)
 
-  val lensLocationOfGoods: Lens[UserAnswers, Option[LocationOfGoods]] =
-    departureDataLens.composeLens(consignmentLens).composeLens(locationOfGoodsLens)
+  private val postAddressLocationLens: Lens[LocationOfGoods, Option[PostcodeAddress]] =
+    GenLens[LocationOfGoods](_.PostcodeAddress)
 
-  val lensAdditionalIdentifier: Lens[LocationOfGoods, Option[String]] = GenLens[LocationOfGoods](_.additionalIdentifier)
+  private val lensContactPerson: Lens[LocationOfGoods, Option[ContactPerson]] = GenLens[LocationOfGoods](_.ContactPerson)
 
-  val lensContactPerson: Lens[LocationOfGoods, Option[ContactPerson]] = GenLens[LocationOfGoods](_.ContactPerson)
+  private val lensAdditionalIdentifier: Lens[LocationOfGoods, Option[String]] = GenLens[LocationOfGoods](_.additionalIdentifier)
 
-  val lensAddress: Lens[LocationOfGoods, Option[Address]] = GenLens[LocationOfGoods](_.Address)
+  val setModeOfTransportAtTheBorderOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderConsignmentLens)
 
-  val lensPostCodeAddress: Lens[LocationOfGoods, Option[PostcodeAddress]] = GenLens[LocationOfGoods](_.PostcodeAddress)
+  val setLocationOfGoodsOnUserAnswersLens: Lens[UserAnswers, Option[LocationOfGoods]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(locationOfGoodsConsignmentLens)
+
+  val setAddressOnUserAnswersLens: Optional[UserAnswers, Address] =
+    departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens addressLocationLens composePrism some
+
+  val setPostAddressOnUserAnswersLens: Optional[UserAnswers, PostcodeAddress] =
+    departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens postAddressLocationLens composePrism some
+
+  val setContactPersonOnUserAnswersLens: Optional[UserAnswers, ContactPerson] =
+    departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensContactPerson composePrism some
+
+  val setAdditionalIdentifierOnUserAnswersLens: Optional[UserAnswers, String] =
+    departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensAdditionalIdentifier composePrism some
 
   import play.api.libs.functional.syntax._
 
