@@ -16,7 +16,6 @@
 
 package utils
 
-import config.FrontendAppConfig
 import models.reference.transport.border.active.Identification
 import models.reference.{CustomsOffice, Nationality}
 import models.{Index, Mode, UserAnswers}
@@ -24,18 +23,32 @@ import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import pages.transport.border.active._
 import play.api.i18n.Messages
+import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.Link
-import scala.concurrent.ExecutionContext
+import uk.gov.hmrc.http.HeaderCarrier
+import viewModels.{Link, Section}
+
+import scala.concurrent.Future.successful
+import scala.concurrent.{ExecutionContext, Future}
 
 class ActiveBorderTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
+  cyaRefDataService: CheckYourAnswersReferenceDataService,
   mode: Mode,
   activeIndex: Index
-)(implicit messages: Messages, appConfig: FrontendAppConfig, executionContext: ExecutionContext)
+)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
+
+  implicit val ua: UserAnswers = userAnswers
+
+  private val lastIndex = Index(
+    userAnswers
+      .get(BorderActiveListSection)
+      .map(_.value.length - 1)
+      .getOrElse(userAnswers.departureData.Consignment.ActiveBorderTransportMeans.map(_.length - 1).getOrElse(0))
+  )
 
   def addBorderMeansOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddBorderMeansOfTransportYesNoPage,
@@ -45,16 +58,23 @@ class ActiveBorderTransportMeansAnswersHelper(
     id = Some("change-add-identification-for-the-border-means-of-transport")
   )
 
-  def identificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
-    page = IdentificationPage(activeIndex),
-    formatAnswer = formatDynamicEnumAsText(_),
-    prefix = "transport.border.active.identification",
-    findValueInDepartureData = _.Consignment.ActiveBorderTransportMeans
-      .flatMap(
-        seq => seq.lift(activeIndex.position).flatMap(_.typeOfIdentification).map(_.asIdentification)
-      ), // TODO probably need to use ref data for this
-    id = Some("change-identification")
-  )
+  def identificationType: Future[Option[SummaryListRow]] =
+    fetchValue[Identification](
+      page = IdentificationPage(activeIndex),
+      valueFromDepartureData = userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
+        seq => seq.lift(activeIndex.position).flatMap(_.typeOfIdentification)
+      ),
+      refDataLookup = cyaRefDataService.getBorderMeansIdentification
+    ).map {
+      identification =>
+        buildRowWithAnswer[Identification](
+          page = IdentificationPage(activeIndex),
+          optionalAnswer = identification,
+          formatAnswer = formatDynamicEnumAsText(_),
+          prefix = "transport.border.active.identification",
+          id = Some("change-identification")
+        )
+    }
 
   def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IdentificationNumberPage(activeIndex),
@@ -67,35 +87,41 @@ class ActiveBorderTransportMeansAnswersHelper(
     id = Some("change-identification-number")
   )
 
-  def nationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
-    page = NationalityPage(activeIndex),
-    formatAnswer = _.toString.toText,
-    prefix = "transport.border.active.nationality",
-    findValueInDepartureData = _.Consignment.ActiveBorderTransportMeans
-      .flatMap(
-        seq =>
-          seq
-            .lift(activeIndex.position)
-            .flatMap(_.nationality)
-            .map(_.asNationality) // TODO probably need to use ref data for this
+  def nationality: Future[Option[SummaryListRow]] =
+    fetchValue[Nationality](
+      page = NationalityPage(activeIndex),
+      valueFromDepartureData = userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
+        seq => seq.lift(activeIndex.position).flatMap(_.nationality)
       ),
-    id = Some("change-nationality")
-  )
+      refDataLookup = cyaRefDataService.getNationality
+    ).map {
+      nationality =>
+        buildRowWithAnswer[Nationality](
+          page = NationalityPage(activeIndex),
+          optionalAnswer = nationality,
+          formatAnswer = _.toString.toText,
+          prefix = "transport.border.active.nationality",
+          id = Some("change-nationality")
+        )
+    }
 
-  def customsOffice: Option[SummaryListRow] = getAnswerAndBuildRow[CustomsOffice](
-    page = CustomsOfficeActiveBorderPage(activeIndex),
-    formatAnswer = formatAsText,
-    prefix = "transport.border.active.customsOfficeActiveBorder",
-    findValueInDepartureData = _.Consignment.ActiveBorderTransportMeans
-      .flatMap(
-        seq =>
-          seq
-            .lift(activeIndex.position)
-            .flatMap(_.customsOfficeAtBorderReferenceNumber)
-            .map(_.asCustomsOffice) // TODO probably need to use ref data for this
+  def customsOffice: Future[Option[SummaryListRow]] =
+    fetchValue[CustomsOffice](
+      page = CustomsOfficeActiveBorderPage(activeIndex),
+      valueFromDepartureData = userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
+        seq => seq.lift(activeIndex.position).flatMap(_.customsOfficeAtBorderReferenceNumber)
       ),
-    id = Some("change-customs-office")
-  )
+      refDataLookup = cyaRefDataService.getCustomsOffice(userAnswers.departureData.countryOfDeparture)
+    ).map {
+      customsOffice =>
+        buildRowWithAnswer[CustomsOffice](
+          page = CustomsOfficeActiveBorderPage(activeIndex),
+          optionalAnswer = customsOffice,
+          formatAnswer = formatAsText(_),
+          prefix = "transport.border.active.customsOfficeActiveBorder",
+          id = Some("change-customs-office")
+        )
+    }
 
   def conveyanceReferenceNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddConveyanceReferenceYesNoPage(activeIndex),
@@ -133,4 +159,39 @@ class ActiveBorderTransportMeansAnswersHelper(
         href = controllers.transport.border.active.routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode).url
       )
     }
+
+  def getSection(): Future[Section] = {
+    val identificationTypeFuture = identificationType
+    val nationalityFuture        = nationality
+    val customsOfficeFuture      = customsOffice
+    for {
+      addBorderMeansOfTransportYesNoRow <-
+        if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) successful(addBorderMeansOfTransportYesNo) else successful(None)
+      identificationTypeRow             <- identificationTypeFuture
+      identificationNumberRow           <- successful(identificationNumber)
+      nationalityRow                    <- nationalityFuture
+      customsOfficeRow                  <- customsOfficeFuture
+      conveyanceReferenceNumberYesNoRow <- successful(conveyanceReferenceNumberYesNo)
+      conveyanceReferenceNumberRow      <- successful(conveyanceReferenceNumber)
+    } yield {
+      val rows = Seq(
+        addBorderMeansOfTransportYesNoRow,
+        identificationTypeRow,
+        identificationNumberRow,
+        nationalityRow,
+        customsOfficeRow,
+        conveyanceReferenceNumberYesNoRow,
+        conveyanceReferenceNumberRow
+      ).flatten
+
+      Section(
+        sectionTitle = messages("checkYourAnswers.transportMeans.active.withIndex", activeIndex.display),
+        rows = rows,
+        addAnotherLink = (userAnswers.departureData.CustomsOfficeOfTransitDeclared, lastIndex == activeIndex) match {
+          case (Some(_), true) => addOrRemoveActiveBorderTransportsMeans()
+          case _               => None
+        }
+      )
+    }
+  }
 }

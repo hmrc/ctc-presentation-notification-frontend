@@ -40,12 +40,6 @@ package object utils {
     def asCountry: Country =
       Country(CountryCode(value), "countryDesc")
 
-    def asIdentification: Identification = Identification(value, "")
-
-    def asNationality: Nationality = Nationality(value, "")
-
-    def asCustomsOffice: CustomsOffice = CustomsOffice(value, "", None)
-
   }
 
   implicit class RichLocalDate(localDate: LocalDate) {

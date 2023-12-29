@@ -16,7 +16,7 @@
 
 package models
 
-import models.messages.{Address, Consignment, ContactPerson, LocationOfGoods, MessageData, PostcodeAddress}
+import models.messages.{ActiveBorderTransportMeans, Address, Consignment, ContactPerson, LocationOfGoods, MessageData, PostcodeAddress}
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -115,6 +115,9 @@ object UserAnswers {
   private val locationOfGoodsConsignmentLens: Lens[Consignment, Option[LocationOfGoods]] =
     GenLens[Consignment](_.LocationOfGoods)
 
+  private val borderMeansConsignmentLens: Lens[Consignment, Option[Seq[ActiveBorderTransportMeans]]] =
+    GenLens[Consignment](_.ActiveBorderTransportMeans)
+
   private val addressLocationLens: Lens[LocationOfGoods, Option[Address]] =
     GenLens[LocationOfGoods](_.Address)
 
@@ -142,6 +145,9 @@ object UserAnswers {
 
   val setAdditionalIdentifierOnUserAnswersLens: Optional[UserAnswers, String] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensAdditionalIdentifier composePrism some
+
+  val setBorderMeansAnswersLens: Lens[UserAnswers, Option[Seq[ActiveBorderTransportMeans]]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(borderMeansConsignmentLens)
 
   import play.api.libs.functional.syntax._
 
