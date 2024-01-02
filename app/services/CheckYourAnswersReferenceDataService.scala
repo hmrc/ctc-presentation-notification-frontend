@@ -80,11 +80,11 @@ class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: Re
   def getCountry(code: String)(implicit hc: HeaderCarrier): Future[Country] =
     for {
       countryCodes <- referenceDataConnector.getCountries("CountryCodesFullList")
-      modeFound = countryCodes
+      country = countryCodes
         .find(_.code.code == code)
         .getOrElse(referenceDataException("countries", code, countryCodes))
 
-    } yield modeFound
+    } yield country
 
   private def referenceDataException[T](refName: String, refDataCode: String, listRefData: Seq[T]) =
     throw new ReferenceDataNotFoundException(refName, refDataCode, listRefData)

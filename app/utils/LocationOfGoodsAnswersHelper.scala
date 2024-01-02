@@ -100,12 +100,6 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-unLocode")
   )
 
-  def customsOfficeIdentifierTitleRow(): SummaryListRow = buildRowWithNoChangeLink(
-    answer = Empty,
-    prefix = "locationOfGoods.customsOfficeIdentifierTitle",
-    args = Seq.empty
-  )
-
   def customsOfficeIdentifierRow(answer: String): SummaryListRow = buildSimpleRow(
     answer = Text(answer),
     label = messages("locationOfGoods.customsOfficeIdentifier.checkYourAnswersLabel"),

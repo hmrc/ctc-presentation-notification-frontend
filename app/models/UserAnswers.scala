@@ -16,7 +16,9 @@
 
 package models
 
-import models.messages.{ActiveBorderTransportMeans, Address, Consignment, ContactPerson, LocationOfGoods, MessageData, PostcodeAddress}
+import models.messages._
+import monocle.macros.GenLens
+import monocle.{Lens, Optional}
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -24,8 +26,6 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
-import monocle.{Lens, Optional}
-import monocle.macros.GenLens
 
 final case class UserAnswers(
   id: String,
@@ -145,6 +145,25 @@ object UserAnswers {
 
   val setAdditionalIdentifierOnUserAnswersLens: Optional[UserAnswers, String] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensAdditionalIdentifier composePrism some
+
+  private val transitHolderLens: Lens[MessageData, HolderOfTheTransitProcedure]        = GenLens[MessageData](_.HolderOfTheTransitProcedure)
+  private val transitHolderEoriLens: Lens[HolderOfTheTransitProcedure, Option[String]] = GenLens[HolderOfTheTransitProcedure](_.identificationNumber)
+
+  private val transitHolderTirIdentificationLens: Lens[HolderOfTheTransitProcedure, Option[String]] =
+    GenLens[HolderOfTheTransitProcedure](_.TIRHolderIdentificationNumber)
+  private val transitHolderContactPersonLens: Lens[HolderOfTheTransitProcedure, Option[ContactPerson]] = GenLens[HolderOfTheTransitProcedure](_.ContactPerson)
+  private val transitHolderAddressLens: Lens[HolderOfTheTransitProcedure, Option[Address]]             = GenLens[HolderOfTheTransitProcedure](_.Address)
+
+  val setTransitHolderEoriLens: Lens[UserAnswers, Option[String]] = departureDataLens composeLens transitHolderLens composeLens transitHolderEoriLens
+
+  val setTransitHolderTirIdentificationLens: Lens[UserAnswers, Option[String]] =
+    departureDataLens composeLens transitHolderLens composeLens transitHolderTirIdentificationLens
+
+  val setTransitHolderContactPersonLens: Optional[UserAnswers, ContactPerson] =
+    departureDataLens composeLens transitHolderLens composeLens transitHolderContactPersonLens composePrism some
+
+  val setTransitHolderAddressLens: Optional[UserAnswers, Address] =
+    departureDataLens composeLens transitHolderLens composeLens transitHolderAddressLens composePrism some
 
   val setBorderMeansAnswersLens: Lens[UserAnswers, Option[Seq[ActiveBorderTransportMeans]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(borderMeansConsignmentLens)
