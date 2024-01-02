@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import models.reference.transport.border.active.Identification
 import models.reference._
 
 import java.time.LocalDate

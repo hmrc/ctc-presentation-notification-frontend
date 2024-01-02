@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package models.messages
+package pages.sections.representative
 
-import models.DynamicAddress
-import play.api.libs.json.{Json, OFormat}
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class Address(
-  streetAndNumber: String,
-  postcode: Option[String],
-  city: String,
-  country: String
-) {
+case object RepresentativeSection extends Section[JsObject] {
 
-  def toDynamicAddress: DynamicAddress = DynamicAddress(
-    numberAndStreet = streetAndNumber,
-    city = city,
-    postalCode = postcode
-  )
-}
+  override def path: JsPath = JsPath \ toString
 
-object Address {
-  implicit val format: OFormat[Address] = Json.format[Address]
+  override def toString: String = "representative"
 }

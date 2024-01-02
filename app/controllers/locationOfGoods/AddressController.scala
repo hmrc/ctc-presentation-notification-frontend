@@ -19,8 +19,8 @@ package controllers.locationOfGoods
 import controllers.actions._
 import controllers.locationOfGoods.AddressController.getCountryCode
 import forms.DynamicAddressFormProvider
-import models.reference.{Country, CountryCode}
-import models.requests.{DataRequest, MandatoryDataRequest, SpecificDataRequestProvider1}
+import models.reference.CountryCode
+import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{DynamicAddress, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages.QuestionPage

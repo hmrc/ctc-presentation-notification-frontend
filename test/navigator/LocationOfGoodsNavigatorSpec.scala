@@ -23,7 +23,7 @@ import generators.Generators
 import models._
 import models.messages.AuthorisationType.{C521, C523}
 import models.messages.{Authorisation, MessageData}
-import models.reference.{BorderMode, Country}
+import models.reference.BorderMode
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -35,7 +35,6 @@ import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
-import play.api.libs.json.JsPath
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

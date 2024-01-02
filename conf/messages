@@ -55,6 +55,7 @@ locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
 placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
+representative.caption = Representative
 
 transport.prefix = Transport equipment {0}
 transport.value.container = container {0}
@@ -483,6 +484,15 @@ transport.equipment.removeItem.title = Are you sure you want to remove this item
 transport.equipment.removeItem.heading = Are you sure you want to remove this item from transport equipment {0}?
 transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
+
+representative.name.title = What is your name?
+representative.name.heading = What is your name?
+representative.name.checkYourAnswersLabel = Name
+representative.name.paragraph = This is additional contact information for if Customs have any queries.
+representative.name.error.required = Enter your name
+representative.name.error.length = Your name must be {0} characters or less
+representative.name.error.invalid = Your name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+representative.name.change.hidden = representative’s name
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
