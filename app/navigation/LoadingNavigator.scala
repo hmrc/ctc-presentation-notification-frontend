@@ -62,9 +62,9 @@ class LoadingNavigator extends Navigator {
   private def addUnlocodeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddUnLocodeYesNoPage) match {
       case Some(true) =>
-        (ua.get(UnLocodePage), ua.departureData.Consignment.isPlaceOfLoadingPresent) match {
-          case (None, false) => UnLocodePage.route(ua, departureId, CheckMode)
-          case _             => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        ua.get(UnLocodePage) match {
+          case None    => UnLocodePage.route(ua, departureId, CheckMode)
+          case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       case _ => CountryPage.route(ua, departureId, CheckMode)
     }
