@@ -484,12 +484,12 @@ transport.equipment.removeItem.heading = Are you sure you want to remove this it
 transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
 
-addRepresentativeYesNo.title = Do you want to add your details?
-addRepresentativeYesNo.heading = Do you want to add your details?
-addRepresentativeYesNo.paragraph = This includes your name and phone number for if Customs have any queries.
-addRepresentativeYesNo.checkYourAnswersLabel = Do you want to add your details?
-addRepresentativeYesNo.change.hidden = if you want to add your details
-addRepresentativeYesNo.error.required = Select yes if you want to add your details
+addRepresentativeContactDetailsYesNo.title = Do you want to add your details?
+addRepresentativeContactDetailsYesNo.heading = Do you want to add your details?
+addRepresentativeContactDetailsYesNo.paragraph = This includes your name and phone number for if Customs have any queries.
+addRepresentativeContactDetailsYesNo.checkYourAnswersLabel = Do you want to add your details?
+addRepresentativeContactDetailsYesNo.change.hidden = if you want to add your details
+addRepresentativeContactDetailsYesNo.error.required = Select yes if you want to add your details
 
 checkYourAnswers.transitHolder = Transit holder
 transitHolder.eoriYesNo.checkYourAnswersLabel = Do you know the transit holder’s EORI number?

@@ -14,40 +14,40 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.representative
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.AddRepresentativeYesNoPage
+import pages.representative.AddRepresentativeContactDetailsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.AddRepresentativeYesNoView
+import views.html.representative.AddRepresentativeContactDetailsYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddRepresentativeYesNoController @Inject() (
+class AddRepresentativeContactDetailsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddRepresentativeYesNoView
+  view: AddRepresentativeContactDetailsYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("addRepresentativeYesNo")
+  private val form = formProvider("addRepresentativeContactDetailsYesNo")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddRepresentativeYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddRepresentativeContactDetailsYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -71,8 +71,8 @@ class AddRepresentativeYesNoController @Inject() (
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddRepresentativeYesNoPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddRepresentativeContactDetailsYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddRepresentativeYesNoPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AddRepresentativeContactDetailsYesNoPage, updatedAnswers, departureId, mode))
 
 }

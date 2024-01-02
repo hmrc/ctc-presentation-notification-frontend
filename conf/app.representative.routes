@@ -1,3 +1,8 @@
+GET        /add-details/:departureId                  controllers.representative.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /add-details/:departureId                  controllers.representative.AddRepresentativeContactDetailsYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /change-add-details/:departureId           controllers.representative.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-add-details/:departureId           controllers.representative.AddRepresentativeContactDetailsYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
 GET        /name/:departureId                         controllers.representative.NameController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /name/:departureId                         controllers.representative.NameController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /change-name/:departureId                  controllers.representative.NameController.onPageLoad(departureId: String, mode: Mode = CheckMode)

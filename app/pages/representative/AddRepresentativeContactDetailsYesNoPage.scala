@@ -14,20 +14,33 @@
  * limitations under the License.
  */
 
-package pages
+package pages.representative
 
-import controllers.routes
+import controllers.representative.routes
 import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.representative.RepresentativeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddRepresentativeYesNoPage extends QuestionPage[Boolean] {
+import scala.util.Try
 
-  override def path: JsPath = JsPath \ toString
+case object AddRepresentativeContactDetailsYesNoPage extends QuestionPage[Boolean] {
 
-  override def toString: String = "addRepresentativeYesNo"
+  override def path: JsPath = RepresentativeSection.path \ toString
+
+  override def toString: String = "addRepresentativeContactDetailsYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(NamePage)
+      // TODO remove Telephone Number
+      case _ => super.cleanup(value, userAnswers)
+    }
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddRepresentativeYesNoController.onPageLoad(departureId, mode))
+    Some(routes.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId, mode))
 
 }

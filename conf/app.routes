@@ -33,11 +33,6 @@ POST       /place-of-loading/add/:departureId                                 co
 GET        /place-of-loading/change-add/:departureId                          controllers.AddPlaceOfLoadingYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /place-of-loading/change-add/:departureId                          controllers.AddPlaceOfLoadingYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
-GET        /representative/add-details/:departureId                           controllers.AddRepresentativeYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /representative/add-details/:departureId                           controllers.AddRepresentativeYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /representative/change-add-details/:departureId                    controllers.AddRepresentativeYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /representative/change-add-details/:departureId                    controllers.AddRepresentativeYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
-
 GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
 
 GET        /check-answers/:departureId                                        controllers.CheckYourAnswersController.onPageLoad(departureId: String)

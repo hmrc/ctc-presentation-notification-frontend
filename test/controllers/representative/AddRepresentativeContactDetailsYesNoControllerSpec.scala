@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.representative
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AddRepresentativeYesNoPage
+import pages.representative.AddRepresentativeContactDetailsYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.AddRepresentativeYesNoView
+import views.html.representative.AddRepresentativeContactDetailsYesNoView
 
 import scala.concurrent.Future
 
-class AddRepresentativeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddRepresentativeContactDetailsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                = new YesNoFormProvider()
-  private val form                        = formProvider("addRepresentativeYesNo")
+  private val form                        = formProvider("addRepresentativeContactDetailsYesNo")
   private val mode                        = NormalMode
-  private lazy val addRepresentativeRoute = routes.AddRepresentativeYesNoController.onPageLoad(departureId, mode).url
+  private lazy val addRepresentativeRoute = controllers.representative.routes.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -50,7 +51,7 @@ class AddRepresentativeYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddRepresentativeYesNoView]
+      val view = injector.instanceOf[AddRepresentativeContactDetailsYesNoView]
 
       status(result) mustEqual OK
 
@@ -60,7 +61,7 @@ class AddRepresentativeYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddRepresentativeYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddRepresentativeContactDetailsYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addRepresentativeRoute)
@@ -69,7 +70,7 @@ class AddRepresentativeYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddRepresentativeYesNoView]
+      val view = injector.instanceOf[AddRepresentativeContactDetailsYesNoView]
 
       status(result) mustEqual OK
 
@@ -106,7 +107,7 @@ class AddRepresentativeYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddRepresentativeYesNoView]
+      val view = injector.instanceOf[AddRepresentativeContactDetailsYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, departureId, mode)(request, messages).toString

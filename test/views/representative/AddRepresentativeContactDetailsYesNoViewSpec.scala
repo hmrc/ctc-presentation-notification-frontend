@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views
+package views.representative
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.AddRepresentativeYesNoView
+import views.html.representative.AddRepresentativeContactDetailsYesNoView
 
-class AddRepresentativeYesNoViewSpec extends YesNoViewBehaviours {
+class AddRepresentativeContactDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddRepresentativeYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddRepresentativeContactDetailsYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "addRepresentativeYesNo"
+  override val prefix: String = "addRepresentativeContactDetailsYesNo"
 
   behave like pageWithTitle()
 
