@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package models.messages
+package pages
 
-import models.DynamicAddress
-import play.api.libs.json.{Json, OFormat}
+import controllers.routes
+import models.{Mode, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case class Address(
-  streetAndNumber: String,
-  postcode: Option[String],
-  city: String,
-  country: String
-) {
+case object AddRepresentativeYesNoPage extends QuestionPage[Boolean] {
 
-  def toDynamicAddress: DynamicAddress = DynamicAddress(
-    numberAndStreet = streetAndNumber,
-    city = city,
-    postalCode = postcode
-  )
-}
+  override def path: JsPath = JsPath \ toString
 
-object Address {
-  implicit val format: OFormat[Address] = Json.format[Address]
+  override def toString: String = "addRepresentativeYesNo"
+
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.AddRepresentativeYesNoController.onPageLoad(departureId, mode))
+
 }

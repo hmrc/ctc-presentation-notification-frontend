@@ -16,8 +16,7 @@
 
 package utils
 
-import cats.data.OptionT
-import models.reference.{BorderMode, Country}
+import models.reference.Country
 import models.{Mode, UserAnswers}
 import pages.loading._
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
