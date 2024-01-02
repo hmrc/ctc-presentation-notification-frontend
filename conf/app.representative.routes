@@ -1,0 +1,4 @@
+GET        /name/:departureId                         controllers.representative.NameController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /name/:departureId                         controllers.representative.NameController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /change-name/:departureId                  controllers.representative.NameController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-name/:departureId                  controllers.representative.NameController.onSubmit(departureId: String, mode: Mode = CheckMode)
