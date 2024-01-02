@@ -14,96 +14,76 @@
  * limitations under the License.
  */
 
-package controllers.transport.border
+package controllers.transport
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.Mode
-import models.reference.TransportMode.BorderMode
+import models.reference.TransportMode.InlandMode
 import models.requests.MandatoryDataRequest
+import models.Mode
 import navigation.BorderNavigator
 import pages.QuestionPage
-import pages.transport.border.BorderModeOfTransportPage
-import play.api.Logging
+import pages.transport.InlandModePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.TransportModeCodesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.border.BorderModeOfTransportView
+import views.html.transport.InlandModeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BorderModeOfTransportController @Inject() (
+class InlandModeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: BorderNavigator,
   actions: Actions,
+  navigator: BorderNavigator,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: BorderModeOfTransportView,
+  view: InlandModeView,
   service: TransportModeCodesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with Logging {
+    with I18nSupport {
 
-  private def form(borderModeCodes: Seq[BorderMode]): Form[BorderMode] = formProvider[BorderMode]("transport.border.borderModeOfTransport", borderModeCodes)
+  private def form(inlandModeCodes: Seq[InlandMode]): Form[InlandMode] = formProvider[InlandMode]("transport.inlandModeOfTransport", inlandModeCodes)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val borderModeCode =
-        request.userAnswers
-          .get(BorderModeOfTransportPage)
-          .map(_.code)
-          .orElse {
-            logger.info(s"Retrieved BorderMode answer from IE015 journey")
-            request.userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
+      service.getInlandModes().map {
+        inlandModeCodes =>
+          val preparedForm = request.userAnswers.get(InlandModePage) match {
+            case None        => form(inlandModeCodes)
+            case Some(value) => form(inlandModeCodes).fill(value)
           }
 
-      service.getBorderModes().map {
-        borderModeCodes =>
-          val preparedForm = borderModeCode match {
-            case None => form(borderModeCodes)
-            case Some(code) =>
-              val getBorderMode = borderModeCodes.find(_.code == code)
-              getBorderMode match {
-                case Some(bm) => form(borderModeCodes).fill(bm)
-                case None =>
-                  logger.warn(s"BorderMode code: '$code' was not found from available border modes: ${borderModeCodes.mkString(", ")}")
-                  form(borderModeCodes)
-              }
-
-          }
-
-          Ok(view(preparedForm, departureId, borderModeCodes, mode))
+          Ok(view(preparedForm, departureId, inlandModeCodes, mode))
       }
   }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      service.getBorderModes().flatMap {
-        borderModeCodes =>
-          form(borderModeCodes)
+      service.getInlandModes().flatMap {
+        inlandModeCodes =>
+          form(inlandModeCodes)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, borderModeCodes, mode))),
-              value => redirect(mode, BorderModeOfTransportPage, value, departureId)
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, inlandModeCodes, mode))),
+              value => redirect(mode, InlandModePage, value, departureId)
             )
       }
   }
 
   private def redirect(
     mode: Mode,
-    page: QuestionPage[BorderMode],
-    value: BorderMode,
+    page: QuestionPage[InlandMode],
+    value: InlandMode,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
-
 }

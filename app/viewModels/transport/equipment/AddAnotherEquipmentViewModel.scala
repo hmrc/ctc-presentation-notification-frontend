@@ -17,13 +17,14 @@
 package viewModels.transport.equipment
 
 import config.FrontendAppConfig
-import controllers.transport.equipment.index.{routes => indexRoutes}
+import controllers.transport.equipment.index.seals.{routes => sealsRoutes}
+import controllers.transport.equipment.index.{routes => equipmentRoutes}
 import controllers.transport.equipment.routes
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
@@ -58,10 +59,9 @@ object AddAnotherEquipmentViewModel {
           case (_, i) =>
             val equipmentIndex = Index(i)
 
-            val lessThan2TransportEquipment: Boolean = userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0) < 2
-            def equipmentPrefix(increment: Int)      = messages("transport.prefix", increment)
-            def container(id: String)                = messages("transport.value.container", id)
-            val noContainer                          = messages("transport.value.withoutContainer")
+            def equipmentPrefix(increment: Int) = messages("transport.prefix", increment)
+            def container(id: String)           = messages("transport.value.container", id)
+            lazy val noContainer                = messages("transport.value.withoutContainer")
 
             val name = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) flatMap {
               identificationNumber =>
@@ -74,26 +74,26 @@ object AddAnotherEquipmentViewModel {
                 )
             }
 
-            val changeRoute =
-              userAnswers.get(ContainerIndicatorPage) match {
-                case Some(true) =>
-                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url
-
-                case _ if userAnswers.departureData.isSimplified && userAnswers.departureData.hasAuthC523 =>
-                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
-                    .url
-                case _ => controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
-              }
-            val removeRoute: Option[String] = if (lessThan2TransportEquipment && userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty) {
-              None
-            } else {
-              Some(indexRoutes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url)
+            lazy val changeRoute = userAnswers.get(ContainerIndicatorPage) match {
+              case Some(true) =>
+                equipmentRoutes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex).url
+              case _ if userAnswers.departureData.isSimplified && userAnswers.departureData.hasAuthC523 =>
+                sealsRoutes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url
+              case _ =>
+                equipmentRoutes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex).url
             }
 
-            name.map(ListItem(_, changeRoute, removeRoute))
+            name.map {
+              name =>
+                ListItem(
+                  name = name,
+                  changeUrl = changeRoute,
+                  removeUrl = Some(equipmentRoutes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url)
+                )
+            }
         }
         .toSeq
+        .checkRemoveLinks(userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty)
 
       new AddAnotherEquipmentViewModel(
         listItems,

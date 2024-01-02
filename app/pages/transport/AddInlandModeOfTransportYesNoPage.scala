@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-package pages.transport.border
+package pages.transport
 
-import models.reference.TransportMode.BorderMode
+import controllers.transport.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.TransportSection
+import pages.sections.transport.border.BorderSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+case object AddInlandModeOfTransportYesNoPage extends QuestionPage[Boolean] {
 
-case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
+  override def path: JsPath = BorderSection.path \ toString
 
-  override def path: JsPath = TransportSection.path \ toString
-
-  override def toString: String = "borderModeOfTransport"
+  override def toString: String = "addInlandModeOfTransport"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+    Some(routes.AddInlandModeOfTransportYesNoController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[BorderMode], userAnswers: UserAnswers): Try[UserAnswers] =
-    super.cleanup(value, userAnswers)
+// TODO:
+//  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+//    value match {
+//      case Some(false) => userAnswers.remove(TransportEquipmentPage)
+//      case _           => super.cleanup(value, userAnswers)
+//    }
 
 }

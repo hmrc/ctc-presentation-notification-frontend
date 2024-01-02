@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import java.time.LocalDate
+package pages.transport
 
-@this(
-    govUkErrorSummary: GovukErrorSummary
-)
+import pages.behaviours.PageBehaviours
 
-@(form: Form[LocalDate], fieldName: String = "value")(implicit messages: Messages)
+class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
 
-@if(form.errors.nonEmpty) {
-    @govUkErrorSummary(
-        ErrorSummary(
-            errorList = form.errors
-                    .map(err => err.copy(key = err.key, args = err.args))
-                    .toErrorLinks,
-            title = Text(messages("error.summary.title"))
-        )
-    )
+  "AddInlandModeOfTransportYesNoPage" - {
+
+    beRetrievable[Boolean](AddInlandModeOfTransportYesNoPage)
+    beSettable[Boolean](AddInlandModeOfTransportYesNoPage)
+    beRemovable[Boolean](AddInlandModeOfTransportYesNoPage)
+  }
 }

@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package pages.transport.border
+package pages.transport
 
-import models.reference.TransportMode.BorderMode
-import pages.behaviours.PageBehaviours
+import models.reference.TransportMode.InlandMode
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.transport.TransportSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class BorderModeOfTransportPageSpec extends PageBehaviours {
+case object InlandModePage extends QuestionPage[InlandMode] {
 
-  "BorderModeOfTransportPage" - {
+  override def path: JsPath = TransportSection.path \ toString
 
-    beRetrievable[BorderMode](BorderModeOfTransportPage)
+  override def toString: String = "inlandModeOfTransport"
 
-    beSettable[BorderMode](BorderModeOfTransportPage)
-
-    beRemovable[BorderMode](BorderModeOfTransportPage)
-  }
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode))
 
 }

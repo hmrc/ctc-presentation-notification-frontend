@@ -14,43 +14,43 @@
  * limitations under the License.
  */
 
-package views.transport.border
+package views.transport
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.reference.TransportMode.BorderMode
+import models.reference.TransportMode.InlandMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.EnumerableViewBehaviours
-import views.html.transport.border.BorderModeOfTransportView
+import views.html.transport.InlandModeView
 
-class BorderModeOfTransportViewSpec extends EnumerableViewBehaviours[BorderMode] {
+class InlandModeViewSpec extends EnumerableViewBehaviours[InlandMode] {
 
-  override def form: Form[BorderMode] = new EnumerableFormProvider()(prefix, values)
+  override def form: Form[InlandMode] = new EnumerableFormProvider()(prefix, values)
 
-  override def applyView(form: Form[BorderMode]): HtmlFormat.Appendable =
-    injector.instanceOf[BorderModeOfTransportView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[InlandMode]): HtmlFormat.Appendable =
+    injector.instanceOf[InlandModeView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "transport.border.borderModeOfTransport"
+  override val prefix: String = "transport.inlandModeOfTransport"
 
-  override def radioItems(fieldId: String, checkedValue: Option[BorderMode] = None): Seq[RadioItem] =
+  override def radioItems(fieldId: String, checkedValue: Option[InlandMode] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[BorderMode] = Seq(
-    BorderMode("1", "Maritime"),
-    BorderMode("2", "Rail")
+  override def values: Seq[InlandMode] = Seq(
+    InlandMode("1", "Maritime"),
+    InlandMode("2", "Rail")
   )
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Border mode of transport")
+  behave like pageWithSectionCaption("Transport details - Inland mode of transport")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading("Which inland mode of transport are you using?")
 
   behave like pageWithRadioItems()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

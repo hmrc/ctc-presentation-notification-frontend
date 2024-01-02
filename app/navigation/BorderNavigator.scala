@@ -20,7 +20,7 @@ import com.google.inject.Singleton
 import config.Constants.Air
 import controllers.transport.border.active.routes
 import models._
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
 import pages.sections.transport.border.BorderActiveListSection

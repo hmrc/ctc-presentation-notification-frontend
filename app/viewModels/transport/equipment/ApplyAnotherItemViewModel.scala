@@ -69,19 +69,17 @@ object ApplyAnotherItemViewModel {
 
             def itemPrefix(item: String) = messages("transport.item.prefix", item)
 
-            val name = userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map(_.toString).map(itemPrefix)
-
-            val changeRoute = routes.SelectItemsController.onSubmit(departureId, mode, equipmentIndex, itemIndex).url
-
-            val removeRoute: Option[String] = if (itemIndex.isFirst) {
-              None
-            } else {
-              Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+            userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map(_.toString).map(itemPrefix).map {
+              name =>
+                ListItem(
+                  name = name,
+                  changeUrl = routes.SelectItemsController.onSubmit(departureId, mode, equipmentIndex, itemIndex).url,
+                  removeUrl = Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+                )
             }
-
-            name.map(ListItem(_, changeRoute, removeRoute))
         }
         .toSeq
+        .checkRemoveLinks(predicate = true)
 
       new ApplyAnotherItemViewModel(
         listItems,

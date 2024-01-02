@@ -16,14 +16,14 @@
 
 package navigator
 
-import base.TestMessageData.{consignment, locationOfGoods, messageData, transitOperation}
+import base.TestMessageData.{consignment, locationOfGoods, messageData, placeOfLoading, transitOperation}
 import base.{SpecBase, TestMessageData}
 import config.Constants._
 import generators.Generators
 import models._
 import models.messages.AuthorisationType.{C521, C523}
 import models.messages.{Authorisation, MessageData}
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -658,6 +658,60 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
                 .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+          }
+        }
+
+      "must go from CustomsOfficeIdentifierPage to check your answers" +
+        "when place of loading is present, " +
+        "auth is C521/simplified, " +
+        "limit date is present, " +
+        "Container indicator captured in IE013/IE015 " +
+        "and no security" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(
+                      security = NoSecurityDetails,
+                      limitDate = Some("limitDate")
+                    ),
+                    Authorisation = Some(Seq(Authorisation(C521, "1234"))),
+                    Consignment = answers.departureData.Consignment.copy(
+                      PlaceOfLoading = Some(placeOfLoading),
+                      containerIndicator = Some("1")
+                    )
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+      "must go from CustomsOfficeIdentifierPage to check your answers" +
+        "when place of loading is present, " +
+        "auth is not C521/simplified, " +
+        "Container indicator captured in IE013/IE015 " +
+        "and no security" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Authorisation = Some(Seq(Authorisation(C523, "1234"))),
+                    Consignment = answers.departureData.Consignment.copy(
+                      PlaceOfLoading = Some(placeOfLoading),
+                      containerIndicator = Some("1")
+                    )
+                  )
+                )
+
+              navigator
+                .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
     }

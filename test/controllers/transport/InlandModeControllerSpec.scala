@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-package controllers.transport.border
+package controllers.transport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.NormalMode
-import models.reference.TransportMode.BorderMode
+import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.InlandModePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TransportModeCodesService
-import views.html.transport.border.BorderModeOfTransportView
+import views.html.transport.InlandModeView
 
 import scala.concurrent.Future
 
-class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val border1: BorderMode = BorderMode("1", "A2GjAWj")
-  val border2: BorderMode = BorderMode("2", "jn58227")
+  val inland1: InlandMode = InlandMode("1", "A2GjAWj")
+  val inland2: InlandMode = InlandMode("2", "jn58227")
 
-  private val borderModes: Seq[BorderMode] = Seq(border1, border2)
+  private val inlandModes: Seq[InlandMode] = Seq(inland1, inland2)
 
   private val formProvider                    = new EnumerableFormProvider()
-  private val form                            = formProvider[BorderMode]("transport.border.borderModeOfTransport", borderModes)
+  private val form                            = formProvider[InlandMode]("transport.inlandModeOfTransport", inlandModes)
   private val mode                            = NormalMode
-  private lazy val borderModeOfTransportRoute = controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
+  private lazy val inlandModeOfTransportRoute = controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode).url
 
   private val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
 
@@ -56,43 +56,43 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockTransportModeCodesService)
-    when(mockTransportModeCodesService.getBorderModes()(any())).thenReturn(Future.successful(borderModes))
+    when(mockTransportModeCodesService.getInlandModes()(any())).thenReturn(Future.successful(inlandModes))
   }
 
-  "BorderModeOfTransport Controller" - {
+  "InlandMode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, borderModeOfTransportRoute)
+      val request = FakeRequest(GET, inlandModeOfTransportRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[BorderModeOfTransportView]
+      val view = injector.instanceOf[InlandModeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, borderModes, mode)(request, messages).toString
+        view(form, departureId, inlandModes, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModes.head)
+      val userAnswers = emptyUserAnswers.setValue(InlandModePage, inlandModes.head)
       setExistingUserAnswers(userAnswers)
 
-      when(mockTransportModeCodesService.getBorderModes()(any())).thenReturn(Future.successful(borderModes))
-      val request = FakeRequest(GET, borderModeOfTransportRoute)
+      when(mockTransportModeCodesService.getInlandModes()(any())).thenReturn(Future.successful(inlandModes))
+      val request = FakeRequest(GET, inlandModeOfTransportRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> borderModes.head.code))
+      val filledForm = form.bind(Map("value" -> inlandModes.head.code))
 
-      val view = injector.instanceOf[BorderModeOfTransportView]
+      val view = injector.instanceOf[InlandModeView]
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(filledForm, departureId, borderModes, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(filledForm, departureId, inlandModes, mode)(request, messages).toString
 
     }
 
@@ -102,8 +102,8 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, borderModeOfTransportRoute)
-        .withFormUrlEncodedBody(("value", borderModes.head.code))
+      val request = FakeRequest(POST, inlandModeOfTransportRoute)
+        .withFormUrlEncodedBody(("value", inlandModes.head.code))
 
       val result = route(app, request).value
 
@@ -116,24 +116,24 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, borderModeOfTransportRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request   = FakeRequest(POST, inlandModeOfTransportRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[BorderModeOfTransportView]
+      val view = injector.instanceOf[InlandModeView]
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, borderModes, mode)(request, messages).toString
+        view(boundForm, departureId, inlandModes, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, borderModeOfTransportRoute)
+      val request = FakeRequest(GET, inlandModeOfTransportRoute)
 
       val result = route(app, request).value
 
@@ -145,8 +145,8 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, borderModeOfTransportRoute)
-        .withFormUrlEncodedBody(("value", borderModes.head.code))
+      val request = FakeRequest(POST, inlandModeOfTransportRoute)
+        .withFormUrlEncodedBody(("value", inlandModes.head.code))
 
       val result = route(app, request).value
 
