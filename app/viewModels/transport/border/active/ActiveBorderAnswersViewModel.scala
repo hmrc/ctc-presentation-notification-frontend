@@ -16,52 +16,30 @@
 
 package viewModels.transport.border.active
 
-import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
-import pages.sections.transport.border.BorderActiveListSection
 import play.api.i18n.Messages
+import services.CheckYourAnswersReferenceDataService
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.ActiveBorderTransportMeansAnswersHelper
 import viewModels.Section
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-case class ActiveBorderAnswersViewModel(sections: Seq[Section])
+case class ActiveBorderAnswersViewModel(section: Section)
 
 object ActiveBorderAnswersViewModel {
 
-  class ActiveBorderAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext) {
+  class ActiveBorderAnswersViewModelProvider @Inject() (implicit executionContext: ExecutionContext) {
 
-    def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, index: Index)(implicit messages: Messages): ActiveBorderAnswersViewModel = {
-      val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, index)
-      val lastIndex = Index(
-        userAnswers
-          .get(BorderActiveListSection)
-          .map(_.value.length - 1)
-          .getOrElse(userAnswers.departureData.Consignment.ActiveBorderTransportMeans.map(_.length - 1).getOrElse(0))
-      )
-
-      val activeBorderSection =
-        Section(
-          sectionTitle = messages("checkYourAnswers.transportMeans.active.withIndex", index.display),
-          rows = Seq(
-            if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) helper.addBorderMeansOfTransportYesNo else None,
-            helper.identificationType,
-            helper.identificationNumber,
-            helper.nationality,
-            helper.customsOffice,
-            helper.conveyanceReferenceNumberYesNo,
-            helper.conveyanceReferenceNumber
-          ).flatten,
-          addAnotherLink = (userAnswers.departureData.CustomsOfficeOfTransitDeclared, lastIndex == index) match {
-            case (Some(_), true) => helper.addOrRemoveActiveBorderTransportsMeans()
-            case _               => None
-          }
-        )
-
-      val sections = Seq(activeBorderSection)
-      helper.addOrRemoveActiveBorderTransportsMeans()
-      new ActiveBorderAnswersViewModel(sections)
+    def apply(userAnswers: UserAnswers, departureId: String, cyaRefDataService: CheckYourAnswersReferenceDataService, mode: Mode, index: Index)(implicit
+      messages: Messages,
+      hc: HeaderCarrier
+    ): Future[ActiveBorderAnswersViewModel] = {
+      val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, index)
+      helper
+        .getSection()
+        .map(new ActiveBorderAnswersViewModel(_))
 
     }
   }

@@ -16,13 +16,14 @@
 
 package controllers.transport.border.active
 
+import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.NormalMode
 import models.reference.BorderMode
 import models.reference.transport.border.active.Identification
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -90,6 +91,29 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val userAnswers = emptyUserAnswers
         .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
         .setValue(IdentificationPage(index), identificationType1)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, identificationRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> identificationType1.code))
+
+      val view = injector.instanceOf[IdentificationView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, identificationTypes, mode, index)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+      when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
+        .thenReturn(Future.successful(identificationTypes))
+
+      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
+        Option(Seq(activeBorderTransportMeans.head.copy(typeOfIdentification = Some(identificationType1.code))))
+      )(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)

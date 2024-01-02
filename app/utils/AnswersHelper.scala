@@ -16,6 +16,7 @@
 
 package utils
 
+import cats.implicits._
 import models.messages.MessageData
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
@@ -23,10 +24,9 @@ import pages.sections.Section
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Reads}
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
-import cats.implicits._
+import viewModels.Link
 
 import scala.concurrent.{ExecutionContext, Future}
-import viewModels.Link
 
 class AnswersHelper(
   userAnswers: UserAnswers,
@@ -56,14 +56,33 @@ class AnswersHelper(
       args = args: _*
     )
 
+  protected def buildRowWithAnswer[T](
+    page: QuestionPage[T],
+    optionalAnswer: Option[T],
+    formatAnswer: T => Content,
+    prefix: String,
+    id: Option[String],
+    args: Any*
+  ): Option[SummaryListRow] =
+    for {
+      answer <- optionalAnswer
+      call   <- page.route(userAnswers, departureId, mode)
+    } yield buildRow(
+      prefix = prefix,
+      answer = formatAnswer(answer),
+      id = id,
+      call = call,
+      args = args: _*
+    )
+
   protected def fetchValue[T](
     page: QuestionPage[T],
-    convertToReference: String => Future[T],
-    valueToConvert: Option[String]
+    refDataLookup: String => Future[T],
+    valueFromDepartureData: Option[String]
   )(implicit userAnswers: UserAnswers, rds: Reads[T]): Future[Option[T]] =
     userAnswers.get(page) match {
       case Some(value) => Future.successful(Some(value))
-      case None        => valueToConvert.map(convertToReference).sequence
+      case None        => valueFromDepartureData.map(refDataLookup).sequence
     }
 
   protected def buildLink[T](section: Section[JsArray], doesSectionExistInDepartureData: Boolean)(link: => Link): Option[Link] =

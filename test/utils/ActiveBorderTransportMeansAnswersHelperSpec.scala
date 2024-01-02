@@ -23,16 +23,22 @@ import models.messages.MessageData
 import models.reference.transport.border.active.Identification
 import models.reference.{CustomsOffice, Nationality}
 import models.{Mode, UserAnswers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import pages.transport.border.active._
 import play.api.libs.json.Json
+import services.CheckYourAnswersReferenceDataService
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val refDataService = mock[CheckYourAnswersReferenceDataService]
 
   "ActiveBorderTransportMeansAnswersHelper" - {
 
@@ -44,7 +50,12 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
               val helper =
-                new ActiveBorderTransportMeansAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mode, activeIndex)
+                new ActiveBorderTransportMeansAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers,
+                                                            departureId,
+                                                            refDataService,
+                                                            mode,
+                                                            activeIndex
+                )
               val result = helper.addBorderMeansOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add identification for the border means of transport?"
@@ -65,7 +76,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $AddBorderMeansOfTransportYesNoPage undefined" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, userAnswers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.addBorderMeansOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add identification for the border means of transport?"
@@ -90,9 +101,9 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val noIdentificationTypeUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.identificationType
-              result mustBe None
+              result.futureValue mustBe None
           }
         }
       }
@@ -103,39 +114,45 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             (mode, identification) =>
               val answers = emptyUserAnswers
                 .setValue(IdentificationPage(activeIndex), identification)
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              val result = helper.identificationType.get
+              whenReady(helper.identificationType) {
+                optionResult =>
+                  val result = optionResult.get
 
-              result.key.value mustBe s"Identification type"
-              result.value.value mustBe identification.asString
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "identification type for the border means of transport"
-              action.id mustBe "change-identification"
+                  result.key.value mustBe s"Identification type"
+                  result.value.value mustBe identification.asString
+                  val actions = result.actions.get.items
+                  actions.size mustBe 1
+                  val action = actions.head
+                  action.content.value mustBe "Change"
+                  action.href mustBe controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
+                  action.visuallyHiddenText.get mustBe "identification type for the border means of transport"
+                  action.id mustBe "change-identification"
+              }
           }
         }
 
-        s"when $IdentificationPage defined in the ie13/15" in { // TODO implementation will be updated so test might change
+        s"when $IdentificationPage defined in the ie13/15" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, answers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
-              val result = helper.identificationType.get
-
               val code = answers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.head.typeOfIdentification).get
+              when(refDataService.getBorderMeansIdentification(any())(any())).thenReturn(Future.successful(Identification(code, "description")))
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              result.key.value mustBe s"Identification type"
-              result.value.value mustBe messages(s"${Identification.messageKeyPrefix}.$code")
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "identification type for the border means of transport"
-              action.id mustBe "change-identification"
+              whenReady(helper.identificationType) {
+                optionResult =>
+                  val result = optionResult.get
+                  result.key.value mustBe s"Identification type"
+                  result.value.value mustBe messages(s"${Identification.messageKeyPrefix}.$code")
+                  val actions = result.actions.get.items
+                  actions.size mustBe 1
+                  val action = actions.head
+                  action.content.value mustBe "Change"
+                  action.href mustBe controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
+                  action.visuallyHiddenText.get mustBe "identification type for the border means of transport"
+                  action.id mustBe "change-identification"
+              }
           }
         }
       }
@@ -148,7 +165,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val noIdentificationTypeUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.identificationNumber
               result mustBe None
           }
@@ -161,7 +178,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             (mode, identificationNumber) =>
               val answers = emptyUserAnswers
                 .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
               val result = helper.identificationNumber.get
 
@@ -180,7 +197,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $IdentificationNumberPage defined in the ie13/15" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, answers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
               val result = helper.identificationNumber.get
 
               result.key.value mustBe s"Identification number"
@@ -204,9 +221,9 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val noNationalityUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noNationalityUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(noNationalityUserAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.nationality
-              result mustBe None
+              result.futureValue mustBe None
           }
         }
       }
@@ -217,37 +234,45 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             (mode, nationality) =>
               val answers = emptyUserAnswers
                 .setValue(NationalityPage(activeIndex), nationality)
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              val result = helper.nationality.get
+              whenReady(helper.nationality) {
+                optionResult =>
+                  val result = optionResult.get
 
-              result.key.value mustBe s"Registered country"
-              result.value.value mustBe nationality.toString
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "registered country for the border means of transport"
-              action.id mustBe "change-nationality"
+                  result.key.value mustBe s"Registered country"
+                  result.value.value mustBe nationality.toString
+                  val actions = result.actions.get.items
+                  actions.size mustBe 1
+                  val action = actions.head
+                  action.content.value mustBe "Change"
+                  action.href mustBe controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, activeIndex).url
+                  action.visuallyHiddenText.get mustBe "registered country for the border means of transport"
+                  action.id mustBe "change-nationality"
+              }
           }
         }
 
-        s"when $NationalityPage defined in the ie13/15" in { // TODO implementation will be updated so test might change
+        s"when $NationalityPage defined in the ie13/15" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, answers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
-              val result = helper.nationality.get
+              val code = answers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.head.nationality).get
+              when(refDataService.getNationality(any())(any())).thenReturn(Future.successful(Nationality(code, "description")))
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
+              whenReady(helper.nationality) {
+                optionResult =>
+                  val result = optionResult.get
 
-              result.key.value mustBe s"Registered country"
-              result.value.value mustBe " - FR" // TODO this should change when we start using ref data
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "registered country for the border means of transport"
-              action.id mustBe "change-nationality"
+                  result.key.value mustBe s"Registered country"
+                  result.value.value mustBe s"description - $code"
+                  val actions = result.actions.get.items
+                  actions.size mustBe 1
+                  val action = actions.head
+                  action.content.value mustBe "Change"
+                  action.href mustBe controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, activeIndex).url
+                  action.visuallyHiddenText.get mustBe "registered country for the border means of transport"
+                  action.id mustBe "change-nationality"
+              }
           }
         }
       }
@@ -260,9 +285,9 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val noCustomsOfficeUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noCustomsOfficeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(noCustomsOfficeUserAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.customsOffice
-              result mustBe None
+              result.futureValue mustBe None
           }
         }
       }
@@ -273,37 +298,51 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             (mode, customsOffice) =>
               val answers = emptyUserAnswers
                 .setValue(CustomsOfficeActiveBorderPage(activeIndex), customsOffice)
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              val result = helper.customsOffice.get
+              whenReady(helper.customsOffice) {
+                optionResult =>
+                  val result = optionResult.get
 
-              result.key.value mustBe s"Customs office"
-              result.value.value mustBe customsOffice.toString
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "customs office for the border means of transport"
-              action.id mustBe "change-customs-office"
+                  result.key.value mustBe s"Customs office"
+                  result.value.value mustBe customsOffice.toString
+                  val actions = result.actions.get.items
+                  actions.size mustBe 1
+                  val action = actions.head
+                  action.content.value mustBe "Change"
+                  action.href mustBe controllers.transport.border.active.routes.CustomsOfficeActiveBorderController
+                    .onPageLoad(departureId, mode, activeIndex)
+                    .url
+                  action.visuallyHiddenText.get mustBe "customs office for the border means of transport"
+                  action.id mustBe "change-customs-office"
+              }
           }
         }
 
-        s"when $CustomsOfficeActiveBorderPage defined in the ie13/15" in { // TODO implementation will be updated so test might change
+        s"when $CustomsOfficeActiveBorderPage defined in the ie13/15" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, answers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
-              val result = helper.customsOffice.get
+              val customOfficeId = answers.departureData.Consignment.ActiveBorderTransportMeans.get.head.customsOfficeAtBorderReferenceNumber.get
+              when(refDataService.getCustomsOffice(any())(any())(any()))
+                .thenReturn(Future.successful(CustomsOffice(customOfficeId, "description", None)))
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              result.key.value mustBe s"Customs office"
-              result.value.value mustBe " (GB000028)"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "customs office for the border means of transport"
-              action.id mustBe "change-customs-office"
+              whenReady(helper.customsOffice) {
+                optionResult =>
+                  val result = optionResult.get
+
+                  result.key.value mustBe s"Customs office"
+                  result.value.value mustBe "description (GB000028)"
+                  val actions = result.actions.get.items
+                  actions.size mustBe 1
+                  val action = actions.head
+                  action.content.value mustBe "Change"
+                  action.href mustBe controllers.transport.border.active.routes.CustomsOfficeActiveBorderController
+                    .onPageLoad(departureId, mode, activeIndex)
+                    .url
+                  action.visuallyHiddenText.get mustBe "customs office for the border means of transport"
+                  action.id mustBe "change-customs-office"
+              }
           }
         }
       }
@@ -317,7 +356,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               mode =>
                 val noConveyanceReferenceUserAnswers =
                   UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                val helper = new ActiveBorderTransportMeansAnswersHelper(noConveyanceReferenceUserAnswers, departureId, mode, activeIndex)
+                val helper = new ActiveBorderTransportMeansAnswersHelper(noConveyanceReferenceUserAnswers, departureId, refDataService, mode, activeIndex)
                 val result = helper.conveyanceReferenceNumberYesNo
                 result mustBe None
             }
@@ -330,7 +369,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               mode =>
                 val answers = emptyUserAnswers
                   .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
-                val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+                val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
                 val result = helper.conveyanceReferenceNumberYesNo.get
 
@@ -363,7 +402,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                   )
                 )
 
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noConveyanceReferenceNumberUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(noConveyanceReferenceNumberUserAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.conveyanceReferenceNumberYesNo.get
 
               result.key.value mustBe "Do you want to add a conveyance reference number?"
@@ -382,7 +421,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         "must return Yes when conveyanceReferenceNumber has been answered" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, userAnswers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.conveyanceReferenceNumberYesNo.get
 
               result.key.value mustBe "Do you want to add a conveyance reference number?"
@@ -407,7 +446,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val noIdentificationTypeUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.conveyanceReferenceNumber
               result mustBe None
           }
@@ -420,7 +459,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             (mode, conveyanceReferenceNumber) =>
               val answers = emptyUserAnswers
                 .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceReferenceNumber)
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
               val result = helper.conveyanceReferenceNumber.get
 
@@ -439,7 +478,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $IdentificationNumberPage defined in the ie13/15" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, answers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
               val result = helper.conveyanceReferenceNumber.get
 
               result.key.value mustBe s"Conveyance reference number"

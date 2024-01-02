@@ -36,7 +36,7 @@ object PresentationNotificationAnswersViewModel {
   class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
     val config: FrontendAppConfig,
     activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider,
-    checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService
+    cyaRefDataService: CheckYourAnswersReferenceDataService
   ) {
 
     // scalastyle:off method.length
@@ -47,9 +47,9 @@ object PresentationNotificationAnswersViewModel {
     ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
-      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode)
-      val activeBorderHelper    = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0))
+      val helper                = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val locationOfGoodsHelper = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val activeBorderHelper    = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
 
       val firstSection = Section(
         rows = Seq(
@@ -69,33 +69,38 @@ object PresentationNotificationAnswersViewModel {
         ).flatten
       )
 
-      val activeBorderTransportMeansSection: Seq[Section] = {
+      val activeBorderTransportMeansSectionFuture: Future[Seq[Section]] = {
         (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
           case (None, false) =>
-            Section(sectionTitle = messages("checkYourAnswers.transportMeans.active.withoutIndex"),
-                    rows = Seq(activeBorderHelper.addBorderMeansOfTransportYesNo).flatten
-            ).toSeq
+            Future.successful(
+              Section(sectionTitle = messages("checkYourAnswers.transportMeans.active.withoutIndex"),
+                      rows = Seq(activeBorderHelper.addBorderMeansOfTransportYesNo).flatten
+              ).toSeq
+            )
           case _ =>
-            userAnswers
-              .get(BorderActiveListSection)
-              .getOrElse(
-                userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
-                  case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
-                  case None                             => JsArray()
+            Future.sequence(
+              userAnswers
+                .get(BorderActiveListSection)
+                .getOrElse(
+                  userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
+                    case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
+                    case None                             => JsArray()
+                  }
+                )
+                .value
+                .zipWithIndex
+                .map {
+                  case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, cyaRefDataService, mode, Index(i)).map(_.section)
                 }
-              )
-              .value
-              .zipWithIndex
-              .flatMap {
-                case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, mode, Index(i)).sections
-              }
-              .toSeq
+                .toSeq
+            )
         }
       }
 
       for {
-        borderSection   <- helper.borderModeSection
-        locationOfGoods <- locationOfGoodsHelper.locationOfGoodsSection
+        borderSection                     <- helper.borderModeSection
+        locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
+        activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
           firstSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)
