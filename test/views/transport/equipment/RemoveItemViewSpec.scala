@@ -45,5 +45,5 @@ class RemoveItemViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems(args = Seq(equipmentIdNumber))
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }
