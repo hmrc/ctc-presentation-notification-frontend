@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.{Mode, SelectableList}
+import models.Mode
 import models.reference.CustomsOffice
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.CustomsOfficeIdentifierPage

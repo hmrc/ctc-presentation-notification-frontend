@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package models.messages
+package pages
 
-import models.DynamicAddress
-import play.api.libs.json.{Json, OFormat}
+import pages.behaviours.PageBehaviours
 
-case class Address(
-  streetAndNumber: String,
-  postcode: Option[String],
-  city: String,
-  country: String
-) {
+class AddRepresentativeYesNoPageSpec extends PageBehaviours {
 
-  def toDynamicAddress: DynamicAddress = DynamicAddress(
-    numberAndStreet = streetAndNumber,
-    city = city,
-    postalCode = postcode
-  )
-}
+  //TODO: Add tests for AddRepresentativeYesNoPage cleanup
+  "AddRepresentativeYesNoPage" - {
 
-object Address {
-  implicit val format: OFormat[Address] = Json.format[Address]
+    beRetrievable[Boolean](AddRepresentativeYesNoPage)
+
+    beSettable[Boolean](AddRepresentativeYesNoPage)
+
+    beRemovable[Boolean](AddRepresentativeYesNoPage)
+  }
 }
