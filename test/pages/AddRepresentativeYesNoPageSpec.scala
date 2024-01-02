@@ -20,6 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class AddRepresentativeYesNoPageSpec extends PageBehaviours {
 
+  //TODO: Add tests for AddRepresentativeYesNoPage cleanup
   "AddRepresentativeYesNoPage" - {
 
     beRetrievable[Boolean](AddRepresentativeYesNoPage)
@@ -27,7 +28,5 @@ class AddRepresentativeYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddRepresentativeYesNoPage)
 
     beRemovable[Boolean](AddRepresentativeYesNoPage)
-
-//    "cleanup" - {}
   }
 }
