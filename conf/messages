@@ -484,12 +484,12 @@ transport.equipment.removeItem.heading = Are you sure you want to remove this it
 transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
 
-addRepresentativeYesNo.title = Do you want to add your details?
-addRepresentativeYesNo.heading = Do you want to add your details?
-addRepresentativeYesNo.paragraph = This includes your name and phone number for if Customs have any queries.
-addRepresentativeYesNo.checkYourAnswersLabel = Do you want to add your details?
-addRepresentativeYesNo.change.hidden = if you want to add your details
-addRepresentativeYesNo.error.required = Select yes if you want to add your details
+addRepresentativeContactDetailsYesNo.title = Do you want to add your details?
+addRepresentativeContactDetailsYesNo.heading = Do you want to add your details?
+addRepresentativeContactDetailsYesNo.paragraph = This includes your name and phone number for if Customs have any queries.
+addRepresentativeContactDetailsYesNo.checkYourAnswersLabel = Do you want to add your details?
+addRepresentativeContactDetailsYesNo.change.hidden = if you want to add your details
+addRepresentativeContactDetailsYesNo.error.required = Select yes if you want to add your details
 
 checkYourAnswers.transitHolder = Transit holder
 transitHolder.eoriYesNo.checkYourAnswersLabel = Do you know the transit holder’s EORI number?
@@ -498,6 +498,15 @@ transitHolder.tirIdentification.checkYourAnswersLabel = TIR holder’s identific
 transitHolder.name.checkYourAnswersLabel = Transit holder’s name
 transitHolder.country.checkYourAnswersLabel = Transit holder’s country
 transitHolder.address.checkYourAnswersLabel = Transit holder’s address
+
+representative.name.title = What is your name?
+representative.name.heading = What is your name?
+representative.name.checkYourAnswersLabel = Name
+representative.name.paragraph = This is additional contact information for if Customs have any queries.
+representative.name.error.required = Enter your name
+representative.name.error.length = Your name must be {0} characters or less
+representative.name.error.invalid = Your name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+representative.name.change.hidden = representative’s name
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers

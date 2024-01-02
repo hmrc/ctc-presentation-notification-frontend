@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.representative
 
 import pages.behaviours.PageBehaviours
 
-class AddRepresentativeYesNoPageSpec extends PageBehaviours {
+class NamePageSpec extends PageBehaviours {
 
-  //TODO: Add tests for AddRepresentativeYesNoPage cleanup
-  "AddRepresentativeYesNoPage" - {
+  "RepresentativeNamePage" - {
 
-    beRetrievable[Boolean](AddRepresentativeYesNoPage)
+    beRetrievable[String](NamePage)
 
-    beSettable[Boolean](AddRepresentativeYesNoPage)
+    beSettable[String](NamePage)
 
-    beRemovable[Boolean](AddRepresentativeYesNoPage)
+    beRemovable[String](NamePage)
   }
 }

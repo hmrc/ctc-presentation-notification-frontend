@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.representative
 
-import controllers.routes
 import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.representative.RepresentativeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddRepresentativeYesNoPage extends QuestionPage[Boolean] {
+case object NamePage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = RepresentativeSection.path \ toString
 
-  override def toString: String = "addRepresentativeYesNo"
+  override def toString: String = "name"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddRepresentativeYesNoController.onPageLoad(departureId, mode))
-
+    Some(controllers.representative.routes.NameController.onPageLoad(departureId, mode))
 }
