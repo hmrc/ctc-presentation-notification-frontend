@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import models.reference.TransportMode.BorderMode
 import models.reference._
 import models.reference.transport.border.active.Identification
 import models.{LocationOfGoodsIdentification, LocationType}
@@ -145,6 +146,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
 
     http.GET[Seq[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  }
+
+  def getBorderModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[BorderMode]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[BorderMode]](url, headers = version2Header)
   }
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
