@@ -488,3 +488,12 @@ traderDetails.actingRepresentative.checkYourAnswersLabel = Are you acting as a r
 traderDetails.actingRepresentative.error.required = Select yes if you are acting as a representative
 traderDetails.actingRepresentative.paragraph = This means moving the goods for someone else or completing the declaration on behalf of a transit holder.
 traderDetails.actingRepresentative.change.hidden = if you are acting as a representative
+
+traderDetails.representative.representativeTelephoneNumber.heading = What is your phone number?
+traderDetails.representative.representativeTelephoneNumber.title = What is your phone number?
+traderDetails.representative.representativeTelephoneNumber.hint = Include the country code, for example +44 808 157 0192.
+traderDetails.representative.representativeTelephoneNumber.error.invalidCharacters = Your phone number must only include numbers 0 to 9 and a plus sign
+traderDetails.representative.representativeTelephoneNumber.error.invalidFormat = Enter your phone number in the right format
+traderDetails.representative.representativeTelephoneNumber.error.maxLength = Your phone number must be 35 characters or less
+traderDetails.representative.representativeTelephoneNumber.error.minLength = Your phone number must be 6 characters or more
+traderDetails.representative.representativeTelephoneNumber.error.required = Enter your phone number
