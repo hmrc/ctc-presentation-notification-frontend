@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.houseConsignment
 
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class AddPlaceOfLoadingYesNoPageSpec extends PageBehaviours {
+case object HouseConsignmentSection extends Section[JsObject] {
 
-  "AddPlaceOfLoadingYesNoPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](AddPlaceOfLoadingYesNoPage)
-
-    beSettable[Boolean](AddPlaceOfLoadingYesNoPage)
-
-    beRemovable[Boolean](AddPlaceOfLoadingYesNoPage)
-
-//    "cleanup" - {} // TODO Add cleanup logic test
-  }
+  override def toString: String = "houseConsignment"
 }
