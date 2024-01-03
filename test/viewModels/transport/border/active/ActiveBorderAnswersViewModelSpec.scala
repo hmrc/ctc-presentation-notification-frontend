@@ -20,8 +20,9 @@ import base.TestMessageData.{consignment, jsonValue, transitOperation}
 import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models.messages.MessageData
+import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
-import models.reference.{BorderMode, CustomsOffice, Nationality}
+import models.reference.{CustomsOffice, Nationality}
 import models.{Index, Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

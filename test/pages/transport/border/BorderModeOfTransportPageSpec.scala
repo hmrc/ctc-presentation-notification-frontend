@@ -16,7 +16,7 @@
 
 package pages.transport.border
 
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import pages.behaviours.PageBehaviours
 
 class BorderModeOfTransportPageSpec extends PageBehaviours {

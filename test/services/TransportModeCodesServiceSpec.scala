@@ -17,8 +17,9 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
-import models.reference.BorderMode
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -50,13 +51,39 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val borderMode8 = BorderMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted border modes" in {
-        when(mockRefDataConnector.getBorderModeCodes()(any(), any()))
-          .thenReturn(Future.successful(Seq(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
+        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any()))
+          .thenReturn(
+            Future.successful(NonEmptyList(borderMode1, List(borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
+          )
 
         service.getBorderModes().futureValue mustBe
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
-        verify(mockRefDataConnector).getBorderModeCodes()(any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any())
+      }
+    }
+
+    "getInlandModeCodes" - {
+
+      val inlandMode1 = InlandMode("8", "Inland waterway")
+      val inlandMode2 = InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
+      val inlandMode3 = InlandMode("5", "Mail (active mode of transport unknown)")
+      val inlandMode4 = InlandMode("4", "Air")
+      val inlandMode5 = InlandMode("3", "Road")
+      val inlandMode6 = InlandMode("2", "Rail")
+      val inlandMode7 = InlandMode("1", "Maritime")
+      val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
+
+      "must return the agreed list of sorted inland modes" in {
+        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any()))
+          .thenReturn(
+            Future.successful(NonEmptyList(inlandMode1, List(inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
+          )
+
+        service.getInlandModes().futureValue mustBe
+          Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
+
+        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any())
       }
     }
   }

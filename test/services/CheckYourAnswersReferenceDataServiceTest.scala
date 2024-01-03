@@ -17,11 +17,12 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
 import models.reference.Nationality
 import models.reference.transport.border.active.Identification
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,25 +39,25 @@ class CheckYourAnswersReferenceDataServiceTest extends SpecBase with BeforeAndAf
   "CheckYourAnswersReferenceDataService should" - {
 
     "getBorderMeansIdentification" in {
-      val identification1 = Identification("code1", "description")
-      val identification2 = Identification("code2", "description")
-      val identifications = Seq(identification1, identification2)
+      val identification = Identification("code", "description")
 
-      when(connector.getMeansOfTransportIdentificationTypesActive()(any(), any())).thenReturn(Future.successful(identifications))
+      when(connector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
+        .thenReturn(Future.successful(NonEmptyList(identification, Nil)))
 
-      service.getBorderMeansIdentification("code1").futureValue mustBe identification1
-      an[Exception] mustBe thrownBy(service.getBorderMeansIdentification("code3").futureValue)
+      service.getBorderMeansIdentification("code").futureValue mustBe identification
+
+      verify(connector).getMeansOfTransportIdentificationTypeActive(eqTo("code"))(any(), any())
     }
 
     "getNationality" in {
-      val nationality1  = Nationality("code1", "description")
-      val nationality2  = Nationality("code2", "description")
-      val nationalities = Seq(nationality1, nationality2)
+      val nationality = Nationality("code", "description")
 
-      when(connector.getNationalities()(any(), any())).thenReturn(Future.successful(nationalities))
+      when(connector.getNationality(any())(any(), any()))
+        .thenReturn(Future.successful(NonEmptyList(nationality, Nil)))
 
-      service.getNationality("code1").futureValue mustBe nationality1
-      an[Exception] mustBe thrownBy(service.getBorderMeansIdentification("code3").futureValue)
+      service.getNationality("code").futureValue mustBe nationality
+
+      verify(connector).getNationality(eqTo("code"))(any(), any())
     }
   }
 }

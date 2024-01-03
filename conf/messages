@@ -298,9 +298,11 @@ transport.limit.date.caption = Estimated arrival date
 transport.limit.date.checkYourAnswersLabel = Estimated arrival date at the office of destination
 transport.limit.date.change.hidden =  estimated arrival date at the office of destination
 transport.limit.date.error.required.all = Enter the estimated arrival date at the office of destination
-transport.limit.date.error.required.two = The arrival date must include a {0} and {1}
+transport.limit.date.error.required.multiple = The arrival date must include a {0} and {1}
 transport.limit.date.error.required = The arrival date must include a {0}
-transport.limit.date.error.invalid = Enter a real arrival date at the office of destination
+transport.limit.date.error.invalid.all = The arrival date must only include numbers 0 to 9
+transport.limit.date.error.invalid.multiple = The arrival date {0} and {1} must only include numbers 0 to 9
+transport.limit.date.error.invalid = The arrival date {0} must only include numbers 0 to 9
 transport.limit.date.error.min.date = The arrival date must be today or in the future
 transport.limit.date.error.max.date = The arrival date must be before {0}
 
@@ -484,6 +486,18 @@ transport.equipment.removeItem.heading = Are you sure you want to remove this it
 transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
 
+transport.addInlandModeOfTransport.caption = Inland mode of transport
+transport.addInlandModeOfTransport.heading = Do you want to add an inland mode of transport?
+transport.addInlandModeOfTransport.title = Do you want to add an inland mode of transport?
+transport.addInlandModeOfTransport.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
+transport.addInlandModeOfTransport.no = No - the goods are already at the port or airport
+transport.addInlandModeOfTransport.error.required = Select yes if you want to add an inland mode of transport
+
+transport.inlandModeOfTransport.heading = Which inland mode of transport are you using?
+transport.inlandModeOfTransport.caption = Transport details - Inland mode of transport
+transport.inlandModeOfTransport.title = Which inland mode of transport are you using?
+transport.inlandModeOfTransport.error.required = Select which inland mode of transport you’re using
+
 addRepresentativeContactDetailsYesNo.title = Do you want to add your details?
 addRepresentativeContactDetailsYesNo.heading = Do you want to add your details?
 addRepresentativeContactDetailsYesNo.paragraph = This includes your name and phone number for if Customs have any queries.
@@ -513,3 +527,11 @@ checkYourAnswers.heading = Check your answers
 checkYourAnswers.paragraph1 = The information below combines parts of your initial declaration with the answers you just provided. Check this and confirm whether the details are still correct.
 checkYourAnswers.subHeading = Send this information for your departure declaration
 checkYourAnswers.paragraph2 = By sending this, you are confirming that these details are correct to the best of your knowledge.
+
+traderDetails.representative.caption = Representative
+traderDetails.actingRepresentative.title = Are you acting as a representative?
+traderDetails.actingRepresentative.heading = Are you acting as a representative?
+traderDetails.actingRepresentative.checkYourAnswersLabel = Are you acting as a representative?
+traderDetails.actingRepresentative.error.required = Select yes if you are acting as a representative
+traderDetails.actingRepresentative.paragraph = This means moving the goods for someone else or completing the declaration on behalf of a transit holder.
+traderDetails.actingRepresentative.change.hidden = if you are acting as a representative

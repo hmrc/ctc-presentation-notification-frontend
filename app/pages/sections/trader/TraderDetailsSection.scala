@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+package pages.sections.trader
 
-package object viewModels {
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-  implicit class RichSummaryListRowOption(row: Option[SummaryListRow]) {
+case object TraderDetailsSection extends Section[JsObject] {
 
-    def toSection: Section = Section(Seq(row).flatten)
-  }
+  override def path: JsPath = JsPath \ toString
 
-  implicit class RichSection(section: Section) {
-
-    def toSeq: Seq[Section] = Seq(section)
-  }
-
+  override def toString: String = "traderDetails"
 }

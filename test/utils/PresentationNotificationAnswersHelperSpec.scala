@@ -18,9 +18,11 @@ package utils
 
 import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import models.messages.MessageData
-import models.reference.{BorderMode, CustomsOffice}
+import models.reference.CustomsOffice
+import models.reference.TransportMode.BorderMode
 import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -32,7 +34,6 @@ import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
-import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
 
 import java.time.{Instant, LocalDate}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -233,10 +234,8 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
           forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
-              val referenceDataNotFoundException =
-                new ReferenceDataNotFoundException(refName = "borderMode", refDataCode = borderModeOfTransport.code, listRefData = Nil)
               when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
-                Future.failed(referenceDataNotFoundException)
+                Future.failed(new NoReferenceDataFoundException)
               )
 
               val answers =
@@ -250,7 +249,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               val result = helper.borderModeSection
 
               whenReady[Throwable, Assertion](result.failed) {
-                _ mustBe referenceDataNotFoundException
+                _ mustBe a[NoReferenceDataFoundException]
               }
 
           }

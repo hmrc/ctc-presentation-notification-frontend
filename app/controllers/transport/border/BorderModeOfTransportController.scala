@@ -19,7 +19,7 @@ package controllers.transport.border
 import controllers.actions._
 import forms.EnumerableFormProvider
 import models.Mode
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
 import pages.QuestionPage
