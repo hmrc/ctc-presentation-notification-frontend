@@ -21,9 +21,9 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.reference.BorderMode
-import models.reference.transport.border.active.Identification
 import models.{NormalMode, UserAnswers}
+import models.reference.TransportMode.BorderMode
+import models.reference.transport.border.active.Identification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

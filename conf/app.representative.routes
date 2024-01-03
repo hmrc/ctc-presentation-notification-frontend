@@ -7,3 +7,13 @@ GET        /name/:departureId                         controllers.representative
 POST       /name/:departureId                         controllers.representative.NameController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /change-name/:departureId                  controllers.representative.NameController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /change-name/:departureId                  controllers.representative.NameController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /representative/acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /representative/acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /representative/change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /representative/change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /representative/phone-number/:departureId                 controllers.representative.RepresentativePhoneNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /representative/phone-number/:departureId                 controllers.representative.RepresentativePhoneNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /representative/change-phone-number/:departureId          controllers.representative.RepresentativePhoneNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /representative/change-phone-number/:departureId          controllers.representative.RepresentativePhoneNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)

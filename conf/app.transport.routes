@@ -10,3 +10,13 @@ GET        /containers/mandatory/:departureId                             contro
 POST       /containers/mandatory/:departureId                             controllers.transport.ContainerIndicatorController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /containers/change-mandatory/:departureId                      controllers.transport.ContainerIndicatorController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /containers/change-mandatory/:departureId                      controllers.transport.ContainerIndicatorController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /inland-mode-of-transport/add/:departureId                     controllers.transport.AddInlandModeOfTransportYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /inland-mode-of-transport/add/:departureId                     controllers.transport.AddInlandModeOfTransportYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /inland-mode-of-transport/change-add/:departureId              controllers.transport.AddInlandModeOfTransportYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /inland-mode-of-transport/change-add/:departureId              controllers.transport.AddInlandModeOfTransportYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /inland-mode-of-transport/:departureId                         controllers.transport.InlandModeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /inland-mode-of-transport/:departureId                         controllers.transport.InlandModeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /change-inland-mode-of-transport/:departureId                  controllers.transport.InlandModeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-inland-mode-of-transport/:departureId                  controllers.transport.InlandModeController.onSubmit(departureId: String, mode: Mode = CheckMode)
