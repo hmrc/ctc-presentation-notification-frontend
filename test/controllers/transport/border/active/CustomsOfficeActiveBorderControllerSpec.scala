@@ -16,12 +16,14 @@
 
 package controllers.transport.border.active
 
+import base.TestMessageData.activeBorderTransportMeans
+import base.TestMessageData.messageData.customsOffices
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared}
 import models.reference.CustomsOffice
-import models.{NormalMode, SelectableList}
+import models.{NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -87,12 +89,39 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customsOffices))(any()))
         .thenReturn(Future.successful(customOfficeList))
 
       val userAnswers = updatedUserAnswers
         .setValue(CustomsOfficeActiveBorderPage(index), destinationOffice)
 
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, customsOfficeActiveBorderRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> destinationOffice.id))
+
+      val view = injector.instanceOf[CustomsOfficeActiveBorderView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, customOfficeList, mode, index)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
+        .thenReturn(Future.successful(customOfficeList))
+
+      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
+        Option(
+          Seq(
+            activeBorderTransportMeans.head.copy(customsOfficeAtBorderReferenceNumber = Some(destinationOffice.id))
+          )
+        )
+      )(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, customsOfficeActiveBorderRoute)
