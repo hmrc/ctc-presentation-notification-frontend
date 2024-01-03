@@ -32,8 +32,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.libs.json.Json
-import services.CheckYourAnswersReferenceDataService
-import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
+import services.{CheckYourAnswersReferenceDataService, ReferenceDataNotFoundException}
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global

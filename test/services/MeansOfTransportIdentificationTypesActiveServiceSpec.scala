@@ -131,5 +131,15 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         }
       }
     }
+    "getBorderMeansIdentification" in {
+      val identification1 = Identification("code1", "description")
+      val identification2 = Identification("code2", "description")
+      val identifications = Seq(identification1, identification2)
+
+      when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any())).thenReturn(Future.successful(identifications))
+
+      service.getBorderMeansIdentification("code1").futureValue mustBe identification1
+      an[Exception] mustBe thrownBy(service.getBorderMeansIdentification("code3").futureValue)
+    }
   }
 }
