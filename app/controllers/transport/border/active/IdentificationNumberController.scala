@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
 import models.reference.transport.border.active.Identification
 import models.{Index, Mode}
-import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
+import models.requests.{DataRequest, MandatoryDataRequest, SpecificDataRequestProvider1}
 import navigation.BorderNavigator
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -105,21 +105,21 @@ class IdentificationNumberController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(IdentificationNumberPage(activeIndex), updatedAnswers, departureId, mode))
 
-  private def identificationPageIe170(activeIndex: Index)(implicit request: MandatoryDataRequest[_]): Option[Identification] =
+  private def identificationPageIe170(activeIndex: Index)(implicit request: DataRequest[_]): Option[Identification] =
     request.userAnswers.get(IdentificationPage(activeIndex))
 
-  private def identificationPageIe015(activeIndex: Index)(implicit request: MandatoryDataRequest[_]): Option[String] =
+  private def identificationPageIe015(activeIndex: Index)(implicit request: DataRequest[_]): Option[String] =
     request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
       x => x.lift(activeIndex.position).flatMap(_.typeOfIdentification)
     )
 
-  private def getReferenceDataFor15(activeIndex: Index)(implicit request: MandatoryDataRequest[_]): Option[Future[Identification]] =
+  private def getReferenceDataFor15(activeIndex: Index)(implicit request: DataRequest[_]): Option[Future[Identification]] =
     identificationPageIe015(activeIndex).map {
-      aaa =>
-        service.getBorderMeansIdentification(aaa)(hc(request.request))
+      str =>
+        service.getBorderMeansIdentification(str)
     }
 
-  private def getIdentification(activeIndex: Index)(implicit request: MandatoryDataRequest[_]): Future[Option[Identification]] = identificationPageIe170(
+  private def getIdentification(activeIndex: Index)(implicit request: DataRequest[_]): Future[Option[Identification]] = identificationPageIe170(
     activeIndex
   ) match {
     case Some(value) => Future.successful(Some(value))
