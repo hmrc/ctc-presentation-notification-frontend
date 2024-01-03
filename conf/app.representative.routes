@@ -1,8 +1,3 @@
-GET        /acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = CheckMode)
-
 GET        /add-details/:departureId                  controllers.representative.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /add-details/:departureId                  controllers.representative.AddRepresentativeContactDetailsYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /change-add-details/:departureId           controllers.representative.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
@@ -12,3 +7,13 @@ GET        /name/:departureId                         controllers.representative
 POST       /name/:departureId                         controllers.representative.NameController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /change-name/:departureId                  controllers.representative.NameController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /change-name/:departureId                  controllers.representative.NameController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /acting/:departureId                       controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-acting/:departureId                controllers.representative.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /phone-number/:departureId                 controllers.representative.RepresentativePhoneNumberController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /phone-number/:departureId                 controllers.representative.RepresentativePhoneNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /change-phone-number/:departureId          controllers.representative.RepresentativePhoneNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /change-phone-number/:departureId          controllers.representative.RepresentativePhoneNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
