@@ -37,4 +37,3 @@ GET        /:departureId                                                      co
 
 GET        /check-answers/:departureId                                        controllers.CheckYourAnswersController.onPageLoad(departureId: String)
 POST       /check-answers/:departureId                                        controllers.CheckYourAnswersController.onSubmit(departureId: String)
-

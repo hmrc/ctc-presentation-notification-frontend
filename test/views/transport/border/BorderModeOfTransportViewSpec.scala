@@ -18,7 +18,7 @@ package views.transport.border
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
