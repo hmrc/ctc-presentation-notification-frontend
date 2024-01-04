@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package views.transport.border
+package views.transport.border.active
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.reference.TransportMode.BorderMode
+import models.reference.transport.border.active.Identification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.EnumerableViewBehaviours
-import views.html.transport.border.BorderModeOfTransportView
+import views.html.transport.border.active.IdentificationView
 
-class BorderModeOfTransportViewSpec extends EnumerableViewBehaviours[BorderMode] {
+class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
 
-  override def form: Form[BorderMode] = new EnumerableFormProvider()(prefix, values)
+  override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
 
-  override def applyView(form: Form[BorderMode]): HtmlFormat.Appendable =
-    injector.instanceOf[BorderModeOfTransportView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
+    injector.instanceOf[IdentificationView].apply(form, departureId, values, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "transport.border.borderModeOfTransport"
+  override val prefix: String = "transport.border.active.identification"
 
-  override def radioItems(fieldId: String, checkedValue: Option[BorderMode] = None): Seq[RadioItem] =
+  override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[BorderMode] = Seq(
-    BorderMode("1", "Maritime"),
-    BorderMode("2", "Rail")
+  override def values: Seq[Identification] = Seq(
+    Identification("80", "European vessel identification number (ENI Code)"),
+    Identification("81", "Name of an inland waterways vehicle")
   )
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Border mode of transport")
+  behave like pageWithSectionCaption("Border means of transport")
 
   behave like pageWithHeading()
 

@@ -55,5 +55,5 @@ class LimitDateViewSpec extends DateInputViewBehaviours {
 
   behave like pageWithDateInput()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

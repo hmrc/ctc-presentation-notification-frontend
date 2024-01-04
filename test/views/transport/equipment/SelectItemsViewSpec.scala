@@ -48,5 +48,5 @@ class SelectItemsViewSpec extends InputSelectViewBehaviours[Item] {
 
   behave like pageWithSelect()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

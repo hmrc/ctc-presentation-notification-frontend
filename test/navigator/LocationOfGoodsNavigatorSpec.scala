@@ -389,7 +389,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
 
       "must go from MoreInformationPage to ContainerIdentificationNumberPage " +
-        "when user hits 'Save and Continue', " +
+        "when user hits 'Continue', " +
         "consignment contains LocationOfGoods, " +
         "Security is NoSecurityDetails, " +
         "Container Indicator is true" in {
@@ -640,7 +640,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
 
       "must go from CustomsOfficeIdentifierPage to ContainerIdentificationNumberPage " +
-        "when user hits 'Save and Continue', " +
+        "when user hits 'Continue', " +
         "consignment contains LocationOfGoods, " +
         "Security is NoSecurityDetails, " +
         "Container Indicator is true" in {

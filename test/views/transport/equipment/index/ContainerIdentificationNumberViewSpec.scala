@@ -48,5 +48,5 @@ class ContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[Stri
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }
