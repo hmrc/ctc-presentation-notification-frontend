@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package views.houseConsignment
+package views.houseConsignment.index
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.AddDepartureTransportMeansYesNoView
+import views.html.houseConsignment.index.AddDepartureTransportMeansYesNoView
 
 class AddDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
 

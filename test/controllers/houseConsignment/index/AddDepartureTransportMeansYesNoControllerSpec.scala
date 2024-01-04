@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment
+package controllers.houseConsignment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -26,7 +26,7 @@ import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.AddDepartureTransportMeansYesNoView
+import views.html.houseConsignment.index.AddDepartureTransportMeansYesNoView
 
 import scala.concurrent.Future
 
@@ -37,7 +37,7 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
   private val mode         = NormalMode
 
   private lazy val addDepartureTransportMeansRoute =
-    controllers.houseConsignment.routes.AddDepartureTransportMeansYesNoController.onPageLoad(departureId, mode).url
+    controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

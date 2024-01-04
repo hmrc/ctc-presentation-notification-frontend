@@ -26,7 +26,6 @@ import scala.util.control.Exception.nonFatalCatch
 trait Formatters {
 
   private[mappings] def stringFormatter(errorKey: String, args: Seq[Any] = Seq.empty): Formatter[String] = new Formatter[String] {
-    println(args)
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {

@@ -35,8 +35,6 @@ class EnumerableFormProvider @Inject() extends Mappings {
     )
   }
 
-  def apply[T <: Radioable[T]](prefix: String, values: Seq[T], args: Any*)(implicit et: Seq[T] => Enumerable[T]): Form[T] = {
-    println(args)
+  def apply[T <: Radioable[T]](prefix: String, values: Seq[T], args: Any*)(implicit et: Seq[T] => Enumerable[T]): Form[T] =
     apply(prefix, args)(et(values))
-  }
 }

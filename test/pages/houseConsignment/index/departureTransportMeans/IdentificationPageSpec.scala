@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment
+package pages.houseConsignment.index.departureTransportMeans
 
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
-import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 
-class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
+class IdentificationPageSpec extends PageBehaviours {
 
-  "AddDepartureTransportMeansYesNoPage" - {
+  "IdentificationPage" - {
 
-    beRetrievable[Boolean](AddDepartureTransportMeansYesNoPage)
+    beRetrievable[TransportMeansIdentification](IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
-    beSettable[Boolean](AddDepartureTransportMeansYesNoPage)
+    beSettable[TransportMeansIdentification](IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
-    beRemovable[Boolean](AddDepartureTransportMeansYesNoPage)
+    beRemovable[TransportMeansIdentification](IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
-    //    "cleanup" - {} // TODO Add cleanup logic test
   }
 }
