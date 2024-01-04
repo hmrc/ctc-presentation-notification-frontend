@@ -18,19 +18,17 @@ package controllers.transport.transportMeans
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.reference.transport.border.active.Identification
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.Mode
 import navigation.Navigator
-import pages.QuestionPage
-import pages.transport.border.active.IdentificationPage
+import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.transportMeans.TransportMeansIdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.MeansOfTransportIdentificationTypesService
+import services.TransportMeansIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.transportMeans.TransportMeansIdentificationView
 
@@ -45,7 +43,7 @@ class TransportMeansIdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationView,
-  service: MeansOfTransportIdentificationTypesService
+  service: TransportMeansIdentificationTypesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -57,7 +55,7 @@ class TransportMeansIdentificationController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes.flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           identifiers =>
             def identificationFromDepartureData = {
               val identificationCode = request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
@@ -81,7 +79,7 @@ class TransportMeansIdentificationController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes.flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           identificationTypeList =>
             form(identificationTypeList)
               .bindFromRequest()

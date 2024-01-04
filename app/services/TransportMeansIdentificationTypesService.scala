@@ -18,21 +18,32 @@ package services
 
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
-import models.Index
 import models.reference.TransportMode.BorderMode
-import models.reference.transport.border.active.Identification
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getMeansOfTransportIdentificationTypes(implicit
+  def getMeansOfTransportIdentificationTypes(borderModeOfTransport: Option[BorderMode])(implicit
     hc: HeaderCarrier
   ): Future[Seq[TransportMeansIdentification]] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypes().map(sort)
+    referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, borderModeOfTransport)).map(sort)
+
+  def filter(
+    transportMeansIdentificationsTypes: Seq[TransportMeansIdentification],
+    borderModeOfTransport: Option[BorderMode]
+  ): Seq[TransportMeansIdentification] = {
+
+    val identificationTypesExcludingUnknown = transportMeansIdentificationsTypes.filterNot(_.code == UnknownIdentification)
+
+    borderModeOfTransport match {
+      case Some(borderMode) => identificationTypesExcludingUnknown.filter(_.code.startsWith(borderMode.code))
+      case _                => identificationTypesExcludingUnknown
+    }
+  }
 
   private def sort(identificationTypes: Seq[TransportMeansIdentification]): Seq[TransportMeansIdentification] =
     identificationTypes.sortBy(_.code.toLowerCase)

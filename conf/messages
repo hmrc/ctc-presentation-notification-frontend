@@ -503,3 +503,8 @@ addDepartureTransportMeansYesNo.title = Do you want to add a departure means of 
 addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport?
 addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport
 addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+transport.transportMeans.subheading = Departure means of transport
+transport.transportMeans.heading = Which identification do you want to use for the departure means of transport?
+transport.transportMeans.title = Which identification do you want to use for the departure means of transport?
+transport.transportMeans.identification.error.required = Select which identification you want to use for the departure means of transport
