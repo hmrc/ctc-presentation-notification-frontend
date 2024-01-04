@@ -276,17 +276,17 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           List(CustomsOffice("GB2", "testName2", None))
         )
 
-        connector.getCustomsOfficesForId(id).futureValue mustBe expectedResult
+        connector.getCustomsOfficeForId(id).futureValue mustBe expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
         val id = "GB3"
-        checkNoReferenceDataFoundResponse(url(id), connector.getCustomsOfficesForId(id))
+        checkNoReferenceDataFoundResponse(url(id), connector.getCustomsOfficeForId(id))
       }
 
       "must return an exception when an error response is returned" in {
         val id = "GB1"
-        checkErrorResponse(url(id), connector.getCustomsOfficesForId(id))
+        checkErrorResponse(url(id), connector.getCustomsOfficeForId(id))
       }
     }
 

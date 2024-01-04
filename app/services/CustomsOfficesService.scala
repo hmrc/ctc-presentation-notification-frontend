@@ -40,7 +40,7 @@ class CustomsOfficesService @Inject() (
 
   def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[Option[CustomsOffice]] =
     referenceDataConnector
-      .getCustomsOfficesForId(id)
+      .getCustomsOfficeForId(id)
       .map(_.head)
       .map(Some(_))
       .recover {
@@ -52,7 +52,7 @@ class CustomsOfficesService @Inject() (
     ids.flatTraverse[Future, CustomsOffice] {
       customsOfficeId =>
         referenceDataConnector
-          .getCustomsOfficesForId(customsOfficeId)
+          .getCustomsOfficeForId(customsOfficeId)
           .map(_.toList)
           .recover {
             case _: NoReferenceDataFoundException => Nil

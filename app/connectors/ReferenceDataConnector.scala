@@ -64,12 +64,10 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptyList[CustomsOffice]] =
     getCustomsOfficesForCountryAndRole(countryCode, "DEP")
 
-  // TODO - the ID on its own should be sufficient
-  def getCustomsOfficeOfDepartureForCountry(
-    countryCode: String,
-    id: String
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptyList[CustomsOffice]] =
-    getCustomsOfficesForCountryAndRoleAndId(countryCode, "DEP", id)
+  def getCustomsOffice(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptyList[CustomsOffice]] = {
+    val queryParams = Seq("data.id" -> id)
+    getCustomsOffices(queryParams)
+  }
 
   def getCustomsSecurityAgreementAreaCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptyList[Country]] =
     getCountries("CountryCustomsSecurityAgreementArea")
@@ -172,38 +170,24 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       "data.roles.role" -> role.toUpperCase.trim
     )
 
-    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
-
-    http.GET[NonEmptyList[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    getCustomsOffices(queryParams)
   }
 
-  private def getCustomsOfficesForCountryAndRoleAndId(countryCode: String, role: String, id: String)(implicit
+  def getCustomsOfficeForId(id: String)(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier
   ): Future[NonEmptyList[CustomsOffice]] = {
 
-    val queryParams: Seq[(String, String)] = Seq(
-      "data.countryId"  -> countryCode,
-      "data.roles.role" -> role.toUpperCase.trim,
-      "data.id"         -> id
-    )
+    val queryParams: Seq[(String, String)] = Seq("data.id" -> id)
 
-    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
-
-    http.GET[NonEmptyList[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    getCustomsOffices(queryParams)
   }
 
-  def getCustomsOfficesForId(id: String)(implicit
+  private def getCustomsOffices(queryParams: Seq[(String, String)])(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier
   ): Future[NonEmptyList[CustomsOffice]] = {
-
-    val queryParams: Seq[(String, String)] = Seq(
-      "data.id" -> id
-    )
-
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
-
     http.GET[NonEmptyList[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
   }
 

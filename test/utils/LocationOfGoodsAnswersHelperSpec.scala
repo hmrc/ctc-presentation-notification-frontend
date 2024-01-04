@@ -1014,7 +1014,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             forAll(arbitrary[Mode], arbitrary[String]) {
               (mode, customsOfficeId) =>
-                when(mockReferenceDataService.getCustomsOffice(any())(any())(any())).thenReturn(
+                when(mockReferenceDataService.getCustomsOffice(any())(any())).thenReturn(
                   Future.failed(new NoReferenceDataFoundException)
                 )
                 val answers =
@@ -1042,7 +1042,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           "when customs office identifier defined in ie15" in {
             forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
               (mode, customsOffice) =>
-                when(mockReferenceDataService.getCustomsOffice(any())(any())(any())).thenReturn(Future.successful(customsOffice))
+                when(mockReferenceDataService.getCustomsOffice(any())(any())).thenReturn(Future.successful(customsOffice))
 
                 val ie015UserAnswers = UserAnswers(
                   departureId,
@@ -1114,7 +1114,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(Country(CountryCode("GB"), "United Kingdom")))
         when(mockReferenceDataService.getQualifierOfIdentification(any())(any()))
           .thenReturn(Future.successful(LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier")))
-        when(mockReferenceDataService.getCustomsOffice(any())(any())(any()))
+        when(mockReferenceDataService.getCustomsOffice(any())(any()))
           .thenReturn(Future.successful(CustomsOffice("id", "name", None)))
         forAll(arbitrary[Mode]) {
           mode =>

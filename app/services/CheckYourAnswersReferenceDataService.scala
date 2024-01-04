@@ -40,8 +40,8 @@ class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: Re
   def getNationality(code: String)(implicit hc: HeaderCarrier): Future[Nationality] =
     referenceDataConnector.getNationality(code).map(_.head)
 
-  def getCustomsOffice(countryCode: String)(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
-    referenceDataConnector.getCustomsOfficeOfDepartureForCountry(countryCode, id).map(_.head)
+  def getCustomsOffice(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
+    referenceDataConnector.getCustomsOffice(id).map(_.head)
 
   def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[BorderMode] =
     referenceDataConnector.getTransportModeCode[BorderMode](code).map(_.head)

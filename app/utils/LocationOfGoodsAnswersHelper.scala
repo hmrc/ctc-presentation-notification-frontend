@@ -222,7 +222,7 @@ class LocationOfGoodsAnswersHelper(
   def fetchCustomsOfficeIdentifierRow(implicit userAnswers: UserAnswers): Future[Option[SummaryListRow]] =
     fetchValue[CustomsOffice](
       CustomsOfficeIdentifierPage,
-      checkYourAnswersReferenceDataService.getCustomsOffice(userAnswers.departureData.countryOfDeparture),
+      checkYourAnswersReferenceDataService.getCustomsOffice,
       userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice.map(_.referenceNumber))
     ).map {
       _.map(
