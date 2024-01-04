@@ -18,12 +18,11 @@ package pages.sections.houseConsignment.departureTransportMeans
 
 import models.Index
 import pages.sections.Section
-import pages.sections.houseConsignment.HouseConsignmentSection
 import play.api.libs.json.{JsObject, JsPath}
 
 case class DepartureTransportMeansSection(houseConsignmentIndex: Index, departureTransportMeansIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ departureTransportMeansIndex.position
+  override def path: JsPath = DepartureTransportMeansListSection(houseConsignmentIndex).path \ departureTransportMeansIndex.position
 
   override def toString: String = "departureTransportMeans"
 }
