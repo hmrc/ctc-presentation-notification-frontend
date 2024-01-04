@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import repositories.SessionRepository
-import services.{CountriesService, CustomsOfficesService}
+import services.{CountriesService, CustomsOfficesService, NationalitiesService}
 
 import scala.concurrent.Future
 
@@ -46,6 +46,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   final val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
   final val mockCountriesService: CountriesService                       = mock[CountriesService]
   final val mockCustomsOfficeService: CustomsOfficesService              = mock[CustomsOfficesService]
+  final val mockNationalitiesService: NationalitiesService               = mock[NationalitiesService]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()

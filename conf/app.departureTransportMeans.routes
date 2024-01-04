@@ -1,4 +1,0 @@
-GET        /departure-means-of-transport/add/:departureId                     controllers.houseConsignment.AddDepartureTransportMeansYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
-POST       /departure-means-of-transport/add/:departureId                     controllers.houseConsignment.AddDepartureTransportMeansYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
-GET        /departure-means-of-transport/change-add/:departureId              controllers.houseConsignment.AddDepartureTransportMeansYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
-POST       /departure-means-of-transport/change-add/:departureId              controllers.houseConsignment.AddDepartureTransportMeansYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
