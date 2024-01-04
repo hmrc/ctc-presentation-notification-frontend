@@ -18,7 +18,6 @@ package services
 
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
-import models.Index
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import uk.gov.hmrc.http.HeaderCarrier
