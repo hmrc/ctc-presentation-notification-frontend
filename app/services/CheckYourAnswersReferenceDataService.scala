@@ -21,7 +21,7 @@ import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
 import models.{LocationOfGoodsIdentification, LocationType}
 import models.reference.{Country, CustomsOffice, Nationality}
-import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
+import services.ReferenceDataNotFoundException.referenceDataException
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -87,13 +87,4 @@ class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: Re
 
     } yield country
 
-  private def referenceDataException[T](refName: String, refDataCode: String, listRefData: Seq[T]) =
-    throw new ReferenceDataNotFoundException(refName, refDataCode, listRefData)
-
-}
-
-object CheckYourAnswersReferenceDataService {
-
-  class ReferenceDataNotFoundException[T](refName: String, refDataCode: String, listRefData: Seq[T])
-      extends Exception(s"Could not find the $refName code: '$refDataCode' from the available reference data: ${listRefData.mkString(", ")} ")
 }

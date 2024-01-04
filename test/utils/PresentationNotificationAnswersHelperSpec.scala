@@ -32,8 +32,7 @@ import pages.loading._
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
-import services.CheckYourAnswersReferenceDataService
-import services.CheckYourAnswersReferenceDataService.ReferenceDataNotFoundException
+import services.{CheckYourAnswersReferenceDataService, ReferenceDataNotFoundException}
 
 import java.time.{Instant, LocalDate}
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -21,6 +21,7 @@ import connectors.ReferenceDataConnector
 import models.Index
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
+import services.ReferenceDataNotFoundException.referenceDataException
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -32,6 +33,14 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
     hc: HeaderCarrier
   ): Future[Seq[Identification]] =
     referenceDataConnector.getMeansOfTransportIdentificationTypesActive().map(filter(_, index, borderModeOfTransport)).map(sort)
+
+  def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
+    for {
+      qualifiers <- referenceDataConnector.getMeansOfTransportIdentificationTypesActive()
+      qualifierFound = qualifiers
+        .find(_.code == code)
+        .getOrElse(referenceDataException("borderMeansIdentification", code, qualifiers))
+    } yield qualifierFound
 
   private def filter(
     identificationTypes: Seq[Identification],
