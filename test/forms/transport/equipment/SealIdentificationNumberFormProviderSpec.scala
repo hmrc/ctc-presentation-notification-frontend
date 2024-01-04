@@ -16,20 +16,20 @@
 
 package forms.transport.equipment
 
-import forms.Constants.maxSealIdentificationLength
+import forms.Constants.{maxNameLength, maxSealIdentificationLength}
 import forms.behaviours.StringFieldBehaviours
 import models.StringFieldRegex.alphaNumericWithSpacesRegex
 import org.scalacheck.Gen
-import play.api.data.{Field, FormError}
+import play.api.data.FormError
 
-class SealIdentificationNumberProviderSpec extends StringFieldBehaviours {
+class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix               = Gen.alphaNumStr.sample.value
   private val invalidCharactersKey = s"$prefix.error.invalid"
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.length"
   val duplicateKey                 = s"$prefix.error.duplicate"
-  private val maxLength            = 35
+  private val maxLength            = 20
 
   val form = new SealIdentificationNumberFormProvider()(prefix, Seq.empty)
 
@@ -38,6 +38,12 @@ class SealIdentificationNumberProviderSpec extends StringFieldBehaviours {
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldThatRemovesSpaces(
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
@@ -56,19 +62,12 @@ class SealIdentificationNumberProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind valid strings over max length" in {
-      val expectedError = FormError(fieldName, maxLengthKey, Seq(maxSealIdentificationLength))
-
-      val gen = for {
-        str <- stringsLongerThan(maxSealIdentificationLength, Gen.alphaNumChar)
-      } yield str
-
-      forAll(gen) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
+    )
 
     "must not bind if value exists in the list of other ids" in {
       val otherIds  = Seq("foo", "bar")

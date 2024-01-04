@@ -18,6 +18,7 @@ package forms.transport.equipment
 
 import forms.Constants.maxSealIdentificationLength
 import forms.mappings.Mappings
+import models.RichString
 import models.StringFieldRegex.alphaNumericWithSpacesRegex
 import play.api.data.Form
 
@@ -27,7 +28,7 @@ class SealIdentificationNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String, otherSealIdentificationNumbers: Seq[String]): Form[String] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericWithSpacesRegex, s"$prefix.error.invalid"),
