@@ -17,17 +17,18 @@
 package controllers.transport.transportMeans
 
 import controllers.actions._
-import forms.EnumerableFormProvider
+import forms.{EnumerableFormProvider, SelectableFormProvider}
 import models.Mode
+import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.{BorderNavigator, Navigator}
 import pages.transport.transportMeans.TransportMeansIdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.MeansOfTransportIdentificationTypesService
+import services.{MeansOfTransportIdentificationTypesService, NationalitiesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.transportMeans.TransportMeansIdentificationView
 
@@ -35,70 +36,66 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportMeansNationalityController @Inject()(
-  override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
-  actions: Actions,
-  formProvider: EnumerableFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: TransportMeansIdentificationView,
-  service: MeansOfTransportIdentificationTypesService
+                                                     override val messagesApi: MessagesApi,
+                                                     implicit val sessionRepository: SessionRepository,
+                                                     navigator: BorderNavigator,
+                                                     actions: Actions,
+                                                     formProvider: SelectableFormProvider,
+                                                     service: NationalitiesService,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     view: TransportMeansNationalityView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("transport.transportMeans.identification", identificationTypes)
+    formProvider[TransportMeansIdentification]("transport.transportMeans.nationality", nationality)
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId)
-    .async {
-      implicit request =>
-        service.getMeansOfTransportIdentificationTypes.flatMap {
-          identifiers =>
-            def identificationFromDepartureData = {
-              val identificationCode = request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
-                list => list.headOption.flatMap(_.typeOfIdentification)
-              )
-              identificationCode.flatMap(
-                code => identifiers.find(_.code == code)
-              )
-            }
+  def onPageLoad(departureId: String, mode: Mode,): Action[AnyContent] = actions.requireData(departureId).async {
+    implicit request =>
+      service.getNationalities().map {
+        nationalityList =>
+          def nationalityFromDepartureData = {
+            val nationalityCode = request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
+              list => list.headOption.flatMap(_.nationality)
+            )
 
-            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage).orElse(identificationFromDepartureData) match {
-              case None        => form(identifiers)
-              case Some(value) => form(identifiers).fill(value)
-            }
+            nationalityCode.flatMap(
+              code => nationalityList.values.find(_.code == code)
+            )
+          }
 
-            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
-        }
-    }
+          val form = formProvider("transport.border.active.nationality", nationalityList)
+          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage).orElse(nationalityFromDepartureData) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId)
-    .async {
-      implicit request =>
-        service.getMeansOfTransportIdentificationTypes.flatMap {
-          identificationTypeList =>
-            form(identificationTypeList)
-              .bindFromRequest()
-              .fold(
-                formWithErrors =>
-                  Future.successful(
-                    BadRequest(view(formWithErrors, departureId, identificationTypeList, mode))
-                  ),
-                value => redirect(mode, value, departureId)
-              )
-        }
-    }
+          Ok(view(preparedForm, departureId, nationalityList.values, mode))
+      }
+  }
+
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+    implicit request =>
+      service.getNationalities().flatMap {
+        nationalityList =>
+          val form = formProvider("transport.border.active.nationality", nationalityList)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode))),
+              value => redirect(mode, value, departureId)
+            )
+      }
+  }
 
   private def redirect(
-    mode: Mode,
-    value: TransportMeansIdentification,
-    departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+                        mode: Mode,
+                        value: Nationality,
+                        departureId: String
+                      )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode))
 }
