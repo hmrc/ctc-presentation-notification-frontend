@@ -48,5 +48,5 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
   behave like pageWithHint("Enter the country, like Italy or Spain.")
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

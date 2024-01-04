@@ -41,5 +41,5 @@ class AddTransportEquipmentYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems()
 
-  behave like pageWithSubmitButton(messages("site.saveAndContinue"))
+  behave like pageWithSubmitButton(messages("site.continue"))
 }

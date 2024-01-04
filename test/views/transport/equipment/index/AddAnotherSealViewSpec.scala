@@ -57,5 +57,5 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }
