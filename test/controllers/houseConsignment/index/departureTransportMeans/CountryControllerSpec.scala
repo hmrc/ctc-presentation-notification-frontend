@@ -88,7 +88,9 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, nationalityList.values, mode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex)(request, messages).toString
+        view(filledForm, departureId, nationalityList.values, mode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex)(request,
+                                                                                                                                         messages
+        ).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -122,7 +124,9 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, nationalityList.values, mode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex)(request, messages).toString
+        view(boundForm, departureId, nationalityList.values, mode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex)(request,
+                                                                                                                                        messages
+        ).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
