@@ -1,0 +1,7 @@
+->         /                                                                  app.houseConsignment.index.departureTransportMeans.Routes
+
+
+GET        /departure-means-of-transport/add/:departureId                     controllers.houseConsignment.index.AddDepartureTransportMeansYesNoController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/add/:departureId                     controllers.houseConsignment.index.AddDepartureTransportMeansYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-add/:departureId              controllers.houseConsignment.index.AddDepartureTransportMeansYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-add/:departureId              controllers.houseConsignment.index.AddDepartureTransportMeansYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)

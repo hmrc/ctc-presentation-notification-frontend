@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment
+package pages.sections.houseConsignment.departureTransportMeans
 
-import pages.behaviours.PageBehaviours
-import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
+case class DepartureTransportMeansSection(houseConsignmentIndex: Index, departureTransportMeansIndex: Index) extends Section[JsObject] {
 
-  "AddDepartureTransportMeansYesNoPage" - {
+  override def path: JsPath = DepartureTransportMeansListSection(houseConsignmentIndex).path \ departureTransportMeansIndex.position
 
-    beRetrievable[Boolean](AddDepartureTransportMeansYesNoPage)
-
-    beSettable[Boolean](AddDepartureTransportMeansYesNoPage)
-
-    beRemovable[Boolean](AddDepartureTransportMeansYesNoPage)
-
-    //    "cleanup" - {} // TODO Add cleanup logic test
-  }
+  override def toString: String = "departureTransportMeans"
 }

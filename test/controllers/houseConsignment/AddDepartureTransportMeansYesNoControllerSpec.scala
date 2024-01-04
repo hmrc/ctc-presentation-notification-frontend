@@ -22,7 +22,7 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.AddDepartureTransportMeansYesNoPage
+import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
