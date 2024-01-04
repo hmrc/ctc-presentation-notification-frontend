@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index
+package pages.houseConsignment.index.departureTransportMeans
 
+import models.reference.Nationality
 import pages.behaviours.PageBehaviours
 
-class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
+class CountryPageSpec extends PageBehaviours {
 
-  "AddDepartureTransportMeansYesNoPage" - {
+  "CountryPage" - {
 
-    beRetrievable[Boolean](AddDepartureTransportMeansYesNoPage(houseConsignmentIndex))
+    beRetrievable[Nationality](CountryPage(houseConsignmentIndex, departureTransportMeansIndex))
 
-    beSettable[Boolean](AddDepartureTransportMeansYesNoPage(houseConsignmentIndex))
+    beSettable[Nationality](CountryPage(houseConsignmentIndex, departureTransportMeansIndex))
 
-    beRemovable[Boolean](AddDepartureTransportMeansYesNoPage(houseConsignmentIndex))
+    beRemovable[Nationality](CountryPage(houseConsignmentIndex, departureTransportMeansIndex))
 
-    //    "cleanup" - {} // TODO Add cleanup logic test
   }
 }

@@ -25,21 +25,23 @@ import views.html.houseConsignment.index.AddDepartureTransportMeansYesNoView
 class AddDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, departureId, NormalMode, houseConsignmentIndex)(fakeRequest, messages)
 
-  override val prefix: String = "addDepartureTransportMeansYesNo"
+  override val prefix: String = "houseConsignment.index.addDepartureTransportMeansYesNo"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(houseConsignmentIndex.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Departure means of transport")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(houseConsignmentIndex.display)
 
   behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
 
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = Seq(houseConsignmentIndex.display))
+
+  behave like pageWithoutHint()
 
   behave like pageWithSubmitButton("Continue")
 }
