@@ -23,7 +23,6 @@ import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Empty
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
@@ -223,7 +222,7 @@ class LocationOfGoodsAnswersHelper(
   def fetchCustomsOfficeIdentifierRow(implicit userAnswers: UserAnswers): Future[Option[SummaryListRow]] =
     fetchValue[CustomsOffice](
       CustomsOfficeIdentifierPage,
-      checkYourAnswersReferenceDataService.getCustomsOffice(userAnswers.departureData.countryOfDeparture),
+      checkYourAnswersReferenceDataService.getCustomsOffice,
       userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice.map(_.referenceNumber))
     ).map {
       _.map(

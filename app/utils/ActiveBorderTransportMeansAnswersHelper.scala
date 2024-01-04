@@ -111,7 +111,7 @@ class ActiveBorderTransportMeansAnswersHelper(
       valueFromDepartureData = userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
         seq => seq.lift(activeIndex.position).flatMap(_.customsOfficeAtBorderReferenceNumber)
       ),
-      refDataLookup = cyaRefDataService.getCustomsOffice(userAnswers.departureData.countryOfDeparture)
+      refDataLookup = cyaRefDataService.getCustomsOffice
     ).map {
       customsOffice =>
         buildRowWithAnswer[CustomsOffice](

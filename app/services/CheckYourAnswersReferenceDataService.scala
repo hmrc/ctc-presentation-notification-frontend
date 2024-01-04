@@ -19,9 +19,8 @@ package services
 import connectors.ReferenceDataConnector
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
-import models.{LocationOfGoodsIdentification, LocationType}
 import models.reference.{Country, CustomsOffice, Nationality}
-import services.ReferenceDataNotFoundException.referenceDataException
+import models.{LocationOfGoodsIdentification, LocationType}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -30,61 +29,24 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getLocationType(code: String)(implicit hc: HeaderCarrier): Future[LocationType] =
-    for {
-      locations <- referenceDataConnector.getTypesOfLocation()
-      locationFound = locations
-        .find(_.code == code)
-        .getOrElse(referenceDataException("locationType", code, locations))
-    } yield locationFound
+    referenceDataConnector.getTypeOfLocation(code).map(_.head)
 
   def getQualifierOfIdentification(code: String)(implicit hc: HeaderCarrier): Future[LocationOfGoodsIdentification] =
-    for {
-      qualifiers <- referenceDataConnector.getQualifierOfTheIdentifications()
-      qualifierFound = qualifiers
-        .find(_.code == code)
-        .getOrElse(referenceDataException("qualifierOfIdentification", code, qualifiers))
-    } yield qualifierFound
+    referenceDataConnector.getQualifierOfTheIdentification(code).map(_.head)
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
-    for {
-      qualifiers <- referenceDataConnector.getMeansOfTransportIdentificationTypesActive()
-      qualifierFound = qualifiers
-        .find(_.code == code)
-        .getOrElse(referenceDataException("borderMeansIdentification", code, qualifiers))
-    } yield qualifierFound
+    referenceDataConnector.getMeansOfTransportIdentificationTypeActive(code).map(_.head)
 
   def getNationality(code: String)(implicit hc: HeaderCarrier): Future[Nationality] =
-    for {
-      nationalities <- referenceDataConnector.getNationalities()
-      nationalityFound = nationalities
-        .find(_.code == code)
-        .getOrElse(referenceDataException("nationalities", code, nationalities))
-    } yield nationalityFound
+    referenceDataConnector.getNationality(code).map(_.head)
 
-  def getCustomsOffice(countryCode: String)(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
-    for {
-      customsOffices <- referenceDataConnector.getCustomsOfficesOfDepartureForCountry(countryCode)
-      customsOffice = customsOffices
-        .find(_.id == id)
-        .getOrElse(referenceDataException("customsOffice", id, customsOffices))
-    } yield customsOffice
+  def getCustomsOffice(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
+    referenceDataConnector.getCustomsOffice(id).map(_.head)
 
   def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[BorderMode] =
-    for {
-      borderModes <- referenceDataConnector.getBorderModeCodes()
-      modeFound = borderModes
-        .find(_.code == code)
-        .getOrElse(referenceDataException("borderMode", code, borderModes))
-
-    } yield modeFound
+    referenceDataConnector.getTransportModeCode[BorderMode](code).map(_.head)
 
   def getCountry(code: String)(implicit hc: HeaderCarrier): Future[Country] =
-    for {
-      countryCodes <- referenceDataConnector.getCountries("CountryCodesFullList")
-      country = countryCodes
-        .find(_.code.code == code)
-        .getOrElse(referenceDataException("countries", code, countryCodes))
-
-    } yield country
+    referenceDataConnector.getCountry("CountryCodesFullList", code).map(_.head)
 
 }

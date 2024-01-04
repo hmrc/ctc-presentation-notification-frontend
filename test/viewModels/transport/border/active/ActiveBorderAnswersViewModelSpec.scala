@@ -318,7 +318,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
         mode =>
           when(refDataService.getBorderMeansIdentification(any())(any())).thenReturn(Future.successful(Identification("code", "description")))
           when(refDataService.getNationality(any())(any())).thenReturn(Future.successful(Nationality("code", "description")))
-          when(refDataService.getCustomsOffice(any())(any())(any()))
+          when(refDataService.getCustomsOffice(any())(any()))
             .thenReturn(Future.successful(CustomsOffice("customOfficeId", "description", None)))
           val ie015WithActiveBorderTransportAnswer =
             UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), jsonValue.as[MessageData])

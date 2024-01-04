@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import models.reference.transport.border.active.Identification
 import models.reference._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 

@@ -26,11 +26,13 @@ import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import pages.transport.border.active._
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -116,7 +118,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                 .setValue(IdentificationPage(activeIndex), identification)
               val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              whenReady(helper.identificationType) {
+              whenReady[Option[SummaryListRow], Assertion](helper.identificationType) {
                 optionResult =>
                   val result = optionResult.get
 
@@ -140,7 +142,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               when(refDataService.getBorderMeansIdentification(any())(any())).thenReturn(Future.successful(Identification(code, "description")))
               val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              whenReady(helper.identificationType) {
+              whenReady[Option[SummaryListRow], Assertion](helper.identificationType) {
                 optionResult =>
                   val result = optionResult.get
                   result.key.value mustBe s"Identification type"
@@ -236,7 +238,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                 .setValue(NationalityPage(activeIndex), nationality)
               val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              whenReady(helper.nationality) {
+              whenReady[Option[SummaryListRow], Assertion](helper.nationality) {
                 optionResult =>
                   val result = optionResult.get
 
@@ -259,7 +261,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               val code = answers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.head.nationality).get
               when(refDataService.getNationality(any())(any())).thenReturn(Future.successful(Nationality(code, "description")))
               val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
-              whenReady(helper.nationality) {
+              whenReady[Option[SummaryListRow], Assertion](helper.nationality) {
                 optionResult =>
                   val result = optionResult.get
 
@@ -300,7 +302,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                 .setValue(CustomsOfficeActiveBorderPage(activeIndex), customsOffice)
               val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              whenReady(helper.customsOffice) {
+              whenReady[Option[SummaryListRow], Assertion](helper.customsOffice) {
                 optionResult =>
                   val result = optionResult.get
 
@@ -323,11 +325,11 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, answers) =>
               val customOfficeId = answers.departureData.Consignment.ActiveBorderTransportMeans.get.head.customsOfficeAtBorderReferenceNumber.get
-              when(refDataService.getCustomsOffice(any())(any())(any()))
+              when(refDataService.getCustomsOffice(any())(any()))
                 .thenReturn(Future.successful(CustomsOffice(customOfficeId, "description", None)))
               val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              whenReady(helper.customsOffice) {
+              whenReady[Option[SummaryListRow], Assertion](helper.customsOffice) {
                 optionResult =>
                   val result = optionResult.get
 

@@ -19,7 +19,6 @@ package pages
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.locationOfGoods.EoriPage
-import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 
 class ActingAsRepresentativePageSpec extends PageBehaviours {
 
