@@ -48,5 +48,5 @@ class TransportMeansNationalityViewSpec extends InputSelectViewBehaviours[Nation
 
   behave like pageWithHint("Enter the country or code, like Austria or AT.")
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }
