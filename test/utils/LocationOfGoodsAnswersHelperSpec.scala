@@ -98,7 +98,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
                 val result = helper.qualifierIdentificationRow(identification.description).get
 
-                result.key.value mustBe "Identifier type for the location of goods"
+                result.key.value mustBe "Identifier type"
                 result.value.value mustBe identification.description
                 val actions = result.actions.get.items
                 actions.size mustBe 1
@@ -145,7 +145,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper                                  = new LocationOfGoodsAnswersHelper(ie015WithAuthorisationNumberUserAnswers, departureId, mockReferenceDataService, mode)
                 val result                                  = helper.eoriNumber
 
-                result.get.key.value mustBe "EORI number or TIN for the location of goods"
+                result.get.key.value mustBe "EORI number or Trader Identification Number (TIN)"
                 result.get.value.value mustBe messageData.Consignment.LocationOfGoods.get.EconomicOperator.get.toString
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
@@ -164,7 +164,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
                 val result = helper.eoriNumber
 
-                result.get.key.value mustBe "EORI number or TIN for the location of goods"
+                result.get.key.value mustBe "EORI number or Trader Identification Number (TIN)"
                 result.get.value.value mustBe locationOfGoodsAnswerEori
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
@@ -201,7 +201,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
                 val result = helper.additionalIdentifierYesNo
 
-                result.get.key.value mustBe "Do you want to add another identifier for the location of goods?"
+                result.get.key.value mustBe "Do you want to add an additional identifier for the location of goods?"
                 result.get.value.value mustBe (if (additionalIdentifier) "Yes" else "No")
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
@@ -275,7 +275,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
                 val result = helper.customsOfficeIdentifierRow(customsOffice.toString)
 
-                result.key.value mustBe "What is the customs office identifier for the location of goods?"
+                result.key.value mustBe "Customs office identifier"
                 result.value.value mustBe customsOffice.toString
                 val actions = result.actions.get.items
                 actions.size mustBe 1
@@ -624,7 +624,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                   new LocationOfGoodsAnswersHelper(ie015WithAddressUserAnswers, departureId, mockReferenceDataService, mode)
                 val result = helper.postCodeAddress
 
-                result.get.key.value mustBe "Postcode Address"
+                result.get.key.value mustBe "Postal code"
                 result.get.value.value mustBe ie015WithAddressUserAnswers.departureData.Consignment.LocationOfGoods
                   .flatMap(_.PostcodeAddress.map(_.toPostalCode))
                   .get
@@ -646,7 +646,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
                 val result = helper.postCodeAddress
 
-                result.get.key.value mustBe "Postcode Address"
+                result.get.key.value mustBe "Postal code"
                 result.get.value.value mustBe addressData.toString
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
@@ -819,7 +819,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
                 val result = helper.qualifierIdentificationRow(identification.description).get
 
-                result.key.value mustBe "Identifier type for the location of goods"
+                result.key.value mustBe "Identifier type"
                 result.value.value mustBe identification.description
                 val actions = result.actions.get.items
                 actions.size mustBe 1
@@ -851,7 +851,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
                 val result = helper.qualifierIdentificationRow("AddressIdentifier").get
 
-                result.key.value mustBe "Identifier type for the location of goods"
+                result.key.value mustBe "Identifier type"
                 result.value.value mustBe "AddressIdentifier"
                 val actions = result.actions.get.items
                 actions.size mustBe 1
@@ -924,7 +924,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper                                   = new LocationOfGoodsAnswersHelper(ie015WithAdditionalIdentifierUserAnswers, departureId, mockReferenceDataService, mode)
                 val result                                   = helper.additionalIdentifierYesNo
 
-                result.get.key.value mustBe "Do you want to add another identifier for the location of goods?"
+                result.get.key.value mustBe "Do you want to add an additional identifier for the location of goods?"
                 result.get.value.value mustBe (if (messageData.Consignment.LocationOfGoods.exists(_.additionalIdentifier.isDefined)) "Yes" else "No")
                 val actions = result.get.actions.get.items
                 actions.size mustBe 1
@@ -1063,7 +1063,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val helper = new LocationOfGoodsAnswersHelper(ie015UserAnswers, departureId, mockReferenceDataService, mode)
                 val result = helper.customsOfficeIdentifierRow(customsOffice.toString)
 
-                result.key.value mustBe "What is the customs office identifier for the location of goods?"
+                result.key.value mustBe "Customs office identifier"
                 result.value.value mustBe customsOffice.toString
                 val actions = result.actions.get.items
                 actions.size mustBe 1
