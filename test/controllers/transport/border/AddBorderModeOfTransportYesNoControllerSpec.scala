@@ -52,12 +52,31 @@ class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
       val result  = route(app, request).value
 
+      val filledForm = form.bind(Map("value" -> "false"))
+
       val view = injector.instanceOf[AddBorderModeOfTransportYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must return OK and the correct view for a GET when set in the 15" in {
+
+      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some("1"))(emptyUserAnswers))
+
+      val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
+      val result  = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddBorderModeOfTransportYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
