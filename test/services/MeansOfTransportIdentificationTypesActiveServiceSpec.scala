@@ -23,7 +23,7 @@ import generators.Generators
 import models.Index
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
@@ -135,6 +135,17 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
         }
       }
+    }
+
+    "getBorderMeansIdentification" in {
+      val identification = Identification("code", "description")
+
+      when(mockRefDataConnector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
+        .thenReturn(Future.successful(NonEmptyList(identification, Nil)))
+
+      service.getBorderMeansIdentification("code").futureValue mustBe identification
+
+      verify(mockRefDataConnector).getMeansOfTransportIdentificationTypeActive(eqTo("code"))(any(), any())
     }
   }
 }
