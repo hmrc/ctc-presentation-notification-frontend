@@ -55,6 +55,7 @@ locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
 placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
+departureMeansOfTransport.caption = Departure means of transport
 
 transport.prefix = Transport equipment {0}
 transport.value.container = container {0}
@@ -497,3 +498,8 @@ traderDetails.representative.representativeTelephoneNumber.error.invalidFormat =
 traderDetails.representative.representativeTelephoneNumber.error.maxLength = Your phone number must be 35 characters or less
 traderDetails.representative.representativeTelephoneNumber.error.minLength = Your phone number must be 6 characters or more
 traderDetails.representative.representativeTelephoneNumber.error.required = Enter your phone number
+
+addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport?
+addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport?
+addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport
+addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.

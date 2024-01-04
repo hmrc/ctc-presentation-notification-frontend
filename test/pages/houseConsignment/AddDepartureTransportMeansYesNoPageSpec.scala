@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment
 
 import pages.behaviours.PageBehaviours
 
-class AddPlaceOfLoadingYesNoPageSpec extends PageBehaviours {
+class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
 
-  "AddPlaceOfLoadingYesNoPage" - {
+  "AddDepartureTransportMeansYesNoPage" - {
 
-    beRetrievable[Boolean](AddPlaceOfLoadingYesNoPage)
+    beRetrievable[Boolean](AddDepartureTransportMeansYesNoPage)
 
-    beSettable[Boolean](AddPlaceOfLoadingYesNoPage)
+    beSettable[Boolean](AddDepartureTransportMeansYesNoPage)
 
-    beRemovable[Boolean](AddPlaceOfLoadingYesNoPage)
+    beRemovable[Boolean](AddDepartureTransportMeansYesNoPage)
 
-//    "cleanup" - {} // TODO Add cleanup logic test
+    //    "cleanup" - {} // TODO Add cleanup logic test
   }
 }
