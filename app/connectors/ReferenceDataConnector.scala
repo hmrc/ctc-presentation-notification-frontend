@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference._
 import models.reference.transport.border.active.Identification
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{LocationOfGoodsIdentification, LocationType}
 import play.api.Logging
 import play.api.http.Status.OK
@@ -112,6 +113,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Identification]] = {
     val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
     http.GET[Seq[Identification]](url, headers = version2Header)
+  }
+
+  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TransportMeansIdentification]] = {
+    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http.GET[Seq[TransportMeansIdentification]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
