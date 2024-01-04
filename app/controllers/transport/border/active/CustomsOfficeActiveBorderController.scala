@@ -49,10 +49,20 @@ class CustomsOfficeActiveBorderController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      customsOfficesService.getCustomsOfficesByMultipleIds(request.userAnswers.departureData.customsOffices).map {
+      val offices = request.userAnswers.departureData.customsOffices
+      customsOfficesService.getCustomsOfficesByMultipleIds(offices).map {
         customsOfficesList =>
+          def customsOfficeFromDepartureData = {
+            val customsOfficeId = request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
+              list => list.lift(activeIndex.position).flatMap(_.customsOfficeAtBorderReferenceNumber)
+            )
+            customsOfficeId.flatMap(
+              id => customsOfficesList.find(_.id == id)
+            )
+          }
+
           val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", SelectableList(customsOfficesList))
-          val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)) match {
+          val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)).orElse(customsOfficeFromDepartureData) match {
             case None        => form
             case Some(value) => form.fill(value)
           }

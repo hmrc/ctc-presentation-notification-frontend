@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.routes
+@import controllers.representative.routes
+@import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 
@@ -26,26 +27,26 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId:String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("addRepresentativeYesNo.title"),
-    showBackLink = true
+    title = messages("traderDetails.actingRepresentative.title"),
+    showBackLink = true,
 ) {
 
-    @formHelper(action = routes.AddRepresentativeYesNoController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ActingAsRepresentativeController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("addRepresentativeYesNo.heading"),
-                caption = Some(messages("representative.caption")),
-                additionalHtml = messages("addRepresentativeYesNo.paragraph").toParagraph
+                heading = messages("traderDetails.actingRepresentative.heading"),
+                caption = Some(messages("traderDetails.representative.caption")),
+                additionalHtml = messages("traderDetails.actingRepresentative.paragraph").toParagraph
             )
         )
 
-        @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
+        @button(messageKey = "site.saveAndContinue", attributes = Map("id" -> "submit"))
     }
 }

@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transport
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object AddRepresentativeYesNoPage extends QuestionPage[Boolean] {
+class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddInlandModeOfTransportYesNoPage" - {
 
-  override def toString: String = "addRepresentativeYesNo"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddRepresentativeYesNoController.onPageLoad(departureId, mode))
-
+    beRetrievable[Boolean](AddInlandModeOfTransportYesNoPage)
+    beSettable[Boolean](AddInlandModeOfTransportYesNoPage)
+    beRemovable[Boolean](AddInlandModeOfTransportYesNoPage)
+  }
 }

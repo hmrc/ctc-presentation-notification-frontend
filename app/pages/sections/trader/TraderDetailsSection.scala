@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.trader
 
-import pages.behaviours.PageBehaviours
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class AddRepresentativeYesNoPageSpec extends PageBehaviours {
+case object TraderDetailsSection extends Section[JsObject] {
 
-  //TODO: Add tests for AddRepresentativeYesNoPage cleanup
-  "AddRepresentativeYesNoPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](AddRepresentativeYesNoPage)
-
-    beSettable[Boolean](AddRepresentativeYesNoPage)
-
-    beRemovable[Boolean](AddRepresentativeYesNoPage)
-  }
+  override def toString: String = "traderDetails"
 }

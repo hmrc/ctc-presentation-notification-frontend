@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import models.reference.TransportMode.BorderMode
 import models.reference._
 import models.reference.transport.border.active.Identification
 import models.{LocationOfGoodsIdentification, LocationType}
@@ -104,9 +105,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[LocationOfGoodsIdentification]](serviceUrl, headers = version2Header)
   }
 
-  def getBorderModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[BorderMode]] = {
+  def getTransportModeCodes[T <: TransportMode[T]]()(implicit ec: ExecutionContext, hc: HeaderCarrier, rds: Reads[T]): Future[Seq[T]] = {
     val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
-    http.GET[Seq[BorderMode]](url, headers = version2Header)
+    http.GET[Seq[T]](url, headers = version2Header)
   }
 
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Identification]] = {
@@ -145,6 +146,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
 
     http.GET[Seq[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  }
+
+  def getBorderModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[BorderMode]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[BorderMode]](url, headers = version2Header)
   }
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =

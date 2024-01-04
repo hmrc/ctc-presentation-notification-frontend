@@ -21,6 +21,7 @@ import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
 import models.messages.{ActiveBorderTransportMeans, Address}
+import models.reference.TransportMode._
 import models.reference._
 import models.reference.transport.border.active
 import org.scalacheck.Arbitrary.arbitrary
@@ -177,6 +178,14 @@ trait ModelGenerators {
         code        <- Gen.oneOf("1", "2", "3", "4")
         description <- nonEmptyString
       } yield BorderMode(code, description)
+    }
+
+  implicit lazy val arbitraryInlandModeOfTransport: Arbitrary[InlandMode] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderMode]] =

@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.Index
-import models.reference.BorderMode
+import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

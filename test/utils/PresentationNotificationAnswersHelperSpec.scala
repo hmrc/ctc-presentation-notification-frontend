@@ -20,7 +20,8 @@ import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import generators.Generators
 import models.messages.MessageData
-import models.reference.{BorderMode, CustomsOffice}
+import models.reference.{CustomsOffice}
+import models.reference.TransportMode.BorderMode
 import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

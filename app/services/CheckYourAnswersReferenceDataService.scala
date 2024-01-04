@@ -17,9 +17,10 @@
 package services
 
 import connectors.ReferenceDataConnector
+import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
 import models.{LocationOfGoodsIdentification, LocationType}
-import models.reference.{BorderMode, Country, CustomsOffice, Nationality}
+import models.reference.{Country, CustomsOffice, Nationality}
 import services.ReferenceDataNotFoundException.referenceDataException
 import uk.gov.hmrc.http.HeaderCarrier
 

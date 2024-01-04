@@ -75,7 +75,7 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
             ListItem(
               name = s"Item ${item1.toString}",
               changeUrl = routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
-              removeUrl = None
+              removeUrl = Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url)
             ),
             ListItem(
               name = s"Item ${item2.toString}",

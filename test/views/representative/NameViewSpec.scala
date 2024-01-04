@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package views
+package views.representative
 
+import forms.NameFormProvider
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import views.html.AddRepresentativeYesNoView
+import viewModels.InputSize
+import views.behaviours.InputTextViewBehaviours
+import views.html.representative.NameView
 
-class AddRepresentativeYesNoViewSpec extends YesNoViewBehaviours {
+class NameViewSpec extends InputTextViewBehaviours[String] {
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddRepresentativeYesNoView].apply(form, departureId, NormalMode)(fakeRequest, messages)
+  override val prefix: String = "representative.name"
 
-  override val prefix: String = "addRepresentativeYesNo"
+  override def form: Form[String] = app.injector.instanceOf[NameFormProvider].apply(prefix)
+
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[NameView].apply(form, departureId, NormalMode)(fakeRequest, messages)
+
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithTitle()
 
@@ -37,9 +44,11 @@ class AddRepresentativeYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This includes your name and phone number for if Customs have any queries.")
+  behave like pageWithoutHint()
 
-  behave like pageWithRadioItems()
+  behave like pageWithContent("p", "This is additional contact information for if Customs have any queries.")
+
+  behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Continue")
 }
