@@ -23,11 +23,11 @@ class CountryPageSpec extends PageBehaviours {
 
   "CountryPage" - {
 
-    beRetrievable[Nationality](CountryPage(houseConsignmentIndex, departureTransportMeansIndex))
+    beRetrievable[Nationality](CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
-    beSettable[Nationality](CountryPage(houseConsignmentIndex, departureTransportMeansIndex))
+    beSettable[Nationality](CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
-    beRemovable[Nationality](CountryPage(houseConsignmentIndex, departureTransportMeansIndex))
+    beRemovable[Nationality](CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
   }
 }
