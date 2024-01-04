@@ -41,7 +41,7 @@
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages("houseConsignment.index.departureTransportMeans.identificationNumber.heading"),
+                heading = messages("houseConsignment.index.departureTransportMeans.identificationNumber.heading", houseConsignmentIndex.display),
                 caption = Some(messages("departureTransportMeans.subheading")),
                 additionalHtml = insetText(identificationType)
             ),

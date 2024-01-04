@@ -18,82 +18,86 @@ package controllers.houseConsignment.index.departureTransportMeans
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.reference.transport.border.active.Identification
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.BorderNavigator
+import navigation.Navigator
 import pages.QuestionPage
+import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
 import pages.transport.border.BorderModeOfTransportPage
-import pages.transport.border.active.IdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.MeansOfTransportIdentificationTypesActiveService
+import services.TransportMeansIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.border.active.IdentificationView
+import views.html.houseConsignment.index.departureTransportMeans.IdentificationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentificationController @Inject()(
+class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: BorderNavigator,
+  navigator: Navigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
-  service: MeansOfTransportIdentificationTypesActiveService
+  service: TransportMeansIdentificationTypesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(identificationTypes: Seq[Identification]): Form[Identification] =
-    formProvider[Identification]("transport.border.active.identification", identificationTypes)
+  private def form(identificationTypes: Seq[TransportMeansIdentification], houseConsignmentIndex: Index): Form[TransportMeansIdentification] =
+    formProvider[TransportMeansIdentification]("houseConsignment.index.departureTransportMeans.identification",
+                                               identificationTypes,
+                                               houseConsignmentIndex.display
+    )
 
-  def onPageLoad(departureId: String, mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index ): Action[AnyContent] = actions
+  def onPageLoad(departureId: String, mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypesActive(departureTransportMeansIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(departureTransportMeansIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           identifiers =>
-            val preparedForm = request.userAnswers.get(IdentificationPage(index)) match {
-              case None        => form(identifiers)
-              case Some(value) => form(identifiers).fill(value)
+            val preparedForm = request.userAnswers.get(IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex)) match {
+              case None        => form(identifiers, houseConsignmentIndex)
+              case Some(value) => form(identifiers, houseConsignmentIndex).fill(value)
             }
 
-            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode, index)))
+            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode, houseConsignmentIndex, departureTransportMeansIndex)))
         }
     }
 
-  def onSubmit(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions
+  def onSubmit(departureId: String, mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypesActive(index, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(departureTransportMeansIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           identificationTypeList =>
-            form(identificationTypeList)
+            form(identificationTypeList, houseConsignmentIndex)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
-                    BadRequest(view(formWithErrors, departureId, identificationTypeList, mode, index))
+                    BadRequest(view(formWithErrors, departureId, identificationTypeList, mode, houseConsignmentIndex, departureTransportMeansIndex))
                   ),
-                value => redirect(mode, IdentificationPage, value, departureId, index)
+                value => redirect(mode, IdentificationPage, value, departureId, houseConsignmentIndex, departureTransportMeansIndex)
               )
         }
     }
 
   private def redirect(
     mode: Mode,
-    page: Index => QuestionPage[Identification],
-    value: Identification,
+    page: (Index, Index) => QuestionPage[TransportMeansIdentification],
+    value: TransportMeansIdentification,
     departureId: String,
-    index: Index
+    houseConsignmentIndex: Index,
+    departureTransportMeansIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(page(index), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(page(houseConsignmentIndex, departureTransportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(page(index), updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(page(houseConsignmentIndex, departureTransportMeansIndex), updatedAnswers, departureId, mode))
 }

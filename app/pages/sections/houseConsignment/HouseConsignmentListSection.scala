@@ -17,7 +17,6 @@
 package pages.sections.houseConsignment
 
 import pages.sections.Section
-import pages.sections.transport.TransportSection
 import play.api.libs.json.{JsArray, JsPath}
 
 case object HouseConsignmentListSection extends Section[JsArray] {

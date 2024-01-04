@@ -26,7 +26,8 @@ import javax.inject.Inject
 
 class IdentificationNumberFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, args: Any*): Form[String] =
+  def apply(prefix: String, args: Any*): Form[String] = {
+    println(args)
     Form(
       "value" -> text(s"$prefix.error.required", args = args)
         .verifying(
@@ -36,4 +37,5 @@ class IdentificationNumberFormProvider @Inject() extends Mappings {
           )
         )
     )
+  }
 }

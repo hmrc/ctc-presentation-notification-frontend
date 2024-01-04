@@ -22,16 +22,17 @@ import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.Navigator
 import pages.houseConsignment.index.departureTransportMeans.IdentificationNumberPage
-import pages.transport.border.active.IdentificationPage
+import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.houseConsignment.index.departureTransportMeans.IdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentificationNumberController @Inject()(
+class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -49,8 +50,7 @@ class IdentificationNumberController @Inject()(
   def onPageLoad(departureId: String, mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
-      //TODO: When house consignment identification page is implemented, replace with this
-      .andThen(getMandatoryPage(IdentificationPage(Index(0)))) {
+      .andThen(getMandatoryPage(IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex))) {
         implicit request =>
           val identificationType = request.arg
           val form               = formProvider(prefix, houseConsignmentIndex.display)
@@ -64,15 +64,18 @@ class IdentificationNumberController @Inject()(
   def onSubmit(departureId: String, mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
-      .andThen(getMandatoryPage(IdentificationPage(Index(0))))
+      .andThen(getMandatoryPage(IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex)))
       .async {
         implicit request =>
           val identificationType = request.arg
-          val form               = formProvider(prefix)
+          val form               = formProvider(prefix, houseConsignmentIndex.display)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, houseConsignmentIndex, departureTransportMeansIndex, identificationType.asString))),
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(view(formWithErrors, departureId, mode, houseConsignmentIndex, departureTransportMeansIndex, identificationType.asString))
+                ),
               value => redirect(mode, value, departureId, houseConsignmentIndex, departureTransportMeansIndex)
             )
       }

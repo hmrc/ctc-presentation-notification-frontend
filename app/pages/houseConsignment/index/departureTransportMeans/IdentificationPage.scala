@@ -16,6 +16,7 @@
 
 package pages.houseConsignment.index.departureTransportMeans
 
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import controllers.houseConsignment.index.departureTransportMeans.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
@@ -23,12 +24,12 @@ import pages.sections.houseConsignment.departureTransportMeans.DepartureTranspor
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class IdentificationNumberPage(houseConsignmentIndex: Index, departureTransportMeansIndex: Index) extends QuestionPage[String] {
+case class IdentificationPage(houseConsignmentIndex: Index, departureTransportMeansIndex: Index) extends QuestionPage[TransportMeansIdentification] {
 
   override def path: JsPath = DepartureTransportMeansSection(houseConsignmentIndex, departureTransportMeansIndex).path \ toString
 
-  override def toString: String = "identificationNumber"
+  override def toString: String = "identification"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.IdentificationNumberController.onPageLoad(departureId, mode, houseConsignmentIndex, departureTransportMeansIndex))
+    Some(routes.IdentificationController.onPageLoad(departureId, mode, houseConsignmentIndex, departureTransportMeansIndex))
 }

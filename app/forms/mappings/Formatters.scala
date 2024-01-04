@@ -26,6 +26,7 @@ import scala.util.control.Exception.nonFatalCatch
 trait Formatters {
 
   private[mappings] def stringFormatter(errorKey: String, args: Seq[Any] = Seq.empty): Formatter[String] = new Formatter[String] {
+    println(args)
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
@@ -98,15 +99,16 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def enumerableFormatter[A <: Radioable[A]](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
+  private[mappings] def enumerableFormatter[A <: Radioable[A]](requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty)(implicit
+    ev: Enumerable[A]
+  ): Formatter[A] =
     new Formatter[A] {
-
-      private val baseFormatter = stringFormatter(requiredKey)
+      private val baseFormatter = stringFormatter(requiredKey, args)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
         baseFormatter.bind(key, data).flatMap {
           str =>
-            ev.withName(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
+            ev.withName(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey, args))))
         }
 
       override def unbind(key: String, value: A): Map[String, String] =
