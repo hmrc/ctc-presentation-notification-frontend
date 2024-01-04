@@ -1,6 +1,7 @@
 # microservice specific routes
 ->         /                                                              app.transport.border.Routes
 ->         /                                                              app.transport.equipment.Routes
+->         /                                                              app.transport.transportMeans.Routes
 GET        /office-of-destination/arrival-date/:departureId               controllers.transport.LimitDateController.onPageLoad(departureId: String, mode: Mode = NormalMode)
 POST       /office-of-destination/arrival-date/:departureId               controllers.transport.LimitDateController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /office-of-destination/change-arrival-date/:departureId        controllers.transport.LimitDateController.onPageLoad(departureId: String, mode: Mode = CheckMode)
