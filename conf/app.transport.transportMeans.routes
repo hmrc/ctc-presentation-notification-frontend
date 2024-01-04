@@ -1,0 +1,4 @@
+GET        /departure-means-of-transport/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode)
