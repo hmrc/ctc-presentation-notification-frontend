@@ -544,3 +544,8 @@ traderDetails.representative.representativeTelephoneNumber.error.invalidFormat =
 traderDetails.representative.representativeTelephoneNumber.error.maxLength = Your phone number must be 35 characters or less
 traderDetails.representative.representativeTelephoneNumber.error.minLength = Your phone number must be 6 characters or more
 traderDetails.representative.representativeTelephoneNumber.error.required = Enter your phone number
+
+transport.transportMeans.subheading = Departure means of transport
+transport.transportMeans.heading = Which identification do you want to use for the departure means of transport?
+transport.transportMeans.title = Which identification do you want to use for the departure means of transport?
+transport.transportMeans.identification.error.required = Select which identification you want to use for the departure means of transport
