@@ -33,5 +33,5 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 object TransportMeansIdentification extends DynamicEnumerableType[TransportMeansIdentification] {
   implicit val format: Format[TransportMeansIdentification] = Json.format[TransportMeansIdentification]
 
-  val messageKeyPrefix = "transport.transportMeans.identification"
+  val messageKeyPrefix = "houseConsignment.index.departureTransportMeans.identification"
 }
