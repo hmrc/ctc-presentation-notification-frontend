@@ -21,7 +21,7 @@ import controllers.routes
 import controllers.transport.border.active.{routes => borderActiveRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -48,6 +48,9 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
   private lazy val addAnotherBorderTransportRoute =
     borderActiveRoutes.AddAnotherBorderTransportController.onPageLoad(departureId, mode).url
 
+  private lazy val addAnotherBorderTransportRouteCheckMode =
+    borderActiveRoutes.AddAnotherBorderTransportController.onPageLoad(departureId, CheckMode).url
+
   private val mockViewModelProvider = mock[AddAnotherBorderTransportViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -71,6 +74,25 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherBorderTransport Controller" - {
+
+    "redirect to CYA page" - {
+      "when in check mode and addAnotherBorder is false" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherBorderTransportRouteCheckMode)
+          .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          onwardRoute.url
+      }
+    }
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {

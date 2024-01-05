@@ -16,6 +16,7 @@
 
 package controllers.locationOfGoods
 
+import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
@@ -29,11 +30,13 @@ import org.scalacheck.Gen
 import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.LocationTypeService
 import views.html.locationOfGoods.LocationTypeView
 
+import java.time.Instant
 import scala.concurrent.Future
 
 class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -180,6 +183,34 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "must get answer IE015 if not available in IE170" in {
+      when(mockLocationTypeService.getLocationTypes(any())(any())).thenReturn(Future.successful(lts))
+      val ie015UserAnswers = UserAnswers(
+        departureId,
+        eoriNumber,
+        lrn.value,
+        Json.obj(),
+        Instant.now(),
+        messageData.copy(Consignment =
+          messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(typeOfLocation = lt.`type`)))
+        )
+      )
+      setExistingUserAnswers(ie015UserAnswers)
+
+      val request = FakeRequest(GET, locationTypeRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> lt.code))
+
+      val view = injector.instanceOf[LocationTypeView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, lts, mode)(request, messages).toString
     }
   }
 }

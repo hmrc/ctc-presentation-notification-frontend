@@ -18,12 +18,13 @@ package pages.representative
 
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
+import pages.sections.representative.RepresentativeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object RepresentativePhoneNumberPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = RepresentativeSection.path \ toString
 
   override def toString: String = "representativeTelephoneNumber"
 

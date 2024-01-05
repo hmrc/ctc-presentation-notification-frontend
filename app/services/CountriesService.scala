@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.{Country, CountryCode}
@@ -40,13 +41,14 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
       .getCountries(listName)
       .map(sort)
 
-  private def sort(countries: Seq[Country]): SelectableList[Country] =
-    SelectableList(countries.sortBy(_.description.toLowerCase))
+  private def sort(countries: NonEmptyList[Country]): SelectableList[Country] =
+    SelectableList(countries.toList.sortBy(_.description.toLowerCase))
 
-  def doesCountryRequireZip(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
-    getCountriesWithoutZip().map(!_.contains(country.code))
+  def doesCountryRequireZip(country: CountryCode)(implicit hc: HeaderCarrier): Future[Boolean] =
+    getCountriesWithoutZip().map(!_.contains(country))
 
   def getCountriesWithoutZip()(implicit hc: HeaderCarrier): Future[Seq[CountryCode]] =
     referenceDataConnector
       .getCountriesWithoutZip()
+      .map(_.toList)
 }

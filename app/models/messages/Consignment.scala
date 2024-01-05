@@ -17,18 +17,22 @@
 package models.messages
 
 import models.reference.Item
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json._
 
 case class Consignment(
   containerIndicator: Option[String],
   modeOfTransportAtTheBorder: Option[String],
-  TransportEquipment: Option[List[TransportEquipment]],
+  TransportEquipment: Option[Seq[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
-  ActiveBorderTransportMeans: Option[List[ActiveBorderTransportMeans]],
+  ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]
 ) {
+
+  def isTransportDefined: Option[Boolean] = Some(modeOfTransportAtTheBorder.isDefined)
+
   def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
+  val isPlaceOfLoadingPresent: Boolean                      = PlaceOfLoading.isDefined
 
   val allItems: Seq[Item] =
     HouseConsignment

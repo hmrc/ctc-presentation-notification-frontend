@@ -51,7 +51,9 @@ class UnLocodeController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UnLocodePage) match {
+      val preparedForm = request.userAnswers
+        .get(UnLocodePage)
+        .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.UNLocode)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

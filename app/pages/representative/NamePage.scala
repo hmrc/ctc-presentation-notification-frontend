@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package models.messages
+package pages.representative
 
-import play.api.libs.json.{Json, OFormat}
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.representative.RepresentativeSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case class GNSS(
-  latitude: String,
-  longitude: String
-)
+case object NamePage extends QuestionPage[String] {
 
-object GNSS {
-  implicit val format: OFormat[GNSS] = Json.format[GNSS]
+  override def path: JsPath = RepresentativeSection.path \ toString
+
+  override def toString: String = "name"
+
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(controllers.representative.routes.NameController.onPageLoad(departureId, mode))
 }

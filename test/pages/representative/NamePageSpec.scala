@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package utils
+package pages.representative
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import pages.behaviours.PageBehaviours
 
-object Format {
+class NamePageSpec extends PageBehaviours {
 
-  implicit class RichLocalDate(localDate: LocalDate) {
-    def formatAsString: String = localDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
-    def formatForText: String  = localDate.format(DateTimeFormatter.ofPattern("dd MM yyyy"))
+  "RepresentativeNamePage" - {
+
+    beRetrievable[String](NamePage)
+
+    beSettable[String](NamePage)
+
+    beRemovable[String](NamePage)
   }
 }

@@ -18,7 +18,7 @@ package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.EntrySummaryDeclarationSecurityDetails
-import models.messages.{Commodity, Consignment, ConsignmentItem, HouseConsignment, MessageData, TransitOperation}
+import models.messages.{Commodity, Consignment, ConsignmentItem, HolderOfTheTransitProcedure, HouseConsignment, MessageData, TransitOperation}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.running
 
@@ -116,12 +116,18 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "MessageData" - {
     val encryptedValue =
-      "r5/szDgj+BL50TfhgcNlvztZJZWWvycri43GeiUy/gAodIUQaIQHKD1UCAn0HanLuOydhRnBr25oMBbs6oJDDIX3/24UDkRMtJHB6HxWOzBQBNRoGfsv6+LVaxgDd3YJtuk+Jphg/WsSmep3yA4DM6W6TE2BYY608Mf2BYcVa8knOugd7xjooLg1cPNA8pfiJT5pEqzm+Ex7cwrmxQJO7sMerkRYHEA1I2WW7rx0IT47QhnAFJ9iLwz/0wnbmIWh608iZxB07Mw5b3PkRAAEVSIojmkQ7wPxG0h4NtfIS8/wnOkhmw/yVLR8jHJM9IiW3m0moVK6158mBWooekqED2DuEQh4/QaaCLAztNtkEM2AT/Q3MLFhJgVPkqFY1Rolav7urC+dwkcTCja4pTH/WJL+gpqjnCu90U2PZL8Sn9yDkr58583RYBHPEBabXt7Z7ph2/UYVLm6RjxJ7FDh3QRrdGdAWAi3PvUmCSkudG5KEMFogvYmUPpC/+BE1gJv9JYtwr28rFHI="
+      "mIbM/atO3ZhRAjHRlmRA/+BifQvy1dB2N5ZGaMhT+GOtBwAVwl61S0dNj/trZHk+SRRxV/O9DFQCVWItEqyrSkqkCleyEZF9LEGnQa+69jHiyAZBezqZGwrQObtfZbtboT2d/kqDIazVSUQBWUOZdW4H4SFQ2EvbaOEVKDCqwYtF546Iq0W55T0un9eMF6iuxdEsLmfPUGrlvy806QOsEce8jPOIrNutVHgj9UlvrxTn1lRrUboJ3KxZudhHXGswM9vW+Hw/37OZloHv8wriJgXQi+DRNGa0xPZPVu9uo7UkrfuRBBXdKWKZkZQFmA9VCFGNC7hmtEqa/228X6EhdQo2tHmas2xt7uHPmeXFF3AR/D9gbCNY6brlcUllUDOnXZ0CcgT7gg00abyVmM6ZWrm7LVdVDLec6X+/W/u98cFxWMORF1/C73ei92hUBHk5uGP+EoSmAZFaQd177lqxkcee3tILyQVTOE0eNr38IBUH+PiIFBdWLHvXhkaXM/3XPYCUdg9s+RD5NSth2bEQgfdKLosnhBJwwtFNrP3YmHzUTAjPGEziyN8YWFJg8DJei+3y1HhiOaQrOv9GwpQ77Hdknio+8IftK0NBD/Ll9WkG8sAY+F3NXFJIJNk="
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
       TransitOperation = TransitOperation(None, None, EntrySummaryDeclarationSecurityDetails),
       Authorisation = None,
+      HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
+        Some("identificationNumber"),
+        None,
+        None,
+        None
+      ),
       Consignment = Consignment(
         containerIndicator = None,
         modeOfTransportAtTheBorder = None,

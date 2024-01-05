@@ -21,7 +21,7 @@ import generators.Generators
 import models.messages.TransitOperation
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
-import models.{Index, Mode}
+import models.{Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -90,18 +90,17 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -125,18 +124,17 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode(Air, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -158,18 +156,17 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -192,18 +189,17 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -215,11 +211,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
     "with change link and no remove link  for each bordermode of transport when there is only one" - {
       "for first Border Mode of transport when BorderMode of Transport is  not mail, " +
         "security type is NoSecurityDetails and CustomsOfficeOfTransitDeclared is not defined" in {
-          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
-            (mode, identification, identificationNumber) =>
+          forAll(arbitrary[Identification], nonEmptyString) {
+            (identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(None, None, security = NoSecurityDetails),
+                  departureData = TestMessageData.messageData.copy(TransitOperation =
+                                                                     TransitOperation(LRN = None, limitDate = None, security = NoSecurityDetails),
                                                                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
@@ -227,12 +224,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "test"))
 
-              val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
+              val result = new AddAnotherBorderTransportViewModelProvider().apply(userAnswers, departureId, NormalMode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
-                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
+                  name = s"${identification.asString} - $identificationNumber",
+                  changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url,
                   removeUrl = None
                 )
               )
@@ -253,18 +250,17 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -287,18 +283,17 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
                 .setValue(IdentificationPage(Index(1)), identification)
                 .setValue(IdentificationNumberPage(Index(1)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(0)).url)
                 ),
                 ListItem(
-                  name = s"$identification - $identificationNumber",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(1)).url,
                   removeUrl = Some(controllers.transport.border.active.routes.RemoveBorderTransportYesNoController.onPageLoad(departureId, mode, Index(1)).url)
                 )
@@ -307,6 +302,5 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
         }
 
     }
-
   }
 }

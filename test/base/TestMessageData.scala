@@ -17,6 +17,7 @@
 package base
 
 import config.Constants.EntrySummaryDeclarationSecurityDetails
+import models.Coordinates
 import models.messages.AuthorisationType.{C521, Other}
 import models.messages._
 import play.api.libs.json.{JsValue, Json}
@@ -36,7 +37,7 @@ object TestMessageData {
   val customsOffice: CustomsOffice =
     CustomsOffice("GB000068")
 
-  val gnss: GNSS = GNSS("44.968046", "-94.420307")
+  val coordinates: Coordinates = Coordinates("44.968046", "-94.420307")
 
   val economicOperator: EconomicOperator = EconomicOperator("ECO247")
 
@@ -53,7 +54,7 @@ object TestMessageData {
     Some("ADD1"),
     Some("FG345UNLOCODE"),
     Some(customsOffice),
-    Some(gnss),
+    Some(coordinates),
     Some(economicOperator),
     Some(address),
     Some(postcodeAddress),
@@ -104,8 +105,24 @@ object TestMessageData {
 
   val customsOfficeOfDestination: String = "GB000012"
 
+  val holderOfTheTransitProcedure = HolderOfTheTransitProcedure(
+    identificationNumber = Some("identificationNumber"),
+    TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
+    ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
+    Address = Some(Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB"))
+  )
+
   val messageData: MessageData =
-    MessageData(customsOfficeOfDeparture, customsOfficeOfDestination, transitOperation, Some(authorisation), None, None, consignment)
+    MessageData(
+      customsOfficeOfDeparture,
+      customsOfficeOfDestination,
+      transitOperation,
+      Some(authorisation),
+      holderOfTheTransitProcedure,
+      customsOfficeOfTransitDeclared,
+      None,
+      consignment
+    )
 
   val jsonValue: JsValue = Json.parse(
     s"""
@@ -116,6 +133,11 @@ object TestMessageData {
        |    "CustomsOfficeOfDestinationDeclared": {
        |        "referenceNumber": "GB000012"
        |    },
+       |    "CustomsOfficeOfTransitDeclared": [
+       |        {
+       |        "referenceNumber": "GB000013"
+       |        }
+       |    ],
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
        |        "security": "1"
@@ -130,6 +152,22 @@ object TestMessageData {
        |            "referenceNumber": "CD123"
        |        }
        |    ],
+       |    "HolderOfTheTransitProcedure": {
+       |        "identificationNumber": "identificationNumber",
+       |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
+       |        "ContactPerson": {
+       |            "name": "name",
+       |            "phoneNumber": "phone",
+       |            "eMailAddress": "email"
+       |        },
+       |        "Address": {
+       |            "streetAndNumber": "Address Line 1",
+       |            "postcode": "NE53KL",
+       |            "city":
+       |            "Newcastle",
+       |            "country": "GB"
+       |        }
+       |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
@@ -246,6 +284,8 @@ object TestMessageData {
        |            "referenceNumber": "CD123"
        |        }
        |    ],
+       |    "HolderOfTheTransitProcedure": {
+       |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
@@ -351,6 +391,8 @@ object TestMessageData {
        |        "limitDate": "2023-06-09",
        |        "security": "1"
        |    },
+       |    "HolderOfTheTransitProcedure": {
+       |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
@@ -415,6 +457,39 @@ object TestMessageData {
        |            "country": "GB",
        |            "location": "Sheffield"
        |        },
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
+       |}
+       |""".stripMargin
+  )
+
+  val allOptionsNoneJsonValue: JsValue = Json.parse(
+    s"""
+       |{
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
+       |    },
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
+       |    },
+       |    "TransitOperation": {
+       |        "security": "1"
+       |    },
+       |    "HolderOfTheTransitProcedure": {
+       |    },
+       |    "Consignment": {
        |        "HouseConsignment": [
        |            {
        |                "ConsignmentItem": [

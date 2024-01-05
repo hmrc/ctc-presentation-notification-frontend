@@ -5,7 +5,7 @@
 ->         /                                                                  app.transitOperation.Routes
 ->         /                                                                  app.loading.Routes
 ->         /                                                                  app.transport.Routes
-->         /                                                                  app.representative.Routes
+->         /representative                                                    app.representative.Routes
 ->         /                                                                  app.houseConsignment.index.Routes
 
 ->         /hmrc-frontend                                                     hmrcfrontend.Routes

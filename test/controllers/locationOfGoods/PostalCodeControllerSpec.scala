@@ -21,8 +21,9 @@ import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.locationOfGoods.PostalCodeFormProvider
 import generators.Generators
+import models.messages.PostcodeAddress
 import models.reference.Country
-import models.{NormalMode, PostalCodeAddress, SelectableList}
+import models.{NormalMode, PostalCodeAddress, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -59,7 +60,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, postalCodeRoute)
       val result  = route(app, request).value
@@ -80,6 +81,37 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         .setValue(PostalCodePage, testAddress)
 
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, postalCodeRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(
+        Map(
+          "streetNumber" -> testAddress.streetNumber,
+          "postalCode"   -> testAddress.postalCode,
+          "country"      -> testAddress.country.code.code
+        )
+      )
+
+      val view = injector.instanceOf[PostalCodeView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode, countryList.values)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
+
+      val userAnswers15 =
+        UserAnswers.setPostAddressOnUserAnswersLens.set(
+          PostcodeAddress(houseNumber = Some(testAddress.streetNumber), postcode = testAddress.postalCode, country = testAddress.country.code.code)
+        )(emptyUserAnswers)
+
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, postalCodeRoute)
 

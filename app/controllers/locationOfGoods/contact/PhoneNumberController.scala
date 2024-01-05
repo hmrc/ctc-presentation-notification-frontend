@@ -17,9 +17,10 @@
 package controllers.locationOfGoods.contact
 
 import controllers.actions._
+import controllers.locationOfGoods.contact.PhoneNumberController.{getName, getNumber}
 import forms.TelephoneNumberFormProvider
 import models.Mode
-import models.requests.MandatoryDataRequest
+import models.requests.{DataRequest, MandatoryDataRequest}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +31,7 @@ import views.html.locationOfGoods.contact.PhoneNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.Logging
 
 class PhoneNumberController @Inject() (
   override val messagesApi: MessagesApi,
@@ -38,38 +40,42 @@ class PhoneNumberController @Inject() (
   formProvider: TelephoneNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: PhoneNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId)
-    .andThen(getMandatoryPage(NamePage)) {
+    .requireData(departureId) {
       implicit request =>
-        val contactName = request.arg
-        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-        val preparedForm = request.userAnswers.get(PhoneNumberPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+        getName match {
+          case Some(contactName) =>
+            val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
+            val preparedForm = getNumber match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
+            Ok(view(preparedForm, departureId, contactName, mode))
+          case None => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
         }
-        Ok(view(preparedForm, departureId, contactName, mode))
+
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(NamePage))
     .async {
       implicit request =>
-        val contactName = request.arg
-        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
-            value => redirect(mode, value, departureId)
-          )
+        getName match {
+          case Some(contactName) =>
+            val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
+                value => redirect(mode, value, departureId)
+              )
+          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        }
 
     }
 
@@ -82,4 +88,28 @@ class PhoneNumberController @Inject() (
       updatedAnswers <- Future.fromTry(request.userAnswers.set(PhoneNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(PhoneNumberPage, updatedAnswers, departureId, mode))
+
+}
+
+object PhoneNumberController extends Logging {
+
+  private[contact] def getName(implicit request: DataRequest[AnyContent]): Option[String] =
+    request.userAnswers
+      .get(NamePage)
+      .orElse {
+        logger.info(s"Retrieved Name answer from IE015 journey")
+        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
+          _.ContactPerson.map(
+            _.name
+          )
+        )
+      }
+
+  private[contact] def getNumber(implicit request: DataRequest[AnyContent]): Option[String] =
+    request.userAnswers
+      .get(PhoneNumberPage)
+      .orElse {
+        logger.info(s"Retrieved Number answer from IE015 journey")
+        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.phoneNumber))
+      }
 }

@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptyList
 import config.Constants._
 import connectors.ReferenceDataConnector
 import models.{LocationOfGoodsIdentification, LocationType}
@@ -40,8 +41,18 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
   private val addressIdentifier: LocationOfGoodsIdentification       = LocationOfGoodsIdentification(AddressIdentifier, "test6")
   private val postalCode: LocationOfGoodsIdentification              = LocationOfGoodsIdentification(PostalCodeIdentifier, "test7")
 
-  private val identifiers: Seq[LocationOfGoodsIdentification] =
-    Seq(postalCode, unlocodeIdentifier, customsOfficeIdentifier, coordinatesIdentifier, eoriNumberIdentifier, authorisationNumber, addressIdentifier)
+  private val identifiers: NonEmptyList[LocationOfGoodsIdentification] =
+    NonEmptyList(
+      postalCode,
+      List(
+        unlocodeIdentifier,
+        customsOfficeIdentifier,
+        coordinatesIdentifier,
+        eoriNumberIdentifier,
+        authorisationNumber,
+        addressIdentifier
+      )
+    )
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -57,7 +68,7 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
           when(mockRefDataConnector.getQualifierOfTheIdentifications()(any(), any()))
             .thenReturn(Future.successful(identifiers))
           val locationType = LocationType(DesignatedLocation, "Designated location")
-          service.getLocationOfGoodsIdentificationTypes(locationType).futureValue mustBe Seq(unlocodeIdentifier, customsOfficeIdentifier)
+          service.getLocationOfGoodsIdentificationTypes(locationType.`type`).futureValue mustBe Seq(unlocodeIdentifier, customsOfficeIdentifier)
         }
 
         "When LocationType is Authorised Place" in {
@@ -65,7 +76,7 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
           when(mockRefDataConnector.getQualifierOfTheIdentifications()(any(), any()))
             .thenReturn(Future.successful(identifiers))
           val locationType = LocationType(AuthorisedPlace, "Authorised place")
-          service.getLocationOfGoodsIdentificationTypes(locationType).futureValue mustBe Seq(authorisationNumber)
+          service.getLocationOfGoodsIdentificationTypes(locationType.`type`).futureValue mustBe Seq(authorisationNumber)
         }
 
         "When LocationType is Approved Place" in {
@@ -73,7 +84,7 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
           when(mockRefDataConnector.getQualifierOfTheIdentifications()(any(), any()))
             .thenReturn(Future.successful(identifiers))
           val locationType = LocationType(ApprovedPlace, "Approved place")
-          service.getLocationOfGoodsIdentificationTypes(locationType).futureValue mustBe Seq(
+          service.getLocationOfGoodsIdentificationTypes(locationType.`type`).futureValue mustBe Seq(
             postalCode,
             unlocodeIdentifier,
             coordinatesIdentifier,
@@ -87,7 +98,7 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
           when(mockRefDataConnector.getQualifierOfTheIdentifications()(any(), any()))
             .thenReturn(Future.successful(identifiers))
           val locationType = LocationType(Other, "Other")
-          service.getLocationOfGoodsIdentificationTypes(locationType).futureValue mustBe Seq(
+          service.getLocationOfGoodsIdentificationTypes(locationType.`type`).futureValue mustBe Seq(
             postalCode,
             unlocodeIdentifier,
             coordinatesIdentifier,

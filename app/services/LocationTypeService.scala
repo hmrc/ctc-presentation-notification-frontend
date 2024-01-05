@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.NonEmptyList
 import config.Constants.AuthorisedPlace
 import connectors.ReferenceDataConnector
 import models.LocationType
@@ -29,7 +30,7 @@ class LocationTypeService @Inject() (
 )(implicit ec: ExecutionContext) {
 
   def getLocationTypes(isSimplified: Boolean)(implicit hc: HeaderCarrier): Future[Seq[LocationType]] = {
-    def filter(typesOfLocation: Seq[LocationType]): Seq[LocationType] = isSimplified match {
+    def filter(typesOfLocation: NonEmptyList[LocationType]): Seq[LocationType] = isSimplified match {
       case true  => typesOfLocation.filter(_.code == AuthorisedPlace)
       case false => typesOfLocation.filterNot(_.code == AuthorisedPlace)
     }

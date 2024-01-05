@@ -16,24 +16,39 @@
 
 package controllers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import matchers.JsonMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
+import viewModels.{PresentationNotificationAnswersViewModel, Section}
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.Future
+
 class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with PageBehaviours {
+
+  private lazy val mockViewModelProvider = mock[PresentationNotificationAnswersViewModelProvider]
+  val sampleSections: Seq[Section]       = arbitrary[List[Section]].sample.value
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind[PresentationNotificationAnswersViewModelProvider].toInstance(mockViewModelProvider))
 
   "CheckYourAnswersController" - {
     "return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockViewModelProvider.apply(any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(PresentationNotificationAnswersViewModel(sampleSections)))
+
+      setExistingUserAnswers(emptyUserAnswers.copy(departureData = TestMessageData.messageData))
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(departureId).url)
 
@@ -43,7 +58,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(lrn.value, departureId)(request, messages).toString
+      contentAsString(result) mustEqual view(lrn.value, departureId, sampleSections)(request, messages).toString
     }
 
     "redirect successfully when calling onSubmit" ignore { //todo not implemented yet - will be confirmation page
