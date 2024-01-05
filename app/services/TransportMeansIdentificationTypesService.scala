@@ -18,6 +18,7 @@ package services
 
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
+import models.Index
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import uk.gov.hmrc.http.HeaderCarrier
@@ -32,13 +33,12 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
   ): Future[Seq[TransportMeansIdentification]] =
     referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, index, borderModeOfTransport)).map(sort)
 
-  def filter(
-    transportMeansIdentificationsTypes: Seq[TransportMeansIdentification],
+  private def filter(
+    identificationTypes: Seq[TransportMeansIdentification],
     index: Index,
     borderModeOfTransport: Option[BorderMode]
   ): Seq[TransportMeansIdentification] = {
-
-    val identificationTypesExcludingUnknown = transportMeansIdentificationsTypes.filterNot(_.code == UnknownIdentification)
+    val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentification)
 
     borderModeOfTransport match {
       case Some(borderMode) if index.isFirst =>
