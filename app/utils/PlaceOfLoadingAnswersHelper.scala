@@ -40,11 +40,10 @@ class PlaceOfLoadingAnswersHelper(
     formatAnswer = formatAsCountry,
     prefix = "loading.country",
     findValueInDepartureData = message =>
-      message.Consignment.LocationOfGoods.flatMap(
-        x =>
-          x.Address.map(
-            x => Country(CountryCode(x.country), answer)
-          )
+      message.Consignment.PlaceOfLoading.flatMap(
+        _.country.map(
+          y => Country(CountryCode(y), answer)
+        )
       ),
     id = Some("change-country")
   )
@@ -81,7 +80,7 @@ class PlaceOfLoadingAnswersHelper(
     id = Some("change-location")
   )
 
-  def locationOfGoodsSection: Future[Section] = {
+  def placeOfLoadingSection: Future[Section] = {
     implicit val ua: UserAnswers = userAnswers
 
     val rows = for {

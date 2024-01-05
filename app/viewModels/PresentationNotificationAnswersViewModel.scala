@@ -100,7 +100,7 @@ object PresentationNotificationAnswersViewModel {
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
         borderSection                     <- helper.borderModeSection
-        placeOfLoading                    <- placeOfLoadingAnswersHelper.locationOfGoodsSection
+        placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
