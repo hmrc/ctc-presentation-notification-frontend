@@ -17,6 +17,7 @@
 package controllers.transport.border
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.Maritime
 import controllers.routes
 import controllers.transport.border.{routes => borderRoutes}
 import forms.YesNoFormProvider
@@ -62,9 +63,9 @@ class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
         view(filledForm, departureId, mode)(request, messages).toString
     }
 
-    "must return OK and the correct view for a GET when set in the 15" in {
+    "must return OK and the correct view for a GET when set in the IE015" in {
 
-      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some("1"))(emptyUserAnswers))
+      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some(Maritime))(emptyUserAnswers))
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
       val result  = route(app, request).value

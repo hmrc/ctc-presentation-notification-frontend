@@ -52,9 +52,10 @@ class AddBorderModeOfTransportYesNoController @Inject() (
       val borderModeYesNo: Option[Boolean] =
         request.userAnswers
           .get(AddBorderModeOfTransportYesNoPage)
-          .orElse(
+          .orElse {
+            logger.info(s"Retrieved BorderMode answer from IE015 journey")
             Some(request.userAnswers.departureData.Consignment.modeOfTransportAtTheBorder.isDefined)
-          )
+          }
       val preparedForm = borderModeYesNo match {
         case None        => form
         case Some(value) => form.fill(value)
