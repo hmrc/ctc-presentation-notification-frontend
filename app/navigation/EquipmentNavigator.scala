@@ -103,5 +103,6 @@ class EquipmentNavigator extends Navigator {
           case _ => Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
         }
       case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 }

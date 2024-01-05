@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment
+package controllers.houseConsignment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.Mode
 import models.requests.MandatoryDataRequest
+import models.{Index, Mode}
 import navigation.Navigator
-import pages.houseConsignment.AddDepartureTransportMeansYesNoPage
+import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.AddDepartureTransportMeansYesNoView
+import views.html.houseConsignment.index.AddDepartureTransportMeansYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,36 +43,37 @@ class AddDepartureTransportMeansYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("addDepartureTransportMeansYesNo")
+  private def form(houseConsignmentIndex: Index) = formProvider("houseConsignment.index.addDepartureTransportMeansYesNo", houseConsignmentIndex.display)
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
+  def onPageLoad(departureId: String, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddDepartureTransportMeansYesNoPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex)) match {
+        case None        => form(houseConsignmentIndex)
+        case Some(value) => form(houseConsignmentIndex).fill(value)
       }
 
-      Ok(view(preparedForm, departureId, mode))
+      Ok(view(preparedForm, departureId, mode, houseConsignmentIndex))
   }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+  def onSubmit(departureId: String, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      form
+      form(houseConsignmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
-          value => redirect(mode, value, departureId)
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, houseConsignmentIndex))),
+          value => redirect(mode, value, departureId, houseConsignmentIndex)
         )
   }
 
   private def redirect(
     mode: Mode,
     value: Boolean,
-    departureId: String
+    departureId: String,
+    houseConsignmentIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDepartureTransportMeansYesNoPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddDepartureTransportMeansYesNoPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), updatedAnswers, departureId, mode))
 
 }
