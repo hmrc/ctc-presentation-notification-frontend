@@ -18,7 +18,7 @@ package controllers.transport.transportMeans
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.Mode
+import models.{Index, Mode}
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
@@ -46,7 +46,7 @@ class TransportMeansNationalityController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+  def onPageLoad(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
@@ -70,7 +70,7 @@ class TransportMeansNationalityController @Inject() (
       }
   }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+  def onSubmit(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
@@ -87,10 +87,11 @@ class TransportMeansNationalityController @Inject() (
   private def redirect(
     mode: Mode,
     value: Nationality,
-    departureId: String
+    departureId: String,
+    index: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage(index), value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode))
 }
