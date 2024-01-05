@@ -17,13 +17,22 @@
 package viewModels
 
 import config.FrontendAppConfig
+import models.reference.Country
 import models.{CheckMode, Index, UserAnswers}
+import pages.loading.CountryPage
 import pages.sections.transport.border.BorderActiveListSection
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{ActiveBorderTransportMeansAnswersHelper, LocationOfGoodsAnswersHelper, PresentationNotificationAnswersHelper, TransitHolderAnswerHelper}
+import utils.{
+  ActiveBorderTransportMeansAnswersHelper,
+  AnswersHelper,
+  LocationOfGoodsAnswersHelper,
+  PlaceOfLoadingAnswersHelper,
+  PresentationNotificationAnswersHelper,
+  TransitHolderAnswerHelper
+}
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import javax.inject.Inject
@@ -47,26 +56,16 @@ object PresentationNotificationAnswersViewModel {
     ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                    = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val locationOfGoodsHelper     = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val transitHolderAnswerHelper = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val activeBorderHelper        = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
 
       val firstSection = Section(
         rows = Seq(
           helper.limitDate,
           helper.containerIndicator
-        ).flatten
-      )
-
-      val placeOfLoading = Section(
-        sectionTitle = messages("checkYourAnswers.placeOfLoading"),
-        rows = Seq(
-          helper.addUnlocodeYesNo,
-          helper.unlocode,
-          helper.addExtraInformationYesNo,
-          helper.country,
-          helper.location
         ).flatten
       )
 
@@ -101,6 +100,7 @@ object PresentationNotificationAnswersViewModel {
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
         borderSection                     <- helper.borderModeSection
+        placeOfLoading                    <- placeOfLoadingAnswersHelper.locationOfGoodsSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
