@@ -28,14 +28,14 @@
         button: Button
 )
 
-@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.transportMeans.nationality.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TransportMeansNationalityController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TransportMeansNationalityController.onSubmit(departureId, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -45,7 +45,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
   private val mode         = NormalMode
 
   private val mockNationalitiesService: NationalitiesService = mock[NationalitiesService]
-  private lazy val nationalityRoute                          = controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode).url
+  private lazy val nationalityRoute                          = controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -68,7 +68,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, nationalityList.values, mode)(request, messages).toString
+        view(form, departureId, nationalityList.values, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +88,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, nationalityList.values, mode)(request, messages).toString
+        view(filledForm, departureId, nationalityList.values, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
@@ -110,7 +110,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, nationalityList.values, mode)(request, messages).toString
+        view(filledForm, departureId, nationalityList.values, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -145,7 +145,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, nationalityList.values, mode)(request, messages).toString
+        view(boundForm, departureId, nationalityList.values, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
