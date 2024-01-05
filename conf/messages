@@ -499,10 +499,30 @@ traderDetails.representative.representativeTelephoneNumber.error.maxLength = You
 traderDetails.representative.representativeTelephoneNumber.error.minLength = Your phone number must be 6 characters or more
 traderDetails.representative.representativeTelephoneNumber.error.required = Enter your phone number
 
+addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport?
+addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport?
+addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport
+addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+departureTransportMeans.subheading = Departure means of transport
+
 houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+houseConsignment.index.departureTransportMeans.identification.title = Which identification do you want to use for the departure means of transport in house consignment {0}?
+houseConsignment.index.departureTransportMeans.identification.heading = Which identification do you want to use for the departure means of transport in house consignment {0}?
+houseConsignment.index.departureTransportMeans.identification.checkYourAnswersLabel = Identification
+houseConsignment.index.departureTransportMeans.identification.error.required = Select which identification you want to use for the departure means of transport in house consignment {0}
+
+houseConsignment.index.departureTransportMeans.identificationNumber.title = What is the identification number for the departure means of transport in house consignment {0}?
+houseConsignment.index.departureTransportMeans.identificationNumber.heading = What is the identification number for the departure means of transport in house consignment {0}?
+houseConsignment.index.departureTransportMeans.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+houseConsignment.index.departureTransportMeans.identificationNumber.checkYourAnswersLabel = Identification number
+houseConsignment.index.departureTransportMeans.identificationNumber.error.length = The identification number must be 35 characters or less
+houseConsignment.index.departureTransportMeans.identificationNumber.error.required = Enter the identification number for the departure means of transport in house consignment {0}
+houseConsignment.index.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 
 houseConsignment.index.departureTransportMeans.country.title = What country is the departure means of transport registered to in house consignment {0}?
 houseConsignment.index.departureTransportMeans.country.heading = What country is the departure means of transport registered to in house consignment {0}?

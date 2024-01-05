@@ -1,0 +1,95 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers.houseConsignment.index.departureTransportMeans
+
+import controllers.actions._
+import forms.border.IdentificationNumberFormProvider
+import models.requests.MandatoryDataRequest
+import models.{Index, Mode}
+import navigation.Navigator
+import pages.houseConsignment.index.departureTransportMeans.IdentificationNumberPage
+import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.SessionRepository
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.houseConsignment.index.departureTransportMeans.IdentificationNumberView
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
+class IdentificationNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
+  navigator: Navigator,
+  formProvider: IdentificationNumberFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  view: IdentificationNumberView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
+
+  private val prefix = "houseConsignment.index.departureTransportMeans.identificationNumber"
+
+  def onPageLoad(departureId: String, mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index): Action[AnyContent] =
+    actions
+      .requireData(departureId)
+      .andThen(getMandatoryPage(IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex))) {
+        implicit request =>
+          val identificationType = request.arg
+          val form               = formProvider(prefix, houseConsignmentIndex.display)
+          val preparedForm = request.userAnswers.get(IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+          Ok(view(preparedForm, departureId, mode, houseConsignmentIndex, departureTransportMeansIndex, identificationType.asString))
+      }
+
+  def onSubmit(departureId: String, mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index): Action[AnyContent] =
+    actions
+      .requireData(departureId)
+      .andThen(getMandatoryPage(IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex)))
+      .async {
+        implicit request =>
+          val identificationType = request.arg
+          val form               = formProvider(prefix, houseConsignmentIndex.display)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(view(formWithErrors, departureId, mode, houseConsignmentIndex, departureTransportMeansIndex, identificationType.asString))
+                ),
+              value => redirect(mode, value, departureId, houseConsignmentIndex, departureTransportMeansIndex)
+            )
+      }
+
+  private def redirect(
+    mode: Mode,
+    value: String,
+    departureId: String,
+    houseConsignmentIndex: Index,
+    departureTransportMeansIndex: Index
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex), value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex), updatedAnswers, departureId, mode))
+
+}

@@ -24,6 +24,7 @@ import models.messages.ActiveBorderTransportMeans
 import models.reference.TransportMode._
 import models.reference._
 import models.reference.transport.border.active
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -230,6 +231,14 @@ trait ModelGenerators {
         code        <- Gen.oneOf("10", "11", "21", "30", "40", "41", "80", "81")
         description <- nonEmptyString
       } yield active.Identification(code, description)
+    }
+
+  implicit lazy val arbitraryTransportMeansIdentification: Arbitrary[TransportMeansIdentification] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("10", "11", "21", "30", "40", "41", "80", "81")
+        description <- nonEmptyString
+      } yield TransportMeansIdentification(code, description)
     }
 
   implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {

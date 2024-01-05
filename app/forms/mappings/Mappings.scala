@@ -42,10 +42,10 @@ trait Mappings extends Formatters with Constraints {
   protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[Any] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
-  protected def enumerable[A <: Radioable[A]](requiredKey: String = "error.required", invalidKey: String = "error.invalid")(implicit
+  protected def enumerable[A <: Radioable[A]](requiredKey: String = "error.required", invalidKey: String = "error.invalid", args: Seq[Any] = Seq.empty)(implicit
     ev: Enumerable[A]
   ): FieldMapping[A] =
-    of(enumerableFormatter[A](requiredKey, invalidKey))
+    of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
   protected def selectable[T <: Selectable](
     selectableList: SelectableList[T],

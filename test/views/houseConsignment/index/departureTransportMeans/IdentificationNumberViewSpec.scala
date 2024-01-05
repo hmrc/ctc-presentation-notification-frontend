@@ -14,39 +14,43 @@
  * limitations under the License.
  */
 
-package views.transport.border.active
+package views.houseConsignment.index.departureTransportMeans
 
 import forms.border.IdentificationNumberFormProvider
 import models.NormalMode
-import models.reference.transport.border.active.Identification
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.transport.border.active.IdentificationNumberView
+import views.html.houseConsignment.index.departureTransportMeans.IdentificationNumberView
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "transport.border.active.identificationNumber"
+  override val prefix: String = "houseConsignment.index.departureTransportMeans.identificationNumber"
 
-  private val identificationType = arbitrary[Identification].sample.value
+  private val identificationType = arbitrary[TransportMeansIdentification].sample.value
 
-  override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
+  override def form: Form[String] = new IdentificationNumberFormProvider()(prefix, houseConsignmentIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationNumberView].apply(form, departureId, NormalMode, index, identificationType.asString)(fakeRequest, messages)
+    injector
+      .instanceOf[IdentificationNumberView]
+      .apply(form, departureId, NormalMode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex, identificationType.asString)(fakeRequest,
+                                                                                                                                              messages
+      )
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(houseConsignmentIndex.display)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(houseConsignmentIndex.display)
 
-  behave like pageWithSectionCaption("Border means of transport")
+  behave like pageWithSectionCaption("Departure means of transport")
 
   behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 

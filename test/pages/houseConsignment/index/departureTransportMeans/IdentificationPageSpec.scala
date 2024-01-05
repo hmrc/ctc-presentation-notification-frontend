@@ -16,18 +16,18 @@
 
 package pages.houseConsignment.index.departureTransportMeans
 
-import models.reference.Nationality
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
 
-class CountryPageSpec extends PageBehaviours {
+class IdentificationPageSpec extends PageBehaviours {
 
-  "CountryPage" - {
+  "IdentificationPage" - {
 
-    beRetrievable[Nationality](CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
+    beRetrievable[TransportMeansIdentification](IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
-    beSettable[Nationality](CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
+    beSettable[TransportMeansIdentification](IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
-    beRemovable[Nationality](CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
+    beRemovable[TransportMeansIdentification](IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
 
   }
 }
