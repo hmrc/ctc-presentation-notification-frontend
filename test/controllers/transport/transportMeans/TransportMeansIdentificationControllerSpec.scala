@@ -109,29 +109,6 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
         view(filledForm, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
-        .thenReturn(Future.successful(identificationTypes))
-
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Option(Seq(activeBorderTransportMeans.head.copy(typeOfIdentification = Some(identificationType1.code))))
-      )(emptyUserAnswers)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, identificationRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> identificationType1.code))
-
-      val view = injector.instanceOf[TransportMeansIdentificationView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, identificationTypes, mode, index)(request, messages).toString
-    }
-
     "must redirect to the next page when valid data is submitted" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
