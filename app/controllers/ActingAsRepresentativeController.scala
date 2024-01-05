@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.representative
+package controllers
 
 import controllers.actions.Actions
 import forms.YesNoFormProvider
@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.representative.ActingAsRepresentativeView
+import views.html.ActingAsRepresentativeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,7 +43,7 @@ class ActingAsRepresentativeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("traderDetails.actingRepresentative")
+  private val form = formProvider("actingRepresentative")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>

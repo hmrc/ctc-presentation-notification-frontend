@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.representative.routes
+@import controllers.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
@@ -30,7 +30,7 @@
 @(form: Form[Boolean], departureId: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("traderDetails.actingRepresentative.title"),
+    title = messages("actingRepresentative.title"),
     showBackLink = true,
 ) {
 
@@ -41,9 +41,9 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("traderDetails.actingRepresentative.heading"),
+                heading = messages("actingRepresentative.heading"),
                 caption = Some(messages("representative.caption")),
-                additionalHtml = messages("traderDetails.actingRepresentative.paragraph").toParagraph
+                additionalHtml = messages("actingRepresentative.paragraph").toParagraph
             )
         )
 

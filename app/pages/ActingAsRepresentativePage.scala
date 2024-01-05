@@ -17,7 +17,7 @@
 package pages
 
 import models.{Mode, UserAnswers}
-import pages.sections.trader.{RepresentativeSection, TraderDetailsSection}
+import pages.sections.representative.RepresentativeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -25,7 +25,7 @@ import scala.util.Try
 
 case object ActingAsRepresentativePage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TraderDetailsSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "actingAsRepresentative"
 
@@ -36,7 +36,7 @@ case object ActingAsRepresentativePage extends QuestionPage[Boolean] {
     }
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = Some(
-    controllers.representative.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode)
+    controllers.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode)
   )
 
 }

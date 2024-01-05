@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections.trader
+package pages.representative
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case object TraderDetailsSection extends Section[JsObject] {
+class RepresentativePhoneNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "RepresentativePhoneNumberPageSpec" - {
 
-  override def toString: String = "traderDetails"
+    beRetrievable[String](RepresentativePhoneNumberPage)
+
+    beSettable[String](RepresentativePhoneNumberPage)
+
+    beRemovable[String](RepresentativePhoneNumberPage)
+  }
 }

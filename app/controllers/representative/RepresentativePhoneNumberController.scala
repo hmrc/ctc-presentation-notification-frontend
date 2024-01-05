@@ -43,10 +43,11 @@ class RepresentativePhoneNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private val form = formProvider("representative.representativeTelephoneNumber")
+
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId) {
       implicit request =>
-        val form = formProvider("traderDetails.representative.representativeTelephoneNumber")
         val preparedForm = request.userAnswers.get(RepresentativePhoneNumberPage) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -58,7 +59,6 @@ class RepresentativePhoneNumberController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val form = formProvider("traderDetails.representative.representativeTelephoneNumber")
         form
           .bindFromRequest()
           .fold(
