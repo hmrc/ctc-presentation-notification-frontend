@@ -55,7 +55,10 @@ locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
 placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
+transport.inlandModeOfTransport.caption = Inland mode of transport
+transport.border.borderModeOfTransport.caption = Border mode of transport
 departureMeansOfTransport.caption = Departure means of transport
+traderDetails.representative.caption = Representative
 
 transport.prefix = Transport equipment {0}
 transport.value.container = container {0}
@@ -270,12 +273,10 @@ loading.location.error.invalid = The place of loading must only include letters 
 transport.border.borderModeOfTransport.title = How is the transit crossing the border?
 transport.border.borderModeOfTransport.heading = How is the transit crossing the border?
 transport.border.borderModeOfTransport.error.required = Select how the transit is crossing the border
-transport.border.borderModeOfTransport.caption = Border mode of transport
 
 transport.limit.date.title = When do you expect the transit to arrive in {0}?
 transport.limit.date.heading = When do you expect the transit to arrive in {0}?
 transport.limit.date.paragraph = This has to be before {0}.
-transport.limit.date.caption = Estimated arrival date
 transport.limit.date.error.required.all = Enter the estimated arrival date at the office of destination
 transport.limit.date.error.required.multiple = The arrival date must include a {0} and {1}
 transport.limit.date.error.required = The arrival date must include a {0}
@@ -464,7 +465,6 @@ transport.equipment.removeItem.heading = Are you sure you want to remove this it
 transport.equipment.removeItem.inset = Item {0}
 transport.equipment.removeItem.error.required = Select yes if you want to remove this item from transport equipment {0}
 
-transport.addInlandModeOfTransport.caption = Inland mode of transport
 transport.addInlandModeOfTransport.heading = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.title = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
@@ -472,7 +472,6 @@ transport.addInlandModeOfTransport.no = No - the goods are already at the port o
 transport.addInlandModeOfTransport.error.required = Select yes if you want to add an inland mode of transport
 
 transport.inlandModeOfTransport.heading = Which inland mode of transport are you using?
-transport.inlandModeOfTransport.caption = Transport details - Inland mode of transport
 transport.inlandModeOfTransport.title = Which inland mode of transport are you using?
 transport.inlandModeOfTransport.error.required = Select which inland mode of transport you’re using
 
@@ -482,7 +481,6 @@ checkYourAnswers.paragraph1 = The information below combines parts of your initi
 checkYourAnswers.subHeading = Send this information for your departure declaration
 checkYourAnswers.paragraph2 = By sending this, you are confirming that these details are correct to the best of your knowledge.
 
-traderDetails.representative.caption = Representative
 traderDetails.actingRepresentative.title = Are you acting as a representative?
 traderDetails.actingRepresentative.heading = Are you acting as a representative?
 traderDetails.actingRepresentative.checkYourAnswersLabel = Are you acting as a representative?
