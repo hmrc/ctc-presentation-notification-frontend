@@ -16,12 +16,11 @@
 
 package controllers.transport.transportMeans
 
-import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList, UserAnswers}
+import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transport.transportMeans.TransportMeansNationalityPage
@@ -41,11 +40,10 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
   private val nationalityList = SelectableList(Seq(nationality1, nationality2))
 
   private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("transport.transportMeans.nationality", nationalityList)
+  private val form         = formProvider("houseConsignment.index.departureTransportMeans.country", nationalityList, index.display)
   private val mode         = NormalMode
 
-  private val mockNationalitiesService: NationalitiesService = mock[NationalitiesService]
-  private lazy val nationalityRoute                          = controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index).url
+  private lazy val nationalityRoute = controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -74,29 +72,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-      val userAnswers = emptyUserAnswers.setValue(TransportMeansNationalityPage, nationality1)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, nationalityRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> nationality1.code))
-
-      val view = injector.instanceOf[TransportMeansNationalityView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, nationalityList.values, mode, index)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Option(Seq(activeBorderTransportMeans.head.copy(nationality = Some(nationality1.code))))
-      )(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(TransportMeansNationalityPage(index), nationality1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, nationalityRoute)

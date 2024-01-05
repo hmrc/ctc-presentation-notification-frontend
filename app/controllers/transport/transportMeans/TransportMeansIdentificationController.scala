@@ -49,8 +49,8 @@ class TransportMeansIdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("transport.transportMeans.identification", identificationTypes)
+  private def form(identificationTypes: Seq[TransportMeansIdentification], index: Index): Form[TransportMeansIdentification] =
+    formProvider[TransportMeansIdentification]("houseConsignment.index.departureTransportMeans.identification", identificationTypes, index.display)
 
   def onPageLoad(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions
     .requireData(departureId)
@@ -68,8 +68,8 @@ class TransportMeansIdentificationController @Inject() (
             }
 
             val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(index)).orElse(identificationFromDepartureData) match {
-              case None        => form(identifiers)
-              case Some(value) => form(identifiers).fill(value)
+              case None        => form(identifiers, index)
+              case Some(value) => form(identifiers, index).fill(value)
             }
 
             Future.successful(Ok(view(preparedForm, departureId, identifiers, mode, index)))
@@ -82,7 +82,7 @@ class TransportMeansIdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(index, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           identificationTypeList =>
-            form(identificationTypeList)
+            form(identificationTypeList, index)
               .bindFromRequest()
               .fold(
                 formWithErrors =>

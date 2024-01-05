@@ -32,7 +32,7 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
     injector.instanceOf[TransportMeansIdentificationView].apply(form, departureId, values, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "transport.transportMeans"
+  override val prefix: String = "houseConsignment.index.departureTransportMeans.identification"
 
   override def radioItems(fieldId: String, checkedValue: Option[TransportMeansIdentification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
@@ -42,15 +42,15 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
     TransportMeansIdentification("81", "Name of an inland waterways vehicle")
   )
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(index.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Departure means of transport")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(index.display)
 
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = Seq(index.display))
 
   behave like pageWithSubmitButton("Continue")
 }

@@ -17,18 +17,18 @@
 package pages.transport.transportMeans
 
 import models.reference.Nationality
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-object TransportMeansNationalityPage extends QuestionPage[Nationality] {
+case class TransportMeansNationalityPage(index: Index) extends QuestionPage[Nationality] {
 
   override def path: JsPath = TransportMeansSection.path \ toString
 
   override def toString: String = "nationality"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode))
+    Some(controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index))
 }

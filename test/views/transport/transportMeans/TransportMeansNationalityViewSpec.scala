@@ -34,15 +34,15 @@ class TransportMeansNationalityViewSpec extends InputSelectViewBehaviours[Nation
 
   implicit override val arbitraryT: Arbitrary[Nationality] = arbitraryNationality
 
-  override val prefix: String = "transport.transportMeans.nationality"
+  override val prefix: String = "houseConsignment.index.departureTransportMeans.country"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(index.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Departure means of transport")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(index.display)
 
   behave like pageWithSelect()
 

@@ -60,13 +60,13 @@ class TransportMeansNationalityController @Inject() (
             )
           }
 
-          val form = formProvider("transport.transportMeans.nationality", nationalityList)
-          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage).orElse(nationalityFromDepartureData) match {
+          val form = formProvider("houseConsignment.index.departureTransportMeans.country", nationalityList, index.display)
+          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage(index)).orElse(nationalityFromDepartureData) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, departureId, nationalityList.values, mode))
+          Ok(view(preparedForm, departureId, nationalityList.values, mode, index))
       }
   }
 
@@ -74,12 +74,12 @@ class TransportMeansNationalityController @Inject() (
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
-          val form = formProvider("transport.transportMeans.nationality", nationalityList)
+          val form = formProvider("houseConsignment.index.departureTransportMeans.country", nationalityList, index.display)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode))),
-              value => redirect(mode, value, departureId)
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode, index))),
+              value => redirect(mode, value, departureId, index)
             )
       }
   }
@@ -93,5 +93,5 @@ class TransportMeansNationalityController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage(index), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage(index), updatedAnswers, departureId, mode))
 }

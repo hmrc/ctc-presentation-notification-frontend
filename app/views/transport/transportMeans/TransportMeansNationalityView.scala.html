@@ -31,7 +31,7 @@
 @(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.nationality.title"),
+    title = messages("houseConsignment.index.departureTransportMeans.country.title", index.display),
     showBackLink = true
 ) {
 
@@ -42,12 +42,12 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("transport.transportMeans.nationality.heading"),
-                caption = Some(messages("transport.transportMeans.subheading"))
+                heading = messages("houseConsignment.index.departureTransportMeans.country.heading", index.display),
+                caption = Some(messages("departureMeansOfTransport.caption"))
             ),
-            hint = Some(messages("transport.transportMeans.nationality.hint")),
+            hint = Some(messages("houseConsignment.index.departureTransportMeans.country.hint")),
             selectItems = nationalities.toSelectItems(form.value),
-            placeholder = messages("transport.transportMeans.nationality.placeholder")
+            placeholder = messages("houseConsignment.index.departureTransportMeans.country.placeholder")
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
