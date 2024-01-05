@@ -18,18 +18,18 @@ package pages.transport.transportMeans
 
 import controllers.transport.transportMeans.routes.TransportMeansIdentificationController
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-object TransportMeansIdentificationPage extends QuestionPage[TransportMeansIdentification] {
+case class TransportMeansIdentificationPage(index: Index) extends QuestionPage[TransportMeansIdentification] {
 
   override def path: JsPath = TransportMeansSection.path \ toString
 
   override def toString: String = "identification"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(TransportMeansIdentificationController.onPageLoad(departureId, mode))
+    Some(TransportMeansIdentificationController.onPageLoad(departureId, mode, index))
 }
