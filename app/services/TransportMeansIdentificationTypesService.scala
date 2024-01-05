@@ -40,6 +40,7 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
   ): Seq[TransportMeansIdentification] = {
     val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentification)
 
+
     borderModeOfTransport match {
       case Some(borderMode) if index.isFirst =>
         identificationTypesExcludingUnknown.filter(_.code.startsWith(borderMode.code))

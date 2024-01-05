@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment
+package pages.houseConsignment.index.departureTransportMeans
 
-import controllers.houseConsignment.routes
-import models.{Mode, UserAnswers}
+import controllers.houseConsignment.index.departureTransportMeans.routes
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.houseConsignment.HouseConsignmentSection
+import pages.sections.houseConsignment.departureTransportMeans.DepartureTransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddDepartureTransportMeansYesNoPage extends QuestionPage[Boolean] {
+case class IdentificationNumberPage(houseConsignmentIndex: Index, departureTransportMeansIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = HouseConsignmentSection.path \ toString
+  override def path: JsPath = DepartureTransportMeansSection(houseConsignmentIndex, departureTransportMeansIndex).path \ toString
 
-  override def toString: String = "addDepartureTransportMeansYesNo"
+  override def toString: String = "identificationNumber"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(departureId, mode))
-
-// TODO  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
+    Some(routes.IdentificationNumberController.onPageLoad(departureId, mode, houseConsignmentIndex, departureTransportMeansIndex))
 }

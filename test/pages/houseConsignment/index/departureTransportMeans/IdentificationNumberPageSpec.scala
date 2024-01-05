@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections.houseConsignment
+package pages.houseConsignment.index.departureTransportMeans
 
-import models.Index
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case class HouseConsignmentSection(houseConsignmentIndex: Index) extends Section[JsObject] {
+class IdentificationNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = HouseConsignmentListSection.path \ houseConsignmentIndex.position
+  "IdentificationNumberPage" - {
 
-  override def toString: String = "houseConsignment"
+    beRetrievable[String](IdentificationNumberPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
+
+    beSettable[String](IdentificationNumberPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
+
+    beRemovable[String](IdentificationNumberPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex))
+  }
 }
