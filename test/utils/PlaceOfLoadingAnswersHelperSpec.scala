@@ -29,6 +29,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.Json
 import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import models.messages.MessageData
+import models.reference.Country
 
 class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   "PlaceOfLoadingAnswersHelper" - {
@@ -111,10 +112,6 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                 .setValue(UnLocodePage, unlocode)
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
               val result = helper.unlocode.get
-
-              println("ans", answers.get(UnLocodePage))
-              println("unlocode", unlocode)
-              println("res", result.value.value)
 
               result.key.value mustBe s"UN/LOCODE"
               result.value.value mustBe unlocode
@@ -205,62 +202,62 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
       }
     }
 
-//    "country" - {
-//      "must return None when no country in ie15/170" - {
-//        s"when $CountryPage undefined" in {
-//          forAll(arbitrary[Mode]) {
-//            mode =>
-//              val ie015WithNoLoadingUserAnswers =
-//                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-//              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mockReferenceDataService, mode)
-//              val result = helper.country
-//              result mustBe None
-//          }
-//        }
-//      }
-//
-//      "must return Some(Row)" - {
-//        s"when $CountryPage defined in the ie170" in {
-//          forAll(arbitrary[Mode], arbitraryCountry.arbitrary) {
-//            (mode, country) =>
-//              val answers = emptyUserAnswers
-//                .setValue(CountryPage, country)
-//              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-//              val result = helper.country.get
-//
-//              result.key.value mustBe s"Country"
-//              result.value.value mustBe country.description
-//              val actions = result.actions.get.items
-//              actions.size mustBe 1
-//              val action = actions.head
-//              action.content.value mustBe "Change"
-//              action.href mustBe controllers.loading.routes.CountryController.onPageLoad(departureId, mode).url
-//              action.visuallyHiddenText.get mustBe "country for the place of loading"
-//              action.id mustBe "change-country"
-//          }
-//        }
-//
-//        s"when $CountryPage defined in the ie15" in {
-//          forAll(arbitrary[Mode]) {
-//            mode =>
-//              val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-//              val helper = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mockReferenceDataService, mode)
-//              val result = helper.country.get
-//
-//              result.key.value mustBe s"Country"
-//              //TODO: Change once we pull ref data to format country answer in the 15
-//              result.value.value mustBe s"countryDesc"
-//              val actions = result.actions.get.items
-//              actions.size mustBe 1
-//              val action = actions.head
-//              action.content.value mustBe "Change"
-//              action.href mustBe controllers.loading.routes.CountryController.onPageLoad(departureId, mode).url
-//              action.visuallyHiddenText.get mustBe "country for the place of loading"
-//              action.id mustBe "change-country"
-//          }
-//        }
-//      }
-//    }
+    "country" - {
+      "must return None when no country in ie15/170" - {
+        s"when $CountryPage undefined" in {
+          forAll(arbitrary[Mode], arbitrary[Country]) {
+            (mode, countryType) =>
+              val ie015WithNoLoadingUserAnswers =
+                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mockReferenceDataService, mode)
+              val result = helper.countryTypeRow(countryType.description)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $CountryPage defined in the ie170" in {
+          forAll(arbitrary[Mode], arbitraryCountry.arbitrary) {
+            (mode, country) =>
+              val answers = emptyUserAnswers
+                .setValue(CountryPage, country)
+              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val result = helper.countryTypeRow(country.description).get
+
+              result.key.value mustBe s"Country"
+              result.value.value mustBe country.description
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.loading.routes.CountryController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "country for the place of loading"
+              action.id mustBe "change-country"
+          }
+        }
+
+        s"when $CountryPage defined in the ie15" in {
+          forAll(arbitrary[Mode], arbitrary[Country]) {
+            (mode, countryType) =>
+              val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+              val helper                      = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mockReferenceDataService, mode)
+              val result                      = helper.countryTypeRow(countryType.description).get
+
+              result.key.value mustBe s"Country"
+              //TODO: Change once we pull ref data to format country answer in the 15
+              result.value.value mustBe countryType.description
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.loading.routes.CountryController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "country for the place of loading"
+              action.id mustBe "change-country"
+          }
+        }
+      }
+    }
 
     "location" - {
       "must return None when no location in ie15/170" - {
