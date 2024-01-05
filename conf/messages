@@ -55,6 +55,8 @@ locationOfGoods.caption = Location of goods
 arrivalDate.caption = Estimated arrival date
 placeOfLoading.caption = Place of loading
 transport.caption = Transport equipment
+transport.inlandModeOfTransport.caption = Inland mode of transport
+transport.border.borderModeOfTransport.caption = Border mode of transport
 representative.caption = Representative
 departureMeansOfTransport.caption = Departure means of transport
 
@@ -106,7 +108,6 @@ locationOfGoods.eori.error.required = Enter the EORI number or Trader Identifica
 locationOfGoods.eori.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
 locationOfGoods.eori.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 locationOfGoods.eori.change.hidden = EORI number or Trader Identification Number (TIN) for the location of goods
-locationOfGoods.address.change.hidden = the address for the location of goods
 
 locationOfGoods.coordinates.title = What are the coordinates for the location of goods?
 locationOfGoods.coordinates.heading = What are the coordinates for the location of goods?
@@ -288,14 +289,12 @@ loading.location.error.invalid = The place of loading must only include letters 
 transport.border.borderModeOfTransport.title = How is the transit crossing the border?
 transport.border.borderModeOfTransport.heading = How is the transit crossing the border?
 transport.border.borderModeOfTransport.error.required = Select how the transit is crossing the border
-transport.border.borderModeOfTransport.caption = Border mode of transport
 transport.border.borderModeOfTransport.checkYourAnswersLabel = Mode
 transport.border.borderModeOfTransport.change.hidden = border mode of transport
 
 transport.limit.date.title = When do you expect the transit to arrive in {0}?
 transport.limit.date.heading = When do you expect the transit to arrive in {0}?
 transport.limit.date.paragraph = This has to be before {0}.
-transport.limit.date.caption = Estimated arrival date
 transport.limit.date.checkYourAnswersLabel = Estimated arrival date at the office of destination
 transport.limit.date.change.hidden =  estimated arrival date at the office of destination
 transport.limit.date.error.required.all = Enter the estimated arrival date at the office of destination
@@ -511,7 +510,6 @@ representative.name.error.length = Your name must be {0} characters or less
 representative.name.error.invalid = Your name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 representative.name.change.hidden = representative’s name
 
-transport.addInlandModeOfTransport.caption = Inland mode of transport
 transport.addInlandModeOfTransport.heading = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.title = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
@@ -519,7 +517,6 @@ transport.addInlandModeOfTransport.no = No - the goods are already at the port o
 transport.addInlandModeOfTransport.error.required = Select yes if you want to add an inland mode of transport
 
 transport.inlandModeOfTransport.heading = Which inland mode of transport are you using?
-transport.inlandModeOfTransport.caption = Transport details - Inland mode of transport
 transport.inlandModeOfTransport.title = Which inland mode of transport are you using?
 transport.inlandModeOfTransport.error.required = Select which inland mode of transport you’re using
 
@@ -529,7 +526,6 @@ checkYourAnswers.paragraph1 = The information below combines parts of your initi
 checkYourAnswers.subHeading = Send this information for your departure declaration
 checkYourAnswers.paragraph2 = By sending this, you are confirming that these details are correct to the best of your knowledge.
 
-traderDetails.representative.caption = Representative
 traderDetails.actingRepresentative.title = Are you acting as a representative?
 traderDetails.actingRepresentative.heading = Are you acting as a representative?
 traderDetails.actingRepresentative.checkYourAnswersLabel = Are you acting as a representative?
