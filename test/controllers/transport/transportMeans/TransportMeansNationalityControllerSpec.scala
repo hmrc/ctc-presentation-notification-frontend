@@ -74,7 +74,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-      val userAnswers = emptyUserAnswers.setValue(TransportMeansNationalityPage, nationality1)
+      val userAnswers = emptyUserAnswers.setValue(TransportMeansNationalityPage(index), nationality1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, nationalityRoute)

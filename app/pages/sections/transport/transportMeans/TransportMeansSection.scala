@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.sections.transport.transportMeans
 
-import models.reference.Nationality
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-class TransportMeansNationalityPageSpec extends PageBehaviours {
+case class TransportMeansSection(index: Index) extends Section[JsArray] {
 
-  "IdentificationPage" - {
+  override def path: JsPath = TransportMeansListSection.path \ index.position
 
-    beRetrievable[Nationality](TransportMeansNationalityPage(index))
-
-    beSettable[Nationality](TransportMeansNationalityPage(index))
-
-    beRemovable[Nationality](TransportMeansNationalityPage(index))
-
-    "cleanup" - {
-      // TODO Add clean-up test
-    }
-  }
 }
