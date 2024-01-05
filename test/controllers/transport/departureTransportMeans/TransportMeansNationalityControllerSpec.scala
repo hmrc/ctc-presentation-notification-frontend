@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.transportMeans
+package controllers.transport.departureTransportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -23,13 +23,13 @@ import generators.Generators
 import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.transport.transportMeans.TransportMeansNationalityPage
+import pages.transport.departureTransportMeans.TransportMeansNationalityPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.NationalitiesService
-import views.html.transport.transportMeans.TransportMeansNationalityView
+import views.html.transport.departureTransportMeans.TransportMeansNationalityView
 
 import scala.concurrent.Future
 
@@ -40,10 +40,11 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
   private val nationalityList = SelectableList(Seq(nationality1, nationality2))
 
   private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("houseConsignment.index.departureTransportMeans.country", nationalityList, index.display)
+  private val form         = formProvider("consignment.index.departureTransportMeans.country", nationalityList, index.display)
   private val mode         = NormalMode
 
-  private lazy val nationalityRoute = controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index).url
+  private lazy val nationalityRoute =
+    controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

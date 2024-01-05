@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.transportMeans
+package controllers.transport.departureTransportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -27,13 +27,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
-import pages.transport.transportMeans.TransportMeansIdentificationPage
+import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TransportMeansIdentificationTypesService
-import views.html.transport.transportMeans.TransportMeansIdentificationView
+import views.html.transport.departureTransportMeans.TransportMeansIdentificationView
 
 import scala.concurrent.Future
 
@@ -48,7 +48,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   private val mode         = NormalMode
 
   private lazy val identificationRoute =
-    controllers.transport.transportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url
+    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url
 
   private val mockMeansOfTransportIdentificationTypesService: TransportMeansIdentificationTypesService =
     mock[TransportMeansIdentificationTypesService]

@@ -1,9 +1,0 @@
-GET        /departure-means-of-transport/:activeIndex/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
-POST       /departure-means-of-transport/:activeIndex/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
-GET        /departure-means-of-transport/:activeIndex/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
-POST       /departure-means-of-transport/:activeIndex/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
-
-GET        /departure-means-of-transport/:activeIndex/country/:departureId                      controllers.transport.transportMeans.TransportMeansNationalityController.onPageLoad(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
-POST       /departure-means-of-transport/:activeIndex/country/:departureId                      controllers.transport.transportMeans.TransportMeansNationalityController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
-GET        /departure-means-of-transport/:activeIndex/change-country/:departureId               controllers.transport.transportMeans.TransportMeansNationalityController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
-POST       /departure-means-of-transport/:activeIndex/change-country/:departureId               controllers.transport.transportMeans.TransportMeansNationalityController.onSubmit(departureId: String, mode: Mode = CheckMode, activeIndex: Index)

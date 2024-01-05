@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.transport.departureTransportMeans
 
 import models.reference.Nationality
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.transport.TransportMeansSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case class TransportMeansNationalityPage(index: Index) extends QuestionPage[Nationality] {
+class TransportMeansNationalityPageSpec extends PageBehaviours {
 
-  override def path: JsPath = TransportMeansSection.path \ toString
+  "IdentificationPage" - {
 
-  override def toString: String = "nationality"
+    beRetrievable[Nationality](TransportMeansNationalityPage(index))
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.transport.transportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index))
+    beSettable[Nationality](TransportMeansNationalityPage(index))
+
+    beRemovable[Nationality](TransportMeansNationalityPage(index))
+
+    "cleanup" - {
+      // TODO Add clean-up test
+    }
+  }
 }

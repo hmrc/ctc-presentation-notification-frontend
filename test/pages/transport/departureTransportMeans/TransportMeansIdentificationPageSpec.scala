@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.transport.departureTransportMeans
 
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours

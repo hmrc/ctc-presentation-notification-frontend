@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.transportMeans.routes
+@import controllers.transport.departureTransportMeans.routes
 @import models.reference.Nationality
 @import models.Selectable._
 @import viewModels.components.InputSelectViewModel._
@@ -31,7 +31,7 @@
 @(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.departureTransportMeans.country.title", index.display),
+    title = messages("consignment.index.departureTransportMeans.nationality.title", index.display),
     showBackLink = true
 ) {
 
@@ -42,12 +42,12 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("houseConsignment.index.departureTransportMeans.country.heading", index.display),
+                heading = messages("consignment.index.departureTransportMeans.nationality.heading", index.display),
                 caption = Some(messages("departureMeansOfTransport.caption"))
             ),
-            hint = Some(messages("houseConsignment.index.departureTransportMeans.country.hint")),
+            hint = Some(messages("consignment.index.departureTransportMeans.nationality.hint")),
             selectItems = nationalities.toSelectItems(form.value),
-            placeholder = messages("houseConsignment.index.departureTransportMeans.country.placeholder")
+            placeholder = messages("consignment.index.departureTransportMeans.nationality.placeholder")
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))

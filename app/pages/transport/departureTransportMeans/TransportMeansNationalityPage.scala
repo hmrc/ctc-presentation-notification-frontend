@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.transport.departureTransportMeans
 
-import controllers.transport.transportMeans.routes.TransportMeansIdentificationController
-import models.reference.transport.transportMeans.TransportMeansIdentification
+import models.reference.Nationality
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.TransportMeansSection
+import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TransportMeansIdentificationPage(index: Index) extends QuestionPage[TransportMeansIdentification] {
+case class TransportMeansNationalityPage(index: Index) extends QuestionPage[Nationality] {
 
-  override def path: JsPath = TransportMeansSection.path \ toString
+  override def path: JsPath = TransportMeansSection(index).path \ toString
 
-  override def toString: String = "identification"
+  override def toString: String = "nationality"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(TransportMeansIdentificationController.onPageLoad(departureId, mode, index))
+    Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, index))
 }
