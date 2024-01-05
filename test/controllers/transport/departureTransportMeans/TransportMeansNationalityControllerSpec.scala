@@ -40,7 +40,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
   private val nationalityList = SelectableList(Seq(nationality1, nationality2))
 
   private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("consignment.index.departureTransportMeans.country", nationalityList, index.display)
+  private val form         = formProvider("consignment.index.departureTransportMeans.nationality", nationalityList, index.display)
   private val mode         = NormalMode
 
   private lazy val nationalityRoute =
