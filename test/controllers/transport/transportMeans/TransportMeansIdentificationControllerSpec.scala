@@ -44,10 +44,12 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   private val identificationType2 = TransportMeansIdentification("41", "Registration number of an aircraft")
   private val identificationTypes = Seq(identificationType1, identificationType2)
 
-  private val formProvider             = new EnumerableFormProvider()
-  private val form                     = formProvider[TransportMeansIdentification]("transport.transportMeans.identification", identificationTypes)
-  private val mode                     = NormalMode
-  private lazy val identificationRoute = controllers.transport.transportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode).url
+  private val formProvider = new EnumerableFormProvider()
+  private val form         = formProvider[TransportMeansIdentification]("transport.transportMeans.identification", identificationTypes)
+  private val mode         = NormalMode
+
+  private lazy val identificationRoute =
+    controllers.transport.transportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url
 
   private val mockMeansOfTransportIdentificationTypesService: TransportMeansIdentificationTypesService =
     mock[TransportMeansIdentificationTypesService]
@@ -65,7 +67,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   "TransportMeansIdentification Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
@@ -81,16 +83,16 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, identificationTypes, mode)(request, messages).toString
+        view(form, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
         .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
-        .setValue(TransportMeansIdentificationPage, identificationType1)
+        .setValue(TransportMeansIdentificationPage(index), identificationType1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)
@@ -104,11 +106,11 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, identificationTypes, mode)(request, messages).toString
+        view(filledForm, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
@@ -127,12 +129,12 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, identificationTypes, mode)(request, messages).toString
+        view(filledForm, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
@@ -151,7 +153,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
@@ -168,7 +170,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, identificationTypes, mode)(request, messages).toString
+        view(boundForm, departureId, identificationTypes, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

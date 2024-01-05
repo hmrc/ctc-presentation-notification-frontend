@@ -23,11 +23,11 @@ class TransportMeansIdentificationPageSpec extends PageBehaviours {
 
   "IdentificationPage" - {
 
-    beRetrievable[TransportMeansIdentification](TransportMeansIdentificationPage)
+    beRetrievable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
 
-    beSettable[TransportMeansIdentification](TransportMeansIdentificationPage)
+    beSettable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
 
-    beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage)
+    beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
 
     "cleanup" - {
       // TODO Add clean-up test
