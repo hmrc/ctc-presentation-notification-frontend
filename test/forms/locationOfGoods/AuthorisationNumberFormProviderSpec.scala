@@ -20,7 +20,7 @@ import forms.Constants.maxAuthorisationNumberLength
 import forms.behaviours.StringFieldBehaviours
 import models.StringFieldRegex.alphaNumericWithSpacesRegex
 import org.scalacheck.Gen
-import play.api.data.{Field, FormError}
+import play.api.data.FormError
 
 class AuthorisationNumberFormProviderSpec extends StringFieldBehaviours {
 
@@ -42,6 +42,12 @@ class AuthorisationNumberFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
+    behave like fieldThatRemovesSpaces(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
+
     behave like fieldWithInvalidCharacters(
       form,
       fieldName,
@@ -55,18 +61,11 @@ class AuthorisationNumberFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind valid strings over max length" in {
-      val expectedError = FormError(fieldName, maxLengthKey, Seq(maxAuthorisationNumberLength))
-
-      val gen = for {
-        str <- stringsLongerThan(maxAuthorisationNumberLength, Gen.alphaNumChar)
-      } yield str
-
-      forAll(gen) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
+    )
   }
 }

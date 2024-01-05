@@ -18,6 +18,7 @@ package forms.locationOfGoods
 
 import forms.Constants.maxAuthorisationNumberLength
 import forms.mappings.Mappings
+import models.RichString
 import models.StringFieldRegex.alphaNumericWithSpacesRegex
 import play.api.data.Form
 
@@ -27,7 +28,7 @@ class AuthorisationNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericWithSpacesRegex, s"$prefix.error.invalid"),

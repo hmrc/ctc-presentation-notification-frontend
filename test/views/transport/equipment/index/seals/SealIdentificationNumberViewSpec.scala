@@ -48,5 +48,5 @@ class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

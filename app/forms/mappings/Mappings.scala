@@ -26,10 +26,10 @@ import java.time.LocalDate
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
-    of(stringFormatter(errorKey, args))
+    adaptedText(errorKey, args)(identity)
 
-  protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
-    of(spacelessStringFormatter(errorKey))
+  protected def adaptedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty)(f: String => String): FieldMapping[String] =
+    of(stringFormatter(errorKey, args)(f))
 
   protected def int(
     requiredKey: String = "error.required",
@@ -42,10 +42,10 @@ trait Mappings extends Formatters with Constraints {
   protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[Any] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
-  protected def enumerable[A <: Radioable[A]](requiredKey: String = "error.required", invalidKey: String = "error.invalid")(implicit
+  protected def enumerable[A <: Radioable[A]](requiredKey: String = "error.required", invalidKey: String = "error.invalid", args: Seq[Any] = Seq.empty)(implicit
     ev: Enumerable[A]
   ): FieldMapping[A] =
-    of(enumerableFormatter[A](requiredKey, invalidKey))
+    of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
   protected def selectable[T <: Selectable](
     selectableList: SelectableList[T],

@@ -64,5 +64,5 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[LocationOfGoodsIde
 
   behave like pageWithRadioItems()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

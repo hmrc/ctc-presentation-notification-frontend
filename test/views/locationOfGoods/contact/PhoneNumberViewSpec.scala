@@ -49,5 +49,5 @@ class PhoneNumberViewSpec extends TelephoneNumberViewBehaviours {
 
   behave like pageWithTelephoneNumberInput()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }
