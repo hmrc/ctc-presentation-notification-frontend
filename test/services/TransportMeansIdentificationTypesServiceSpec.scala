@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.reference.TransportMode.BorderMode
-import models.reference.transport.transportMeans.TransportMeansIdentification
+import models.reference.transport.departureTransportMeans.TransportMeansIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach

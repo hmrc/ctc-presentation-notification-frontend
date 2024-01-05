@@ -24,7 +24,7 @@ import models.messages.{ActiveBorderTransportMeans, Address}
 import models.reference.TransportMode._
 import models.reference._
 import models.reference.transport.border.active
-import models.reference.transport.transportMeans.TransportMeansIdentification
+import models.reference.transport.departureTransportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.transportMeans
+package controllers.transport.departureTransportMeans
 
 import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
@@ -22,19 +22,19 @@ import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.reference.TransportMode.BorderMode
-import models.reference.transport.transportMeans.TransportMeansIdentification
+import models.reference.transport.departureTransportMeans.TransportMeansIdentification
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
-import pages.transport.transportMeans.TransportMeansIdentificationPage
+import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TransportMeansIdentificationTypesService
-import views.html.transport.transportMeans.TransportMeansIdentificationView
+import views.html.transport.departureTransportMeans.TransportMeansIdentificationView
 
 import scala.concurrent.Future
 
@@ -45,11 +45,11 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   private val identificationTypes = Seq(identificationType1, identificationType2)
 
   private val formProvider = new EnumerableFormProvider()
-  private val form         = formProvider[TransportMeansIdentification]("transport.transportMeans.identification", identificationTypes)
+  private val form         = formProvider[TransportMeansIdentification]("transport.departureTransportMeans.identification", identificationTypes)
   private val mode         = NormalMode
 
   private lazy val identificationRoute =
-    controllers.transport.transportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url
+    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url
 
   private val mockMeansOfTransportIdentificationTypesService: TransportMeansIdentificationTypesService =
     mock[TransportMeansIdentificationTypesService]
@@ -93,29 +93,6 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       val userAnswers = emptyUserAnswers
         .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
         .setValue(TransportMeansIdentificationPage(index), identificationType1)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, identificationRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> identificationType1.code))
-
-      val view = injector.instanceOf[TransportMeansIdentificationView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, identificationTypes, mode, index)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
-        .thenReturn(Future.successful(identificationTypes))
-
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Option(Seq(activeBorderTransportMeans.head.copy(typeOfIdentification = Some(identificationType1.code))))
-      )(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)

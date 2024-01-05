@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.TransportMode.BorderMode
 import models.reference._
 import models.reference.transport.border.active.Identification
-import models.reference.transport.transportMeans.TransportMeansIdentification
+import models.reference.transport.departureTransportMeans.TransportMeansIdentification
 import models.{LocationOfGoodsIdentification, LocationType}
 import play.api.Logging
 import play.api.http.Status.OK

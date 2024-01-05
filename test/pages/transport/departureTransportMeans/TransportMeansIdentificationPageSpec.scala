@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.transport.departureTransportMeans
 
-import models.reference.Nationality
+import models.reference.transport.departureTransportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
 
-class TransportMeansNationalityPageSpec extends PageBehaviours {
+class TransportMeansIdentificationPageSpec extends PageBehaviours {
 
   "IdentificationPage" - {
 
-    beRetrievable[Nationality](TransportMeansNationalityPage(index))
+    beRetrievable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
 
-    beSettable[Nationality](TransportMeansNationalityPage(index))
+    beSettable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
 
-    beRemovable[Nationality](TransportMeansNationalityPage(index))
+    beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
 
     "cleanup" - {
       // TODO Add clean-up test

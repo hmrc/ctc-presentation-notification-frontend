@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections.transport.transportMeans
+package pages.sections.transport.departureTransportMeans
 
 import models.Index
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
 
-case class TransportMeansSection(index: Index) extends Section[JsArray] {
+case class DepartureTransportMeansSection(index: Index) extends Section[JsArray] {
 
-  override def path: JsPath = TransportMeansListSection.path \ index.position
+  override def path: JsPath = DepartureTransportMeansListSection.path \ index.position
 
 }

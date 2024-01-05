@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.reference.transport.transportMeans
+package models.reference.transport.departureTransportMeans
 
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
@@ -33,5 +33,5 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 object TransportMeansIdentification extends DynamicEnumerableType[TransportMeansIdentification] {
   implicit val format: Format[TransportMeansIdentification] = Json.format[TransportMeansIdentification]
 
-  val messageKeyPrefix = "transport.transportMeans.identification"
+  val messageKeyPrefix = "transport.departureTransportMeans.identification"
 }

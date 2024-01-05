@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.transportMeans.routes
+@import controllers.transport.departureTransportMeans.routes
 @import models.LocalReferenceNumber
-@import models.reference.transport.transportMeans.TransportMeansIdentification
+@import models.reference.transport.departureTransportMeans.TransportMeansIdentification
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
@@ -32,7 +32,7 @@
 @(form: Form[TransportMeansIdentification], departureId: String, identifiers: Seq[TransportMeansIdentification], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.title"),
+    title = messages("transport.departureTransportMeans.title"),
     showBackLink = true
 ) {
 
@@ -43,8 +43,8 @@
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = Some(messages("transport.transportMeans.subheading")),
-                heading = messages("transport.transportMeans.heading")
+                caption = Some(messages("transport.departureTransportMeans.subheading")),
+                heading = messages("transport.departureTransportMeans.heading")
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )

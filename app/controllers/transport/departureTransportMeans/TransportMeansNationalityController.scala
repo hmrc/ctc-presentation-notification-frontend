@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.transportMeans
+package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.SelectableFormProvider
@@ -22,13 +22,13 @@ import models.{Index, Mode}
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
-import pages.transport.transportMeans.TransportMeansNationalityPage
+import pages.transport.departureTransportMeans.TransportMeansNationalityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.NationalitiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transport.transportMeans.TransportMeansNationalityView
+import views.html.transport.departureTransportMeans.TransportMeansNationalityView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,18 +50,8 @@ class TransportMeansNationalityController @Inject() (
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
-          def nationalityFromDepartureData = {
-            val nationalityCode = request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
-              list => list.lift(index.position).flatMap(_.nationality)
-            )
-
-            nationalityCode.flatMap(
-              code => nationalityList.values.find(_.code == code)
-            )
-          }
-
-          val form = formProvider("transport.transportMeans.nationality", nationalityList)
-          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage(index)).orElse(nationalityFromDepartureData) match {
+          val form = formProvider("transport.departureTransportMeans.nationality", nationalityList)
+          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage(index)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
@@ -74,7 +64,7 @@ class TransportMeansNationalityController @Inject() (
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
-          val form = formProvider("transport.transportMeans.nationality", nationalityList)
+          val form = formProvider("transport.departureTransportMeans.nationality", nationalityList)
           form
             .bindFromRequest()
             .fold(
