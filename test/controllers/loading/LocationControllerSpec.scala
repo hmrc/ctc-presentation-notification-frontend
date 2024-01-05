@@ -22,7 +22,8 @@ import controllers.routes
 import forms.Constants.loadingLocationMaxLength
 import forms.loading.LoadingLocationFormProvider
 import generators.Generators
-import models.NormalMode
+import models.messages.PlaceOfLoading
+import models.{NormalMode, UserAnswers}
 import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -52,11 +53,10 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" in {
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(None)(userAnswers))
 
       val request = FakeRequest(GET, locationRoute)
-
-      val result = route(app, request).value
+      val result  = route(app, request).value
 
       val view = injector.instanceOf[LocationView]
 
@@ -79,6 +79,28 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "Test"))
+
+      val view = injector.instanceOf[LocationView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, country.description, loadingLocationMaxLength, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CountryPage, country)
+      val userAnswers15 =
+        UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(Some(PlaceOfLoading(Some("unlocode1"), Some(country.description), Some("London"))))(userAnswers)
+
+      setExistingUserAnswers(userAnswers15)
+
+      val request = FakeRequest(GET, locationRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "London"))
 
       val view = injector.instanceOf[LocationView]
 

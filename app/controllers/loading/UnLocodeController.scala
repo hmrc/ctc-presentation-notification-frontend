@@ -22,6 +22,7 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.UnLocodePage
+import play.api.Logging
 import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -44,14 +45,17 @@ class UnLocodeController @Inject() (
   service: UnLocodeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val prefix = "loading.unLocode"
   private val form   = formProvider(prefix)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UnLocodePage) match {
+      val preparedForm = request.userAnswers
+        .get(UnLocodePage)
+        .orElse(request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(_.UNLocode)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

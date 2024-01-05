@@ -115,6 +115,9 @@ object UserAnswers {
   private val locationOfGoodsConsignmentLens: Lens[Consignment, Option[LocationOfGoods]] =
     GenLens[Consignment](_.LocationOfGoods)
 
+  private val placeOfLoadingConsignmentLens: Lens[Consignment, Option[PlaceOfLoading]] =
+    GenLens[Consignment](_.PlaceOfLoading)
+
   private val borderMeansConsignmentLens: Lens[Consignment, Option[Seq[ActiveBorderTransportMeans]]] =
     GenLens[Consignment](_.ActiveBorderTransportMeans)
 
@@ -133,6 +136,9 @@ object UserAnswers {
 
   val setLocationOfGoodsOnUserAnswersLens: Lens[UserAnswers, Option[LocationOfGoods]] =
     departureDataLens.composeLens(consignmentLens).composeLens(locationOfGoodsConsignmentLens)
+
+  val setPlaceOfLoadingOnUserAnswersLens: Lens[UserAnswers, Option[PlaceOfLoading]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(placeOfLoadingConsignmentLens)
 
   val setAddressOnUserAnswersLens: Optional[UserAnswers, Address] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens addressLocationLens composePrism some

@@ -22,6 +22,7 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.AddUnLocodeYesNoPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -41,13 +42,23 @@ class AddUnLocodeYesNoController @Inject() (
   view: AddUnLocodeYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val form = formProvider("loading.addUnLocodeYesNo")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddUnLocodeYesNoPage) match {
+      val preparedForm = request.userAnswers
+        .get(AddUnLocodeYesNoPage)
+        .orElse {
+          logger.info(s"Retrieved AddUnlocodeYesNo answer from IE015 journey")
+          request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
+            _.UNLocode.map(
+              _ => true
+            )
+          )
+        } match {
         case None        => form
         case Some(value) => form.fill(value)
       }
