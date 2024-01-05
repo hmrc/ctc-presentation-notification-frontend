@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections.houseConsignment
+package pages.sections.houseConsignment.departureTransportMeans
 
 import models.Index
 import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case class HouseConsignmentSection(houseConsignmentIndex: Index) extends Section[JsObject] {
+case class DepartureTransportMeansSection(houseConsignmentIndex: Index, departureTransportMeansIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = HouseConsignmentListSection.path \ houseConsignmentIndex.position
+  override def path: JsPath = DepartureTransportMeansListSection(houseConsignmentIndex).path \ departureTransportMeansIndex.position
 
-  override def toString: String = "houseConsignment"
+  override def toString: String = "departureTransportMeans"
 }
