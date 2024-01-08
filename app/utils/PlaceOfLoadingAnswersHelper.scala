@@ -88,7 +88,7 @@ class PlaceOfLoadingAnswersHelper(
       country <- fetchValue[Country](
         CountryPage,
         checkYourAnswersReferenceDataService.getCountry,
-        userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.country))
+        userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(_.country)
       )
       countryRow = country.flatMap(
         x => countryTypeRow(x.description)

@@ -19,7 +19,8 @@ package controllers.loading
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.UnLocodeFormProvider
-import models.NormalMode
+import models.messages.PlaceOfLoading
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.loading.UnLocodePage
@@ -53,8 +54,7 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   "UnLocode Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       when(mockUnLocodeService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(true)
 
@@ -78,6 +78,27 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       setExistingUserAnswers(userAnswers)
 
       when(mockUnLocodeService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(GET, unLocodeRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "DEAAL"))
+
+      val view = injector.instanceOf[UnLocodeView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      val userAnswers15 =
+        UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(Some(PlaceOfLoading(Some("DEAAL"), Some("GB"), Some("London"))))(emptyUserAnswers)
+
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, unLocodeRoute)
 
