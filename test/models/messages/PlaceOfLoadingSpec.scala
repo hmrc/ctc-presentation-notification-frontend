@@ -34,7 +34,7 @@ class PlaceOfLoadingSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         forAll(Gen.alphaNumStr) {
           unLocode =>
             val userAnswers = emptyUserAnswers.setValue(UnLocodePage, unLocode)
-            val result      = userAnswers.data.as[PlaceOfLoading]
+            val result      = userAnswers.data.as[PlaceOfLoading](PlaceOfLoading.userAnswersReads)
             result mustBe PlaceOfLoading(Some(unLocode), None, None)
         }
       }
@@ -45,7 +45,7 @@ class PlaceOfLoadingSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             val userAnswers = emptyUserAnswers
               .setValue(CountryPage, country)
               .setValue(LocationPage, location)
-            val result = userAnswers.data.as[PlaceOfLoading]
+            val result = userAnswers.data.as[PlaceOfLoading](PlaceOfLoading.userAnswersReads)
             result mustBe PlaceOfLoading(None, Some(country.code.code), Some(location))
         }
       }
@@ -53,7 +53,7 @@ class PlaceOfLoadingSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
     "must not read from IE170 user answers" - {
       "when all fields are undefined" in {
-        val result = emptyUserAnswers.data.validate[PlaceOfLoading]
+        val result = emptyUserAnswers.data.validate[PlaceOfLoading](PlaceOfLoading.userAnswersReads)
         result mustBe a[JsError]
       }
     }

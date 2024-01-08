@@ -16,11 +16,10 @@
 
 package models.messages
 
+import models.reference.Country
 import pages.loading._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import cats.implicits._
-import models.reference.Country
 
 case class PlaceOfLoading(
   UNLocode: Option[String],
@@ -42,12 +41,12 @@ object PlaceOfLoading {
       LocationPage.path.readNullable[String]
   ).tupled.flatMap {
     case (None, None, None) =>
-      Reads(
+      Reads {
         _ => JsError("")
-      )
+      }
     case (unLocode, country, location) =>
-      Reads(
+      Reads {
         _ => JsSuccess(PlaceOfLoading(unLocode, country.map(_.code.code), location))
-      )
+      }
   }
 }

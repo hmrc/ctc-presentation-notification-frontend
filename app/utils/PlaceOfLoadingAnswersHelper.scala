@@ -16,6 +16,7 @@
 
 package utils
 
+import models.messages.PlaceOfLoading
 import models.reference.{Country, CountryCode}
 import models.{Mode, UserAnswers}
 import pages.loading._
@@ -72,13 +73,14 @@ class PlaceOfLoadingAnswersHelper(
     id = Some("change-add-extra-information")
   )
 
-  def location: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def location: Option[SummaryListRow] = getModelAndBuildRow[String, PlaceOfLoading](
+    f = _.location,
     page = LocationPage,
     formatAnswer = formatAsText,
     prefix = "loading.location",
     findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.location),
     id = Some("change-location")
-  )
+  )(PlaceOfLoading.userAnswersReads)
 
   def placeOfLoadingSection: Future[Section] = {
     implicit val ua: UserAnswers = userAnswers

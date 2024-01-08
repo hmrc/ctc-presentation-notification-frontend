@@ -275,7 +275,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
       "must return Some(Row)" - {
         s"when $LocationPage defined in the ie170" in {
-          forAll(arbitrary[Mode], nonEmptyString.sample.value) {
+          forAll(arbitrary[Mode], nonEmptyString) {
             (mode, location) =>
               val answers = emptyUserAnswers
                 .setValue(LocationPage, location)
@@ -310,6 +310,17 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               action.href mustBe controllers.loading.routes.LocationController.onPageLoad(departureId, mode).url
               action.visuallyHiddenText.get mustBe "location for the place of loading"
               action.id mustBe "change-location"
+          }
+        }
+
+        s"when $LocationPage defined in the ie15, Place of Loading is defined in the ie170, but location is undefined" in {
+          forAll(arbitrary[Mode], nonEmptyString) {
+            (mode, unLocode) =>
+              val initialAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+              val userAnswers    = initialAnswers.setValue(UnLocodePage, unLocode)
+              val helper         = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, mockReferenceDataService, mode)
+              val result         = helper.location
+              result mustBe None
           }
         }
       }

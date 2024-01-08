@@ -37,6 +37,29 @@ class AnswersHelper(
 
   protected def lrn: String = userAnswers.lrn
 
+  protected def getModelAndBuildRow[A, B](
+    f: B => Option[A],
+    page: QuestionPage[A],
+    formatAnswer: A => Content,
+    prefix: String,
+    findValueInDepartureData: MessageData => Option[A],
+    id: Option[String],
+    args: Any*
+  )(implicit rds: Reads[B]): Option[SummaryListRow] =
+    for {
+      answer <- userAnswers.data.validate[B].asOpt match {
+        case Some(value) => f(value)
+        case None        => findValueInDepartureData(userAnswers.departureData)
+      }
+      call <- page.route(userAnswers, departureId, mode)
+    } yield buildRow(
+      prefix = prefix,
+      answer = formatAnswer(answer),
+      id = id,
+      call = call,
+      args = args: _*
+    )
+
   protected def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
     formatAnswer: T => Content,
