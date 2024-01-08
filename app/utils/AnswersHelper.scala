@@ -47,11 +47,8 @@ class AnswersHelper(
     args: Any*
   )(implicit rds: Reads[A]): Option[SummaryListRow] =
     for {
-      answer <- userAnswers.data.validate[A].asOpt match {
-        case Some(model) => getValueFromModel(model)
-        case None        => findValueInDepartureData(userAnswers.departureData)
-      }
-      call <- page.route(userAnswers, departureId, mode)
+      answer <- userAnswers.data.validate[A].asOpt.map(getValueFromModel) getOrElse findValueInDepartureData(userAnswers.departureData)
+      call   <- page.route(userAnswers, departureId, mode)
     } yield buildRow(
       prefix = prefix,
       answer = formatAnswer(answer),
