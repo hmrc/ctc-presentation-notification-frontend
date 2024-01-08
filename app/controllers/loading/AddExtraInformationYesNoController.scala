@@ -54,10 +54,8 @@ class AddExtraInformationYesNoController @Inject() (
         .get(AddExtraInformationYesNoPage)
         .orElse {
           logger.info(s"Retrieved AddExtraInformationYesNo answer from IE015 journey")
-          request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
-            _.country.map(
-              _ => true
-            )
+          request.userAnswers.departureData.Consignment.PlaceOfLoading.map(
+            _.isAdditionalInformationPresent
           )
         } match {
         case None        => form

@@ -53,10 +53,8 @@ class AddUnLocodeYesNoController @Inject() (
         .get(AddUnLocodeYesNoPage)
         .orElse {
           logger.info(s"Retrieved AddUnlocodeYesNo answer from IE015 journey")
-          request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
-            _.UNLocode.map(
-              _ => true
-            )
+          request.userAnswers.departureData.Consignment.PlaceOfLoading.map(
+            _.isUnlocodePresent
           )
         } match {
         case None        => form
