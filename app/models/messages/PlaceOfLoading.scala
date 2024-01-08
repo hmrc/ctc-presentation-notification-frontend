@@ -16,7 +16,11 @@
 
 package models.messages
 
-import play.api.libs.json.{Json, OFormat}
+import pages.loading._
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import cats.implicits._
+import models.reference.Country
 
 case class PlaceOfLoading(
   UNLocode: Option[String],
@@ -31,4 +35,19 @@ case class PlaceOfLoading(
 
 object PlaceOfLoading {
   implicit val format: OFormat[PlaceOfLoading] = Json.format[PlaceOfLoading]
+
+  val userAnswersReads: Reads[PlaceOfLoading] = (
+    UnLocodePage.path.readNullable[String] and
+      CountryPage.path.readNullable[Country] and
+      LocationPage.path.readNullable[String]
+  ).tupled.flatMap {
+    case (None, None, None) =>
+      Reads(
+        _ => JsError("")
+      )
+    case (unLocode, country, location) =>
+      Reads(
+        _ => JsSuccess(PlaceOfLoading(unLocode, country.map(_.code.code), location))
+      )
+  }
 }
