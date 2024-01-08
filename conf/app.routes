@@ -5,7 +5,7 @@
 ->         /                                                                  app.transitOperation.Routes
 ->         /                                                                  app.loading.Routes
 ->         /                                                                  app.transport.Routes
-->         /representative                                                    app.representative.Routes
+->         /                                                                  app.representative.Routes
 ->         /                                                                  app.houseConsignment.index.Routes
 
 ->         /hmrc-frontend                                                     hmrcfrontend.Routes
@@ -33,6 +33,11 @@ GET        /place-of-loading/add/:departureId                                 co
 POST       /place-of-loading/add/:departureId                                 controllers.AddPlaceOfLoadingYesNoController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /place-of-loading/change-add/:departureId                          controllers.AddPlaceOfLoadingYesNoController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /place-of-loading/change-add/:departureId                          controllers.AddPlaceOfLoadingYesNoController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /representative/acting/:departureId                                controllers.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /representative/acting/:departureId                                controllers.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /representative/change-acting/:departureId                         controllers.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /representative/change-acting/:departureId                         controllers.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
 GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
 

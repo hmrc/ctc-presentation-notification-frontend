@@ -243,7 +243,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                   val result = optionResult.get
 
                   result.key.value mustBe s"Registered country"
-                  result.value.value mustBe nationality.toString
+                  result.value.value mustBe nationality.description
                   val actions = result.actions.get.items
                   actions.size mustBe 1
                   val action = actions.head
@@ -266,7 +266,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                   val result = optionResult.get
 
                   result.key.value mustBe s"Registered country"
-                  result.value.value mustBe s"description - $code"
+                  result.value.value mustBe s"description"
                   val actions = result.actions.get.items
                   actions.size mustBe 1
                   val action = actions.head

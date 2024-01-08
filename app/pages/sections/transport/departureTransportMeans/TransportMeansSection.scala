@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.transport.departureTransportMeans
 
-import pages.behaviours.PageBehaviours
-import pages.representative.RepresentativePhoneNumberPage
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class RepresentativePhoneNumberPageSpec extends PageBehaviours {
+case class TransportMeansSection(index: Index) extends Section[JsObject] {
 
-  "RepresentativePhoneNumberPageSpec" - {
+  override def path: JsPath = DepartureTransportMeansListSection.path \ index.position
 
-    beRetrievable[String](RepresentativePhoneNumberPage)
-
-    beSettable[String](RepresentativePhoneNumberPage)
-
-    beRemovable[String](RepresentativePhoneNumberPage)
-  }
 }

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections.trader
+package pages.sections.transport.departureTransportMeans
 
 import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import pages.sections.transport.TransportSection
+import play.api.libs.json.{JsArray, JsPath}
 
-case object RepresentativeSection extends Section[JsObject] {
+case object DepartureTransportMeansListSection extends Section[JsArray] {
 
-  override def path: JsPath = TraderDetailsSection.path \ toString
+  override def path: JsPath = TransportSection.path \ toString
 
-  override def toString: String = "representative"
+  override def toString: String = "departureTransportMeansList"
 }
