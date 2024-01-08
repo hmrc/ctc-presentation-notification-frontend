@@ -17,22 +17,13 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.reference.Country
 import models.{CheckMode, Index, UserAnswers}
-import pages.loading.CountryPage
 import pages.sections.transport.border.BorderActiveListSection
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{
-  ActiveBorderTransportMeansAnswersHelper,
-  AnswersHelper,
-  LocationOfGoodsAnswersHelper,
-  PlaceOfLoadingAnswersHelper,
-  PresentationNotificationAnswersHelper,
-  TransitHolderAnswerHelper
-}
+import utils._
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import javax.inject.Inject
