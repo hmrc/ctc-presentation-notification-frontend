@@ -40,6 +40,7 @@ case class MessageData(
   TransitOperation: TransitOperation,
   Authorisation: Option[Seq[Authorisation]],
   HolderOfTheTransitProcedure: HolderOfTheTransitProcedure,
+  Representative: Option[Representative],
   CustomsOfficeOfTransitDeclared: Option[Seq[CustomsOfficeOfTransitDeclared]],
   CustomsOfficeOfExitForTransitDeclared: Option[Seq[CustomsOfficeOfExitForTransitDeclared]],
   Consignment: Consignment
@@ -80,6 +81,7 @@ object MessageData {
       (__ \ "TransitOperation").read[TransitOperation] and
       (__ \ "Authorisation").readNullable[Seq[Authorisation]] and
       (__ \ "HolderOfTheTransitProcedure").read[HolderOfTheTransitProcedure] and
+      (__ \ "Representative").readNullable[Representative] and
       (__ \ "CustomsOfficeOfTransitDeclared").readNullable[Seq[CustomsOfficeOfTransitDeclared]] and
       (__ \ "CustomsOfficeOfExitForTransitDeclared").readNullable[Seq[CustomsOfficeOfExitForTransitDeclared]] and
       (__ \ "Consignment").read[Consignment]
@@ -91,6 +93,7 @@ object MessageData {
       (__ \ "TransitOperation").write[TransitOperation] and
       (__ \ "Authorisation").writeNullable[Seq[Authorisation]] and
       (__ \ "HolderOfTheTransitProcedure").write[HolderOfTheTransitProcedure] and
+      (__ \ "Representative").writeNullable[Representative] and
       (__ \ "CustomsOfficeOfTransitDeclared").writeNullable[Seq[CustomsOfficeOfTransitDeclared]] and
       (__ \ "CustomsOfficeOfExitForTransitDeclared").writeNullable[Seq[CustomsOfficeOfExitForTransitDeclared]] and
       (__ \ "Consignment").write[Consignment]
