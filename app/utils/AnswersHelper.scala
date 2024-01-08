@@ -38,17 +38,17 @@ class AnswersHelper(
   protected def lrn: String = userAnswers.lrn
 
   protected def getModelAndBuildRow[A, B](
-    f: B => Option[A],
-    page: QuestionPage[A],
-    formatAnswer: A => Content,
+    getValueFromModel: A => Option[B],
+    page: QuestionPage[B],
+    formatAnswer: B => Content,
     prefix: String,
-    findValueInDepartureData: MessageData => Option[A],
+    findValueInDepartureData: MessageData => Option[B],
     id: Option[String],
     args: Any*
-  )(implicit rds: Reads[B]): Option[SummaryListRow] =
+  )(implicit rds: Reads[A]): Option[SummaryListRow] =
     for {
-      answer <- userAnswers.data.validate[B].asOpt match {
-        case Some(value) => f(value)
+      answer <- userAnswers.data.validate[A].asOpt match {
+        case Some(model) => getValueFromModel(model)
         case None        => findValueInDepartureData(userAnswers.departureData)
       }
       call <- page.route(userAnswers, departureId, mode)

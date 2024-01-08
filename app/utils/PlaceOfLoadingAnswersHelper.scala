@@ -73,8 +73,8 @@ class PlaceOfLoadingAnswersHelper(
     id = Some("change-add-extra-information")
   )
 
-  def location: Option[SummaryListRow] = getModelAndBuildRow[String, PlaceOfLoading](
-    f = _.location,
+  def location: Option[SummaryListRow] = getModelAndBuildRow[PlaceOfLoading, String](
+    getValueFromModel = _.location,
     page = LocationPage,
     formatAnswer = formatAsText,
     prefix = "loading.location",

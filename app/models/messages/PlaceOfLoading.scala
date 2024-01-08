@@ -42,7 +42,7 @@ object PlaceOfLoading {
   ).tupled.flatMap {
     case (None, None, None) =>
       Reads {
-        _ => JsError("")
+        _ => JsError("At least one PlaceOfLoading param must be defined")
       }
     case (unLocode, country, location) =>
       Reads {
