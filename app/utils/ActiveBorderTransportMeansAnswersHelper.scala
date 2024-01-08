@@ -99,7 +99,7 @@ class ActiveBorderTransportMeansAnswersHelper(
         buildRowWithAnswer[Nationality](
           page = NationalityPage(activeIndex),
           optionalAnswer = nationality,
-          formatAnswer = _.toString.toText,
+          formatAnswer = _.description.toText,
           prefix = "transport.border.active.nationality",
           id = Some("change-nationality")
         )
