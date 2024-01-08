@@ -20,14 +20,14 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.representative.ActingAsRepresentativeView
+import views.html.ActingAsRepresentativeView
 
 class ActingAsRepresentativeViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[ActingAsRepresentativeView].apply(form, departureId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "traderDetails.actingRepresentative"
+  override val prefix: String = "actingRepresentative"
 
   behave like pageWithTitle()
 
@@ -41,5 +41,5 @@ class ActingAsRepresentativeViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems()
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

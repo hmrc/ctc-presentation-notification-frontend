@@ -46,7 +46,7 @@ class InlandModeViewSpec extends EnumerableViewBehaviours[InlandMode] {
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Transport details - Inland mode of transport")
+  behave like pageWithSectionCaption("Inland mode of transport")
 
   behave like pageWithHeading("Which inland mode of transport are you using?")
 

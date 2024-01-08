@@ -20,7 +20,7 @@ import config.Constants.maxEoriNumberLength
 import forms.behaviours.{FieldBehaviours, StringFieldBehaviours}
 import models.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
-import play.api.data.{Field, FormError}
+import play.api.data.FormError
 
 class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
 
@@ -42,6 +42,12 @@ class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehavio
       validDataGenerator = stringsWithMaxLength(maxEoriNumberLength)
     )
 
+    behave like fieldThatRemovesSpaces(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxEoriNumberLength)
+    )
+
     behave like mandatoryField(
       form = form,
       fieldName = fieldName,
@@ -55,25 +61,11 @@ class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehavio
       length = maxEoriNumberLength
     )
 
-    "must not bind strings over max length" in {
-      val expectedError = FormError(fieldName, maxLengthKey, Seq(maxEoriNumberLength))
-
-      val gen = for {
-        eori <- stringsLongerThan(maxEoriNumberLength, Gen.alphaNumChar)
-      } yield eori
-
-      forAll(gen) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
-
-    "must remove spaces on bound strings" in {
-      val result = form.bind(Map(fieldName -> " GB 123 456 789 123 "))
-      result.errors mustEqual Nil
-      result.get mustEqual "GB123456789123"
-    }
-
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxEoriNumberLength,
+      lengthError = FormError(fieldName, maxLengthKey, Seq(maxEoriNumberLength))
+    )
   }
 }

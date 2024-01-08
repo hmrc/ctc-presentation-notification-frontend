@@ -17,6 +17,7 @@
 package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import cats.data.NonEmptyList
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import helper.WireMockServerHandler
@@ -212,9 +213,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(locationTypesResponseJson))
         )
 
-        val expectedResult: Seq[LocationType] = Seq(
+        val expectedResult = NonEmptyList(
           LocationType("A", "Designated location"),
-          LocationType("B", "Authorised place")
+          List(LocationType("B", "Authorised place"))
         )
 
         connector.getTypesOfLocation().futureValue mustEqual expectedResult
@@ -240,9 +241,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           CustomsOffice("GB1", "testName1", None),
-          CustomsOffice("GB2", "testName2", None)
+          List(CustomsOffice("GB2", "testName2", None))
         )
 
         connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)).futureValue mustBe expectedResult
@@ -270,22 +271,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           CustomsOffice("GB1", "testName1", None),
-          CustomsOffice("GB2", "testName2", None)
+          List(CustomsOffice("GB2", "testName2", None))
         )
 
-        connector.getCustomsOfficesForId(id).futureValue mustBe expectedResult
+        connector.getCustomsOfficeForId(id).futureValue mustBe expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
         val id = "GB3"
-        checkNoReferenceDataFoundResponse(url(id), connector.getCustomsOfficesForId(id))
+        checkNoReferenceDataFoundResponse(url(id), connector.getCustomsOfficeForId(id))
       }
 
       "must return an exception when an error response is returned" in {
         val id = "GB1"
-        checkErrorResponse(url(id), connector.getCustomsOfficesForId(id))
+        checkErrorResponse(url(id), connector.getCustomsOfficeForId(id))
       }
     }
 
@@ -300,9 +301,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           CustomsOffice("GB1", "testName1", None),
-          CustomsOffice("GB2", "testName2", None)
+          List(CustomsOffice("GB2", "testName2", None))
         )
 
         connector.getCustomsOfficesOfDestinationForCountry(CountryCode(countryId)).futureValue mustBe expectedResult
@@ -354,9 +355,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
-        val expectedResult: Seq[Nationality] = Seq(
+        val expectedResult = NonEmptyList(
           Nationality("AR", "Argentina"),
-          Nationality("AU", "Australia")
+          List(Nationality("AU", "Australia"))
         )
 
         connector.getNationalities().futureValue mustEqual expectedResult
@@ -408,9 +409,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
               .willReturn(okJson(responseJson))
           )
 
-          val expectedResult: Seq[InlandMode] = Seq(
+          val expectedResult = NonEmptyList(
             InlandMode("1", "Maritime Transport"),
-            InlandMode("2", "Rail Transport")
+            List(InlandMode("2", "Rail Transport"))
           )
 
           connector.getTransportModeCodes[InlandMode]().futureValue mustEqual expectedResult
@@ -459,9 +460,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
               .willReturn(okJson(responseJson))
           )
 
-          val expectedResult: Seq[BorderMode] = Seq(
+          val expectedResult = NonEmptyList(
             BorderMode("1", "Maritime Transport"),
-            BorderMode("2", "Rail Transport")
+            List(BorderMode("2", "Rail Transport"))
           )
 
           connector.getTransportModeCodes[BorderMode]().futureValue mustEqual expectedResult
@@ -488,9 +489,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           CustomsOffice("GB1", "testName1", None),
-          CustomsOffice("GB2", "testName2", None)
+          List(CustomsOffice("GB2", "testName2", None))
         )
 
         connector.getCustomsOfficesOfExitForCountry(CountryCode(countryId)).futureValue mustBe expectedResult
@@ -518,9 +519,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptyList(
           CustomsOffice("GB1", "testName1", None),
-          CustomsOffice("GB2", "testName2", None)
+          List(CustomsOffice("GB2", "testName2", None))
         )
 
         connector.getCustomsOfficesOfDepartureForCountry(countryId).futureValue mustBe expectedResult
@@ -546,9 +547,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptyList(
           Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
+          List(Country(CountryCode("AD"), "Andorra"))
         )
 
         connector.getCountries("CountryCodesFullList").futureValue mustEqual expectedResult
@@ -572,9 +573,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryCustomsSecurityAgreementArea")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptyList(
           Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
+          List(Country(CountryCode("AD"), "Andorra"))
         )
 
         connector.getCustomsSecurityAgreementAreaCountries().futureValue mustEqual expectedResult
@@ -598,9 +599,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryCodesCTC")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptyList(
           Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
+          List(Country(CountryCode("AD"), "Andorra"))
         )
 
         connector.getCountryCodesCTC().futureValue mustEqual expectedResult
@@ -624,9 +625,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryAddressPostcodeBased")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptyList(
           Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
+          List(Country(CountryCode("AD"), "Andorra"))
         )
 
         connector.getAddressPostcodeBasedCountries().futureValue mustEqual expectedResult
@@ -650,9 +651,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
         )
 
-        val expectedResult: Seq[CountryCode] = Seq(
+        val expectedResult = NonEmptyList(
           CountryCode("GB"),
-          CountryCode("AD")
+          List(CountryCode("AD"))
         )
 
         connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
@@ -676,9 +677,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(unLocodesResponseJson))
         )
 
-        val expectedResult: Seq[UnLocode] = Seq(
+        val expectedResult = NonEmptyList(
           UnLocode("UN1", "testName1"),
-          UnLocode("UN2", "testName2")
+          List(UnLocode("UN2", "testName2"))
         )
 
         connector.getUnLocodes().futureValue mustEqual expectedResult
@@ -702,9 +703,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(specificCircumstanceIndicatorsResponseJson))
         )
 
-        val expectedResult: Seq[SpecificCircumstanceIndicator] = Seq(
+        val expectedResult = NonEmptyList(
           SpecificCircumstanceIndicator("SCI1", "testName1"),
-          SpecificCircumstanceIndicator("SCI2", "testName2")
+          List(SpecificCircumstanceIndicator("SCI2", "testName2"))
         )
 
         connector.getSpecificCircumstanceIndicators().futureValue mustEqual expectedResult

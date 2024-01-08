@@ -21,8 +21,8 @@ import controllers.routes
 import forms.border.IdentificationNumberFormProvider
 import generators.Generators
 import models.messages.ActiveBorderTransportMeans
-import models.{NormalMode, UserAnswers}
 import models.reference.transport.border.active.Identification
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -91,7 +91,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       when(mockMeansOfTransportIdentificationTypesActiveService.getBorderMeansIdentification(any())(any()))
         .thenReturn(Future.successful(identificationType1))
 
-      println("look joe", identificationType1)
       val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
         Some(
           Seq(

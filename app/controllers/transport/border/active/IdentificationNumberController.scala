@@ -19,15 +19,14 @@ package controllers.transport.border.active
 import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
 import models.reference.transport.border.active.Identification
+import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{Index, Mode}
-import models.requests.{DataRequest, MandatoryDataRequest, SpecificDataRequestProvider1}
 import navigation.BorderNavigator
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.MeansOfTransportIdentificationTypesActiveService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.border.active.IdentificationNumberView
 

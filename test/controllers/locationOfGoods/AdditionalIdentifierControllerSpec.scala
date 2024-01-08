@@ -19,7 +19,6 @@ package controllers.locationOfGoods
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.locationOfGoods.AdditionalIdentifierFormProvider
-import models.messages.LocationOfGoods
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

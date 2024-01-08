@@ -42,5 +42,5 @@ class RemoveSealYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
   behave like pageWithRadioItems(args = Seq(sealIdNumber))
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

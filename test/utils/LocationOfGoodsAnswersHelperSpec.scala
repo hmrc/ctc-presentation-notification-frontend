@@ -19,6 +19,7 @@ package utils
 import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
 import config.Constants._
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import models.messages.{Address, MessageData}
 import models.reference.{Country, CountryCode, CustomsOffice}
@@ -32,7 +33,8 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.libs.json.Json
-import services.{CheckYourAnswersReferenceDataService, ReferenceDataNotFoundException}
+import services.CheckYourAnswersReferenceDataService
+import viewModels.Section
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -689,7 +691,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(NamePage, "Han Solo")
             val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
 
-            whenReady(helper.locationOfGoodsSection) {
+            whenReady[Section, Assertion](helper.locationOfGoodsSection) {
               section =>
                 section.rows.size mustBe 10
             }
@@ -702,12 +704,10 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         "future must return a failure" - {
           s"when reference data call fails to find the code" in {
 
-            forAll(arbitrary[Mode], arbitrary[LocationType]) {
-              (mode, location) =>
-                val referenceDataNotFoundException =
-                  new ReferenceDataNotFoundException(refName = "locationType", refDataCode = location.code, listRefData = Nil)
+            forAll(arbitrary[Mode]) {
+              mode =>
                 when(mockReferenceDataService.getLocationType(any())(any())).thenReturn(
-                  Future.failed(referenceDataNotFoundException)
+                  Future.failed(new NoReferenceDataFoundException)
                 )
                 val answers =
                   UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
@@ -724,7 +724,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val result = helper.fetchLocationTypeRow(answers)
 
                 whenReady[Throwable, Assertion](result.failed) {
-                  _ mustBe referenceDataNotFoundException
+                  _ mustBe a[NoReferenceDataFoundException]
                 }
 
             }
@@ -768,12 +768,10 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         "future must return a failure" - {
           s"when reference data call fails to find the code" in {
 
-            forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
-              (mode, qualifier) =>
-                val referenceDataNotFoundException =
-                  new ReferenceDataNotFoundException(refName = "qualifierOfIdentification", refDataCode = qualifier.code, listRefData = Nil)
+            forAll(arbitrary[Mode]) {
+              mode =>
                 when(mockReferenceDataService.getQualifierOfIdentification(any())(any())).thenReturn(
-                  Future.failed(referenceDataNotFoundException)
+                  Future.failed(new NoReferenceDataFoundException)
                 )
                 val answers =
                   UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
@@ -790,7 +788,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val result = helper.fetchQualifierIdentificationRow(emptyUserAnswers)
 
                 whenReady[Throwable, Assertion](result.failed) {
-                  _ mustBe referenceDataNotFoundException
+                  _ mustBe a[NoReferenceDataFoundException]
                 }
 
             }
@@ -1016,10 +1014,8 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
 
             forAll(arbitrary[Mode], arbitrary[String]) {
               (mode, customsOfficeId) =>
-                val referenceDataNotFoundException =
-                  new ReferenceDataNotFoundException(refName = "customsOffice", refDataCode = customsOfficeId, listRefData = Nil)
-                when(mockReferenceDataService.getCustomsOffice(any())(any())(any())).thenReturn(
-                  Future.failed(referenceDataNotFoundException)
+                when(mockReferenceDataService.getCustomsOffice(any())(any())).thenReturn(
+                  Future.failed(new NoReferenceDataFoundException)
                 )
                 val answers =
                   UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
@@ -1036,7 +1032,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val result = helper.fetchCustomsOfficeIdentifierRow(emptyUserAnswers)
 
                 whenReady[Throwable, Assertion](result.failed) {
-                  _ mustBe referenceDataNotFoundException
+                  _ mustBe a[NoReferenceDataFoundException]
                 }
 
             }
@@ -1046,7 +1042,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           "when customs office identifier defined in ie15" in {
             forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
               (mode, customsOffice) =>
-                when(mockReferenceDataService.getCustomsOffice(any())(any())(any())).thenReturn(Future.successful(customsOffice))
+                when(mockReferenceDataService.getCustomsOffice(any())(any())).thenReturn(Future.successful(customsOffice))
 
                 val ie015UserAnswers = UserAnswers(
                   departureId,
@@ -1118,14 +1114,14 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
         when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(Country(CountryCode("GB"), "United Kingdom")))
         when(mockReferenceDataService.getQualifierOfIdentification(any())(any()))
           .thenReturn(Future.successful(LocationOfGoodsIdentification(AddressIdentifier, "AddressIdentifier")))
-        when(mockReferenceDataService.getCustomsOffice(any())(any())(any()))
+        when(mockReferenceDataService.getCustomsOffice(any())(any()))
           .thenReturn(Future.successful(CustomsOffice("id", "name", None)))
         forAll(arbitrary[Mode]) {
           mode =>
             val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
             val helper  = new LocationOfGoodsAnswersHelper(answers, departureId, mockReferenceDataService, mode)
 
-            whenReady(helper.locationOfGoodsSection) {
+            whenReady[Section, Assertion](helper.locationOfGoodsSection) {
               section =>
                 section.rows.size mustBe 15
             }

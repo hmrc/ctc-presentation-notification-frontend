@@ -23,9 +23,9 @@ import controllers.transport.border.active.routes
 import generators.Generators
 import models._
 import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared, MessageData}
-import models.reference.transport.border.active.Identification
-import models.reference.{CustomsOffice}
+import models.reference.CustomsOffice
 import models.reference.TransportMode.BorderMode
+import models.reference.transport.border.active.Identification
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

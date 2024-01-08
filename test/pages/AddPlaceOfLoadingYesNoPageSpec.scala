@@ -28,6 +28,6 @@ class AddPlaceOfLoadingYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddPlaceOfLoadingYesNoPage)
 
-//    "cleanup" - {}
+//    "cleanup" - {} // TODO Add cleanup logic test
   }
 }

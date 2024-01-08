@@ -48,5 +48,5 @@ class UnLocodeViewSpec extends InputTextViewBehaviours[String] {
     "This is a 5-character code used to identify a transit-related location, like a port or clearance depot."
   )
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

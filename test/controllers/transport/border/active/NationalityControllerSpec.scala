@@ -44,8 +44,7 @@ class NationalityControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val form         = formProvider("transport.border.active.nationality", nationalityList)
   private val mode         = NormalMode
 
-  private val mockNationalitiesService: NationalitiesService = mock[NationalitiesService]
-  private lazy val nationalityRoute                          = controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, index).url
+  private lazy val nationalityRoute = controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

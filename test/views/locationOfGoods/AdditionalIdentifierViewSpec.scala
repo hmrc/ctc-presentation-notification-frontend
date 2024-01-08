@@ -48,5 +48,5 @@ class AdditionalIdentifierViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHint("This can be up to 4 characters long and include both letters and numbers, for example 0000 or X9X9.")
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

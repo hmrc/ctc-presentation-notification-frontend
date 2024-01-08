@@ -16,8 +16,10 @@
 
 package services
 
+import cats.data.NonEmptyList
 import cats.implicits.toTraverseOps
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
 import models.reference.{CountryCode, CustomsOffice}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,13 +39,24 @@ class CustomsOfficesService @Inject() (
       .map(sort)
 
   def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[Option[CustomsOffice]] =
-    referenceDataConnector.getCustomsOfficesForId(id).map(_.headOption)
+    referenceDataConnector
+      .getCustomsOfficeForId(id)
+      .map(_.head)
+      .map(Some(_))
+      .recover {
+        case _: NoReferenceDataFoundException => None
+      }
 
   // TODO this could be refactored in the customs reference data service to get multiple offices rather than traverse
   def getCustomsOfficesByMultipleIds(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[CustomsOffice]] =
-    ids.flatTraverse {
+    ids.flatTraverse[Future, CustomsOffice] {
       customsOfficeId =>
-        referenceDataConnector.getCustomsOfficesForId(customsOfficeId)
+        referenceDataConnector
+          .getCustomsOfficeForId(customsOfficeId)
+          .map(_.toList)
+          .recover {
+            case _: NoReferenceDataFoundException => Nil
+          }
     }
 
   def getCustomsOfficesOfDestinationForCountry(
@@ -67,7 +80,7 @@ class CustomsOfficesService @Inject() (
       .getCustomsOfficesOfDepartureForCountry(countryCode)
       .map(sort)
 
-  private def sort(customsOffices: Seq[CustomsOffice]): SelectableList[CustomsOffice] =
-    SelectableList(customsOffices.sortBy(_.name.toLowerCase))
+  private def sort(customsOffices: NonEmptyList[CustomsOffice]): SelectableList[CustomsOffice] =
+    SelectableList(customsOffices.toList.sortBy(_.name.toLowerCase))
 
 }

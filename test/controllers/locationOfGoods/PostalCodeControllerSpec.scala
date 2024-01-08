@@ -21,7 +21,7 @@ import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.locationOfGoods.PostalCodeFormProvider
 import generators.Generators
-import models.messages.{Address, PostcodeAddress}
+import models.messages.PostcodeAddress
 import models.reference.Country
 import models.{NormalMode, PostalCodeAddress, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any

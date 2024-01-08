@@ -19,25 +19,23 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.ActingAsRepresentativePage
-import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.representative.ActingAsRepresentativeView
+import views.html.ActingAsRepresentativeView
 
 import scala.concurrent.Future
 
 class ActingAsRepresentativeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                   = new YesNoFormProvider()
-  private val form                           = formProvider("traderDetails.actingRepresentative")
+  private val form                           = formProvider("actingRepresentative")
   private val mode                           = NormalMode
-  private lazy val actingRepresentativeRoute = representative.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode).url
+  private lazy val actingRepresentativeRoute = routes.ActingAsRepresentativeController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

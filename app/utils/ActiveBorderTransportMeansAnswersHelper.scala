@@ -99,7 +99,7 @@ class ActiveBorderTransportMeansAnswersHelper(
         buildRowWithAnswer[Nationality](
           page = NationalityPage(activeIndex),
           optionalAnswer = nationality,
-          formatAnswer = _.toString.toText,
+          formatAnswer = _.description.toText,
           prefix = "transport.border.active.nationality",
           id = Some("change-nationality")
         )
@@ -111,7 +111,7 @@ class ActiveBorderTransportMeansAnswersHelper(
       valueFromDepartureData = userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
         seq => seq.lift(activeIndex.position).flatMap(_.customsOfficeAtBorderReferenceNumber)
       ),
-      refDataLookup = cyaRefDataService.getCustomsOffice(userAnswers.departureData.countryOfDeparture)
+      refDataLookup = cyaRefDataService.getCustomsOffice
     ).map {
       customsOffice =>
         buildRowWithAnswer[CustomsOffice](

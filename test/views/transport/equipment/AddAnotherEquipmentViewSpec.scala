@@ -62,7 +62,7 @@ class AddAnotherEquipmentViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 
   "page with no more items" - {
 

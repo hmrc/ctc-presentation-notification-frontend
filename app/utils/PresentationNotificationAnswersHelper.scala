@@ -16,9 +16,7 @@
 
 package utils
 
-import models.reference.Country
 import models.{Mode, UserAnswers}
-import pages.loading._
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
@@ -53,46 +51,6 @@ class PresentationNotificationAnswersHelper(
     prefix = "transport.containers.containerIndicator",
     findValueInDepartureData = _.Consignment.containerIndicator.map(_.asBoolean),
     id = Some("change-container-indicator")
-  )
-
-  def addUnlocodeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddUnLocodeYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "loading.addUnLocodeYesNo",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.map(_.isUnlocodePresent),
-    id = Some("change-add-unlocode")
-  )
-
-  def unlocode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = UnLocodePage,
-    formatAnswer = formatAsText,
-    prefix = "loading.unLocode",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.UNLocode),
-    id = Some("change-unlocode")
-  )
-
-  def addExtraInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddExtraInformationYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "loading.addExtraInformationYesNo",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.map(_.isAdditionalInformationPresent),
-    id = Some("change-add-extra-information")
-  )
-
-  def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
-    page = CountryPage,
-    formatAnswer = formatAsCountry,
-    prefix = "loading.country",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.country.map(_.asCountry)),
-    id = Some("change-country")
-  )
-
-  def location: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = LocationPage,
-    formatAnswer = formatAsText,
-    prefix = "loading.location",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.location),
-    id = Some("change-location")
   )
 
   def borderModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

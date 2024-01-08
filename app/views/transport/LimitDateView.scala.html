@@ -43,11 +43,11 @@
             form = form,
             dateType = DateInputWithAdditionalHtml(
                 heading = messages("transport.limit.date.heading", customsOfficeString),
-                caption = Some(messages("transport.limit.date.caption")),
+                caption = Some(messages("arrivalDate.caption")),
                 additionalHtml = messages("transport.limit.date.paragraph", maxDate).toParagraph
             )
         )
 
-        @button("site.saveAndContinue", attributes = Map("id" -> "submit"))
+        @button("site.continue", attributes = Map("id" -> "submit"))
     }
 }

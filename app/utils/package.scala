@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import models.reference.transport.border.active.Identification
 import models.reference._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -37,10 +36,6 @@ package object utils {
 
       LocalDate.parse(value, formatter)
     }
-
-    //TODO: Fetch this from ref data instead
-    def asCountry: Country =
-      Country(CountryCode(value), "countryDesc")
 
   }
 

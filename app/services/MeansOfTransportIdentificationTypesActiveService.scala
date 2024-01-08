@@ -16,12 +16,12 @@
 
 package services
 
+import cats.data.NonEmptyList
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
 import models.Index
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
-import services.ReferenceDataNotFoundException.referenceDataException
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -35,15 +35,10 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
     referenceDataConnector.getMeansOfTransportIdentificationTypesActive().map(filter(_, index, borderModeOfTransport)).map(sort)
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
-    for {
-      qualifiers <- referenceDataConnector.getMeansOfTransportIdentificationTypesActive()
-      qualifierFound = qualifiers
-        .find(_.code == code)
-        .getOrElse(referenceDataException("borderMeansIdentification", code, qualifiers))
-    } yield qualifierFound
+    referenceDataConnector.getMeansOfTransportIdentificationTypeActive(code).map(_.head)
 
   private def filter(
-    identificationTypes: Seq[Identification],
+    identificationTypes: NonEmptyList[Identification],
     index: Index,
     borderModeOfTransport: Option[BorderMode]
   ): Seq[Identification] = {
@@ -57,5 +52,5 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   }
 
   private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =
-    identificationTypes.sortBy(_.code.toLowerCase)
+    identificationTypes.toList.sortBy(_.code.toLowerCase)
 }

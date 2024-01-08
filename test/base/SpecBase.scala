@@ -72,11 +72,13 @@ trait SpecBase
 
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123")
 
-  val index: Index          = Index(0)
-  val activeIndex: Index    = Index(0)
-  val equipmentIndex: Index = Index(0)
-  val itemIndex: Index      = Index(0)
-  val sealIndex: Index      = Index(0)
+  val index: Index                                        = Index(0)
+  val activeIndex: Index                                  = Index(0)
+  val equipmentIndex: Index                               = Index(0)
+  val itemIndex: Index                                    = Index(0)
+  val sealIndex: Index                                    = Index(0)
+  val houseConsignmentIndex: Index                        = Index(0)
+  val houseConsignmentDepartureTransportMeansIndex: Index = Index(0)
 
   val locationTypes =
     Seq(LocationType("A", "Designated location"), LocationType("B", "Authorised place"), LocationType("C", "Approved place"), LocationType("D", "Other"))

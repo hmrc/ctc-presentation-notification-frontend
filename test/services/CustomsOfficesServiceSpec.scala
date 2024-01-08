@@ -17,7 +17,9 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.{CountryCode, CustomsOffice}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -31,9 +33,9 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new CustomsOfficesService(mockRefDataConnector)
 
-  val gbCustomsOffice1: CustomsOffice      = CustomsOffice("GB1", "BOSTON", None)
-  val gbCustomsOffice2: CustomsOffice      = CustomsOffice("GB2", "Appledore", None)
-  val gbCustomsOffices: Seq[CustomsOffice] = Seq(gbCustomsOffice1, gbCustomsOffice2)
+  val gbCustomsOffice1: CustomsOffice               = CustomsOffice("GB1", "BOSTON", None)
+  val gbCustomsOffice2: CustomsOffice               = CustomsOffice("GB2", "Appledore", None)
+  val gbCustomsOffices: NonEmptyList[CustomsOffice] = NonEmptyList(gbCustomsOffice1, List(gbCustomsOffice2))
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -58,53 +60,53 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getCustomsOfficeById" - {
       "must return the head of the customs office list" in {
 
-        when(mockRefDataConnector.getCustomsOfficesForId(any())(any(), any()))
+        when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
           .thenReturn(Future.successful(gbCustomsOffices))
 
         service.getCustomsOfficeById("GB1").futureValue mustBe Some(gbCustomsOffice1)
 
-        verify(mockRefDataConnector).getCustomsOfficesForId(any())(any(), any())
+        verify(mockRefDataConnector).getCustomsOfficeForId(any())(any(), any())
       }
 
       "must return None for empty list" in {
 
-        when(mockRefDataConnector.getCustomsOfficesForId(any())(any(), any()))
-          .thenReturn(Future.successful(Nil))
+        when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
+          .thenReturn(Future.failed(new NoReferenceDataFoundException))
 
         service.getCustomsOfficeById("GB1").futureValue mustBe None
 
-        verify(mockRefDataConnector).getCustomsOfficesForId(any())(any(), any())
+        verify(mockRefDataConnector).getCustomsOfficeForId(any())(any(), any())
       }
     }
 
     "getCustomsOfficeByMultipleIds" - {
       "must customs office list for multiple ids" in {
 
-        when(mockRefDataConnector.getCustomsOfficesForId(eqTo("GB1"))(any(), any()))
-          .thenReturn(Future.successful(Seq(gbCustomsOffice1)))
+        when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB1"))(any(), any()))
+          .thenReturn(Future.successful(NonEmptyList(gbCustomsOffice1, Nil)))
 
-        when(mockRefDataConnector.getCustomsOfficesForId(eqTo("GB2"))(any(), any()))
-          .thenReturn(Future.successful(Seq(gbCustomsOffice2)))
+        when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB2"))(any(), any()))
+          .thenReturn(Future.successful(NonEmptyList(gbCustomsOffice2, Nil)))
 
-        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe gbCustomsOffices
+        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe gbCustomsOffices.toList
 
-        verify(mockRefDataConnector, times(2)).getCustomsOfficesForId(any())(any(), any())
+        verify(mockRefDataConnector, times(2)).getCustomsOfficeForId(any())(any(), any())
       }
 
       "must return empty list when given an empty list" in {
         service.getCustomsOfficesByMultipleIds(Nil).futureValue mustBe Seq.empty
 
-        verify(mockRefDataConnector, times(0)).getCustomsOfficesForId(any())(any(), any())
+        verify(mockRefDataConnector, times(0)).getCustomsOfficeForId(any())(any(), any())
       }
 
       "must return empty list for non matching" in {
 
-        when(mockRefDataConnector.getCustomsOfficesForId(any())(any(), any()))
-          .thenReturn(Future.successful(Nil))
+        when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
+          .thenReturn(Future.failed(new NoReferenceDataFoundException))
 
         service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq.empty
 
-        verify(mockRefDataConnector, times(2)).getCustomsOfficesForId(any())(any(), any())
+        verify(mockRefDataConnector, times(2)).getCustomsOfficeForId(any())(any(), any())
       }
     }
 
