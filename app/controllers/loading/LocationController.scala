@@ -53,11 +53,9 @@ class LocationController @Inject() (
       countriesService.getCountries().map {
         countryList =>
           val countryIE15 = request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
-            pol =>
-              pol.country match {
-                case Some(country) => countryList.values.find(_.code.code == country)
-                case None          => None
-              }
+            _.country.flatMap(
+              country => countryList.values.find(_.code.code == country)
+            )
           )
           val countryName = request.userAnswers.get(CountryPage).map(_.description).getOrElse(countryIE15.map(_.description).getOrElse(""))
           val form        = formProvider("loading.location", countryName)
@@ -78,11 +76,9 @@ class LocationController @Inject() (
         countriesService.getCountries().flatMap {
           countryList =>
             val countryIE15 = request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
-              pol =>
-                pol.country match {
-                  case Some(country) => countryList.values.find(_.code.code == country)
-                  case None          => None
-                }
+              _.country.flatMap(
+                country => countryList.values.find(_.code.code == country)
+              )
             )
             val countryName = request.userAnswers.get(CountryPage).map(_.description).getOrElse(countryIE15.map(_.description).getOrElse(""))
             val form        = formProvider("loading.location", countryName)
