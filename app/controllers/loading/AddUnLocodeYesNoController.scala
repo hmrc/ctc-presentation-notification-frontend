@@ -52,7 +52,6 @@ class AddUnLocodeYesNoController @Inject() (
       val preparedForm = request.userAnswers
         .get(AddUnLocodeYesNoPage)
         .orElse {
-          logger.info(s"Retrieved AddUnlocodeYesNo answer from IE015 journey")
           request.userAnswers.departureData.Consignment.PlaceOfLoading.map(
             _.isUnlocodePresent
           )

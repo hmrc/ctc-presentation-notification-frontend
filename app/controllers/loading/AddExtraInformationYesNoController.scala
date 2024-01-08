@@ -53,7 +53,6 @@ class AddExtraInformationYesNoController @Inject() (
       val preparedForm = request.userAnswers
         .get(AddExtraInformationYesNoPage)
         .orElse {
-          logger.info(s"Retrieved AddExtraInformationYesNo answer from IE015 journey")
           request.userAnswers.departureData.Consignment.PlaceOfLoading.map(
             _.isAdditionalInformationPresent
           )
