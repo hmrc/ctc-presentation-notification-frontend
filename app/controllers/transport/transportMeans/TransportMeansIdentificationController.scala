@@ -18,18 +18,19 @@ package controllers.transport.transportMeans
 
 import controllers.actions._
 import forms.EnumerableFormProvider
+import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.Navigator
 import pages.QuestionPage
-import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.transportMeans.TransportMeansIdentificationPage
+import pages.transport.InlandModePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.TransportMeansIdentificationTypesService
+import services.{MeansOfTransportIdentificationTypesService, TransportModeCodesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.transportMeans.TransportMeansIdentificationView
 
@@ -44,65 +45,53 @@ class TransportMeansIdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationView,
-  service: TransportMeansIdentificationTypesService
+  service: MeansOfTransportIdentificationTypesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(identificationTypes: Seq[TransportMeansIdentification], index: Index): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("houseConsignment.index.departureTransportMeans.identification", identificationTypes, index.display)
+  private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
+    formProvider[TransportMeansIdentification]("houseConsignment.index.departureTransportMeans.identification", identificationTypes)
 
-  def onPageLoad(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions
+  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(index, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identifiers =>
-            def identificationFromDepartureData = {
-              val identificationCode = request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
-                list => list.lift(index.position).flatMap(_.typeOfIdentification)
-              )
-              identificationCode.flatMap(
-                code => identifiers.find(_.code == code)
-              )
+            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage) match {
+              case None        => form(identifiers)
+              case Some(value) => form(identifiers).fill(value)
             }
-
-            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(index)).orElse(identificationFromDepartureData) match {
-              case None        => form(identifiers, index)
-              case Some(value) => form(identifiers, index).fill(value)
-            }
-
-            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode, index)))
+            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
         }
     }
 
-  def onSubmit(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(index, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identificationTypeList =>
-            form(identificationTypeList, index)
+            form(identificationTypeList)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
-                    BadRequest(view(formWithErrors, departureId, identificationTypeList, mode, index))
+                    BadRequest(view(formWithErrors, departureId, identificationTypeList, mode))
                   ),
-                value => redirect(mode, TransportMeansIdentificationPage, value, departureId, index)
+                value => redirect(mode, value, departureId)
               )
         }
     }
 
   private def redirect(
     mode: Mode,
-    page: Index => QuestionPage[TransportMeansIdentification],
     value: TransportMeansIdentification,
-    departureId: String,
-    index: Index
+    departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(page(index), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(page(index), updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode))
 }

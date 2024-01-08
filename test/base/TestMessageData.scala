@@ -76,7 +76,7 @@ object TestMessageData {
   val consignment: Consignment = Consignment(
     containerIndicator = Some("1"),
     modeOfTransportAtTheBorder = Some("2"),
-    TransportEquipment = Some(transportEquipment),
+    inlandModeOfTransport = Some("2") TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
     ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
     PlaceOfLoading = Some(placeOfLoading),

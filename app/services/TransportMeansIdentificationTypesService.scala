@@ -34,11 +34,11 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
     referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, index, borderModeOfTransport)).map(sort)
 
   private def filter(
-    identificationTypes: Seq[TransportMeansIdentification],
+    transportMeansIdentificationsTypes: Seq[TransportMeansIdentification],
     index: Index,
     borderModeOfTransport: Option[BorderMode]
   ): Seq[TransportMeansIdentification] = {
-    val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentification)
+    val identificationTypesExcludingUnknown = transportMeansIdentificationsTypes.filterNot(_.code == UnknownIdentification)
 
     borderModeOfTransport match {
       case Some(borderMode) if index.isFirst =>

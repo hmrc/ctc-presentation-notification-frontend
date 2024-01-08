@@ -24,12 +24,12 @@ import pages.sections.transport.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TransportMeansIdentificationPage(index: Index) extends QuestionPage[TransportMeansIdentification] {
+object TransportMeansIdentificationPage extends QuestionPage[TransportMeansIdentification] {
 
   override def path: JsPath = TransportMeansSection.path \ toString
 
   override def toString: String = "identification"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(TransportMeansIdentificationController.onPageLoad(departureId, mode, index))
+    Some(TransportMeansIdentificationController.onPageLoad(departureId, mode))
 }

@@ -1,7 +1,7 @@
-GET        /departure-means-of-transport/:activeIndex/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
-POST       /departure-means-of-transport/:activeIndex/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
-GET        /departure-means-of-transport/:activeIndex/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
-POST       /departure-means-of-transport/:activeIndex/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode, activeIndex: Index)
+GET        /departure-means-of-transport/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/identification/:departureId               controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-identification/:departureId        controllers.transport.transportMeans.TransportMeansIdentificationController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
 GET        /departure-means-of-transport/:activeIndex/country/:departureId                      controllers.transport.transportMeans.TransportMeansNationalityController.onPageLoad(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
 POST       /departure-means-of-transport/:activeIndex/country/:departureId                      controllers.transport.transportMeans.TransportMeansNationalityController.onSubmit(departureId: String, mode: Mode = NormalMode, activeIndex: Index)
