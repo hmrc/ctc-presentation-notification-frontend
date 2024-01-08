@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.representative
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.{representative, routes}
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -32,7 +33,7 @@ import scala.concurrent.Future
 class RepresentativePhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider              = new TelephoneNumberFormProvider()
-  private val form                      = formProvider("traderDetails.representative.representativeTelephoneNumber")
+  private val form                      = formProvider("representative.representativeTelephoneNumber")
   private val mode                      = NormalMode
   private lazy val telephoneNumberRoute = representative.routes.RepresentativePhoneNumberController.onPageLoad(departureId, mode).url
   private val validAnswer: String       = "+123123"

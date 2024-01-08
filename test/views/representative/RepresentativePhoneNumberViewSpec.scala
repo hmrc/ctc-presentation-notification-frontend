@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.representative
 
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
@@ -26,7 +26,7 @@ import views.html.representative.RepresentativePhoneNumberView
 
 class RepresentativePhoneNumberViewSpec extends TelephoneNumberViewBehaviours {
 
-  override val prefix: String = "traderDetails.representative.representativeTelephoneNumber"
+  override val prefix: String = "representative.representativeTelephoneNumber"
 
   override def form: Form[String] = new TelephoneNumberFormProvider()(prefix)
 
