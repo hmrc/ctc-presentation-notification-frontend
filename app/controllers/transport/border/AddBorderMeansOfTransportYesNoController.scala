@@ -50,9 +50,7 @@ class AddBorderMeansOfTransportYesNoController @Inject() (
       val preparedForm = request.userAnswers
         .get(AddBorderMeansOfTransportYesNoPage)
         .orElse(
-          request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.map(
-            _ => true
-          )
+          Some(request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined)
         ) match {
         case None        => form
         case Some(value) => form.fill(value)

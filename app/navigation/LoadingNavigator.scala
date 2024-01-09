@@ -66,7 +66,8 @@ class LoadingNavigator extends Navigator {
           case None    => UnLocodePage.route(ua, departureId, CheckMode)
           case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
-      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _           => CountryPage.route(ua, departureId, CheckMode)
     }
 
   private def addExtraInformationYesNoNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =

@@ -62,10 +62,12 @@ class AddConveyanceReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
       val view = injector.instanceOf[AddConveyanceReferenceYesNoView]
 
+      val filledForm = form.bind(Map("value" -> "false"))
+
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode, index)(request, messages).toString
+        view(filledForm, departureId, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

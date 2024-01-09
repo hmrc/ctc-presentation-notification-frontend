@@ -20,9 +20,11 @@ import controllers.locationOfGoods.routes
 import models.reference.CustomsOffice
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
+import pages.sections.locationOfGoods.{LocationOfGoodsContactSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object CustomsOfficeIdentifierPage extends QuestionPage[CustomsOffice] {
 
@@ -32,4 +34,17 @@ case object CustomsOfficeIdentifierPage extends QuestionPage[CustomsOffice] {
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode))
+
+  override def cleanup(value: Option[CustomsOffice], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val path =
+      JsPath \ "Consignment" \ "LocationOfGoods" \ "ContactPerson"
+
+    value match {
+      case Some(_) =>
+        userAnswers
+          .remove(LocationOfGoodsContactSection, path)
+      case None => super.cleanup(value, userAnswers)
+    }
+  }
+
 }

@@ -728,12 +728,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       }
 
-      "must go from LocationTypePage to check your answers page" in {
+      "must go from LocationTypePage to IdentificationPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(LocationTypePage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(IdentificationPage.route(answers, departureId, CheckMode).value)
         }
 
       }
