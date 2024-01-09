@@ -194,11 +194,10 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         }
 
         "to Country page when answer is No" in {
-          val ie015WithNoCountryUserAnswers =
-            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              .setValue(AddUnLocodeYesNoPage, false)
+          val userAnswers = emptyUserAnswers
+            .setValue(AddUnLocodeYesNoPage, false)
           navigator
-            .nextPage(CountryPage, ie015WithNoCountryUserAnswers, departureId, mode)
+            .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
             .mustBe(controllers.loading.routes.CountryController.onPageLoad(departureId, mode))
         }
       }
