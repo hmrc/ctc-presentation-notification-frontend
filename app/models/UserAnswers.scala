@@ -106,8 +106,9 @@ final case class UserAnswers(
 
 object UserAnswers {
   import monocle.std.option._
-  private val departureDataLens: Lens[UserAnswers, MessageData] = GenLens[UserAnswers](_.departureData)
-  private val consignmentLens: Lens[MessageData, Consignment]   = GenLens[MessageData](_.Consignment)
+  private val departureDataLens: Lens[UserAnswers, MessageData]             = GenLens[UserAnswers](_.departureData)
+  private val consignmentLens: Lens[MessageData, Consignment]               = GenLens[MessageData](_.Consignment)
+  private val representativeLens: Lens[MessageData, Option[Representative]] = GenLens[MessageData](_.Representative)
 
   private val modeOfTransportAtTheBorderConsignmentLens: Lens[Consignment, Option[String]] =
     GenLens[Consignment](_.modeOfTransportAtTheBorder)
@@ -129,6 +130,8 @@ object UserAnswers {
 
   private val lensContactPerson: Lens[LocationOfGoods, Option[ContactPerson]] = GenLens[LocationOfGoods](_.ContactPerson)
 
+  private val lensRepresentativeContactPerson: Lens[Representative, Option[ContactPerson]] = GenLens[Representative](_.ContactPerson)
+
   private val lensAdditionalIdentifier: Lens[LocationOfGoods, Option[String]] = GenLens[LocationOfGoods](_.additionalIdentifier)
 
   val setModeOfTransportAtTheBorderOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
@@ -140,6 +143,9 @@ object UserAnswers {
   val setPlaceOfLoadingOnUserAnswersLens: Lens[UserAnswers, Option[PlaceOfLoading]] =
     departureDataLens.composeLens(consignmentLens).composeLens(placeOfLoadingConsignmentLens)
 
+  val setRepresentativeOnUserAnswersLens: Lens[UserAnswers, Option[Representative]] =
+    departureDataLens composeLens representativeLens
+
   val setAddressOnUserAnswersLens: Optional[UserAnswers, Address] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens addressLocationLens composePrism some
 
@@ -148,6 +154,9 @@ object UserAnswers {
 
   val setContactPersonOnUserAnswersLens: Optional[UserAnswers, ContactPerson] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensContactPerson composePrism some
+
+  val setRepresentativeContactPersonDetailsOnUserAnswersLens: Optional[UserAnswers, ContactPerson] =
+    departureDataLens composeLens representativeLens composePrism some composeLens lensRepresentativeContactPerson composePrism some
 
   val setAdditionalIdentifierOnUserAnswersLens: Optional[UserAnswers, String] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensAdditionalIdentifier composePrism some

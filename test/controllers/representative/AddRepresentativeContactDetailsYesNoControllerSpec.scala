@@ -19,7 +19,8 @@ package controllers.representative
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.messages.ContactPerson
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.representative.AddRepresentativeContactDetailsYesNoPage
@@ -41,11 +42,11 @@ class AddRepresentativeContactDetailsYesNoControllerSpec extends SpecBase with A
     super
       .guiceApplicationBuilder()
 
-  "AddRepresentativeYesNo Controller" - {
+  "AddRepresentativeContactDetailsYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addRepresentativeRoute)
 
@@ -59,10 +60,10 @@ class AddRepresentativeContactDetailsYesNoControllerSpec extends SpecBase with A
         view(form, departureId, mode)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered in IE013/015" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddRepresentativeContactDetailsYesNoPage, true)
-      setExistingUserAnswers(userAnswers)
+      val uaIE015 = UserAnswers.setRepresentativeContactPersonDetailsOnUserAnswersLens.set(ContactPerson("name", "number", None))(emptyUserAnswers)
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, addRepresentativeRoute)
 

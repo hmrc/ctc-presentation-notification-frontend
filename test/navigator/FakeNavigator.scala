@@ -57,3 +57,7 @@ class FakeBorderNavigator(desiredRoute: Call) extends BorderNavigator {
 class FakeEquipmentNavigator(desiredRoute: Call) extends EquipmentNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
+
+class FakeRepresentativeNavigator(desiredRoute: Call) extends RepresentativeNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}

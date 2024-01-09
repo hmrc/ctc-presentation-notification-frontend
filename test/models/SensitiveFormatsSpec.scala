@@ -18,7 +18,7 @@ package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.EntrySummaryDeclarationSecurityDetails
-import models.messages.{Commodity, Consignment, ConsignmentItem, HolderOfTheTransitProcedure, HouseConsignment, MessageData, TransitOperation}
+import models.messages._
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.running
 
@@ -128,6 +128,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         None,
         None
       ),
+      Representative = None,
       Consignment = Consignment(
         containerIndicator = None,
         modeOfTransportAtTheBorder = None,

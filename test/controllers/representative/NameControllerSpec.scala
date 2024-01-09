@@ -19,7 +19,7 @@ package controllers.representative
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.NameFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.representative.NamePage
@@ -45,7 +45,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, representativeNameRoute)
 

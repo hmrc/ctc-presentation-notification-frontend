@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -45,7 +45,7 @@ class ActingAsRepresentativeControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, actingRepresentativeRoute)
       val result  = route(app, request).value
