@@ -22,7 +22,9 @@ case class Representative(
   identificationNumber: String,
   status: String,
   ContactPerson: Option[ContactPerson]
-)
+) {
+  val isContactPersonDefined: Boolean = ContactPerson.isDefined
+}
 
 object Representative {
   implicit val format: OFormat[Representative] = Json.format[Representative]
