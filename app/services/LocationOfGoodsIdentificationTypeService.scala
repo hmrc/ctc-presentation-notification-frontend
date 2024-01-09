@@ -16,9 +16,10 @@
 
 package services
 
+import cats.data.NonEmptyList
 import config.Constants._
 import connectors.ReferenceDataConnector
-import models.{LocationOfGoodsIdentification, LocationType}
+import models.LocationOfGoodsIdentification
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,9 +29,9 @@ class LocationOfGoodsIdentificationTypeService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
-  def getLocationOfGoodsIdentificationTypes(locationType: LocationType)(implicit hc: HeaderCarrier): Future[Seq[LocationOfGoodsIdentification]] = {
+  def getLocationOfGoodsIdentificationTypes(locationType: String)(implicit hc: HeaderCarrier): Future[Seq[LocationOfGoodsIdentification]] = {
     def filter(locationOfGoods: Seq[LocationOfGoodsIdentification]): Seq[LocationOfGoodsIdentification] =
-      locationType.code match {
+      locationType match {
         case DesignatedLocation =>
           locationOfGoods.filter(_.qualifierIsOneOf(CustomsOfficeIdentifier, UnlocodeIdentifier))
         case AuthorisedPlace =>
@@ -49,7 +50,7 @@ class LocationOfGoodsIdentificationTypeService @Inject() (
       .map(filter)
   }
 
-  private def sort(locationOfGoodsIdentification: Seq[LocationOfGoodsIdentification]): Seq[LocationOfGoodsIdentification] =
-    locationOfGoodsIdentification.sortBy(_.qualifier.toLowerCase)
+  private def sort(locationOfGoodsIdentification: NonEmptyList[LocationOfGoodsIdentification]): Seq[LocationOfGoodsIdentification] =
+    locationOfGoodsIdentification.toList.sortBy(_.qualifier.toLowerCase)
 
 }

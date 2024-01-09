@@ -16,23 +16,27 @@
 
 package navigator
 
-import base.TestMessageData.{consignment, customsOfficeOfTransitDeclared, transitOperation}
+import base.TestMessageData.{allOptionsNoneJsonValue, consignment, customsOfficeOfTransitDeclared, transitOperation}
 import base.{SpecBase, TestMessageData}
 import config.Constants._
 import controllers.transport.border.active.routes
 import generators.Generators
 import models._
-import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared}
+import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared, MessageData}
 import models.reference.CustomsOffice
 import models.reference.TransportMode.BorderMode
+import models.reference.transport.border.active.Identification
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
-import pages.transport.border.{AddAnotherBorderModeOfTransportPage, BorderModeOfTransportPage}
+import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import play.api.libs.json.Json
+
+import java.time.Instant
 
 class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -309,61 +313,27 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, NormalMode, activeIndex))
       }
 
-    }
+      "when selected no on add conveyance number yes no" - {
 
-    "when selected no on add conveyance number yes no" - {
+        "must go to add another active border when customs office of transit is present" in {
 
-      "must go to add another active border when customs office of transit is present" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
-              .copy(departureData =
-                TestMessageData.messageData.copy(
-                  CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                  )
                 )
-              )
-            navigator
-              .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
-        }
-      }
-      "must go to final border cya page when customs office of transit is not present" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
-            navigator
-              .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              navigator
+                .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
+          }
         }
 
-      }
+        "must go to check your answers page when customs office of transit is not present" in {
 
-    }
-
-    "when on conveyance number page" - {
-
-      "must go to add another active border when customs office of transit is present" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .copy(departureData =
-                TestMessageData.messageData.copy(
-                  CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
-                )
-              )
-            navigator
-              .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
-        }
-      }
-
-      "when customs office of transit is not present, container indicator is present in IE170" - {
-        "must go to container identification number page when container indicator is true" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
@@ -372,106 +342,499 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                     CustomsOfficeOfTransitDeclared = None
                   )
                 )
-                .setValue(ContainerIndicatorPage, true)
-
+                .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
               navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
-                )
+                .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
+
         }
 
-        "must go to container identification number page when container indicator is false" in {
+      }
+
+      "when on conveyance number page" - {
+
+        "must go to add another active border when customs office of transit is present" in {
+
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
                 .copy(departureData =
                   TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                  )
+                )
+              navigator
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(routes.AddAnotherBorderTransportController.onPageLoad(departureId, NormalMode))
+          }
+        }
+        "must go to check your answers page when customs office of transit is not present" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
                     CustomsOfficeOfTransitDeclared = None
                   )
                 )
-                .setValue(ContainerIndicatorPage, false)
-
               navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), userAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
-      "must go to final border CYA page when customs office of transit is not present and container indicator is not present in IE170" in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-      }
     }
 
-    "when on add another border page" - {
+    "in CheckMode" - {
+      val mode = CheckMode
+      "must go from AddBorderModeOfTransportYesNoPage" - {
 
-      "must go to identification page when true" in {
+        "to CYA page when No " in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(AddAnotherBorderModeOfTransportPage(activeIndex), true)
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
-            navigator
-              .nextPage(AddAnotherBorderModeOfTransportPage(activeIndex), updatedAnswers, departureId, NormalMode)
-              .mustBe(routes.IdentificationController.onPageLoad(departureId, NormalMode, activeIndex))
+        }
+
+        "to BorderModeOfTransportPage when Yes and there is no answer to border mode of transport" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = None))
+            )
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to border mode of transport in ie170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+            .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to border mode of transport in IE15/13" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = Some("test")))
+            )
+          navigator
+            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
         }
       }
 
-      "when no" - {
-        "and container indicator is true must go to container identification number page" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
+      "must go from BorderModeOfTransportPage to" - {
+        "Add border means of transport page when Do you want to add border mode of transport?  is Yes and security type is 0" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, true)
+            .copy(departureData = emptyUserAnswers.departureData.copy(TransitOperation = emptyUserAnswers.departureData.TransitOperation.copy(security = "0")))
+          navigator
+            .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
+            .mustBe(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+
+        }
+        "to identification page when Do you want to add border mode of transport?  is false and security type is 1" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+            .copy(departureData = emptyUserAnswers.departureData.copy(TransitOperation = emptyUserAnswers.departureData.TransitOperation.copy(security = "1")))
+
+          navigator
+            .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
+            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, CheckMode, Index(0)))
+
+        }
+
+        "border.routes.AddBorderMeansOfTransport page" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+            .copy(departureData = emptyUserAnswers.departureData.copy(TransitOperation = emptyUserAnswers.departureData.TransitOperation.copy(security = "1")))
+
+          navigator
+            .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
+          Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+      }
+
+      "must go from Border mode of transport page" - {
+
+        "to identification page when security mode of transport at border is not 5, security is 1,2,3 and active border transport is not present " in {
+
+          forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            (borderModeOfTransport, securityType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
                 .copy(departureData =
                   TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
+                    Consignment = consignment.copy(ActiveBorderTransportMeans = None),
+                    TransitOperation = transitOperation.copy(security = securityType)
                   )
                 )
-                .setValue(ContainerIndicatorPage, true)
-
               navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                .mustBe(IdentificationPage(activeIndex).route(userAnswers, departureId, mode).value)
+
+          }
+
+        }
+
+        //TODO: Change more information page to other page when created
+        "to more add active border transport means page when security is 0 and active border transport is present " in {
+
+          forAll(arbitraryActiveBorderTransportMeans.arbitrary, nonEmptyString) {
+            (activeBorderTransportMeans, borderModeDesc) =>
+              val userAnswers = emptyUserAnswers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
+                    TransitOperation = transitOperation.copy(security = "0")
+                  )
                 )
+              navigator
+                .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                .mustBe(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+          }
+        }
+      }
+
+      "must go from AddBorderMeansOfTransportYesNoPage" - {
+
+        "to CYA page when No " in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderMeansOfTransportYesNoPage, false)
+          navigator
+            .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to Identification Page when Yes and the active border list section does not exist in 15/13/170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderMeansOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = None))
+            )
+          navigator
+            .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to identification in ie170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderMeansOfTransportYesNoPage, true)
+            .setValue(IdentificationPage(activeIndex), Identification("2", "desc"))
+          navigator
+            .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to border mode of transport in IE15/13" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderMeansOfTransportYesNoPage, true)
+          navigator
+            .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+      }
+
+      "must go from identification page" - {
+
+        "to identificationNumberPage when identification does not exist in the 15/13/170" in {
+
+          val ie015WithNoIdentificationNumberUserAnswers =
+            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(AddBorderMeansOfTransportYesNoPage, true)
+          navigator
+            .nextPage(IdentificationPage(activeIndex), ie015WithNoIdentificationNumberUserAnswers, departureId, CheckMode)
+            .mustBe(routes.IdentificationNumberController.onPageLoad(departureId, CheckMode, activeIndex))
+
+        }
+
+        "to CYA page when identification does exist in the 170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderMeansOfTransportYesNoPage, true)
+            .setValue(IdentificationPage(activeIndex), Identification("Air", "desc"))
+          navigator
+            .nextPage(IdentificationPage(activeIndex), userAnswers, departureId, CheckMode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CYA page when identification does exist in the 15/13" in {
+
+          navigator
+            .nextPage(IdentificationPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+      }
+
+      "must go from identification number page" - {
+
+        "to nationality page when identification number does not exist in the 15/13/170" in {
+
+          val ie015WithNoNationalityUserAnswers =
+            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(AddBorderMeansOfTransportYesNoPage, true)
+          navigator
+            .nextPage(IdentificationNumberPage(activeIndex), ie015WithNoNationalityUserAnswers, departureId, CheckMode)
+            .mustBe(routes.NationalityController.onPageLoad(departureId, CheckMode, activeIndex))
+
+        }
+
+        "to CYA page when identification number does exist in the 170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddBorderMeansOfTransportYesNoPage, true)
+            .setValue(IdentificationNumberPage(activeIndex), "identification number")
+          navigator
+            .nextPage(IdentificationNumberPage(activeIndex), userAnswers, departureId, CheckMode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CYA page when identification number does exist in the 15/13" in {
+
+          navigator
+            .nextPage(IdentificationNumberPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+      }
+
+      "must go from nationality page" - {
+
+        "to customs office ref number page when customs office ref number does not exist in the 15/13/170" in {
+
+          val ie015WithNoCustomsOfficeUserAnswers =
+            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(AddBorderMeansOfTransportYesNoPage, true)
+          navigator
+            .nextPage(NationalityPage(activeIndex), ie015WithNoCustomsOfficeUserAnswers, departureId, CheckMode)
+            .mustBe(routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, CheckMode, activeIndex))
+
+        }
+
+        "to CYA page when customs office ref number does exist in the 170" in {
+          forAll(arbitraryCustomsOffice.arbitrary) {
+            customsOffice =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddBorderMeansOfTransportYesNoPage, true)
+                .setValue(CustomsOfficeActiveBorderPage(activeIndex), customsOffice)
+              navigator
+                .nextPage(NationalityPage(activeIndex), userAnswers, departureId, CheckMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
-        "and container indicator is false must go to Add Transport Equipment Yes/No page when" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
-                  )
-                )
-                .setValue(ContainerIndicatorPage, false)
+        "to CYA page when customs office ref number does exist in the 15/13" in {
 
+          navigator
+            .nextPage(NationalityPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+      }
+
+      "from the customs offices page" - {
+
+        "if security is 1,2,3 and border mode of transport is 4 " - {
+
+          "go to the ConveyanceRefNumberPage if it is not in the 15/13/170" in {
+            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString) {
+              (securityType, borderModeDesc) =>
+                val ie015WithNoConveyanceRefNumberUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                    .setValue(BorderModeOfTransportPage, BorderMode("4", borderModeDesc))
+                    .copy(departureData =
+                      allOptionsNoneJsonValue
+                        .as[MessageData]
+                        .copy(
+                          TransitOperation = transitOperation.copy(security = securityType)
+                        )
+                    )
+                navigator
+                  .nextPage(CustomsOfficeActiveBorderPage(activeIndex), ie015WithNoConveyanceRefNumberUserAnswers, departureId, mode)
+                  .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
+            }
+          }
+
+          "go to CYA page if ConveyanceRefNumber is in the 15/13" in {
+            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString) {
+              (securityType, borderModeDesc) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(BorderModeOfTransportPage, BorderMode("4", borderModeDesc))
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      TransitOperation = transitOperation.copy(security = securityType)
+                    )
+                  )
+                navigator
+                  .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            }
+          }
+
+          "go to CYA page if ConveyanceRefNumber is in the 170" in {
+            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString, nonEmptyString) {
+              (securityType, borderModeDesc, conveyanceRefNumber) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
+                  .setValue(BorderModeOfTransportPage, BorderMode("4", borderModeDesc))
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      TransitOperation = transitOperation.copy(security = securityType)
+                    )
+                  )
+                navigator
+                  .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            }
+          }
+
+        }
+
+        "if security is 1,2,3 and border mode of transport is not 4 " - {
+
+          "go to the AddConveyanceRefNumberYesNoPage if it is not in the 15/13/170" in {
+            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString) {
+              (securityType, borderModeDesc) =>
+                val ie015WithNoConveyanceRefNumberUserAnswers =
+                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                    .setValue(BorderModeOfTransportPage, BorderMode("2", borderModeDesc))
+                    .copy(departureData =
+                      allOptionsNoneJsonValue
+                        .as[MessageData]
+                        .copy(
+                          TransitOperation = transitOperation.copy(security = securityType)
+                        )
+                    )
+                navigator
+                  .nextPage(CustomsOfficeActiveBorderPage(activeIndex), ie015WithNoConveyanceRefNumberUserAnswers, departureId, mode)
+                  .mustBe(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
+            }
+          }
+
+          "go to CYA page if AddConveyanceRefNumberYesNo is in the 15/13" in {
+            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString) {
+              (securityType, borderModeDesc) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(BorderModeOfTransportPage, BorderMode("3", borderModeDesc))
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      TransitOperation = transitOperation.copy(security = securityType)
+                    )
+                  )
+                navigator
+                  .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            }
+          }
+
+          "go to CYA page if AddConveyanceRefNumberYesNo is in the 170" in {
+            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString, nonEmptyString) {
+              (securityType, borderModeDesc, conveyanceRefNumber) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
+                  .setValue(BorderModeOfTransportPage, BorderMode("3", borderModeDesc))
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      TransitOperation = transitOperation.copy(security = securityType)
+                    )
+                  )
+                navigator
+                  .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            }
+          }
+
+        }
+
+      }
+
+      "must go from AddConveyanceReferenceNumberYesNoPage" - {
+
+        "to CYA page when No " in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
+          navigator
+            .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to ConveyanceReferenceNumberPage when Yes and conveyanceRefNumber does not exist 15/13/170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = None))
+            )
+          navigator
+            .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.transport.border.active.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to conveyance ref number in ie170" in {
+
+          forAll(nonEmptyString) {
+            conveyanceRefNumber =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
+                .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
               navigator
-                .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode))
+                .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
           }
         }
-      }
-      "must go to final border CYA page when customs office of transit is not present and container indicator is not present in IE170" in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ConveyanceReferenceNumberPage(activeIndex), answers, departureId, NormalMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        "to CheckYourAnswers when Yes and there is an answer to conveyance ref number in IE15/13" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
+          navigator
+            .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
         }
       }
+
+      "must go from ConveyanceRefNumberPage to CheckYourAnswers page" in {
+        navigator
+          .nextPage(ConveyanceReferenceNumberPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      }
+
     }
-
   }
+
 }

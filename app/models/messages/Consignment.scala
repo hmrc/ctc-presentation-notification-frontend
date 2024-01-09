@@ -18,7 +18,7 @@ package models.messages
 
 import models.reference.Item
 import models.reference.TransportMode.InlandMode
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json._
 
 case class Consignment(
   containerIndicator: Option[String],
@@ -26,11 +26,15 @@ case class Consignment(
   inlandModeOfTransport: Option[String],
   TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
-  ActiveBorderTransportMeans: Option[List[ActiveBorderTransportMeans]],
+  ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]
 ) {
+
+  def isTransportDefined: Option[Boolean] = Some(modeOfTransportAtTheBorder.isDefined)
+
   def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
+  val isPlaceOfLoadingPresent: Boolean                      = PlaceOfLoading.isDefined
 
   val allItems: Seq[Item] =
     HouseConsignment

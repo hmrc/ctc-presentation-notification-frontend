@@ -23,6 +23,8 @@ import controllers.loading.routes
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object AddExtraInformationYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = LoadingSection.path \ toString
@@ -31,5 +33,14 @@ case object AddExtraInformationYesNoPage extends QuestionPage[Boolean] {
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val Ie015LoadingCountryPath: JsPath  = JsPath \ "Consignment" \ "PlaceOfLoading" \ "country"
+    val Ie015LoadingLocationPath: JsPath = JsPath \ "Consignment" \ "PlaceOfLoading" \ "location"
+    value match {
+      case Some(false) => userAnswers.remove(CountryPage, Ie015LoadingCountryPath).flatMap(_.remove(LocationPage, Ie015LoadingLocationPath))
+      case _           => super.cleanup(value, userAnswers)
+    }
+  }
 
 }

@@ -17,17 +17,20 @@
 package navigator
 
 import base.SpecBase
-import base.TestMessageData.{consignment, messageData, transitOperation}
+import base.TestMessageData.{allOptionsNoneJsonValue, consignment, messageData, transitOperation}
 import generators.Generators
 import models._
-import models.messages.{Authorisation, AuthorisationType}
 import models.messages.AuthorisationType.C521
+import models.messages.{Authorisation, AuthorisationType, MessageData}
 import navigation.LoadingNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading
 import pages.loading._
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
+import play.api.libs.json.Json
+
+import java.time.Instant
 
 class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -166,88 +169,121 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
     }
-    // todo update when CYA page built
     "in Check mode" - {
       val mode = CheckMode
       "must go from AddUnLocodeYesNoPage" - {
 
-        "to Unlocode page when answer is Yes and there is no existing UnLocode" in {
+        "to Unlocode page when answer is Yes and there is no existing UnLocode in either the 15/13/170" in {
 
-          val userAnswers = emptyUserAnswers.setValue(AddUnLocodeYesNoPage, true)
+          val ie015WithNoUnLocodeUserAnswers =
+            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(AddUnLocodeYesNoPage, true)
           navigator
-            .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(UnLocodePage.route(userAnswers, departureId, mode).value)
+            .nextPage(AddUnLocodeYesNoPage, ie015WithNoUnLocodeUserAnswers, departureId, mode)
+            .mustBe(UnLocodePage.route(ie015WithNoUnLocodeUserAnswers, departureId, mode).value)
         }
 
-        "to CYA page when answer is Yes and there is an existing UnLocode" ignore {
+        "to CYA page when answer is Yes and there is an existing UnLocode" in {
 
           val userAnswers = emptyUserAnswers
             .setValue(AddUnLocodeYesNoPage, true)
             .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(UnLocodePage.route(userAnswers, departureId, mode).value) //todo update when cya page is built
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
-        "to CYA page when answer is NO" ignore {
-
+        "to CYA when answer is No" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddUnLocodeYesNoPage, false)
-            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(UnLocodePage.route(userAnswers, departureId, mode).value) //todo update when cya page is built
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
 
       "must go from AddExtraInformationYesNoPage " - {
 
-        "to Country page when answer is Yes and there is no existing Country" in {
+        "to Country page when answer is Yes and there is no existing Country in 15/13/170" in {
 
-          val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, true)
+          val ie015WithNoCountryUserAnswers =
+            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(AddExtraInformationYesNoPage, true)
           navigator
-            .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(loading.CountryPage.route(userAnswers, departureId, mode).value)
+            .nextPage(AddExtraInformationYesNoPage, ie015WithNoCountryUserAnswers, departureId, mode)
+            .mustBe(loading.CountryPage.route(ie015WithNoCountryUserAnswers, departureId, mode).value)
         }
 
-        "to CYA page when answer is Yes and there is an existing Country" ignore {
-
+        "to CYA page when answer is Yes and there is an existing Country" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddExtraInformationYesNoPage, true)
             .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
           navigator
             .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(UnLocodePage.route(userAnswers, departureId, mode).value) //todo update when cya page is built
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
         "to CYA page when answer is NO" in {
 
-          val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, true)
+          val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, false)
           navigator
             .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(CountryPage.route(userAnswers, departureId, mode).value) //todo update when cya page is built
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
       }
 
-      "from Country page to CYA page" ignore {
-        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-        navigator
-          .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-          .mustBe(CountryPage.route(userAnswers, departureId, mode).value) //todo update when cya page is built
+      "must go from Country page" - {
+        "to LocationPage when the LocationPage does not exist in either the 13/15/170" in {
+          val ie015WithNoLocationUserAnswers =
+            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(AddUnLocodeYesNoPage, true)
+              .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+              .setValue(AddExtraInformationYesNoPage, true)
+              .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+          navigator
+            .nextPage(CountryPage, ie015WithNoLocationUserAnswers, departureId, mode)
+            .mustBe(LocationPage.route(ie015WithNoLocationUserAnswers, departureId, mode).value)
+        }
+
+        "to CYAPage when the Location Page does exist in either the 13/15/170" in {
+          val withLocationUserAnswers = emptyUserAnswers
+            .setValue(AddUnLocodeYesNoPage, true)
+            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+            .setValue(AddExtraInformationYesNoPage, true)
+            .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+            .setValue(LocationPage, nonEmptyString.sample.value)
+          navigator
+            .nextPage(LocationPage, withLocationUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
       }
 
-      "from UnLocode page to CYA page" ignore {
-        val userAnswers = emptyUserAnswers.setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
-        navigator
-          .nextPage(UnLocodePage, userAnswers, departureId, mode)
-          .mustBe(CountryPage.route(userAnswers, departureId, mode).value) //todo update when cya page is built
+      "must go from Unlocode page" - {
+        "to AddExtraInformationPage when the AddExtraInformationPage does not exist in either the 13/15/170" in {
+          val ie015WithNoExtraInformationUserAnswers =
+            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              .setValue(AddUnLocodeYesNoPage, true)
+              .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+          navigator
+            .nextPage(UnLocodePage, ie015WithNoExtraInformationUserAnswers, departureId, mode)
+            .mustBe(AddExtraInformationYesNoPage.route(ie015WithNoExtraInformationUserAnswers, departureId, mode).value)
+        }
+
+        "to CYAPage when the addExtraInformationPage does exist in either the 13/15/170" in {
+          val withAddExtraInformationUserAnswers = emptyUserAnswers
+            .setValue(AddUnLocodeYesNoPage, true)
+            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+          navigator
+            .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
       }
 
-      "from Location page to CYA page" ignore {
-        val userAnswers = emptyUserAnswers.setValue(LocationPage, arbitraryUnLocode.arbitrary.sample.value)
+      "from Location page to CYA page" in {
+        val userAnswers = emptyUserAnswers.setValue(LocationPage, nonEmptyString.sample.value)
         navigator
           .nextPage(LocationPage, userAnswers, departureId, mode)
-          .mustBe(CountryPage.route(userAnswers, departureId, mode).value) //todo update when cya page is built
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       }
 
     }

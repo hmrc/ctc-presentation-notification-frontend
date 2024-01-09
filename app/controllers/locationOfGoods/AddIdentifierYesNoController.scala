@@ -22,6 +22,7 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.AddIdentifierYesNoPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -41,13 +42,22 @@ class AddIdentifierYesNoController @Inject() (
   view: AddIdentifierYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val form = formProvider("locationOfGoods.addIdentifierYesNo")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddIdentifierYesNoPage) match {
+      val identifierYesNo =
+        request.userAnswers
+          .get(AddIdentifierYesNoPage)
+          .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.additionalIdentifier))
+          .map {
+            logger.info(s"Retrieved AddIdentifierYesNo answer from IE015 journey")
+            _ => true
+          }
+      val preparedForm = identifierYesNo match {
         case None        => form
         case Some(value) => form.fill(value)
       }

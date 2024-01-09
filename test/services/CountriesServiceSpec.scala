@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.SelectableList
@@ -34,10 +35,10 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
   private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                           = new CountriesService(mockRefDataConnector)
 
-  private val country1: Country       = Country(CountryCode("GB"), "United Kingdom")
-  private val country2: Country       = Country(CountryCode("FR"), "France")
-  private val country3: Country       = Country(CountryCode("ES"), "Spain")
-  private val countries: Seq[Country] = Seq(country1, country2, country3)
+  private val country1: Country                = Country(CountryCode("GB"), "United Kingdom")
+  private val country2: Country                = Country(CountryCode("FR"), "France")
+  private val country3: Country                = Country(CountryCode("ES"), "Spain")
+  private val countries: NonEmptyList[Country] = NonEmptyList(country1, List(country2, country3))
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -104,9 +105,9 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
           when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
             .thenReturn(Future.successful(countries.map(_.code)))
 
-          val country = Arbitrary.arbitrary[Country].retryUntil(!countries.contains(_)).sample.value
+          val country = Arbitrary.arbitrary[Country].retryUntil(!countries.toList.contains(_)).sample.value
 
-          val result = service.doesCountryRequireZip(country).futureValue
+          val result = service.doesCountryRequireZip(country.code).futureValue
 
           result mustBe true
 
@@ -120,7 +121,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
           val country = countries.head
 
-          val result = service.doesCountryRequireZip(country).futureValue
+          val result = service.doesCountryRequireZip(country.code).futureValue
 
           result mustBe false
 

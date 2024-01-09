@@ -16,11 +16,12 @@
 
 package controllers.transport.border
 
+import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import controllers.transport.border.{routes => borderRoutes}
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -47,7 +48,8 @@ class AddBorderMeansOfTransportYesNoControllerSpec extends SpecBase with AppWith
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
       val result  = route(app, request).value
@@ -63,6 +65,25 @@ class AddBorderMeansOfTransportYesNoControllerSpec extends SpecBase with AppWith
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers.setValue(AddBorderMeansOfTransportYesNoPage, true)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddBorderMeansOfTransportYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(activeBorderTransportMeans))(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)

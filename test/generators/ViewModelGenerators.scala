@@ -23,12 +23,14 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.ListItem
-import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel, ApplyAnotherItemViewModel}
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
+import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel, ApplyAnotherItemViewModel}
+import viewModels.{Link, ListItem, Section}
 
 trait ViewModelGenerators {
   self: Generators =>
+
+  private val maxSeqLength = 10
 
   implicit lazy val arbitraryText: Arbitrary[Text] = Arbitrary {
     for {
@@ -40,12 +42,77 @@ trait ViewModelGenerators {
     arbitrary[Text]
   }
 
+  implicit lazy val arbitraryKey: Arbitrary[Key] = Arbitrary {
+    for {
+      content <- arbitrary[Content]
+      classes <- Gen.alphaNumStr
+    } yield Key(content, classes)
+  }
+
+  implicit lazy val arbitraryValue: Arbitrary[Value] = Arbitrary {
+    for {
+      content <- arbitrary[Content]
+      classes <- Gen.alphaNumStr
+    } yield Value(content, classes)
+  }
+
+  implicit lazy val arbitraryActionItem: Arbitrary[ActionItem] = Arbitrary {
+    for {
+      content            <- arbitrary[Content]
+      href               <- nonEmptyString
+      visuallyHiddenText <- Gen.option(Gen.alphaNumStr)
+      classes            <- Gen.alphaNumStr
+      attributes         <- Gen.const(Map.empty[String, String])
+    } yield ActionItem(href, content, visuallyHiddenText, classes, attributes)
+  }
+
+  implicit lazy val arbitraryActions: Arbitrary[Actions] = Arbitrary {
+    for {
+      length <- Gen.choose(1, maxSeqLength)
+      items  <- Gen.containerOfN[Seq, ActionItem](length, arbitrary[ActionItem])
+    } yield Actions(items = items)
+  }
+
   implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {
     for {
       name      <- nonEmptyString
       changeUrl <- nonEmptyString
       removeUrl <- Gen.option(nonEmptyString)
     } yield ListItem(name, changeUrl, removeUrl)
+  }
+
+  implicit lazy val arbitrarySummaryListRow: Arbitrary[SummaryListRow] = Arbitrary {
+    for {
+      key     <- arbitrary[Key]
+      value   <- arbitrary[Value]
+      classes <- Gen.alphaNumStr
+      actions <- arbitrary[Option[Actions]]
+    } yield SummaryListRow(key, value, classes, actions)
+  }
+
+  implicit lazy val arbitrarySection: Arbitrary[Section] = Arbitrary {
+    for {
+      sectionTitle <- nonEmptyString
+      length       <- Gen.choose(1, maxSeqLength)
+      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+      link         <- arbitrary[Link]
+    } yield Section(sectionTitle, rows, link)
+  }
+
+  implicit lazy val arbitrarySections: Arbitrary[List[Section]] = Arbitrary {
+    listWithMaxLength[Section]().retryUntil {
+      sections =>
+        val sectionTitles = sections.map(_.sectionTitle)
+        sectionTitles.distinct.size == sectionTitles.size
+    }
+  }
+
+  implicit lazy val arbitraryLink: Arbitrary[Link] = Arbitrary {
+    for {
+      id   <- nonEmptyString
+      text <- nonEmptyString
+      href <- nonEmptyString
+    } yield Link(id, text, href)
   }
 
   implicit lazy val arbitraryAddAnotherBorderTransportViewModel: Arbitrary[AddAnotherBorderTransportViewModel] = Arbitrary {

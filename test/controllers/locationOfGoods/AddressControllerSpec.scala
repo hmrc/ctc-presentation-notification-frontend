@@ -21,8 +21,9 @@ import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.DynamicAddressFormProvider
 import generators.Generators
+import models.messages.Address
 import models.reference.Country
-import models.{DynamicAddress, NormalMode}
+import models.{DynamicAddress, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -64,7 +65,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value
@@ -85,7 +86,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value
@@ -146,6 +147,73 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
           .setValue(AddressPage, testAddress)
 
         setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, addressRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(isPostalCodeRequired).bind(
+          Map(
+            "numberAndStreet" -> testAddress.numberAndStreet,
+            "city"            -> testAddress.city,
+            "postalCode"      -> testAddress.postalCode.getOrElse("")
+          )
+        )
+
+        val view = injector.instanceOf[AddressView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the 15" - {
+
+      "when postcode is required" in {
+
+        val isPostalCodeRequired = true
+        val testAddress          = arbitrary[DynamicAddress](arbitraryDynamicAddressWithRequiredPostalCode).sample.value
+
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
+
+        val userAnswers15 =
+          UserAnswers.setAddressOnUserAnswersLens.set(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, ""))(emptyUserAnswers)
+
+        setExistingUserAnswers(userAnswers15)
+
+        val request = FakeRequest(GET, addressRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(isPostalCodeRequired).bind(
+          Map(
+            "numberAndStreet" -> testAddress.numberAndStreet,
+            "city"            -> testAddress.city,
+            "postalCode"      -> testAddress.postalCode.get
+          )
+        )
+
+        val view = injector.instanceOf[AddressView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
+      }
+
+      "when postcode is optional" in {
+
+        val isPostalCodeRequired = false
+        val testAddress          = arbitrary[DynamicAddress](arbitraryDynamicAddressWithRequiredPostalCode).sample.value
+
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
+
+        val userAnswers15 =
+          UserAnswers.setAddressOnUserAnswersLens.set(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, ""))(emptyUserAnswers)
+
+        setExistingUserAnswers(userAnswers15)
 
         val request = FakeRequest(GET, addressRoute)
 

@@ -23,6 +23,8 @@ import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
 
   override def path: JsPath = TransportSection.path \ toString
@@ -31,5 +33,8 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+
+  override def cleanup(value: Option[BorderMode], userAnswers: UserAnswers): Try[UserAnswers] =
+    super.cleanup(value, userAnswers)
 
 }

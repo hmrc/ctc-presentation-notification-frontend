@@ -16,7 +16,6 @@
 
 package pages.transport.border.active
 
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddConveyanceReferenceYesNoPageSpec extends PageBehaviours {
@@ -30,17 +29,20 @@ class AddConveyanceReferenceYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](AddConveyanceReferenceYesNoPage(index))
 
     "cleanup" - {
-      "when NO selected" - {
-        "must clean up ConveyanceReferenceNumberPage" in {
-          forAll(arbitrary[String]) {
-            crn =>
+      "when no selected" - {
+        "must remove ConveyanceRefNumberPage in 15/13/170" in {
+          forAll(nonEmptyString) {
+            conveyanceRefNumber =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddConveyanceReferenceYesNoPage(index), true)
-                .setValue(ConveyanceReferenceNumberPage(index), crn)
+                .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
+                .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
 
-              val result = userAnswers.setValue(AddConveyanceReferenceYesNoPage(index), false)
+              val result = userAnswers.setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
 
-              result.get(ConveyanceReferenceNumberPage(index)) must not be defined
+              result.get(ConveyanceReferenceNumberPage(activeIndex)) must not be defined
+              result.departureData.Consignment.ActiveBorderTransportMeans
+                .flatMap(_.lift(activeIndex.position).flatMap(_.conveyanceReferenceNumber)) must not be defined
+
           }
         }
       }

@@ -19,13 +19,13 @@ package pages.locationOfGoods
 import controllers.locationOfGoods.routes
 import models.{DynamicAddress, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.locationOfGoods.LocationOfGoodsSection
+import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object AddressPage extends QuestionPage[DynamicAddress] {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  override def path: JsPath = QualifierOfIdentificationDetailsSection.path \ toString
 
   override def toString: String = "address"
 

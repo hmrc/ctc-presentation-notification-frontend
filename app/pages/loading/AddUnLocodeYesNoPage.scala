@@ -23,6 +23,8 @@ import pages.sections.loading.LoadingSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object AddUnLocodeYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = LoadingSection.path \ toString
@@ -32,6 +34,17 @@ case object AddUnLocodeYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddUnLocodeYesNoController.onPageLoad(departureId, mode))
 
-  //TODO: Add clean up when following pages built
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val Ie015PlaceOfLoadingPath: JsPath = JsPath \ "Consignment" \ "PlaceOfLoading"
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(UnLocodePage, Ie015PlaceOfLoadingPath)
+          .flatMap(_.remove(AddExtraInformationYesNoPage))
+          .flatMap(_.remove(CountryPage))
+          .flatMap(_.remove(LocationPage))
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
 
 }

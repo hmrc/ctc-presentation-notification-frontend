@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.Nationality
@@ -33,7 +34,7 @@ class NationalitiesService @Inject() (
       .getNationalities()
       .map(sort)
 
-  private def sort(nationalities: Seq[Nationality]): SelectableList[Nationality] =
-    SelectableList(nationalities.sortBy(_.description.toLowerCase))
+  private def sort(nationalities: NonEmptyList[Nationality]): SelectableList[Nationality] =
+    SelectableList(nationalities.toList.sortBy(_.description.toLowerCase))
 
 }

@@ -20,7 +20,7 @@ import config.Constants.{EntryAndExitSummaryDeclarationSecurityDetails, EntrySum
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models._
-import models.messages.ActiveBorderTransportMeans
+import models.messages.{ActiveBorderTransportMeans, Address}
 import models.reference.TransportMode._
 import models.reference._
 import models.reference.transport.border.active
@@ -113,6 +113,16 @@ trait ModelGenerators {
         postalCode   <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
         country      <- arbitrary[Country]
       } yield PostalCodeAddress(streetNumber, postalCode, country)
+    }
+
+  implicit lazy val arbitraryAddress: Arbitrary[Address] =
+    Arbitrary {
+      for {
+        streetAndNumber <- stringsWithMaxLength(StreetNumber.length, Gen.alphaNumChar)
+        postalCode      <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
+        city            <- stringsWithMaxLength(City.length, Gen.alphaNumChar)
+        country         <- arbitrary[Country]
+      } yield Address(streetAndNumber, Some(postalCode), city, country.code.code)
     }
 
   implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
@@ -221,6 +231,21 @@ trait ModelGenerators {
                                      nationality,
                                      conveyanceReferenceNumber
           )
+        )
+      )
+    }
+
+  lazy val arbitraryActiveBorderTransportMeansWithoutConveyanceRefNo: Arbitrary[Option[List[ActiveBorderTransportMeans]]] =
+    Arbitrary {
+      for {
+        sequenceNumber                       <- nonEmptyString
+        customsOfficeAtBorderReferenceNumber <- Gen.option(nonEmptyString)
+        typeOfIdentification                 <- Gen.option(nonEmptyString)
+        identificationNumber                 <- Gen.option(nonEmptyString)
+        nationality                          <- Gen.option(nonEmptyString)
+      } yield Some(
+        List(
+          ActiveBorderTransportMeans(sequenceNumber, customsOfficeAtBorderReferenceNumber, typeOfIdentification, identificationNumber, nationality, None)
         )
       )
     }

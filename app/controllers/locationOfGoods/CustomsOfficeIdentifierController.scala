@@ -19,6 +19,7 @@ package controllers.locationOfGoods
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.Mode
+import models.reference.CustomsOffice
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,10 +49,18 @@ class CustomsOfficeIdentifierController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
+        val ie170CustomsOffice = request.userAnswers.get(CustomsOfficeIdentifierPage)
+        def ie15CustomsOffice  = request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice.map(_.referenceNumber))
+
+        def findInIe15(customsOffices: Seq[CustomsOffice]) =
+          customsOffices.find(
+            co => ie15CustomsOffice.contains(co.id)
+          )
+
         customsOfficesService.getCustomsOfficesOfDepartureForCountry(request.userAnswers.departureData.countryOfDeparture).map {
           customsOfficeList =>
             val form = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
-            val preparedForm = request.userAnswers.get(CustomsOfficeIdentifierPage) match {
+            val preparedForm = ie170CustomsOffice.orElse(findInIe15(customsOfficeList.values)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }

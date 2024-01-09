@@ -17,10 +17,11 @@
 package controllers.transport.border
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.Maritime
 import controllers.routes
 import controllers.transport.border.{routes => borderRoutes}
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -47,23 +48,61 @@ class AddBorderModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
       val result  = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "false"))
 
       val view = injector.instanceOf[AddBorderModeOfTransportYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must return OK and the correct view for a GET when set in the IE015" in {
+
+      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some(Maritime))(emptyUserAnswers))
+
+      val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
+      val result  = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddBorderModeOfTransportYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers.setValue(AddBorderModeOfTransportYesNoPage, true)
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddBorderModeOfTransportYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously  been answered in the IE015" in {
+
+      val userAnswers15 = UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some("1"))(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
 

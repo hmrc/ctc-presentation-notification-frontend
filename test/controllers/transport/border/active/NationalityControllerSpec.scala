@@ -16,11 +16,12 @@
 
 package controllers.transport.border.active
 
+import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList}
+import models.{NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transport.border.active.NationalityPage
@@ -73,6 +74,28 @@ class NationalityControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
       val userAnswers = emptyUserAnswers.setValue(NationalityPage(index), nationality1)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, nationalityRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> nationality1.code))
+
+      val view = injector.instanceOf[NationalityView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, nationalityList.values, mode, index)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+      when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
+
+      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
+        Option(Seq(activeBorderTransportMeans.head.copy(nationality = Some(nationality1.code))))
+      )(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, nationalityRoute)

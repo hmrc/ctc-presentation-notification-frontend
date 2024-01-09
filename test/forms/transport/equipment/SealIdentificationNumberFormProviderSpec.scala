@@ -16,7 +16,7 @@
 
 package forms.transport.equipment
 
-import forms.Constants.{maxNameLength, maxSealIdentificationLength}
+import forms.Constants.maxSealIdentificationLength
 import forms.behaviours.StringFieldBehaviours
 import models.StringFieldRegex.alphaNumericWithSpacesRegex
 import org.scalacheck.Gen

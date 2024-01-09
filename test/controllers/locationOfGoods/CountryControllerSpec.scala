@@ -21,7 +21,8 @@ import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList}
+import models.messages.Address
+import models.{NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.CountryPage
@@ -56,7 +57,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must return OK and the correct view for a GET" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, countryRoute)
 
@@ -75,6 +76,27 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country1)
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, countryRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> country1.code.code))
+
+      val view = injector.instanceOf[CountryView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, countryList.values, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+
+      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      val userAnswers15 = UserAnswers.setAddressOnUserAnswersLens.set(Address("street", None, "city", country1.code.code))(emptyUserAnswers)
+
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, countryRoute)
 

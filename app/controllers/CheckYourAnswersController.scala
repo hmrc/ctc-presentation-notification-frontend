@@ -21,23 +21,31 @@ import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import views.html.CheckYourAnswersView
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
-@Singleton
 class CheckYourAnswersController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  viewModelProvider: PresentationNotificationAnswersViewModelProvider,
   navigator: Navigator,
   view: CheckYourAnswersView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
+  def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val lrn = request.userAnswers.lrn
-      Ok(view(lrn, departureId))
+      val presentationNotificationAnswersViewModel = viewModelProvider(request.userAnswers, departureId)
+
+      presentationNotificationAnswersViewModel
+        .map {
+          viewModel =>
+            Ok(view(request.userAnswers.lrn, departureId, viewModel.sections))
+        }
   }
 
   def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {

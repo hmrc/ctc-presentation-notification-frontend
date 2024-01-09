@@ -24,6 +24,7 @@ import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
 import pages.QuestionPage
 import pages.transport.border.BorderModeOfTransportPage
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -46,17 +47,35 @@ class BorderModeOfTransportController @Inject() (
   service: TransportModeCodesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private def form(borderModeCodes: Seq[BorderMode]): Form[BorderMode] = formProvider[BorderMode]("transport.border.borderModeOfTransport", borderModeCodes)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
+      val borderModeCode =
+        request.userAnswers
+          .get(BorderModeOfTransportPage)
+          .map(_.code)
+          .orElse {
+            logger.info(s"Retrieved BorderMode answer from IE015 journey")
+            request.userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
+          }
+
       service.getBorderModes().map {
         borderModeCodes =>
-          val preparedForm = request.userAnswers.get(BorderModeOfTransportPage) match {
-            case None        => form(borderModeCodes)
-            case Some(value) => form(borderModeCodes).fill(value)
+          val preparedForm = borderModeCode match {
+            case None => form(borderModeCodes)
+            case Some(code) =>
+              val getBorderMode = borderModeCodes.find(_.code == code)
+              getBorderMode match {
+                case Some(bm) => form(borderModeCodes).fill(bm)
+                case None =>
+                  logger.warn(s"BorderMode code: '$code' was not found from available border modes: ${borderModeCodes.mkString(", ")}")
+                  form(borderModeCodes)
+              }
+
           }
 
           Ok(view(preparedForm, departureId, borderModeCodes, mode))

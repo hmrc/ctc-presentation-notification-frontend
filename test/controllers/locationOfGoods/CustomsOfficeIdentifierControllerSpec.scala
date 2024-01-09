@@ -16,22 +16,25 @@
 
 package controllers.locationOfGoods
 
+import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.CountryCode
-import models.{NormalMode, SelectableList}
+import models.{NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CustomsOfficesService
 import views.html.locationOfGoods.CustomsOfficeIdentifierView
 
+import java.time.Instant
 import scala.concurrent.Future
 
 class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -171,6 +174,37 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
     status(result) mustEqual SEE_OTHER
 
     redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+  }
+
+  "must get answer IE015 if not available in IE170" in {
+    when(mockCustomsOfficesService.getCustomsOfficesOfDepartureForCountry(any())(any())).thenReturn(Future.successful(customsOfficeList))
+    val ie015UserAnswers = UserAnswers(
+      departureId,
+      eoriNumber,
+      lrn.value,
+      Json.obj(),
+      Instant.now(),
+      messageData.copy(
+        CustomsOfficeOfDeparture = s"${countryCode.code}00001",
+        Consignment = messageData.Consignment.copy(LocationOfGoods =
+          Some(messageData.Consignment.LocationOfGoods.get.copy(CustomsOffice = Some(models.messages.CustomsOffice(customsOffice1.id))))
+        )
+      )
+    )
+    setExistingUserAnswers(ie015UserAnswers)
+
+    val request = FakeRequest(GET, customsOfficeIdentifierRoute)
+
+    val result = route(app, request).value
+
+    val filledForm = form.bind(Map("value" -> customsOffice1.id))
+
+    val view = injector.instanceOf[CustomsOfficeIdentifierView]
+
+    status(result) mustEqual OK
+
+    contentAsString(result) mustEqual
+      view(filledForm, departureId, customsOfficeList.values, mode)(request, messages).toString
   }
 
 }
