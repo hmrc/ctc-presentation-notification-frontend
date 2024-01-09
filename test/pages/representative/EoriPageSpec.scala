@@ -16,20 +16,16 @@
 
 package pages.representative
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
-import pages.sections.representative.RepresentativeSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object EoriPage extends QuestionPage[String] {
+class EoriPageSpec extends PageBehaviours {
 
-  override def path: JsPath = RepresentativeSection.path \ toString
+  "EoriPage" - {
 
-  override def toString: String = "eori"
+    beRetrievable[String](EoriPage)
 
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.representative.routes.EoriController.onPageLoad(departureId, mode))
+    beSettable[String](EoriPage)
 
+    beRemovable[String](EoriPage)
+  }
 }
