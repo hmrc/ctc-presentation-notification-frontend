@@ -90,14 +90,11 @@ class BorderNavigator @Inject() () extends Navigator {
       case _          => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
-  private def identificationCheckRoute(ua: UserAnswers, departureId: String, activeIndex: Index): Option[Call] = {
-    val ie015IdentificationNumber =
-      ua.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.lift(activeIndex.position).flatMap(_.identificationNumber))
-    (ua.get(IdentificationNumberPage(activeIndex)), ie015IdentificationNumber) match {
-      case (None, None) => IdentificationNumberPage(activeIndex).route(ua, departureId, CheckMode)
-      case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+  private def identificationCheckRoute(ua: UserAnswers, departureId: String, activeIndex: Index): Option[Call] =
+    ua.get(IdentificationNumberPage(activeIndex)) match {
+      case None => IdentificationNumberPage(activeIndex).route(ua, departureId, CheckMode)
+      case _    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-  }
 
   private def identificationNumberCheckRoute(ua: UserAnswers, departureId: String, activeIndex: Index): Option[Call] = {
     val ie015Nationality = ua.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.lift(activeIndex.position).flatMap(_.nationality))

@@ -57,12 +57,6 @@ class IdentificationNumberController @Inject() (
 
           val fillForm = request.userAnswers
             .get(IdentificationNumberPage(activeIndex))
-            .orElse(
-              request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans
-                .flatMap(
-                  seq => seq.lift(activeIndex.position).flatMap(_.identificationNumber)
-                )
-            )
 
           val preparedForm = fillForm match {
             case None        => form

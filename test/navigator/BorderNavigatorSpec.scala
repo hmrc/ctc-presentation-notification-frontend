@@ -575,21 +575,13 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
-        "to CYA page when identification does exist in the 170" in {
-
+        "to CYA page when identification number exist in the 170" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddBorderMeansOfTransportYesNoPage, true)
             .setValue(IdentificationPage(activeIndex), Identification("Air", "desc"))
+            .setValue(IdentificationNumberPage(activeIndex), "identificationNumber")
           navigator
             .nextPage(IdentificationPage(activeIndex), userAnswers, departureId, CheckMode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-        "to CYA page when identification does exist in the 15/13" in {
-
-          navigator
-            .nextPage(IdentificationPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }

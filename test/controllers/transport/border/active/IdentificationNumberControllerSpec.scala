@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.border.IdentificationNumberFormProvider
 import generators.Generators
-import models.messages.ActiveBorderTransportMeans
 import models.reference.transport.border.active.Identification
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -84,42 +83,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           contentAsString(result) mustEqual
             view(form, departureId, mode, index, identifier.asString)(request, messages).toString
       }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the 15" in {
-
-      when(mockMeansOfTransportIdentificationTypesActiveService.getBorderMeansIdentification(any())(any()))
-        .thenReturn(Future.successful(identificationType1))
-
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Some(
-          Seq(
-            ActiveBorderTransportMeans(
-              sequenceNumber = "99",
-              customsOfficeAtBorderReferenceNumber = None,
-              typeOfIdentification = Some(identificationType1.code),
-              identificationNumber = Some(identificationType1.code),
-              nationality = None,
-              conveyanceReferenceNumber = None
-            )
-          )
-        )
-      )(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers)
-
-      val request    = FakeRequest(GET, identificationNumberRoute)
-      val filledForm = form.bind(Map("value" -> "40"))
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[IdentificationNumberView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode, index, identificationType1.asString)(request, messages).toString
-
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

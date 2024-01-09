@@ -135,6 +135,21 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
         }
       }
+
+      "must return all identification types when not filtered" in {
+
+        when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
+          .thenReturn(
+            Future.successful(
+              NonEmptyList(identification1, List(identification2, identification3, identification4, identification5, identification6, identification7))
+            )
+          )
+
+        service.getMeansOfTransportIdentificationTypesActive().futureValue mustBe
+          Seq(identification1, identification2, identification3, identification4, identification5, identification6, identification7)
+
+        verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
+      }
     }
 
     "getBorderMeansIdentification" in {

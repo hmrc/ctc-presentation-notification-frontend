@@ -61,12 +61,15 @@ object TestMessageData {
     Some(contactPerson)
   )
 
+  val activeBorderTransportMeansIdentification       = "10"
+  val activeBorderTransportMeansIdentificationNumber = "BX857GGE"
+
   val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
     ActiveBorderTransportMeans(
       "11",
       Some("GB000028"),
-      Some("10"),
-      Some("BX857GGE"),
+      Some(activeBorderTransportMeansIdentification),
+      Some(activeBorderTransportMeansIdentificationNumber),
       Some("FR"),
       Some("REF2")
     )

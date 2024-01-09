@@ -58,32 +58,20 @@ class ActiveBorderTransportMeansAnswersHelper(
     id = Some("change-add-identification-for-the-border-means-of-transport")
   )
 
-  def identificationType: Future[Option[SummaryListRow]] =
-    fetchValue[Identification](
+  def identificationType: Option[SummaryListRow] =
+    buildRowWithAnswer[Identification](
       page = IdentificationPage(activeIndex),
-      valueFromDepartureData = userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
-        seq => seq.lift(activeIndex.position).flatMap(_.typeOfIdentification)
-      ),
-      refDataLookup = cyaRefDataService.getBorderMeansIdentification
-    ).map {
-      identification =>
-        buildRowWithAnswer[Identification](
-          page = IdentificationPage(activeIndex),
-          optionalAnswer = identification,
-          formatAnswer = formatDynamicEnumAsText(_),
-          prefix = "transport.border.active.identification",
-          id = Some("change-identification")
-        )
-    }
+      optionalAnswer = userAnswers.get(IdentificationPage(activeIndex)),
+      formatAnswer = formatDynamicEnumAsText(_),
+      prefix = "transport.border.active.identification",
+      id = Some("change-identification")
+    )
 
-  def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def identificationNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = IdentificationNumberPage(activeIndex),
+    optionalAnswer = userAnswers.get(IdentificationNumberPage(activeIndex)),
     formatAnswer = formatAsText,
     prefix = "transport.border.active.identificationNumber",
-    findValueInDepartureData = _.Consignment.ActiveBorderTransportMeans
-      .flatMap(
-        seq => seq.lift(activeIndex.position).flatMap(_.identificationNumber)
-      ),
     id = Some("change-identification-number")
   )
 
@@ -161,13 +149,12 @@ class ActiveBorderTransportMeansAnswersHelper(
     }
 
   def getSection(): Future[Section] = {
-    val identificationTypeFuture = identificationType
-    val nationalityFuture        = nationality
-    val customsOfficeFuture      = customsOffice
+    val nationalityFuture   = nationality
+    val customsOfficeFuture = customsOffice
     for {
       addBorderMeansOfTransportYesNoRow <-
         if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) successful(addBorderMeansOfTransportYesNo) else successful(None)
-      identificationTypeRow             <- identificationTypeFuture
+      identificationTypeRow             <- successful(identificationType)
       identificationNumberRow           <- successful(identificationNumber)
       nationalityRow                    <- nationalityFuture
       customsOfficeRow                  <- customsOfficeFuture
