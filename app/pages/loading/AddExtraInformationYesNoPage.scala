@@ -39,6 +39,7 @@ case object AddExtraInformationYesNoPage extends QuestionPage[Boolean] {
     val Ie015LoadingLocationPath: JsPath = JsPath \ "Consignment" \ "PlaceOfLoading" \ "location"
     value match {
       case Some(false) => userAnswers.remove(CountryPage, Ie015LoadingCountryPath).flatMap(_.remove(LocationPage, Ie015LoadingLocationPath))
+      case Some(true)  => userAnswers.remove(CountryPage, Ie015LoadingCountryPath).flatMap(_.remove(LocationPage, Ie015LoadingLocationPath))
       case _           => super.cleanup(value, userAnswers)
     }
   }

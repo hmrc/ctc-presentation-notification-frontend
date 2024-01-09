@@ -193,12 +193,12 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
-        "to CYA page when answer is No" in {
+        "to Country page when answer is No" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddUnLocodeYesNoPage, false)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustBe(controllers.loading.routes.CountryController.onPageLoad(departureId, mode))
         }
       }
 
