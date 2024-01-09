@@ -32,7 +32,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.TransportMeansIdentificationTypesService
+import services.MeansOfTransportIdentificationTypesService
 import views.html.transport.departureTransportMeans.TransportMeansIdentificationView
 
 import scala.concurrent.Future
@@ -50,8 +50,8 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   private lazy val identificationRoute =
     controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode).url
 
-  private val mockMeansOfTransportIdentificationTypesService: TransportMeansIdentificationTypesService =
-    mock[TransportMeansIdentificationTypesService]
+  private val mockMeansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService =
+    mock[MeansOfTransportIdentificationTypesService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -61,12 +61,12 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportMeansIdentificationTypesService]).toInstance(mockMeansOfTransportIdentificationTypesService))
+      .overrides(bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfTransportIdentificationTypesService))
 
   "TransportMeansIdentification Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers.setValue(InlandModePage, InlandMode("4", "Air"))
@@ -86,7 +86,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
@@ -110,7 +110,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
     "must redirect to the next page when valid data is submitted" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
@@ -129,7 +129,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
