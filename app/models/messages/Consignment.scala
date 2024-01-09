@@ -17,12 +17,14 @@
 package models.messages
 
 import models.reference.Item
+import models.reference.TransportMode.InlandMode
 import play.api.libs.json._
 
 case class Consignment(
   containerIndicator: Option[String],
   modeOfTransportAtTheBorder: Option[String],
-  TransportEquipment: Option[Seq[TransportEquipment]],
+  inlandModeOfTransport: Option[String],
+  TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
   ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],

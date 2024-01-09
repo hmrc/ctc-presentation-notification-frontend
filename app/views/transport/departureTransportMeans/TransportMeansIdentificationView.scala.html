@@ -29,14 +29,14 @@
     button: Button
 )
 
-@(form: Form[TransportMeansIdentification], departureId: String, identifiers: Seq[TransportMeansIdentification], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[TransportMeansIdentification], departureId: String, identifiers: Seq[TransportMeansIdentification], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("consignment.index.departureTransportMeans.identification.title", index.display),
+    title = messages("consignment.index.departureTransportMeans.identification.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TransportMeansIdentificationController.onSubmit(departureId, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TransportMeansIdentificationController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -44,7 +44,7 @@
             field = form("value"),
             radioType = Radio(
                 caption = Some(messages("departureTransportMeans.subheading")),
-                heading = messages("consignment.index.departureTransportMeans.identification.heading", index.display)
+                heading = messages("consignment.index.departureTransportMeans.identification.heading")
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )
