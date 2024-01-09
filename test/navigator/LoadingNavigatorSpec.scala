@@ -18,11 +18,10 @@ package navigator
 
 import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, consignment, messageData, transitOperation}
-import controllers.loading.routes
 import generators.Generators
 import models._
-import models.messages.{Authorisation, AuthorisationType, MessageData}
 import models.messages.AuthorisationType.C521
+import models.messages.{Authorisation, AuthorisationType, MessageData}
 import navigation.LoadingNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading
