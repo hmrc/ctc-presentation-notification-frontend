@@ -23,9 +23,11 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.{CountryPage, LocationPage}
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.CountriesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.loading.LocationView
 
@@ -36,41 +38,57 @@ class LocationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigator: LoadingNavigator,
+  countriesService: CountriesService,
   formProvider: LoadingLocationFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: LocationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId)
-    .andThen(getMandatoryPage(CountryPage)) {
-      implicit request =>
-        val countryName = request.arg.description
-        val form        = formProvider("loading.location", countryName)
-        val preparedForm = request.userAnswers.get(LocationPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Ok(view(preparedForm, departureId, countryName, loadingLocationMaxLength, mode))
-    }
+  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+    implicit request =>
+      countriesService.getCountries().map {
+        countryList =>
+          val countryIE15 = request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
+            _.country.flatMap(
+              country => countryList.values.find(_.code.code == country)
+            )
+          )
+          val countryName = request.userAnswers.get(CountryPage).map(_.description).getOrElse(countryIE15.map(_.description).getOrElse(""))
+          val form        = formProvider("loading.location", countryName)
+          val preparedForm = request.userAnswers
+            .get(LocationPage)
+            .orElse(request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(_.location)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+          Ok(view(preparedForm, departureId, countryName, loadingLocationMaxLength, mode))
+      }
+  }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
-    .andThen(getMandatoryPage(CountryPage))
     .async {
       implicit request =>
-        val countryName = request.arg.description
-        val form        = formProvider("loading.location", countryName)
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, countryName, loadingLocationMaxLength, mode))),
-            value => redirect(mode, value, departureId)
-          )
+        countriesService.getCountries().flatMap {
+          countryList =>
+            val countryIE15 = request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(
+              _.country.flatMap(
+                country => countryList.values.find(_.code.code == country)
+              )
+            )
+            val countryName = request.userAnswers.get(CountryPage).map(_.description).getOrElse(countryIE15.map(_.description).getOrElse(""))
+            val form        = formProvider("loading.location", countryName)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, countryName, loadingLocationMaxLength, mode))),
+                value => redirect(mode, value, departureId)
+              )
+        }
     }
 
   private def redirect(

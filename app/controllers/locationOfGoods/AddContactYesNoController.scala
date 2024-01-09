@@ -53,10 +53,8 @@ class AddContactYesNoController @Inject() (
         .get(AddContactYesNoPage)
         .orElse {
           logger.info(s"Retrieved AddContactYesNo answer from IE015 journey")
-          request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-            _.ContactPerson.map(
-              _ => true
-            )
+          request.userAnswers.departureData.Consignment.LocationOfGoods.map(
+            _.ContactPerson.isDefined
           )
         }
 

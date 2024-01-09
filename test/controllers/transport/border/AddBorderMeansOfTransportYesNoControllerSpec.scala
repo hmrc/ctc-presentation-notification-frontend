@@ -56,10 +56,12 @@ class AddBorderMeansOfTransportYesNoControllerSpec extends SpecBase with AppWith
 
       val view = injector.instanceOf[AddBorderMeansOfTransportYesNoView]
 
+      val filledForm = form.bind(Map("value" -> "false"))
+
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

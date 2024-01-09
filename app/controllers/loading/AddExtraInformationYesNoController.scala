@@ -22,6 +22,7 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.AddExtraInformationYesNoPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -41,13 +42,20 @@ class AddExtraInformationYesNoController @Inject() (
   view: AddExtraInformationYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private val form = formProvider("loading.addExtraInformationYesNo")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddExtraInformationYesNoPage) match {
+      val preparedForm = request.userAnswers
+        .get(AddExtraInformationYesNoPage)
+        .orElse {
+          request.userAnswers.departureData.Consignment.PlaceOfLoading.map(
+            _.isAdditionalInformationPresent
+          )
+        } match {
         case None        => form
         case Some(value) => form.fill(value)
       }
