@@ -16,19 +16,22 @@
 
 package controllers
 
-import base.TestMessageData.{incompleteJsonValue, jsonValue, jsonValueWithLrn}
+import base.TestMessageData.{activeBorderTransportMeansIdentification, incompleteJsonValue, jsonValue, jsonValueWithLrn}
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.UserAnswers
 import models.messages.{Data, MessageData}
+import models.reference.transport.border.active.Identification
+import models.{Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import pages.transport.border.active.IdentificationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.DepartureMessageService
+import utils.transformer.IdentificationTransformer
 
 import scala.concurrent.Future
 
@@ -42,16 +45,20 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   private val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
 
+  private val identificationTransformer = mock[IdentificationTransformer]
+
   override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[DepartureMessageService].toInstance(mockDepartureMessageService)
+        bind[DepartureMessageService].toInstance(mockDepartureMessageService),
+        bind[IdentificationTransformer].toInstance(identificationTransformer)
       )
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository)
     reset(mockDepartureMessageService)
+    reset(identificationTransformer)
     super.beforeEach()
   }
 
@@ -66,7 +73,9 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           setNoExistingUserAnswers()
 
           when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValueWithLrn.as[MessageData])))
-
+          when(identificationTransformer.fromDepartureDataToUserAnswers(any())(any())) thenReturn Future.successful(
+            UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+          )
           when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
           when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -90,7 +99,9 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
           when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
           when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
-
+          when(identificationTransformer.fromDepartureDataToUserAnswers(any())(any())) thenReturn Future.successful(
+            UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+          )
           when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
           when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -182,7 +193,6 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         userAnswersCaptor.getValue.lrn mustBe lrn.value
         userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
         userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
-
       }
 
       "must redirect to the technical difficulties route when there is an issue retrieving the data" in {
@@ -203,6 +213,30 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+      }
+
+      "must populate identification and identificationNumber from departure data" in {
+        val request = FakeRequest(GET, indexRoute)
+
+        setNoExistingUserAnswers()
+
+        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
+        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
+        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+        when(identificationTransformer.fromDepartureDataToUserAnswers(any())(any())) thenReturn Future.successful(
+          emptyUserAnswers.set(IdentificationPage(Index(0)), Identification(activeBorderTransportMeansIdentification, "IMO Ship Identification Number")).get
+        )
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+        val result = route(app, request).value
+        redirectLocation(result)
+
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+
+        userAnswersCaptor.getValue.data
+          .toString() mustBe """{"transport":{"transportMeansActiveList":[{"identification":{"code":"10","description":"IMO Ship Identification Number"},"identificationNumber":"BX857GGE"}]}}"""
       }
     }
   }
