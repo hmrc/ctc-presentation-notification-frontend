@@ -52,10 +52,7 @@ class AddConveyanceReferenceYesNoController @Inject() (
           list =>
             list
               .lift(activeIndex.position)
-              .flatMap(_.conveyanceReferenceNumber)
-              .map(
-                _ => true
-              )
+              .map(_.conveyanceReferenceNumber.isDefined)
         )
 
       val preparedForm = request.userAnswers
