@@ -12,3 +12,8 @@ GET        /representative/phone-number/:departureId                 controllers
 POST       /representative/phone-number/:departureId                 controllers.representative.RepresentativePhoneNumberController.onSubmit(departureId: String, mode: Mode = NormalMode)
 GET        /representative/change-phone-number/:departureId          controllers.representative.RepresentativePhoneNumberController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /representative/change-phone-number/:departureId          controllers.representative.RepresentativePhoneNumberController.onSubmit(departureId: String, mode: Mode = CheckMode)
+
+GET        /representative/eori-tin/:departureId                     controllers.representative.EoriController.onPageLoad(departureId: String, mode: Mode = NormalMode)
+POST       /representative/eori-tin/:departureId                     controllers.representative.EoriController.onSubmit(departureId: String, mode: Mode = NormalMode)
+GET        /representative/change-eori-tin/:departureId              controllers.representative.EoriController.onPageLoad(departureId: String, mode: Mode = CheckMode)
+POST       /representative/change-eori-tin/:departureId              controllers.representative.EoriController.onSubmit(departureId: String, mode: Mode = CheckMode)
