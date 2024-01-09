@@ -77,7 +77,8 @@ object TestMessageData {
   val consignment: Consignment = Consignment(
     containerIndicator = Some("1"),
     modeOfTransportAtTheBorder = Some("2"),
-    inlandModeOfTransport = Some("2") TransportEquipment = Some(transportEquipment),
+    inlandModeOfTransport = Some("2"),
+    TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
     ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
     PlaceOfLoading = Some(placeOfLoading),
@@ -171,6 +172,7 @@ object TestMessageData {
        |    "Consignment": {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
+       |        "inlandModeOfTransport": "2",
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",
@@ -288,6 +290,7 @@ object TestMessageData {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
+       |        "inlandModeOfTransport": "2",
        |        "modeOfTransportAtTheBorder": "2",
        |        "TransportEquipment": [
        |            {
@@ -395,6 +398,7 @@ object TestMessageData {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
+       |        "inlandModeOfTransport": "2",
        |        "modeOfTransportAtTheBorder": "2",
        |        "TransportEquipment": [
        |            {

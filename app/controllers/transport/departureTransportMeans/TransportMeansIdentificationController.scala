@@ -18,19 +18,17 @@ package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.reference.TransportMode.InlandMode
+import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
 import navigation.Navigator
-import pages.QuestionPage
-import pages.transport.transportMeans.TransportMeansIdentificationPage
 import pages.transport.InlandModePage
+import pages.transport.transportMeans.TransportMeansIdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.{MeansOfTransportIdentificationTypesService, TransportModeCodesService}
+import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.departureTransportMeans.TransportMeansIdentificationView
 
@@ -51,7 +49,7 @@ class TransportMeansIdentificationController @Inject() (
     with I18nSupport {
 
   private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("houseConsignment.index.departureTransportMeans.identification", identificationTypes)
+    formProvider[TransportMeansIdentification]("consignment.index.departureTransportMeans.identification", identificationTypes)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)

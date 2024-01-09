@@ -35,7 +35,7 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
     referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, index, borderModeOfTransport)).map(sort)
 
   private def filter(
-    identificationTypes: NonEmptyList[TransportMeansIdentification],
+    transportMeansIdentificationsTypes: NonEmptyList[TransportMeansIdentification],
     index: Index,
     borderModeOfTransport: Option[BorderMode]
   ): Seq[TransportMeansIdentification] = {

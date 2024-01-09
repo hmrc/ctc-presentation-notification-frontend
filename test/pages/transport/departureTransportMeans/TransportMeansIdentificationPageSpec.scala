@@ -18,16 +18,17 @@ package pages.transport.departureTransportMeans
 
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
+import pages.transport.transportMeans.TransportMeansIdentificationPage
 
 class TransportMeansIdentificationPageSpec extends PageBehaviours {
 
   "IdentificationPage" - {
 
-    beRetrievable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
+    beRetrievable[TransportMeansIdentification](TransportMeansIdentificationPage)
 
-    beSettable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
+    beSettable[TransportMeansIdentification](TransportMeansIdentificationPage)
 
-    beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
+    beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage)
 
     "cleanup" - {
       // TODO Add clean-up test
