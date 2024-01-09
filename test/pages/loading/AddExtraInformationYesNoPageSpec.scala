@@ -48,6 +48,24 @@ class AddExtraInformationYesNoPageSpec extends PageBehaviours {
           }
         }
       }
+      "when yes selected" - {
+        "must remove country and location pages in 15/13/170" in {
+          forAll(arbitraryCountry.arbitrary, nonEmptyString.sample.value) {
+            (country, location) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(CountryPage, country)
+                .setValue(LocationPage, location)
+
+              val result = userAnswers.setValue(AddExtraInformationYesNoPage, true)
+
+              result.get(CountryPage) must not be defined
+              result.get(LocationPage) must not be defined
+              result.departureData.Consignment.PlaceOfLoading.flatMap(_.country) must not be defined
+              result.departureData.Consignment.PlaceOfLoading.flatMap(_.location) must not be defined
+
+          }
+        }
+      }
     }
   }
 }
