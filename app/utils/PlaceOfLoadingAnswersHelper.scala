@@ -16,8 +16,8 @@
 
 package utils
 
-import models.messages.PlaceOfLoading
-import models.reference.{Country, CountryCode}
+import models.reference.Country
+import models.useranswers.PlaceOfLoadingUA
 import models.{Mode, UserAnswers}
 import pages.loading._
 import play.api.i18n.Messages
@@ -36,84 +36,63 @@ class PlaceOfLoadingAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
-  def countryTypeRow(answer: String): Option[SummaryListRow] = getAnswerAndBuildRow[Country](
-    page = CountryPage,
-    formatAnswer = formatAsCountry,
-    prefix = "loading.country",
-    findValueInDepartureData = message =>
-      message.Consignment.PlaceOfLoading.flatMap(
-        _.country.map(
-          y => Country(CountryCode(y), answer)
-        )
-      ),
-    id = Some("change-country")
-  )
-
-  def addUnlocodeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addUnlocodeYesNo(answer: Option[Boolean]): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddUnLocodeYesNoPage,
+    optionalAnswer = answer,
     formatAnswer = formatAsYesOrNo,
     prefix = "loading.addUnLocodeYesNo",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.map(_.isUnlocodePresent),
     id = Some("change-add-unlocode")
   )
 
-  def unlocode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def unlocode(answer: Option[String]): Option[SummaryListRow] = buildRowWithAnswer[String](
     page = UnLocodePage,
+    optionalAnswer = answer,
     formatAnswer = formatAsText,
     prefix = "loading.unLocode",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.UNLocode),
     id = Some("change-unlocode")
   )
 
-  def addExtraInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addExtraInformationYesNo(answer: Option[Boolean]): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddExtraInformationYesNoPage,
+    optionalAnswer = answer,
     formatAnswer = formatAsYesOrNo,
     prefix = "loading.addExtraInformationYesNo",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.map(_.isAdditionalInformationPresent),
     id = Some("change-add-extra-information")
   )
 
-  def location: Option[SummaryListRow] = getModelAndBuildRow[PlaceOfLoading, String](
-    getValueFromModel = _.location,
+  def country(answer: Option[Country]): Option[SummaryListRow] = buildRowWithAnswer[Country](
+    page = CountryPage,
+    optionalAnswer = answer,
+    formatAnswer = formatAsCountry,
+    prefix = "loading.country",
+    id = Some("change-country")
+  )
+
+  def location(answer: Option[String]): Option[SummaryListRow] = buildRowWithAnswer[String](
     page = LocationPage,
+    optionalAnswer = answer,
     formatAnswer = formatAsText,
     prefix = "loading.location",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.location),
     id = Some("change-location")
-  )(PlaceOfLoading.userAnswersReads)
+  )
 
   def placeOfLoadingSection: Future[Section] = {
-    implicit val ua: UserAnswers = userAnswers
-
-    val rows = for {
-
-      country <- fetchValue[Country](
-        CountryPage,
-        checkYourAnswersReferenceDataService.getCountry,
-        userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.country))
-      )
-      countryRow = country.flatMap(
-        x => countryTypeRow(x.description)
-      )
-
-      rowAcc = Seq(
-        addUnlocodeYesNo,
-        unlocode,
-        addExtraInformationYesNo,
-        countryRow,
-        location
+    val answers = PlaceOfLoadingUA(userAnswers, userAnswers.departureData.Consignment.PlaceOfLoading, checkYourAnswersReferenceDataService)
+    for {
+      countryAnswer <- answers.country
+    } yield {
+      val rows = Seq(
+        addUnlocodeYesNo(answers.addUnlocodeYesNo),
+        unlocode(answers.unlocode),
+        addExtraInformationYesNo(answers.addExtraInformationYesNo),
+        country(countryAnswer),
+        location(answers.location)
       ).flatten
 
-    } yield rowAcc
-
-    rows.map(
-      convertedRows =>
-        Section(
-          sectionTitle = messages("checkYourAnswers.placeOfLoading"),
-          convertedRows
-        )
-    )
-
+      Section(
+        sectionTitle = messages("checkYourAnswers.placeOfLoading"),
+        rows
+      )
+    }
   }
-
 }

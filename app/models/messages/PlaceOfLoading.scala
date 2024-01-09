@@ -16,9 +16,6 @@
 
 package models.messages
 
-import models.reference.Country
-import pages.loading._
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 case class PlaceOfLoading(
@@ -34,19 +31,4 @@ case class PlaceOfLoading(
 
 object PlaceOfLoading {
   implicit val format: OFormat[PlaceOfLoading] = Json.format[PlaceOfLoading]
-
-  val userAnswersReads: Reads[PlaceOfLoading] = (
-    UnLocodePage.path.readNullable[String] and
-      CountryPage.path.readNullable[Country] and
-      LocationPage.path.readNullable[String]
-  ).tupled.flatMap {
-    case (None, None, None) =>
-      Reads {
-        _ => JsError("At least one PlaceOfLoading param must be defined")
-      }
-    case (unLocode, country, location) =>
-      Reads {
-        _ => JsSuccess(PlaceOfLoading(unLocode, country.map(_.code.code), location))
-      }
-  }
 }
