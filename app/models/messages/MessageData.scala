@@ -56,6 +56,7 @@ case class MessageData(
       TransitOperation.limitDate,
       Consignment.containerIndicator,
       Consignment.modeOfTransportAtTheBorder,
+      Consignment.inlandModeOfTransport,
       Consignment.TransportEquipment,
       Consignment.LocationOfGoods,
       Consignment.ActiveBorderTransportMeans,
