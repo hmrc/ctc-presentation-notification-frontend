@@ -23,7 +23,7 @@ case class Consignment(
   containerIndicator: Option[String],
   inlandModeOfTransport: Option[String],
   modeOfTransportAtTheBorder: Option[String],
-  TransportEquipment: Option[Seq[TransportEquipment]],
+  TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
   ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],

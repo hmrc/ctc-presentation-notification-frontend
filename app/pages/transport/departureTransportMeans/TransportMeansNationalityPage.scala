@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 case class TransportMeansNationalityPage(index: Index) extends QuestionPage[Nationality] {
 
-  override def path: JsPath = TransportMeansSection(index).path \ toString
+  override def path: JsPath = TransportMeansSection.path \ toString
 
   override def toString: String = "nationality"
 

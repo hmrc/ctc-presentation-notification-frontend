@@ -401,7 +401,6 @@ object TestMessageData {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
-       |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
        |        "TransportEquipment": [
        |            {
