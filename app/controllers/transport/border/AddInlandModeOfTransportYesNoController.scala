@@ -22,6 +22,8 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
 import pages.transport.AddInlandModeOfTransportYesNoPage
+import pages.transport.border.AddBorderModeOfTransportYesNoPage
+import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -47,7 +49,12 @@ class AddInlandModeOfTransportYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddInlandModeOfTransportYesNoPage) match {
+      val inlandModeYesNoAnswer = request.userAnswers
+        .get(AddInlandModeOfTransportYesNoPage)
+        .orElse {
+          Some(request.userAnswers.departureData.Consignment.inlandModeOfTransport.isDefined)
+        }
+      val preparedForm = inlandModeYesNoAnswer match {
         case None        => form
         case Some(value) => form.fill(value)
       }

@@ -25,7 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 object TestMessageData {
 
   val transitOperation: TransitOperation =
-    TransitOperation(None, Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails)
+    TransitOperation(None, Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0")
 
   val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
 
@@ -76,6 +76,7 @@ object TestMessageData {
 
   val consignment: Consignment = Consignment(
     containerIndicator = Some("1"),
+    inlandModeOfTransport = Some("3"),
     modeOfTransportAtTheBorder = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
@@ -140,7 +141,8 @@ object TestMessageData {
        |    ],
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "Authorisation": [
        |        {
@@ -170,6 +172,7 @@ object TestMessageData {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
+       |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
        |        "TransportEquipment": [
        |            {
@@ -272,7 +275,8 @@ object TestMessageData {
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
        |        "security": "1",
-       |        "LRN": "testLrn"
+       |        "LRN": "testLrn",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "Authorisation": [
        |        {
@@ -288,6 +292,7 @@ object TestMessageData {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
+       |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
        |        "TransportEquipment": [
        |            {
@@ -389,12 +394,14 @@ object TestMessageData {
        |    },
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "HolderOfTheTransitProcedure": {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
+       |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
        |        "TransportEquipment": [
        |            {
@@ -485,7 +492,8 @@ object TestMessageData {
        |        "referenceNumber": "GB000012"
        |    },
        |    "TransitOperation": {
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "HolderOfTheTransitProcedure": {
        |    },
@@ -507,4 +515,39 @@ object TestMessageData {
        |}
        |""".stripMargin
   )
+
+  val allOptionsNoneReducedDatasetTrueJsonValue: JsValue = Json.parse(
+    s"""
+       |{
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
+       |    },
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
+       |    },
+       |    "TransitOperation": {
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "1"
+       |    },
+       |    "HolderOfTheTransitProcedure": {
+       |    },
+       |    "Consignment": {
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
+       |}
+       |""".stripMargin
+  )
+
 }

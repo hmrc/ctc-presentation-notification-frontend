@@ -23,6 +23,8 @@ import pages.sections.transport.border.BorderSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object AddInlandModeOfTransportYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = BorderSection.path \ toString
@@ -32,11 +34,11 @@ case object AddInlandModeOfTransportYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddInlandModeOfTransportYesNoController.onPageLoad(departureId, mode))
 
-// TODO:
-//  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-//    value match {
-//      case Some(false) => userAnswers.remove(TransportEquipmentPage)
-//      case _           => super.cleanup(value, userAnswers)
-//    }
-
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val Ie015LoadingCountryPath: JsPath = JsPath \ "Consignment" \ "inlandModeOfTransport"
+    value match {
+      case Some(false) => userAnswers.remove(InlandModePage, Ie015LoadingCountryPath)
+      case _           => super.cleanup(value, userAnswers)
+    }
+  }
 }

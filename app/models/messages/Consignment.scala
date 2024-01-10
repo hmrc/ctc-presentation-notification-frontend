@@ -21,6 +21,7 @@ import play.api.libs.json._
 
 case class Consignment(
   containerIndicator: Option[String],
+  inlandModeOfTransport: Option[String],
   modeOfTransportAtTheBorder: Option[String],
   TransportEquipment: Option[Seq[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
@@ -29,7 +30,8 @@ case class Consignment(
   HouseConsignment: Seq[HouseConsignment]
 ) {
 
-  def isTransportDefined: Option[Boolean] = Some(modeOfTransportAtTheBorder.isDefined)
+  def isTransportDefined: Option[Boolean]  = Some(modeOfTransportAtTheBorder.isDefined)
+  def isInlandModeDefined: Option[Boolean] = Some(inlandModeOfTransport.isDefined)
 
   def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
   val isPlaceOfLoadingPresent: Boolean                      = PlaceOfLoading.isDefined

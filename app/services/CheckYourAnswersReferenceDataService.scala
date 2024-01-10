@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.reference.TransportMode.BorderMode
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.transport.border.active.Identification
 import models.reference.{Country, CustomsOffice, Nationality}
 import models.{LocationOfGoodsIdentification, LocationType}
@@ -33,6 +33,9 @@ class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: Re
 
   def getQualifierOfIdentification(code: String)(implicit hc: HeaderCarrier): Future[LocationOfGoodsIdentification] =
     referenceDataConnector.getQualifierOfTheIdentification(code).map(_.head)
+
+  def getInlandModeOfTransport(code: String)(implicit hc: HeaderCarrier): Future[InlandMode] =
+    referenceDataConnector.getTransportModeCode[InlandMode](code).map(_.head)
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
     referenceDataConnector.getMeansOfTransportIdentificationTypeActive(code).map(_.head)

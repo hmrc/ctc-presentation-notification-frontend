@@ -25,5 +25,24 @@ class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
     beRetrievable[Boolean](AddInlandModeOfTransportYesNoPage)
     beSettable[Boolean](AddInlandModeOfTransportYesNoPage)
     beRemovable[Boolean](AddInlandModeOfTransportYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove country and location pages in 15/13/170" in {
+          forAll(arbitraryInlandModeOfTransport.arbitrary) {
+            inlandMode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddInlandModeOfTransportYesNoPage, true)
+                .setValue(InlandModePage, inlandMode)
+
+              val result = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, false)
+
+              result.get(InlandModePage) must not be defined
+              result.departureData.Consignment.inlandModeOfTransport must not be defined
+          }
+        }
+      }
+    }
+
   }
 }

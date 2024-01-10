@@ -510,15 +510,21 @@ representative.name.error.length = Your name must be {0} characters or less
 representative.name.error.invalid = Your name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 representative.name.change.hidden = representative’s name
 
+checkYourAnswers.inlandMode = Inland mode of transport
+
 transport.addInlandModeOfTransport.heading = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.title = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
 transport.addInlandModeOfTransport.no = No - the goods are already at the port or airport
 transport.addInlandModeOfTransport.error.required = Select yes if you want to add an inland mode of transport
+transport.addInlandModeOfTransport.checkYourAnswersLabel = Do you want to add an inland mode of transport?
+transport.addInlandModeOfTransport.change.hidden = if you want to add an inland mode of transport
 
 transport.inlandModeOfTransport.heading = Which inland mode of transport are you using?
 transport.inlandModeOfTransport.title = Which inland mode of transport are you using?
 transport.inlandModeOfTransport.error.required = Select which inland mode of transport you’re using
+transport.inlandModeOfTransport.checkYourAnswersLabel = Mode
+transport.inlandModeOfTransport.change.hidden = inland mode of transport
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers

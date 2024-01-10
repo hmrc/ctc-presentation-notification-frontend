@@ -17,9 +17,7 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.reference.Country
 import models.{CheckMode, Index, UserAnswers}
-import pages.loading.CountryPage
 import pages.sections.transport.border.BorderActiveListSection
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
@@ -52,6 +50,7 @@ object PresentationNotificationAnswersViewModel {
       val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val inlandModeAnswersHelper     = new InlandModeAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
       val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
 
@@ -95,9 +94,10 @@ object PresentationNotificationAnswersViewModel {
         borderSection                     <- helper.borderModeSection
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
+        inlandMode                        <- inlandModeAnswersHelper.buildInlandModeSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }
