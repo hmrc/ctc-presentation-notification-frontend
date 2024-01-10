@@ -22,7 +22,9 @@ import generators.Generators
 import models._
 import models.messages.AuthorisationType.C521
 import models.messages.{Authorisation, AuthorisationType, MessageData}
+import models.reference.Country
 import navigation.LoadingNavigator
+import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading
 import pages.loading._
@@ -233,28 +235,14 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
       "must go from Country page" - {
-        "to LocationPage when the LocationPage does not exist in either the 13/15/170" in {
-          val ie015WithNoLocationUserAnswers =
-            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              .setValue(AddUnLocodeYesNoPage, true)
-              .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
-              .setValue(AddExtraInformationYesNoPage, true)
-              .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-          navigator
-            .nextPage(CountryPage, ie015WithNoLocationUserAnswers, departureId, mode)
-            .mustBe(LocationPage.route(ie015WithNoLocationUserAnswers, departureId, mode).value)
-        }
-
-        "to CYAPage when the Location Page does exist in either the 13/15/170" in {
-          val withLocationUserAnswers = emptyUserAnswers
-            .setValue(AddUnLocodeYesNoPage, true)
-            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
-            .setValue(AddExtraInformationYesNoPage, true)
-            .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-            .setValue(LocationPage, nonEmptyString.sample.value)
-          navigator
-            .nextPage(LocationPage, withLocationUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        "to Location Page" in {
+          forAll(Arbitrary.arbitrary[Country].sample.value) {
+            country =>
+              val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
+              navigator
+                .nextPage(CountryPage, userAnswers, departureId, mode)
+                .mustBe(LocationPage.route(userAnswers, departureId, mode).value)
+          }
         }
       }
 
