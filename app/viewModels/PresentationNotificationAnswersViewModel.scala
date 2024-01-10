@@ -91,13 +91,13 @@ object PresentationNotificationAnswersViewModel {
 
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
-        borderSection                     <- helper.borderModeSection
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         inlandMode                        <- inlandModeAnswersHelper.buildInlandModeSection
+        borderSection                     <- helper.borderModeSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }
