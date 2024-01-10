@@ -19,10 +19,10 @@ package controllers.representative
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.{representative, routes}
 import forms.TelephoneNumberFormProvider
+import models.messages.{ContactPerson, Representative}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.representative.RepresentativePhoneNumberPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -44,9 +44,11 @@ class RepresentativePhoneNumberControllerSpec extends SpecBase with AppWithDefau
 
   "RepresentativePhoneNumberController" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when unanswered in IE015/013" in {
 
-      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
+      val uaIE015 = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative("IdNumber", "2", None)))(emptyUserAnswers)
+
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, telephoneNumberRoute)
 
@@ -60,17 +62,16 @@ class RepresentativePhoneNumberControllerSpec extends SpecBase with AppWithDefau
         view(form, departureId, mode)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered in IE015/013" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(RepresentativePhoneNumberPage, validAnswer)
-      setExistingUserAnswers(userAnswers)
+      val uaIE015 = UserAnswers.setRepresentativeContactPersonDetailsOnUserAnswersLens.set(ContactPerson("Jolly", "+44 808 157 0192", None))(emptyUserAnswers)
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, telephoneNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> validAnswer))
+      val filledForm = form.bind(Map("value" -> "+44 808 157 0192"))
 
       val view = injector.instanceOf[RepresentativePhoneNumberView]
 

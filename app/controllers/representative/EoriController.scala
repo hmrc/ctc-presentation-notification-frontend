@@ -48,7 +48,11 @@ class EoriController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(EoriPage) match {
+      val preparedForm = request.userAnswers
+        .get(EoriPage)
+        .orElse {
+          request.userAnswers.departureData.Representative.map(_.identificationNumber)
+        } match {
         case None        => form
         case Some(value) => form.fill(value)
       }

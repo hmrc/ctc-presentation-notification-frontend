@@ -31,13 +31,20 @@ class RepresentativeNavigator @Inject() () extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ActingAsRepresentativePage               => ua => actingAsRepresentativeCheckRoute(ua, departureId)
+    case EoriPage                                 => ua => AddRepresentativeContactDetailsYesNoPage.route(ua, departureId, mode)
     case AddRepresentativeContactDetailsYesNoPage => ua => addRepresentativeContactDetailsCheckRoute(ua, departureId)
     case NamePage                                 => ua => namePageCheckRoute(ua, departureId)
     case RepresentativePhoneNumberPage            => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 
-  private def actingAsRepresentativeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
-    Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+  private def actingAsRepresentativeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
+    val isRepresentativeDefined = ua.departureData.Representative.isDefined
+
+    (ua.get(ActingAsRepresentativePage), isRepresentativeDefined) match {
+      case (Some(true), false) => EoriPage.route(ua, departureId, CheckMode)
+      case _                   => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    }
+  }
 
   private def addRepresentativeContactDetailsCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
     val isContactDetailsDefined = ua.departureData.Representative.map(_.ContactPerson.isDefined)

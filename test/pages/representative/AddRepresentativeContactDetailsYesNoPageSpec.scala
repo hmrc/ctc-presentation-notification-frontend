@@ -37,11 +37,11 @@ class AddRepresentativeContactDetailsYesNoPageSpec extends PageBehaviours {
               val preChange = emptyUserAnswers
                 .setValue(AddRepresentativeContactDetailsYesNoPage, true)
                 .setValue(NamePage, name)
-              // TODO: set value for Telephone number page
+                .setValue(RepresentativePhoneNumberPage, telephone)
               val postChange = preChange.setValue(AddRepresentativeContactDetailsYesNoPage, false)
 
               postChange.get(NamePage) mustNot be(defined)
-            // TODO Check that Telephone number page is undefined
+              postChange.get(RepresentativePhoneNumberPage) mustNot be(defined)
           }
         }
       }
@@ -52,11 +52,11 @@ class AddRepresentativeContactDetailsYesNoPageSpec extends PageBehaviours {
             (name, telephone) =>
               val preChange = emptyUserAnswers
                 .setValue(NamePage, name)
-              // TODO: set value for Telephone number page
+                .setValue(RepresentativePhoneNumberPage, telephone)
               val postChange = preChange.setValue(AddRepresentativeContactDetailsYesNoPage, true)
 
               postChange.get(NamePage) must be(defined)
-            // TODO Check that Telephone number page is defined
+              postChange.get(RepresentativePhoneNumberPage) must be(defined)
           }
         }
       }

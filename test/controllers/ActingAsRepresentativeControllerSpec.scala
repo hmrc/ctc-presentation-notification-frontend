@@ -18,11 +18,11 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
+import models.messages.Representative
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ActingAsRepresentativePage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,26 +43,27 @@ class ActingAsRepresentativeControllerSpec extends SpecBase with AppWithDefaultM
 
   "ActingRepresentative Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when Representative Section is unanswered in IE015/013" in {
 
       setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, actingRepresentativeRoute)
       val result  = route(app, request).value
 
+      val filledForm = form.bind(Map("value" -> "false"))
+
       val view = injector.instanceOf[ActingAsRepresentativeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.setValue(ActingAsRepresentativePage, true)
-      setExistingUserAnswers(userAnswers)
+      val uaIE015 = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative("IdNumber", "2", None)))(emptyUserAnswers)
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, actingRepresentativeRoute)
 

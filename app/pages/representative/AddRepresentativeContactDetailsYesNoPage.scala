@@ -36,7 +36,7 @@ case object AddRepresentativeContactDetailsYesNoPage extends QuestionPage[Boolea
       case Some(false) =>
         userAnswers
           .remove(NamePage)
-      // TODO remove Telephone Number
+          .flatMap(_.remove(RepresentativePhoneNumberPage))
       case _ => super.cleanup(value, userAnswers)
     }
 

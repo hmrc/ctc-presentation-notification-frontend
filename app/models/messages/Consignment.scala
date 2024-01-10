@@ -17,7 +17,6 @@
 package models.messages
 
 import models.reference.Item
-import models.reference.TransportMode.InlandMode
 import play.api.libs.json._
 
 case class Consignment(

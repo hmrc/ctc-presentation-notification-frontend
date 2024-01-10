@@ -24,7 +24,7 @@ import navigation.RepresentativeNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ActingAsRepresentativePage
-import pages.representative.{AddRepresentativeContactDetailsYesNoPage, NamePage, RepresentativePhoneNumberPage}
+import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
 
 class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -477,7 +477,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
             }
 
-            "to Representative EoriNumberPage if answer is changed to 'Yes'" ignore {
+            "to Representative EoriNumberPage if answer is changed to 'Yes'" in {
               val userAnswers = emptyUserAnswers
                 .setValue(ActingAsRepresentativePage, true)
                 .copy(departureData =
@@ -487,12 +487,17 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
                 )
               navigator
                 .nextPage(ActingAsRepresentativePage, userAnswers, departureId, mode)
-                .mustBe(???) //TODO redirect to Representative EoriNumber page
+                .mustBe(EoriPage.route(userAnswers, departureId, mode).value)
             }
           }
 
-          "must go from EoriNumber page to AddRepresentativeContactDetailsPage" ignore {
-            // TODO update when EoriPage has been added
+          "must go from EoriNumber page to AddRepresentativeContactDetailsPage" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ActingAsRepresentativePage, true)
+              .setValue(EoriPage, nonEmptyString.sample.value)
+            navigator
+              .nextPage(EoriPage, userAnswers, departureId, mode)
+              .mustBe(AddRepresentativeContactDetailsYesNoPage.route(userAnswers, departureId, mode).value)
           }
         }
       }

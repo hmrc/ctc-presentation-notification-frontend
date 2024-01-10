@@ -19,10 +19,10 @@ package controllers.representative
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.NameFormProvider
+import models.messages.{ContactPerson, Representative}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.representative.NamePage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,9 +43,11 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "RepresentativeName Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when section unanswered in IE015/013" in {
 
-      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
+      val uaIE015 = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative("IdNumber", "2", None)))(emptyUserAnswers)
+
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, representativeNameRoute)
 
@@ -60,16 +62,15 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.setValue(NamePage, "test string")
-      setExistingUserAnswers(userAnswers)
+    "must populate the view correctly on a GET when the question has previously been answered in IE015/013" in {
+      val uaIE015 = UserAnswers.setRepresentativeContactPersonDetailsOnUserAnswersLens.set(ContactPerson("Jolly", "0123456789", None))(emptyUserAnswers)
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, representativeNameRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> "Jolly"))
 
       val view = injector.instanceOf[NameView]
 

@@ -19,7 +19,7 @@ package controllers.representative
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.messages.ContactPerson
+import models.messages.{ContactPerson, Representative}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -44,20 +44,23 @@ class AddRepresentativeContactDetailsYesNoControllerSpec extends SpecBase with A
 
   "AddRepresentativeContactDetailsYesNo Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when unanswered in IE015/013" in {
+      val uaIE015 = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative("IdNumber", "2", None)))(emptyUserAnswers)
 
-      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, addRepresentativeRoute)
 
       val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "false"))
 
       val view = injector.instanceOf[AddRepresentativeContactDetailsYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered in IE013/015" in {
