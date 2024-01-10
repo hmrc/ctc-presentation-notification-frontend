@@ -35,9 +35,9 @@ case object AddInlandModeOfTransportYesNoPage extends QuestionPage[Boolean] {
     Some(routes.AddInlandModeOfTransportYesNoController.onPageLoad(departureId, mode))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val Ie015LoadingCountryPath: JsPath = JsPath \ "Consignment" \ "inlandModeOfTransport"
+    val ie015InlandModePath: JsPath = JsPath \ "Consignment" \ "inlandModeOfTransport"
     value match {
-      case Some(false) => userAnswers.remove(InlandModePage, Ie015LoadingCountryPath)
+      case Some(false) => userAnswers.remove(InlandModePage, ie015InlandModePath)
       case _           => super.cleanup(value, userAnswers)
     }
   }
