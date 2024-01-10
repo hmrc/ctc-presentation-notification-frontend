@@ -64,23 +64,19 @@ class InlandModeAnswersHelper(
 
   def buildInlandModeSection: Future[Option[Section]] =
     if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator.asBoolean) {
-      val inlandModeFuture = inlandMode
-      for {
-        inlandModeOfTransportYesNoRow <-
-          if (userAnswers.departureData.Consignment.inlandModeOfTransport.isDefined) successful(inlandModeOfTransportYesNo) else successful(None)
-        inlandModeRow <- inlandModeFuture
-      } yield {
-        val rows = Seq(
-          inlandModeOfTransportYesNoRow,
-          inlandModeRow
-        ).flatten
+      val inlandModeYesNoRow  = inlandModeOfTransportYesNo
+      val inlandModeFutureRow = inlandMode
 
-        Some(
-          Section(
-            sectionTitle = messages("checkYourAnswers.inlandMode"),
-            rows = rows
+      inlandModeFutureRow.map {
+        inlandModeRow =>
+          val rows = Seq(inlandModeYesNoRow, inlandModeRow).flatten
+
+          Some(
+            Section(
+              sectionTitle = messages("checkYourAnswers.inlandMode"),
+              rows = rows
+            )
           )
-        )
       }
     } else {
       successful(None)
