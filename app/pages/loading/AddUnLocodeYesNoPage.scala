@@ -37,13 +37,7 @@ case object AddUnLocodeYesNoPage extends QuestionPage[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     val Ie015PlaceOfLoadingPath: JsPath = JsPath \ "Consignment" \ "PlaceOfLoading"
     value match {
-      case Some(false) =>
-        userAnswers
-          .remove(UnLocodePage, Ie015PlaceOfLoadingPath)
-          .flatMap(_.remove(AddExtraInformationYesNoPage))
-          .flatMap(_.remove(CountryPage))
-          .flatMap(_.remove(LocationPage))
-      case Some(true) =>
+      case Some(_) =>
         userAnswers
           .remove(UnLocodePage, Ie015PlaceOfLoadingPath)
           .flatMap(_.remove(AddExtraInformationYesNoPage))
