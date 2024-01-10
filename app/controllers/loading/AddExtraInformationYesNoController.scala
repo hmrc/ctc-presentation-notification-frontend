@@ -23,7 +23,6 @@ import models.requests.MandatoryDataRequest
 import navigation.LoadingNavigator
 import pages.loading.AddExtraInformationYesNoPage
 import play.api.Logging
-import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository

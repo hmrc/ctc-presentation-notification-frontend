@@ -22,8 +22,6 @@ import models.Mode
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
 import pages.transport.AddInlandModeOfTransportYesNoPage
-import pages.transport.border.AddBorderModeOfTransportYesNoPage
-import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
