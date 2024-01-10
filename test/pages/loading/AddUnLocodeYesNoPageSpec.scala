@@ -51,6 +51,27 @@ class AddUnLocodeYesNoPageSpec extends PageBehaviours {
           }
         }
       }
+      "when yes selected" - {
+        "must remove unlocode, addExtraInformation, country and location pages in 15/13/170" in {
+          forAll(arbitraryUnLocode.arbitrary, arbitraryCountry.arbitrary, nonEmptyString.sample.value) {
+            (unlocode, country, location) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(UnLocodePage, unlocode)
+                .setValue(AddExtraInformationYesNoPage, true)
+                .setValue(CountryPage, country)
+                .setValue(LocationPage, location)
+
+              val result = userAnswers.setValue(AddUnLocodeYesNoPage, true)
+
+              result.get(UnLocodePage) must not be defined
+              result.get(AddExtraInformationYesNoPage) must not be defined
+              result.get(CountryPage) must not be defined
+              result.get(LocationPage) must not be defined
+              result.departureData.Consignment.PlaceOfLoading must not be defined
+
+          }
+        }
+      }
     }
   }
 }

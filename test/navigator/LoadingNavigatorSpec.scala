@@ -271,7 +271,6 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         "to CYAPage when the addExtraInformationPage does exist in either the 13/15/170" in {
           val withAddExtraInformationUserAnswers = emptyUserAnswers
-            .setValue(AddUnLocodeYesNoPage, true)
             .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
           navigator
             .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)

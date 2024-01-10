@@ -43,6 +43,12 @@ case object AddUnLocodeYesNoPage extends QuestionPage[Boolean] {
           .flatMap(_.remove(AddExtraInformationYesNoPage))
           .flatMap(_.remove(CountryPage))
           .flatMap(_.remove(LocationPage))
+      case Some(true) =>
+        userAnswers
+          .remove(UnLocodePage, Ie015PlaceOfLoadingPath)
+          .flatMap(_.remove(AddExtraInformationYesNoPage))
+          .flatMap(_.remove(CountryPage))
+          .flatMap(_.remove(LocationPage))
       case _ => super.cleanup(value, userAnswers)
     }
   }
