@@ -50,8 +50,8 @@ class RepresentativeNavigator @Inject() () extends Navigator {
     val isContactDetailsDefined = ua.departureData.Representative.map(_.ContactPerson.isDefined)
 
     (ua.get(AddRepresentativeContactDetailsYesNoPage), isContactDetailsDefined) match {
-      case (Some(true), Some(false)) => NamePage.route(ua, departureId, CheckMode)
-      case _                         => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case (Some(true), Some(false) | None) => NamePage.route(ua, departureId, CheckMode)
+      case _                                => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
   }
 
@@ -59,8 +59,8 @@ class RepresentativeNavigator @Inject() () extends Navigator {
     val isContactDetailsDefined = ua.departureData.Representative.map(_.ContactPerson.isDefined)
 
     isContactDetailsDefined match {
-      case Some(false) => RepresentativePhoneNumberPage.route(ua, departureId, CheckMode)
-      case _           => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case Some(false) | None => RepresentativePhoneNumberPage.route(ua, departureId, CheckMode)
+      case _                  => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
   }
 }
