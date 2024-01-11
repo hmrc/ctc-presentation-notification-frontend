@@ -32,7 +32,7 @@ class ActingAsRepresentativePageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when NO selected" - {
-        "must clean up Representative pages" in {
+        "must clean up Representative pages in 15/13/170" in {
           forAll(arbitrary[String], arbitrary[String], arbitrary[String]) {
             (eori, name, telephone) =>
               val preChange = emptyUserAnswers
@@ -46,6 +46,7 @@ class ActingAsRepresentativePageSpec extends PageBehaviours {
               postChange.get(EoriPage) mustNot be(defined)
               postChange.get(NamePage) mustNot be(defined)
               postChange.get(RepresentativePhoneNumberPage) mustNot be(defined)
+              postChange.departureData.Representative mustNot be(defined)
           }
         }
       }
@@ -58,6 +59,7 @@ class ActingAsRepresentativePageSpec extends PageBehaviours {
               val postChange = preChange.setValue(ActingAsRepresentativePage, true)
 
               postChange.get(EoriPage) must be(defined)
+              postChange.departureData.Representative must be(defined)
           }
         }
       }
