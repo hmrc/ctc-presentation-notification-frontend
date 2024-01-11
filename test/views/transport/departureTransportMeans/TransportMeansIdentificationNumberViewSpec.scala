@@ -16,17 +16,15 @@
 
 package views.transport.departureTransportMeans
 
-import forms.EnumerableFormProvider
 import forms.border.IdentificationNumberFormProvider
 import models.NormalMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import viewModels.InputSize
-import views.behaviours.{EnumerableViewBehaviours, InputTextViewBehaviours}
-import views.html.transport.departureTransportMeans.{TransportMeansIdentificationNumberView, TransportMeansIdentificationView}
+import views.behaviours.InputTextViewBehaviours
+import views.html.transport.departureTransportMeans.TransportMeansIdentificationNumberView
 
 class TransportMeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 

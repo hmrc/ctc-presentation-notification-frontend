@@ -237,6 +237,11 @@ object TestMessageData {
        |                "eMailAddress": "sullivan@epic.com"
        |            }
        |        },
+       |        "DepartureTransportMeans": {
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR"
+       |        },
        |        "ActiveBorderTransportMeans": [
        |            {
        |                "sequenceNumber": "11",

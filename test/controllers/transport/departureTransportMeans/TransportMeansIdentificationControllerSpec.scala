@@ -44,7 +44,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   private val identificationTypes = Seq(identificationType1, identificationType2)
 
   private val formProvider = new EnumerableFormProvider()
-  private val form         = formProvider[TransportMeansIdentification]("transport.transportMeans.identification", identificationTypes)
+  private val form         = formProvider[TransportMeansIdentification]("consignment.departureTransportMeans.identification", identificationTypes)
   private val mode         = NormalMode
 
   private lazy val identificationRoute =
