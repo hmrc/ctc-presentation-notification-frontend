@@ -79,7 +79,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "getCustomsOfficeByMultipleIds" - {
+    "getCustomsOfficesByMultipleIds" - {
       "must customs office list for multiple ids" in {
 
         when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB1"))(any(), any()))
@@ -89,6 +89,16 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
           .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice2)))
 
         service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq(gbCustomsOffice1, gbCustomsOffice2)
+
+        verify(mockRefDataConnector, times(2)).getCustomsOfficeForId(any())(any(), any())
+      }
+
+      "must remove duplicate ids" in {
+
+        when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB1"))(any(), any()))
+          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice1)))
+
+        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB1")).futureValue mustBe Seq(gbCustomsOffice1)
 
         verify(mockRefDataConnector, times(2)).getCustomsOfficeForId(any())(any(), any())
       }
