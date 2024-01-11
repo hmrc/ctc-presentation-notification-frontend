@@ -16,7 +16,6 @@
 
 package services
 
-import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.{Country, CountryCode}
@@ -39,7 +38,7 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   private def getCountries(listName: String)(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
       .getCountries(listName)
-      .map(toSelectableList)
+      .map(_.toSelectableList)
 
   def doesCountryRequireZip(country: CountryCode)(implicit hc: HeaderCarrier): Future[Boolean] =
     getCountriesWithoutZip().map(!_.contains(country))
@@ -47,11 +46,5 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   def getCountriesWithoutZip()(implicit hc: HeaderCarrier): Future[Seq[CountryCode]] =
     referenceDataConnector
       .getCountriesWithoutZip()
-      .map(_.toNonEmptyList.toList)
-
-  private def toList(countries: NonEmptySet[Country]): Seq[Country] =
-    countries.toNonEmptyList.toList
-
-  private def toSelectableList(countries: NonEmptySet[Country]): SelectableList[Country] =
-    SelectableList(toList(countries))
+      .map(_.toSeq)
 }
