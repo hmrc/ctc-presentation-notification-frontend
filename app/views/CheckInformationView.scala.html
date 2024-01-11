@@ -25,12 +25,14 @@
     headingCaption: HeadingCaption
 )
 
-@(lrn: String)(implicit request: Request[_], messages: Messages)
+@(lrn: String, departureId: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("checkInformation.title"),
     showBackLink = true
 ) {
+
+ @formHelper(action = routes.CheckInformationController.onSubmit(departureId), Symbol("autoComplete") -> "off") {
 
     @headingCaption(lrn)
 
@@ -41,7 +43,6 @@
     <p class="govuk-body">@messages("checkInformation.paragraph1")</p>
     <p class="govuk-body">@messages("checkInformation.paragraph2")</p>
 
-    @formHelper(action = Call("GET", "#"), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 }
