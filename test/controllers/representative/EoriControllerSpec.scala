@@ -16,22 +16,17 @@
 
 package controllers.representative
 
-import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.representative.{routes => representativeRoutes}
 import controllers.routes
 import forms.EoriNumberFormProvider
-import models.messages.EconomicOperator
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
 import pages.representative.EoriPage
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.representative.EoriView
-
-import java.time.Instant
 
 class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 

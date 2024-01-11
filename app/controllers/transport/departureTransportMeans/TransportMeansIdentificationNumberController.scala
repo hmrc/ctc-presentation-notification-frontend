@@ -57,6 +57,12 @@ class TransportMeansIdentificationNumberController @Inject() (
 
           val fillForm = request.userAnswers
             .get(TransportMeansIdentificationNumberPage)
+            .orElse(
+              request.userAnswers.departureData.Consignment.DepartureTransportMeans
+                .flatMap(
+                  _.identificationNumber
+                )
+            )
 
           val preparedForm = fillForm match {
             case None        => form
