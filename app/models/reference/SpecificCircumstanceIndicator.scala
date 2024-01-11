@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
@@ -31,6 +32,9 @@ case class SpecificCircumstanceIndicator(
 
 object SpecificCircumstanceIndicator extends DynamicEnumerableType[SpecificCircumstanceIndicator] {
   implicit val format: Format[SpecificCircumstanceIndicator] = Json.format[SpecificCircumstanceIndicator]
+
+  implicit val order: Order[SpecificCircumstanceIndicator] = (x: SpecificCircumstanceIndicator, y: SpecificCircumstanceIndicator) =>
+    x.toString.compareToIgnoreCase(y.toString)
 
   val messageKeyPrefix = "specificCircumstanceIndicator"
 }

@@ -16,7 +16,6 @@
 
 package services
 
-import cats.data.NonEmptyList
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
 import models.Index
@@ -32,10 +31,13 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
   def getMeansOfTransportIdentificationTypes(index: Index, borderModeOfTransport: Option[BorderMode])(implicit
     hc: HeaderCarrier
   ): Future[Seq[TransportMeansIdentification]] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, index, borderModeOfTransport)).map(sort)
+    referenceDataConnector
+      .getMeansOfTransportIdentificationTypes()
+      .map(_.toSeq)
+      .map(filter(_, index, borderModeOfTransport))
 
   private def filter(
-    transportMeansIdentificationsTypes: NonEmptyList[TransportMeansIdentification],
+    transportMeansIdentificationsTypes: Seq[TransportMeansIdentification],
     index: Index,
     borderModeOfTransport: Option[BorderMode]
   ): Seq[TransportMeansIdentification] = {
@@ -47,7 +49,4 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
       case _ => identificationTypesExcludingUnknown
     }
   }
-
-  private def sort(identificationTypes: Seq[TransportMeansIdentification]): Seq[TransportMeansIdentification] =
-    identificationTypes.sortBy(_.code.toLowerCase)
 }

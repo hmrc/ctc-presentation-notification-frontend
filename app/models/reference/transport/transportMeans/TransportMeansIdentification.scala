@@ -16,6 +16,7 @@
 
 package models.reference.transport.transportMeans
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
@@ -32,6 +33,9 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 
 object TransportMeansIdentification extends DynamicEnumerableType[TransportMeansIdentification] {
   implicit val format: Format[TransportMeansIdentification] = Json.format[TransportMeansIdentification]
+
+  implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) =>
+    x.code.compareToIgnoreCase(y.code)
 
   val messageKeyPrefix = "houseConsignment.index.departureTransportMeans.identification"
 }

@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.UnLocode
@@ -44,7 +44,7 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return true when unLocode exists" in {
 
         val unLocodeItem = UnLocode("DEAAL", "Place D")
-        val unLocodeList = NonEmptyList(unLocodeItem, Nil)
+        val unLocodeList = NonEmptySet.of(unLocodeItem)
 
         val unLocode = "DEAAL"
 

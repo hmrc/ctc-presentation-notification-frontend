@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.reference.TransportMode.BorderMode
@@ -54,7 +54,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         val borderMode = BorderMode("1", "Maritime")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(identification5, List(identification6, identification7))))
+          .thenReturn(Future.successful(NonEmptySet.of(identification5, identification6, identification7)))
 
         service.getMeansOfTransportIdentificationTypes(index, Some(borderMode)).futureValue mustBe
           Seq(identification6, identification5)
@@ -66,7 +66,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         val borderMode = BorderMode("2", "Rail")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(identification4, List(identification7))))
+          .thenReturn(Future.successful(NonEmptySet.of(identification4, identification7)))
 
         service.getMeansOfTransportIdentificationTypes(index, Some(borderMode)).futureValue mustBe
           Seq(identification4)
@@ -78,7 +78,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         val borderMode = BorderMode("3", "Road")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(identification3, List(identification7))))
+          .thenReturn(Future.successful(NonEmptySet.of(identification3, identification7)))
 
         service.getMeansOfTransportIdentificationTypes(index, Some(borderMode)).futureValue mustBe
           Seq(identification3)
@@ -90,7 +90,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         val borderMode = BorderMode("4", "Air")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(identification1, List(identification2, identification7))))
+          .thenReturn(Future.successful(NonEmptySet.of(identification1, identification2, identification7)))
 
         service.getMeansOfTransportIdentificationTypes(index, Some(borderMode)).futureValue mustBe
           Seq(identification2, identification1)
@@ -103,7 +103,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(
             Future.successful(
-              NonEmptyList(identification1, List(identification2, identification3, identification4, identification5, identification6, identification7))
+              NonEmptySet.of(identification1, identification2, identification3, identification4, identification5, identification6, identification7)
             )
           )
 

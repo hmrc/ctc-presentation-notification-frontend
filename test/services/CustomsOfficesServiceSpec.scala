@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.{CountryCode, CustomsOffice}
@@ -33,9 +33,9 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new CustomsOfficesService(mockRefDataConnector)
 
-  val gbCustomsOffice1: CustomsOffice               = CustomsOffice("GB1", "BOSTON", None)
-  val gbCustomsOffice2: CustomsOffice               = CustomsOffice("GB2", "Appledore", None)
-  val gbCustomsOffices: NonEmptyList[CustomsOffice] = NonEmptyList(gbCustomsOffice1, List(gbCustomsOffice2))
+  val gbCustomsOffice1: CustomsOffice = CustomsOffice("GB1", "BOSTON", None)
+  val gbCustomsOffice2: CustomsOffice = CustomsOffice("GB2", "Appledore", None)
+  val gbCustomsOffices                = NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -61,7 +61,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return the head of the customs office list" in {
 
         when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
-          .thenReturn(Future.successful(gbCustomsOffices))
+          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice1)))
 
         service.getCustomsOfficeById("GB1").futureValue mustBe Some(gbCustomsOffice1)
 
@@ -83,12 +83,12 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must customs office list for multiple ids" in {
 
         when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB1"))(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(gbCustomsOffice1, Nil)))
+          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice1)))
 
         when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB2"))(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(gbCustomsOffice2, Nil)))
+          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice2)))
 
-        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe gbCustomsOffices.toList
+        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq(gbCustomsOffice1, gbCustomsOffice2)
 
         verify(mockRefDataConnector, times(2)).getCustomsOfficeForId(any())(any(), any())
       }

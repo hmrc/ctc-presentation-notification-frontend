@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import play.api.libs.json._
 
 case class CountryCode(code: String)
@@ -36,5 +37,7 @@ object CountryCode {
         case x                 => JsError(s"Expected a string, got a ${x.getClass}")
       }
     }
+
+  implicit val order: Order[CountryCode] = (x: CountryCode, y: CountryCode) => x.code.compareToIgnoreCase(y.code)
 
 }
