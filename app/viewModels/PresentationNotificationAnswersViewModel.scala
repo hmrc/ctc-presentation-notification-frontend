@@ -19,6 +19,7 @@ package viewModels
 import config.FrontendAppConfig
 import models.{CheckMode, Index, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
+import pages.sections.transport.equipment.EquipmentsSection
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
@@ -47,11 +48,12 @@ object PresentationNotificationAnswersViewModel {
     ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      val helper                               = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val placeOfLoadingAnswersHelper          = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val locationOfGoodsHelper                = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val transitHolderAnswerHelper            = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val activeBorderHelper                   = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      def transportEquipmentHelper(index: Int) = TransportEquipmentAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(index))
 
       val firstSection = Section(
         rows = Seq(
@@ -88,14 +90,37 @@ object PresentationNotificationAnswersViewModel {
         }
       }
 
+      val transportEquipmentAnswersHelperSectionFuture: Future[Seq[Section]] = {
+        userAnswers
+          .get(EquipmentsSection) match {
+          case Some(jsArray) =>
+            Future.sequence(jsArray.value.zipWithIndex.map {
+              case (_, i) =>
+                transportEquipmentHelper(i).getSection()
+
+            }.toSeq)
+
+          case None =>
+            Future.successful(
+              Section(
+                sectionTitle = messages("checkYourAnswers.transport.equipment.active.withoutIndex"),
+                rows = Seq(transportEquipmentHelper(0).addAnyTransportEquipmentYesNo).flatten
+              ).toSeq
+            )
+
+        }
+
+      }
+
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
         borderSection                     <- helper.borderModeSection
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
+        transportEquipmentSection         <- transportEquipmentAnswersHelperSectionFuture
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq ++ transportEquipmentSection
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }
