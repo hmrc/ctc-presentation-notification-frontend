@@ -24,7 +24,7 @@ import models.{Index, Mode}
 import navigation.Navigator
 import pages.QuestionPage
 import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.InlandModePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -59,7 +59,7 @@ class IdentificationController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(departureTransportMeansIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(departureTransportMeansIndex, request.userAnswers.get(InlandModePage)).flatMap {
           identifiers =>
             val preparedForm = request.userAnswers.get(IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex)) match {
               case None        => form(identifiers, houseConsignmentIndex)
@@ -74,7 +74,7 @@ class IdentificationController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(departureTransportMeansIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(departureTransportMeansIndex, request.userAnswers.get(InlandModePage)).flatMap {
           identificationTypeList =>
             form(identificationTypeList, houseConsignmentIndex)
               .bindFromRequest()
