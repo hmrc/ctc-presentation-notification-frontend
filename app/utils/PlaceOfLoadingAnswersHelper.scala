@@ -97,7 +97,7 @@ class PlaceOfLoadingAnswersHelper(
       rowAcc = Seq(
         addUnlocodeYesNo,
         unlocode,
-        addExtraInformationYesNo,
+        if (unlocode.isDefined) addExtraInformationYesNo else None,
         countryRow,
         location
       ).flatten
