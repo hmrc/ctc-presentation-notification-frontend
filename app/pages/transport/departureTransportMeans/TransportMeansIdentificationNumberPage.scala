@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,18 @@
 package pages.transport.departureTransportMeans
 
 import models.{Mode, UserAnswers}
+import controllers.transport.departureTransportMeans.routes
 import pages.QuestionPage
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import models.reference.transport.transportMeans.TransportMeansIdentification
 
-object TransportMeansIdentificationPage extends QuestionPage[TransportMeansIdentification] {
+case object TransportMeansIdentificationNumberPage extends QuestionPage[String] {
 
   override def path: JsPath = TransportMeansSection.path \ toString
 
-  override def toString: String = "identification"
+  override def toString: String = "identificationNumber"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
+    Some(routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode))
 }
