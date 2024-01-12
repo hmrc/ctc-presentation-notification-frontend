@@ -197,6 +197,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getCustomsOffices(queryParams)
   }
 
+  def getCustomsOfficesForIds(ids: Seq[String])(implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier
+  ): Future[NonEmptySet[CustomsOffice]] = {
+    val queryParams: Seq[(String, String)] = ids.map("data.id" -> _)
+    getCustomsOffices(queryParams)
+  }
+
   private def getCustomsOffices(queryParams: Seq[(String, String)])(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier

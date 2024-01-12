@@ -260,7 +260,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
-    "getCustomsOfficesForId" - {
+    "getCustomsOfficeForId" - {
       def url(officeId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=$officeId"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
@@ -287,6 +287,34 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return an exception when an error response is returned" in {
         val id = "GB1"
         checkErrorResponse(url(id), connector.getCustomsOfficeForId(id))
+      }
+    }
+
+    "getCustomsOfficesForIds" - {
+      def url = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=GB1&data.id=GB2"
+      val ids = Seq("GB1", "GB2")
+
+      "must return a successful future response with a sequence of CustomsOffices" in {
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(customsOfficesResponseJson))
+        )
+
+        val expectedResult = NonEmptySet.of(
+          CustomsOffice("GB1", "testName1", None),
+          CustomsOffice("GB2", "testName2", None)
+        )
+
+        connector.getCustomsOfficesForIds(ids).futureValue mustBe expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCustomsOfficesForIds(ids))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getCustomsOfficesForIds(ids))
       }
     }
 

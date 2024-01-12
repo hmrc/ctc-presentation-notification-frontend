@@ -16,7 +16,6 @@
 
 package services
 
-import cats.implicits.toTraverseOps
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
@@ -46,20 +45,10 @@ class CustomsOfficesService @Inject() (
         case _: NoReferenceDataFoundException => None
       }
 
-  // TODO this could be refactored in the customs reference data service to get multiple offices rather than traverse
-  // TODO do we want to return a NoReferenceDataFoundException if the overall list is empty?
   def getCustomsOfficesByMultipleIds(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[CustomsOffice]] =
-    ids
-      .flatTraverse[Future, CustomsOffice] {
-        customsOfficeId =>
-          referenceDataConnector
-            .getCustomsOfficeForId(customsOfficeId)
-            .map(_.toSeq)
-            .recover {
-              case _: NoReferenceDataFoundException => Nil
-            }
-      }
-      .map(_.toSet.toSeq)
+    referenceDataConnector
+      .getCustomsOfficesForIds(ids)
+      .map(_.toSeq)
 
   def getCustomsOfficesOfDestinationForCountry(
     countryCode: CountryCode
