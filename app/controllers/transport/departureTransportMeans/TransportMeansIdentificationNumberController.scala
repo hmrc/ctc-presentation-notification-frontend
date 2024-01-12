@@ -21,7 +21,6 @@ import forms.border.IdentificationNumberFormProvider
 import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.{DataRequest, MandatoryDataRequest}
-import navigation.Navigator
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportMeansIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -89,19 +87,18 @@ class TransportMeansIdentificationNumberController @Inject() (
                   case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString))
                   case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
                 },
-              value => redirect(mode, value, departureId)
+              value => redirect(value, departureId)
             )
       }
 
   private def redirect(
-    mode: Mode,
     value: String,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode))
+    } yield Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
   private def identificationPageIe170(implicit request: DataRequest[_]): Option[TransportMeansIdentification] =
     request.userAnswers.get(TransportMeansIdentificationPage)

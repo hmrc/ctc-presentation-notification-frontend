@@ -78,18 +78,17 @@ class TransportMeansNationalityController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode))),
-              value => redirect(mode, value, departureId)
+              value => redirect(value, departureId)
             )
       }
   }
 
   private def redirect(
-    mode: Mode,
     value: Nationality,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode))
+    } yield Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 }

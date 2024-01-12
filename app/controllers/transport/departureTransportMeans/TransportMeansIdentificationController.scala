@@ -21,7 +21,6 @@ import forms.EnumerableFormProvider
 import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import play.api.data.Form
@@ -38,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportMeansIdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -88,18 +86,17 @@ class TransportMeansIdentificationController @Inject() (
                   Future.successful(
                     BadRequest(view(formWithErrors, departureId, identificationTypeList, mode))
                   ),
-                value => redirect(mode, value, departureId)
+                value => redirect(value, departureId)
               )
         }
     }
 
   private def redirect(
-    mode: Mode,
     value: TransportMeansIdentification,
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode))
+    } yield Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 }

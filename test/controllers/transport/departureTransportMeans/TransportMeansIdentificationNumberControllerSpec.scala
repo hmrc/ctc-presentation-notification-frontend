@@ -160,7 +160,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.routes.CheckYourAnswersController.onPageLoad(departureId).url
       }
     }
 
