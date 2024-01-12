@@ -17,7 +17,6 @@
 package services
 
 import cats.data.NonEmptyList
-import config.Constants
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
 import models.Index
@@ -49,7 +48,9 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
             index,
             transportModeCodesService.getInlandModes().map {
               inlandModes =>
-                inlandModes.find(_.code == request.userAnswers.departureData.Consignment.inlandModeOfTransport.getOrElse(Constants.Unknown))
+                request.userAnswers.departureData.Consignment.inlandModeOfTransport.flatMap(
+                  inlandModeIE15 => inlandModes.find(_.code == inlandModeIE15)
+                )
             }
           )
         )
