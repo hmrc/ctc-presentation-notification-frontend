@@ -476,6 +476,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
               |      "description": "Maritime Transport"
               |    },
               |    {
+              |      "code": "1",
+              |      "description": "Maritime Transport"
+              |    },
+              |    {
               |      "code": "2",
               |      "description": "Rail Transport"
               |    }
