@@ -61,6 +61,12 @@ object TestMessageData {
     Some(contactPerson)
   )
 
+  val departureTransportMeans: DepartureTransportMeans = DepartureTransportMeans(
+    Some("21"),
+    Some("num"),
+    Some("GB")
+  )
+
   val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
     ActiveBorderTransportMeans(
       "11",
@@ -80,6 +86,7 @@ object TestMessageData {
     inlandModeOfTransport = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
+    DepartureTransportMeans = Some(departureTransportMeans),
     ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
     PlaceOfLoading = Some(placeOfLoading),
     HouseConsignment = Seq(
@@ -173,6 +180,11 @@ object TestMessageData {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
        |        "inlandModeOfTransport": "2",
+       |        "DepartureTransportMeans": {
+       |          "typeOfIdentification": "21",
+       |          "identificationNumber" : "num",
+       |          "nationality" : "GB"
+       |        },
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",
@@ -292,6 +304,11 @@ object TestMessageData {
        |        "containerIndicator": "1",
        |        "inlandModeOfTransport": "2",
        |        "modeOfTransportAtTheBorder": "2",
+       |        "DepartureTransportMeans": {
+       |          "typeOfIdentification": "21",
+       |          "identificationNumber" : "num",
+       |          "nationality" : "GB"
+       |        },
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",

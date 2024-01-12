@@ -18,7 +18,16 @@ package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.EntrySummaryDeclarationSecurityDetails
-import models.messages.{Commodity, Consignment, ConsignmentItem, HolderOfTheTransitProcedure, HouseConsignment, MessageData, TransitOperation}
+import models.messages.{
+  Commodity,
+  Consignment,
+  ConsignmentItem,
+  DepartureTransportMeans,
+  HolderOfTheTransitProcedure,
+  HouseConsignment,
+  MessageData,
+  TransitOperation
+}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.running
 
@@ -134,6 +143,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         TransportEquipment = None,
         inlandModeOfTransport = None,
         LocationOfGoods = None,
+        DepartureTransportMeans = None,
         ActiveBorderTransportMeans = None,
         PlaceOfLoading = None,
         HouseConsignment = Seq(
