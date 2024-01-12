@@ -783,7 +783,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
           }
         }
-        "to CYA page if answer is No" in {
+        "to AddContactYesNoPage if answer is No" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               answers
@@ -792,7 +792,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                   updatedAnswers =>
                     navigator
                       .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, CheckMode)
-                      .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                      .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
                 }
                 .get
           }
