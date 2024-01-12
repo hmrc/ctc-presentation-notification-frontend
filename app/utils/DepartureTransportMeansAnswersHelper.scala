@@ -54,7 +54,7 @@ class DepartureTransportMeansAnswersHelper(
           optionalAnswer = identificationType,
           formatAnswer = formatDynamicEnumAsText(_),
           prefix = "consignment.departureTransportMeans.identification",
-          id = Some("change-transport-inland-mode")
+          id = Some("change-transport-means-identification")
         )
     }
 

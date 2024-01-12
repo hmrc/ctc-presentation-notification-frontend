@@ -606,4 +606,5 @@ consignment.departureTransportMeans.identificationNumber.checkYourAnswersLabel =
 consignment.departureTransportMeans.identificationNumber.error.length = The identification number must be 35 characters or less
 consignment.departureTransportMeans.identificationNumber.error.required = Enter the identification number for the departure means of transport
 consignment.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+consignment.departureTransportMeans.identificationNumber.change.hidden = the identification number for the departure means of transport
 

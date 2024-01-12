@@ -57,10 +57,20 @@ class TransportMeansIdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identifiers =>
-            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage) match {
+            def identificationFromDepartureData = {
+              val identificationCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
+                _.headOption.flatMap(_.typeOfIdentification)
+              )
+              identificationCode.flatMap(
+                code => identifiers.find(_.code == code)
+              )
+            }
+
+            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage).orElse(identificationFromDepartureData) match {
               case None        => form(identifiers)
               case Some(value) => form(identifiers).fill(value)
             }
+
             Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
         }
     }

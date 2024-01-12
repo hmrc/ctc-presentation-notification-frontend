@@ -18,7 +18,7 @@ package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.{Index, Mode}
+import models.Mode
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import navigation.BorderNavigator
@@ -50,8 +50,17 @@ class TransportMeansNationalityController @Inject() (
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
+          def nationalityFromDepartureData = {
+            val nationalityCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
+              _.headOption.flatMap(_.nationality)
+            )
+            nationalityCode.flatMap(
+              code => nationalityList.values.find(_.code == code)
+            )
+          }
+
           val form = formProvider("consignment.departureTransportMeans.nationality", nationalityList)
-          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage) match {
+          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage).orElse(nationalityFromDepartureData) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
