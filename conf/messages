@@ -70,6 +70,7 @@ checkYourAnswers.transportMeans.active.withIndex = Border means of transport {0}
 checkYourAnswers.transportMeans.active.withoutIndex = Border means of transport
 checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
 checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
+checkYourAnswers.departureTransportMeans = Departure means of transport
 
 checkYourAnswers.locationOfGoods = Location of goods
 
@@ -595,6 +596,8 @@ consignment.departureTransportMeans.nationality.title = What country is the depa
 consignment.departureTransportMeans.nationality.hint = Enter the country or code, like Austria or AT.
 consignment.departureTransportMeans.nationality.placeholder = Select a nationality
 consignment.departureTransportMeans.nationality.error.required = Select the country the departure means of transport is registered to
+consignment.departureTransportMeans.nationality.change.hidden = registered country for the departure means of transport
+consignment.departureTransportMeans.nationality.checkYourAnswersLabel = Registered country
 
 consignment.departureTransportMeans.identificationNumber.title = What is the identification number for the departure means of transport?
 consignment.departureTransportMeans.identificationNumber.heading = What is the identification number for the departure means of transport?

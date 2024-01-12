@@ -47,11 +47,12 @@ object PresentationNotificationAnswersViewModel {
     ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      val helper                               = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val placeOfLoadingAnswersHelper          = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val locationOfGoodsHelper                = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val transitHolderAnswerHelper            = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val activeBorderHelper                   = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      val departureTransportMeansAnswersHelper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
 
       val firstSection = Section(
         rows = Seq(
@@ -94,8 +95,9 @@ object PresentationNotificationAnswersViewModel {
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
+        departureTransportMeansSection    <- departureTransportMeansAnswersHelper.buildDepartureTransportMeansSection
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ placeOfLoading.toSeq ++ departureTransportMeansSection.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }

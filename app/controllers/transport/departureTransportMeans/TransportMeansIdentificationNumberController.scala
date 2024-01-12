@@ -60,7 +60,7 @@ class TransportMeansIdentificationNumberController @Inject() (
             .orElse(
               request.userAnswers.departureData.Consignment.DepartureTransportMeans
                 .flatMap(
-                  _.identificationNumber
+                  _.headOption.flatMap(_.identificationNumber)
                 )
             )
 
@@ -108,7 +108,9 @@ class TransportMeansIdentificationNumberController @Inject() (
 
   private def identificationPageIe015(implicit request: DataRequest[_]): Option[String] =
     request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
-      _.typeOfIdentification
+      _.headOption.flatMap(
+        _.typeOfIdentification
+      )
     )
 
   private def getReferenceDataFor15(implicit request: DataRequest[_]): Option[Future[TransportMeansIdentification]] =

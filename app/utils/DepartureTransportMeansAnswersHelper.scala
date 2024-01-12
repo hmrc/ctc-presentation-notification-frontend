@@ -45,7 +45,7 @@ class DepartureTransportMeansAnswersHelper(
   def identificationType: Future[Option[SummaryListRow]] =
     fetchValue[TransportMeansIdentification](
       page = TransportMeansIdentificationPage,
-      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
+      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.head.typeOfIdentification),
       refDataLookup = checkYourAnswersReferenceDataService.getMeansOfTransportIdentificationType
     ).map {
       identificationType =>
@@ -58,39 +58,55 @@ class DepartureTransportMeansAnswersHelper(
         )
     }
 
-  def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def identificationNumberRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = TransportMeansIdentificationNumberPage,
     formatAnswer = formatAsText,
     prefix = "consignment.departureTransportMeans.identificationNumber",
-    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
+    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.head.identificationNumber),
     id = Some("change-departure-transport-means-identification-number")
   )
 
-//  def nationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
-//    page = TransportMeansNationalityPage,
-//    formatAnswer = formatAsText,
-//    prefix = "consignment.departureTransportMeans.identificationNumber",
-//    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
-//    id = Some("change-departure-transport-means-identification-number")
-//  )
+  def nationality: Future[Option[SummaryListRow]] =
+    fetchValue[Nationality](
+      page = TransportMeansNationalityPage,
+      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.head.nationality),
+      refDataLookup = checkYourAnswersReferenceDataService.getNationality
+    ).map {
+      nationality =>
+        buildRowWithAnswer[Nationality](
+          page = TransportMeansNationalityPage,
+          optionalAnswer = nationality,
+          formatAnswer = formatAsText,
+          prefix = "consignment.departureTransportMeans.nationality",
+          id = Some("change-departure-transport-means-nationality")
+        )
+    }
 
-//  def buildInlandModeSection: Future[Option[Section]] =
-//    if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator.asBoolean) {
-//      val inlandModeYesNoRow  = inlandModeOfTransportYesNo
-//      val inlandModeFutureRow = inlandMode
-//
-//      inlandModeFutureRow.map {
-//        inlandModeRow =>
-//          val rows = Seq(inlandModeYesNoRow, inlandModeRow).flatten
-//
-//          Some(
-//            Section(
-//              sectionTitle = messages("checkYourAnswers.inlandMode"),
-//              rows = rows
-//            )
-//          )
-//      }
-//    } else {
-//      successful(None)
-//    }
+  def buildDepartureTransportMeansSection: Future[Option[Section]] = {
+
+    val predicate: Boolean = userAnswers.departureData.Consignment.inlandModeOfTransport match {
+      case Some(value) => value != "5"
+      case None        => true
+    }
+
+    if (predicate) {
+
+      for {
+        identificationTypeRow   <- identificationType
+        identificationNumberRow <- successful(identificationNumberRow)
+        nationalityRow          <- nationality
+      } yield {
+        val rows = Seq(identificationTypeRow, identificationNumberRow, nationalityRow).flatten
+
+        Some(
+          Section(
+            sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
+            rows = rows
+          )
+        )
+      }
+    } else {
+      successful(None)
+    }
+  }
 }

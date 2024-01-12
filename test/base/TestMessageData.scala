@@ -72,11 +72,14 @@ object TestMessageData {
     )
   )
 
-  val departureTransportMeans: DepartureTransportMeans =
-    DepartureTransportMeans(
-      Some("10"),
-      Some("BX857GGE"),
-      Some("FR")
+  val departureTransportMeans: List[DepartureTransportMeans] =
+    List(
+      DepartureTransportMeans(
+        "1",
+        Some("10"),
+        Some("BX857GGE"),
+        Some("FR")
+      )
     )
 
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
@@ -181,11 +184,14 @@ object TestMessageData {
        |        "containerIndicator": "1",
        |        "modeOfTransportAtTheBorder": "2",
        |        "inlandModeOfTransport": "2",
-       |        "DepartureTransportMeans": {
+       |        "DepartureTransportMeans": [
+       |         {
+       |          "sequenceNumber" : "1",
        |          "typeOfIdentification": "10",
        |          "identificationNumber" : "BX857GGE",
        |          "nationality" : "FR"
-       |        },
+       |          }
+       |        ],
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",
@@ -241,11 +247,6 @@ object TestMessageData {
        |                "phoneNumber": "07508994566",
        |                "eMailAddress": "sullivan@epic.com"
        |            }
-       |        },
-       |        "DepartureTransportMeans": {
-       |                "typeOfIdentification": "10",
-       |                "identificationNumber": "BX857GGE",
-       |                "nationality": "FR"
        |        },
        |        "ActiveBorderTransportMeans": [
        |            {
@@ -310,11 +311,14 @@ object TestMessageData {
        |        "containerIndicator": "1",
        |        "inlandModeOfTransport": "2",
        |        "modeOfTransportAtTheBorder": "2",
-       |        "DepartureTransportMeans": {
+       |         "DepartureTransportMeans": [
+       |         {
+       |          "sequenceNumber" : "1",
        |          "typeOfIdentification": "10",
        |          "identificationNumber" : "BX857GGE",
        |          "nationality" : "FR"
-       |        },
+       |          }
+       |        ],
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",
