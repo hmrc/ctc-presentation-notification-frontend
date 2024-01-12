@@ -17,7 +17,6 @@
 package models.messages
 
 import models.reference.Item
-import models.reference.TransportMode.InlandMode
 import play.api.libs.json._
 
 case class Consignment(
@@ -26,6 +25,7 @@ case class Consignment(
   inlandModeOfTransport: Option[String],
   TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
+  DepartureTransportMeans: Option[DepartureTransportMeans],
   ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]
