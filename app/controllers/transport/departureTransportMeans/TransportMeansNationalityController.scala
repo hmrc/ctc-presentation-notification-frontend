@@ -46,30 +46,30 @@ class TransportMeansNationalityController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(departureId).async {
+  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
-          val form = formProvider("consignment.index.departureTransportMeans.nationality", nationalityList, index.display)
-          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage(index)) match {
+          val form = formProvider("consignment.departureTransportMeans.nationality", nationalityList)
+          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, departureId, nationalityList.values, mode, index))
+          Ok(view(preparedForm, departureId, nationalityList.values, mode))
       }
   }
 
-  def onSubmit(departureId: String, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(departureId).async {
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
-          val form = formProvider("consignment.index.departureTransportMeans.nationality", nationalityList, index.display)
+          val form = formProvider("consignment.departureTransportMeans.nationality", nationalityList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode, index))),
-              value => redirect(mode, value, departureId, index)
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode))),
+              value => redirect(mode, value, departureId)
             )
       }
   }
@@ -77,11 +77,10 @@ class TransportMeansNationalityController @Inject() (
   private def redirect(
     mode: Mode,
     value: Nationality,
-    departureId: String,
-    index: Index
+    departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage(index), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage(index), updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode))
 }

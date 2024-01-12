@@ -56,6 +56,9 @@ class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnect
           .map(sort)
     }
 
+  def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
+    referenceDataConnector.getMeansOfTransportIdentificationType(code).map(_.head)
+
   private def filter(
     identificationTypes: NonEmptyList[TransportMeansIdentification],
     inlandMode: Future[Option[InlandMode]]

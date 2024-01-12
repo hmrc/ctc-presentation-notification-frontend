@@ -61,12 +61,6 @@ object TestMessageData {
     Some(contactPerson)
   )
 
-  val departureTransportMeans: DepartureTransportMeans = DepartureTransportMeans(
-    Some("21"),
-    Some("num"),
-    Some("GB")
-  )
-
   val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
     ActiveBorderTransportMeans(
       "11",
@@ -77,6 +71,13 @@ object TestMessageData {
       Some("REF2")
     )
   )
+
+  val departureTransportMeans: DepartureTransportMeans =
+    DepartureTransportMeans(
+      Some("10"),
+      Some("BX857GGE"),
+      Some("FR")
+    )
 
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
 
@@ -181,9 +182,9 @@ object TestMessageData {
        |        "modeOfTransportAtTheBorder": "2",
        |        "inlandModeOfTransport": "2",
        |        "DepartureTransportMeans": {
-       |          "typeOfIdentification": "21",
-       |          "identificationNumber" : "num",
-       |          "nationality" : "GB"
+       |          "typeOfIdentification": "10",
+       |          "identificationNumber" : "BX857GGE",
+       |          "nationality" : "FR"
        |        },
        |        "TransportEquipment": [
        |            {
@@ -240,6 +241,11 @@ object TestMessageData {
        |                "phoneNumber": "07508994566",
        |                "eMailAddress": "sullivan@epic.com"
        |            }
+       |        },
+       |        "DepartureTransportMeans": {
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR"
        |        },
        |        "ActiveBorderTransportMeans": [
        |            {
@@ -305,9 +311,9 @@ object TestMessageData {
        |        "inlandModeOfTransport": "2",
        |        "modeOfTransportAtTheBorder": "2",
        |        "DepartureTransportMeans": {
-       |          "typeOfIdentification": "21",
-       |          "identificationNumber" : "num",
-       |          "nationality" : "GB"
+       |          "typeOfIdentification": "10",
+       |          "identificationNumber" : "BX857GGE",
+       |          "nationality" : "FR"
        |        },
        |        "TransportEquipment": [
        |            {

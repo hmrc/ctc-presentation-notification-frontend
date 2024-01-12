@@ -16,9 +16,12 @@
 
 package utils
 
+import models.reference.Nationality
 import models.reference.TransportMode.InlandMode
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Mode, UserAnswers}
 import pages.transport.border.active.IdentificationNumberPage
+import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
@@ -30,56 +33,64 @@ import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureTransportMeansAnswersHelper(
-                               userAnswers: UserAnswers,
-                               departureId: String,
-                               checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
-                               mode: Mode
-                             )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
-  extends AnswersHelper(userAnswers, departureId, mode) {
+  userAnswers: UserAnswers,
+  departureId: String,
+  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
+  mode: Mode
+)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+    extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers
 
-  def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transport.addInlandModeOfTransport",
-    findValueInDepartureData = _.Consignment.isInlandModeDefined,
-    id = Some("change-add-inland-mode-of-transport")
-  )
-
-  def inlandMode: Future[Option[SummaryListRow]] =
-    fetchValue[InlandMode](
-      page = InlandModePage,
-      valueFromDepartureData = userAnswers.departureData.Consignment.inlandModeOfTransport,
-      refDataLookup = checkYourAnswersReferenceDataService.getInlandModeOfTransport
+  def identificationType: Future[Option[SummaryListRow]] =
+    fetchValue[TransportMeansIdentification](
+      page = TransportMeansIdentificationPage,
+      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
+      refDataLookup = checkYourAnswersReferenceDataService.getMeansOfTransportIdentificationType
     ).map {
-      inlandMode =>
-        buildRowWithAnswer[InlandMode](
-          page = InlandModePage,
-          optionalAnswer = inlandMode,
+      identificationType =>
+        buildRowWithAnswer[TransportMeansIdentification](
+          page = TransportMeansIdentificationPage,
+          optionalAnswer = identificationType,
           formatAnswer = formatDynamicEnumAsText(_),
-          prefix = "transport.inlandModeOfTransport",
+          prefix = "consignment.departureTransportMeans.identification",
           id = Some("change-transport-inland-mode")
         )
     }
 
-  def buildInlandModeSection: Future[Option[Section]] =
-    if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator.asBoolean) {
-      val inlandModeYesNoRow  = inlandModeOfTransportYesNo
-      val inlandModeFutureRow = inlandMode
+  def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = TransportMeansIdentificationNumberPage,
+    formatAnswer = formatAsText,
+    prefix = "consignment.departureTransportMeans.identificationNumber",
+    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
+    id = Some("change-departure-transport-means-identification-number")
+  )
 
-      inlandModeFutureRow.map {
-        inlandModeRow =>
-          val rows = Seq(inlandModeYesNoRow, inlandModeRow).flatten
+//  def nationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
+//    page = TransportMeansNationalityPage,
+//    formatAnswer = formatAsText,
+//    prefix = "consignment.departureTransportMeans.identificationNumber",
+//    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
+//    id = Some("change-departure-transport-means-identification-number")
+//  )
 
-          Some(
-            Section(
-              sectionTitle = messages("checkYourAnswers.inlandMode"),
-              rows = rows
-            )
-          )
-      }
-    } else {
-      successful(None)
-    }
+//  def buildInlandModeSection: Future[Option[Section]] =
+//    if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator.asBoolean) {
+//      val inlandModeYesNoRow  = inlandModeOfTransportYesNo
+//      val inlandModeFutureRow = inlandMode
+//
+//      inlandModeFutureRow.map {
+//        inlandModeRow =>
+//          val rows = Seq(inlandModeYesNoRow, inlandModeRow).flatten
+//
+//          Some(
+//            Section(
+//              sectionTitle = messages("checkYourAnswers.inlandMode"),
+//              rows = rows
+//            )
+//          )
+//      }
+//    } else {
+//      successful(None)
+//    }
 }
