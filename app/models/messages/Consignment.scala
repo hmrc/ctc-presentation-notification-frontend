@@ -25,6 +25,7 @@ case class Consignment(
   inlandModeOfTransport: Option[String],
   TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
+  DepartureTransportMeans: Option[DepartureTransportMeans],
   ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]

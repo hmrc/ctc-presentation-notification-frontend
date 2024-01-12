@@ -74,6 +74,13 @@ object TestMessageData {
     )
   )
 
+  val departureTransportMeans: DepartureTransportMeans =
+    DepartureTransportMeans(
+      Some("10"),
+      Some("BX857GGE"),
+      Some("FR")
+    )
+
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
 
   val consignment: Consignment = Consignment(
@@ -82,6 +89,7 @@ object TestMessageData {
     inlandModeOfTransport = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
+    DepartureTransportMeans = Some(departureTransportMeans),
     ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
     PlaceOfLoading = Some(placeOfLoading),
     HouseConsignment = Seq(
@@ -240,6 +248,11 @@ object TestMessageData {
        |                "phoneNumber": "07508994566",
        |                "eMailAddress": "sullivan@epic.com"
        |            }
+       |        },
+       |        "DepartureTransportMeans": {
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR"
        |        },
        |        "ActiveBorderTransportMeans": [
        |            {

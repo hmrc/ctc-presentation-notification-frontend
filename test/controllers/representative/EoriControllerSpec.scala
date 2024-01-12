@@ -23,7 +23,6 @@ import forms.EoriNumberFormProvider
 import models.messages.Representative
 import models.{NormalMode, UserAnswers}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.representative.EoriPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

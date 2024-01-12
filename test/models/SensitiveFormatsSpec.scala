@@ -135,6 +135,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         TransportEquipment = None,
         inlandModeOfTransport = None,
         LocationOfGoods = None,
+        DepartureTransportMeans = None,
         ActiveBorderTransportMeans = None,
         PlaceOfLoading = None,
         HouseConsignment = Seq(
