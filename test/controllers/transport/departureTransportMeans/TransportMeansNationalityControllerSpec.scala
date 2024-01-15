@@ -75,7 +75,7 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
 
       val userAnswers = UserAnswers.setDepartureTransportMeansAnswersLens.set(
-        Some(List(DepartureTransportMeans("1", None, None, Some(nationality1.code))))
+        Some(List(DepartureTransportMeans(None, None, Some(nationality1.code))))
       )(emptyUserAnswers)
 
       setExistingUserAnswers(userAnswers)

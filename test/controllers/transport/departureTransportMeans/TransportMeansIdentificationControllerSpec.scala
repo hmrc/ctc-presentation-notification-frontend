@@ -21,9 +21,9 @@ import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.messages.DepartureTransportMeans
-import models.{NormalMode, UserAnswers}
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -91,7 +91,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers15 = UserAnswers.setDepartureTransportMeansAnswersLens.set(
-        Some(List(DepartureTransportMeans("1", Some(identificationType1.code), None, None)))
+        Some(List(DepartureTransportMeans(Some(identificationType1.code), None, None)))
       )(emptyUserAnswers)
 
       val userAnswers = userAnswers15.setValue(InlandModePage, InlandMode("4", "Air"))

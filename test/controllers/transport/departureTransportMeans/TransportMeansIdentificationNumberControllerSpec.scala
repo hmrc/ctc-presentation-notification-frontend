@@ -97,8 +97,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
             DepartureTransportMeans(
               typeOfIdentification = Some(identificationType1.code),
               identificationNumber = Some(validAnswer),
-              nationality = None,
-              sequenceNumber = "1"
+              nationality = None
             )
           )
         )

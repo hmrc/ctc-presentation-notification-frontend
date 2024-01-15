@@ -19,7 +19,6 @@ package models.messages
 import play.api.libs.json.{Json, OFormat}
 
 case class DepartureTransportMeans(
-  sequenceNumber: String,
   typeOfIdentification: Option[String],
   identificationNumber: Option[String],
   nationality: Option[String]

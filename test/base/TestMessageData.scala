@@ -75,7 +75,6 @@ object TestMessageData {
   val departureTransportMeans: List[DepartureTransportMeans] =
     List(
       DepartureTransportMeans(
-        "1",
         Some("10"),
         Some("BX857GGE"),
         Some("FR")
