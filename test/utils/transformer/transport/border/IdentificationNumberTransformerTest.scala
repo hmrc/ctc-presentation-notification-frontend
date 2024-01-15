@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.transformer
+package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
@@ -22,18 +22,18 @@ import models.Index
 import pages.transport.border.active.IdentificationNumberPage
 
 class IdentificationNumberTransformerTest extends SpecBase {
+  val identificationNumber = activeBorderTransportMeansIdentificationNumber
+  val transformer          = new IdentificationNumberTransformer()
 
-  "IdentificationTransformer" - {
-    "fromDepartureDataToUserAnswers" - {
-      "must return updated answers if the update is successful" in {
-        val identificationNumber = activeBorderTransportMeansIdentificationNumber
+  "IdentificationNumberTransformer" - {
+    "must return updated answers with IdentificationNumberPage" in {
+      val userAnswers = emptyUserAnswers
+      val index       = Index(0)
+      userAnswers.get(IdentificationNumberPage(index)) mustBe None
 
-        val userAnswers = emptyUserAnswers
-        val index       = Index(0)
-        userAnswers.get(IdentificationNumberPage(index)) mustBe None
-
-        val updatedUserAnswers = IdentificationNumberTransformer.fromDepartureDataToUserAnswers(userAnswers).get
-        updatedUserAnswers.get(IdentificationNumberPage(index)) mustBe Some(identificationNumber)
+      whenReady(transformer.transform(userAnswers)) {
+        updatedUserAnswers =>
+          updatedUserAnswers.get(IdentificationNumberPage(index)) mustBe Some(identificationNumber)
       }
     }
   }

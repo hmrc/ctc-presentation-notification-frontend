@@ -31,7 +31,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.DepartureMessageService
-import utils.transformer.IdentificationTransformer
+import utils.transformer.DepartureDataTransformer
 
 import scala.concurrent.Future
 
@@ -45,20 +45,20 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   private val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
 
-  private val identificationTransformer = mock[IdentificationTransformer]
+  private val departureDataTransformer = mock[DepartureDataTransformer]
 
   override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[DepartureMessageService].toInstance(mockDepartureMessageService),
-        bind[IdentificationTransformer].toInstance(identificationTransformer)
+        bind[DepartureDataTransformer].toInstance(departureDataTransformer)
       )
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository)
     reset(mockDepartureMessageService)
-    reset(identificationTransformer)
+    reset(departureDataTransformer)
     super.beforeEach()
   }
 
@@ -73,7 +73,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           setNoExistingUserAnswers()
 
           when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValueWithLrn.as[MessageData])))
-          when(identificationTransformer.fromDepartureDataToUserAnswers(any())(any())) thenReturn Future.successful(
+          when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
             UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
           )
           when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
@@ -99,7 +99,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
           when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
           when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
-          when(identificationTransformer.fromDepartureDataToUserAnswers(any())(any())) thenReturn Future.successful(
+          when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
             UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
           )
           when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
@@ -215,7 +215,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
       }
 
-      "must populate identification and identificationNumber from departure data" in {
+      "must populate updated user answers from departure data" in {
         val request = FakeRequest(GET, indexRoute)
 
         setNoExistingUserAnswers()
@@ -224,7 +224,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-        when(identificationTransformer.fromDepartureDataToUserAnswers(any())(any())) thenReturn Future.successful(
+        when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
           emptyUserAnswers.set(IdentificationPage(Index(0)), Identification(activeBorderTransportMeansIdentification, "IMO Ship Identification Number")).get
         )
 
@@ -236,7 +236,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
 
         userAnswersCaptor.getValue.data
-          .toString() mustBe """{"transport":{"transportMeansActiveList":[{"identification":{"code":"10","description":"IMO Ship Identification Number"},"identificationNumber":"BX857GGE"}]}}"""
+          .toString() mustBe """{"transport":{"transportMeansActiveList":[{"identification":{"code":"10","description":"IMO Ship Identification Number"}}]}}"""
       }
     }
   }

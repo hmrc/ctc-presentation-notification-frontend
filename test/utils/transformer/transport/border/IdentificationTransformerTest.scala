@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.transformer
+package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentification
@@ -29,8 +29,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class IdentificationTransformerTest extends SpecBase {
-  private val service = mock[MeansOfTransportIdentificationTypesActiveService]
-  val transformer     = new IdentificationTransformer(service)
+  private val service     = mock[MeansOfTransportIdentificationTypesActiveService]
+  private val transformer = new IdentificationTransformer(service)
 
   override def beforeEach() =
     reset(service)
@@ -45,7 +45,7 @@ class IdentificationTransformerTest extends SpecBase {
         val index       = Index(0)
         userAnswers.get(IdentificationPage(index)) mustBe None
 
-        whenReady(transformer.fromDepartureDataToUserAnswers(userAnswers)) {
+        whenReady(transformer.transform(userAnswers)) {
           updatedUserAnswers =>
             updatedUserAnswers.get(IdentificationPage(index)) mustBe Some(identification)
         }
@@ -60,7 +60,7 @@ class IdentificationTransformerTest extends SpecBase {
       val index       = Index(0)
       userAnswers.get(IdentificationPage(index)) mustBe None
 
-      whenReady(transformer.fromDepartureDataToUserAnswers(userAnswers)) {
+      whenReady(transformer.transform(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(IdentificationPage(index)) mustBe None
       }
@@ -73,7 +73,7 @@ class IdentificationTransformerTest extends SpecBase {
       val index       = Index(0)
       userAnswers.get(IdentificationPage(index)) mustBe None
 
-      whenReady[Throwable, Assertion](transformer.fromDepartureDataToUserAnswers(userAnswers).failed) {
+      whenReady[Throwable, Assertion](transformer.transform(userAnswers).failed) {
         _ mustBe an[Exception]
       }
     }

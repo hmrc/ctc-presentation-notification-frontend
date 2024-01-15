@@ -29,7 +29,8 @@ import services.DepartureMessageService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.TimeMachine
-import utils.transformer.{IdentificationNumberTransformer, IdentificationTransformer}
+import utils.transformer.DepartureDataTransformer
+import utils.transformer.transport.border.IdentificationTransformer
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,6 +42,7 @@ class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   service: DepartureMessageService,
   identificationTransformer: IdentificationTransformer,
+  departureDataTransformer: DepartureDataTransformer,
   timeMachine: TimeMachine
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -74,9 +76,8 @@ class IndexController @Inject() (
   ): Future[Boolean] = {
     val userAnswers = UserAnswers(departureId, request.eoriNumber, lrn.value, JsObject.empty, timeMachine.now(), departureData.data)
     for {
-      withIdentification       <- identificationTransformer.fromDepartureDataToUserAnswers(userAnswers)
-      withIdentificationNumber <- Future.fromTry(IdentificationNumberTransformer.fromDepartureDataToUserAnswers(withIdentification))
-      result                   <- sessionRepository.set(withIdentificationNumber)
+      updatedUserAnswers <- departureDataTransformer.transform(userAnswers)
+      result             <- sessionRepository.set(updatedUserAnswers)
     } yield result
   }
 
