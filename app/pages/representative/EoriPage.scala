@@ -18,7 +18,6 @@ package pages.representative
 
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import pages.sections.representative.RepresentativeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

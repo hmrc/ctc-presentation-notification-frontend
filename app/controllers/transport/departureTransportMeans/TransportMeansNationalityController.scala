@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.Mode
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
-import navigation.{BorderNavigator, DepartureTransportMeansNavigator}
+import navigation.DepartureTransportMeansNavigator
 import pages.transport.departureTransportMeans.TransportMeansNationalityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

@@ -51,7 +51,6 @@ case class Consignment(
 
 object Consignment {
 
-//  implicit val format: OFormat[Consignment] = Json.format[Consignment]
   implicit val reads: Reads[Consignment] = (
     (__ \ "containerIndicator").readNullable[String] and
       (__ \ "modeOfTransportAtTheBorder").readNullable[String] and
@@ -64,5 +63,15 @@ object Consignment {
       (__ \ "HouseConsignment").read[Seq[HouseConsignment]]
   )(Consignment.apply _)
 
-  implicit val writes: Writes[Consignment] = Json.writes[Consignment] //todo update
+  implicit val writes: Writes[Consignment] = (
+    (__ \ "containerIndicator").writeNullable[String] and
+      (__ \ "modeOfTransportAtTheBorder").writeNullable[String] and
+      (__ \ "inlandModeOfTransport").writeNullable[String] and
+      (__ \ "TransportEquipment").writeNullable[List[TransportEquipment]] and
+      (__ \ "LocationOfGoods").writeNullable[LocationOfGoods] and
+      (__ \ "DepartureTransportMeans").writeNullable[Seq[DepartureTransportMeans]].contramap[Option[DepartureTransportMeans]](_.map(Seq(_))) and
+      (__ \ "ActiveBorderTransportMeans").writeNullable[Seq[ActiveBorderTransportMeans]] and
+      (__ \ "PlaceOfLoading").writeNullable[PlaceOfLoading] and
+      (__ \ "HouseConsignment").write[Seq[HouseConsignment]]
+  )(unlift(Consignment.unapply))
 }

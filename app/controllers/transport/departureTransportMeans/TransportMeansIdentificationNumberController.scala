@@ -21,7 +21,7 @@ import forms.border.IdentificationNumberFormProvider
 import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.{DataRequest, MandatoryDataRequest}
-import navigation.{BorderNavigator, DepartureTransportMeansNavigator}
+import navigation.DepartureTransportMeansNavigator
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

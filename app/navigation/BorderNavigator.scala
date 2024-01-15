@@ -25,14 +25,8 @@ import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containe
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.ContainerIndicatorPage
+import pages.transport.border._
 import pages.transport.border.active._
-import pages.transport.border.{
-  AddAnotherBorderModeOfTransportPage,
-  AddBorderMeansOfTransportYesNoPage,
-  AddBorderModeOfTransportYesNoPage,
-  BorderModeOfTransportPage
-}
-import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.mvc.Call

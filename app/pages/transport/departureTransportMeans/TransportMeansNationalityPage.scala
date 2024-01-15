@@ -17,7 +17,7 @@
 package pages.transport.departureTransportMeans
 
 import models.reference.Nationality
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath

@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import models.messages.{Commodity, Consignment, ConsignmentItem, DepartureTransportMeans, HouseConsignment}
+import models.messages._
 import models.reference.Item
 import play.api.libs.json.Json
 
@@ -83,56 +83,209 @@ class ConsignmentSpec extends SpecBase {
     }
 
     "reads" - {
-      "must deserialise from json" in {
+      "must deserialise from json" - {
+        "when departure transport means defined" in {
+          val json = Json.parse("""
+              |{
+              |  "DepartureTransportMeans": [
+              |    {
+              |      "typeOfIdentification": "1"
+              |    }
+              |  ],
+              |  "HouseConsignment" :[
+              |    {
+              |      "ConsignmentItem": [
+              |        {
+              |          "goodsItemNumber": "1",
+              |          "declarationGoodsItemNumber": 1,
+              |          "Commodity": {
+              |            "descriptionOfGoods": "desc"
+              |          }
+              |        }
+              |      ]
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
 
-        val json = Json.parse("""
-            |{
-            |  "DepartureTransportMeans": [
-            |    {
-            |      "typeOfIdentification": "1"
-            |    }
-            |  ],
-            |  "HouseConsignment" :[
-            |    {
-            |      "ConsignmentItem": [
-            |       {
-            |        "goodsItemNumber": "1",
-            |        "declarationGoodsItemNumber": 1,
-            |         "Commodity": {
-            |           "descriptionOfGoods": "desc"
-            |        }
-                   }
-            |    ]
-            |   }
-            | ]
-            |}
-            |""".stripMargin)
+          val result = json.as[Consignment]
 
-        val result = json.as[Consignment]
-        result mustBe Consignment(
-          None,
-          None,
-          None,
-          None,
-          None,
-          DepartureTransportMeans = Some(DepartureTransportMeans(Some("1"), None, None)),
-          None,
-          None,
-          HouseConsignment = Seq(
-            HouseConsignment(
-              ConsignmentItem = List(
-                ConsignmentItem(
-                  goodsItemNumber = "1",
-                  declarationGoodsItemNumber = 1,
-                  Commodity = Commodity("desc")
+          result mustBe Consignment(
+            containerIndicator = None,
+            modeOfTransportAtTheBorder = None,
+            inlandModeOfTransport = None,
+            TransportEquipment = None,
+            LocationOfGoods = None,
+            DepartureTransportMeans = Some(
+              DepartureTransportMeans(
+                typeOfIdentification = Some("1"),
+                identificationNumber = None,
+                nationality = None
+              )
+            ),
+            ActiveBorderTransportMeans = None,
+            PlaceOfLoading = None,
+            HouseConsignment = Seq(
+              HouseConsignment(
+                ConsignmentItem = List(
+                  ConsignmentItem(
+                    goodsItemNumber = "1",
+                    declarationGoodsItemNumber = 1,
+                    Commodity = Commodity("desc")
+                  )
                 )
               )
             )
           )
-        )
-      }
+        }
 
+        "when departure transport means undefined" in {
+          val json = Json.parse("""
+              |{
+              |  "HouseConsignment" :[
+              |    {
+              |      "ConsignmentItem": [
+              |        {
+              |          "goodsItemNumber": "1",
+              |          "declarationGoodsItemNumber": 1,
+              |          "Commodity": {
+              |            "descriptionOfGoods": "desc"
+              |          }
+              |        }
+              |      ]
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
+
+          val result = json.as[Consignment]
+
+          result mustBe Consignment(
+            containerIndicator = None,
+            modeOfTransportAtTheBorder = None,
+            inlandModeOfTransport = None,
+            TransportEquipment = None,
+            LocationOfGoods = None,
+            DepartureTransportMeans = None,
+            ActiveBorderTransportMeans = None,
+            PlaceOfLoading = None,
+            HouseConsignment = Seq(
+              HouseConsignment(
+                ConsignmentItem = List(
+                  ConsignmentItem(
+                    goodsItemNumber = "1",
+                    declarationGoodsItemNumber = 1,
+                    Commodity = Commodity("desc")
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    "writes" - {
+      "must serialise to json" - {
+        "when departure transport means defined" in {
+          val consignment = Consignment(
+            containerIndicator = None,
+            modeOfTransportAtTheBorder = None,
+            inlandModeOfTransport = None,
+            TransportEquipment = None,
+            LocationOfGoods = None,
+            DepartureTransportMeans = Some(
+              DepartureTransportMeans(
+                typeOfIdentification = Some("1"),
+                identificationNumber = None,
+                nationality = None
+              )
+            ),
+            ActiveBorderTransportMeans = None,
+            PlaceOfLoading = None,
+            HouseConsignment = Seq(
+              HouseConsignment(
+                ConsignmentItem = List(
+                  ConsignmentItem(
+                    goodsItemNumber = "1",
+                    declarationGoodsItemNumber = 1,
+                    Commodity = Commodity("desc")
+                  )
+                )
+              )
+            )
+          )
+
+          val result = Json.toJson(consignment)
+
+          result mustBe Json.parse("""
+              |{
+              |  "DepartureTransportMeans": [
+              |    {
+              |      "typeOfIdentification": "1"
+              |    }
+              |  ],
+              |  "HouseConsignment" :[
+              |    {
+              |      "ConsignmentItem": [
+              |        {
+              |          "goodsItemNumber": "1",
+              |          "declarationGoodsItemNumber": 1,
+              |          "Commodity": {
+              |            "descriptionOfGoods": "desc"
+              |          }
+              |        }
+              |      ]
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
+        }
+
+        "when departure transport means undefined" in {
+          val consignment = Consignment(
+            containerIndicator = None,
+            modeOfTransportAtTheBorder = None,
+            inlandModeOfTransport = None,
+            TransportEquipment = None,
+            LocationOfGoods = None,
+            DepartureTransportMeans = None,
+            ActiveBorderTransportMeans = None,
+            PlaceOfLoading = None,
+            HouseConsignment = Seq(
+              HouseConsignment(
+                ConsignmentItem = List(
+                  ConsignmentItem(
+                    goodsItemNumber = "1",
+                    declarationGoodsItemNumber = 1,
+                    Commodity = Commodity("desc")
+                  )
+                )
+              )
+            )
+          )
+
+          val result = Json.toJson(consignment)
+
+          result mustBe Json.parse("""
+              |{
+              |  "HouseConsignment" :[
+              |    {
+              |      "ConsignmentItem": [
+              |        {
+              |          "goodsItemNumber": "1",
+              |          "declarationGoodsItemNumber": 1,
+              |          "Commodity": {
+              |            "descriptionOfGoods": "desc"
+              |          }
+              |        }
+              |      ]
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
+        }
+      }
     }
   }
-
 }

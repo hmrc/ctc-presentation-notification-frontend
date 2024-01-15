@@ -17,12 +17,9 @@
 package utils
 
 import models.reference.Nationality
-import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Mode, UserAnswers}
-import pages.transport.border.active.IdentificationNumberPage
-import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
-import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
+import pages.transport.departureTransportMeans._
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
