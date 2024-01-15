@@ -183,7 +183,6 @@ object TestMessageData {
        |        "inlandModeOfTransport": "2",
        |        "DepartureTransportMeans": [
        |         {
-       |          "sequenceNumber" : "1",
        |          "typeOfIdentification": "10",
        |          "identificationNumber" : "BX857GGE",
        |          "nationality" : "FR"
@@ -310,7 +309,6 @@ object TestMessageData {
        |        "modeOfTransportAtTheBorder": "2",
        |         "DepartureTransportMeans": [
        |         {
-       |          "sequenceNumber" : "1",
        |          "typeOfIdentification": "10",
        |          "identificationNumber" : "BX857GGE",
        |          "nationality" : "FR"

@@ -49,43 +49,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
     "in Normal mode" - {
       val mode = NormalMode
 
-      "Must go from TransportMeansIdentificationPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
-            navigator
-              .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-      "Must go from TransportMeansIdentificationNumberPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationNumberPage, "test")
-            navigator
-              .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-      "Must go from TransportMeansNationalityPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansNationalityPage, Nationality("UK", "test"))
-            navigator
-              .nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-
       "must go from Border mode of transport page" - {
 
         "when security is in set 1,2,3 and active border transport is not present navigate to Identification page" in {
@@ -430,43 +393,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in CheckMode" - {
       val mode = CheckMode
-
-      "Must go from TransportMeansIdentificationPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
-            navigator
-              .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-      "Must go from TransportMeansIdentificationNumberPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationNumberPage, "test")
-            navigator
-              .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-      "Must go from TransportMeansNationalityPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansNationalityPage, Nationality("UK", "test"))
-            navigator
-              .nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
 
       "must go from AddBorderModeOfTransportYesNoPage" - {
 
