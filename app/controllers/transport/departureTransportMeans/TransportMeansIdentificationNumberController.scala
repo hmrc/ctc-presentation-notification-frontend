@@ -21,6 +21,7 @@ import forms.border.IdentificationNumberFormProvider
 import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.{DataRequest, MandatoryDataRequest}
+import navigation.{BorderNavigator, DepartureTransportMeansNavigator}
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -37,6 +38,7 @@ class TransportMeansIdentificationNumberController @Inject() (
   implicit val sessionRepository: SessionRepository,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
+  navigator: DepartureTransportMeansNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationNumberView,
   service: MeansOfTransportIdentificationTypesService
@@ -87,18 +89,19 @@ class TransportMeansIdentificationNumberController @Inject() (
                   case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString))
                   case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
                 },
-              value => redirect(value, departureId)
+              value => redirect(value, departureId, mode)
             )
       }
 
   private def redirect(
     value: String,
-    departureId: String
+    departureId: String,
+    mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    } yield Redirect(navigator.nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode))
 
   private def identificationPageIe170(implicit request: DataRequest[_]): Option[TransportMeansIdentification] =
     request.userAnswers.get(TransportMeansIdentificationPage)

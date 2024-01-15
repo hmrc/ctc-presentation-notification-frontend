@@ -152,7 +152,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.CheckYourAnswersController.onPageLoad(departureId).url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

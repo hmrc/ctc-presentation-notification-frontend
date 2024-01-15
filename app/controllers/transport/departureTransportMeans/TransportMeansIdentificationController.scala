@@ -21,6 +21,7 @@ import forms.EnumerableFormProvider
 import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
+import navigation.{BorderNavigator, DepartureTransportMeansNavigator}
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import play.api.data.Form
@@ -32,6 +33,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.departureTransportMeans.TransportMeansIdentificationView
 
 import javax.inject.Inject
+import javax.swing.border.Border
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportMeansIdentificationController @Inject() (
@@ -41,6 +43,7 @@ class TransportMeansIdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationView,
+  navigator: DepartureTransportMeansNavigator,
   service: MeansOfTransportIdentificationTypesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -86,17 +89,18 @@ class TransportMeansIdentificationController @Inject() (
                   Future.successful(
                     BadRequest(view(formWithErrors, departureId, identificationTypeList, mode))
                   ),
-                value => redirect(value, departureId)
+                value => redirect(value, departureId, mode)
               )
         }
     }
 
   private def redirect(
     value: TransportMeansIdentification,
-    departureId: String
+    departureId: String,
+    mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode))
 }

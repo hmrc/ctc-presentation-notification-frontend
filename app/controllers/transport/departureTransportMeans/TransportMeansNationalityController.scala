@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.Mode
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
-import navigation.BorderNavigator
+import navigation.{BorderNavigator, DepartureTransportMeansNavigator}
 import pages.transport.departureTransportMeans.TransportMeansNationalityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportMeansNationalityController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: BorderNavigator,
+  navigator: DepartureTransportMeansNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: NationalitiesService,
@@ -78,17 +78,18 @@ class TransportMeansNationalityController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode))),
-              value => redirect(value, departureId)
+              value => redirect(value, departureId, mode)
             )
       }
   }
 
   private def redirect(
     value: Nationality,
-    departureId: String
+    departureId: String,
+    mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode))
 }

@@ -23,15 +23,17 @@ import controllers.transport.border.active.routes
 import generators.Generators
 import models._
 import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared, MessageData}
-import models.reference.CustomsOffice
+import models.reference.{CustomsOffice, Nationality}
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
 import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.libs.json.Json
@@ -46,6 +48,44 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in Normal mode" - {
       val mode = NormalMode
+
+      "Must go from TransportMeansIdentificationPage to check answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
+            navigator
+              .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+      }
+      "Must go from TransportMeansIdentificationNumberPage to check answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(TransportMeansIdentificationNumberPage, "test")
+            navigator
+              .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+      }
+      "Must go from TransportMeansNationalityPage to check answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(TransportMeansNationalityPage, Nationality("UK", "test"))
+            navigator
+              .nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+      }
+
       "must go from Border mode of transport page" - {
 
         "when security is in set 1,2,3 and active border transport is not present navigate to Identification page" in {
@@ -390,6 +430,44 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in CheckMode" - {
       val mode = CheckMode
+
+      "Must go from TransportMeansIdentificationPage to check answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
+            navigator
+              .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+      }
+      "Must go from TransportMeansIdentificationNumberPage to check answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(TransportMeansIdentificationNumberPage, "test")
+            navigator
+              .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+      }
+      "Must go from TransportMeansNationalityPage to check answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .setValue(TransportMeansNationalityPage, Nationality("UK", "test"))
+            navigator
+              .nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+      }
+
       "must go from AddBorderModeOfTransportYesNoPage" - {
 
         "to CYA page when No " in {

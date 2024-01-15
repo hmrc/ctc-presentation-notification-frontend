@@ -32,6 +32,7 @@ import pages.transport.border.{
   AddBorderModeOfTransportYesNoPage,
   BorderModeOfTransportPage
 }
+import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.mvc.Call

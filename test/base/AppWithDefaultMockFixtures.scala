@@ -61,12 +61,13 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator                               = new FakeNavigator(onwardRoute)
-  protected val fakeLoadingNavigator: LoadingNavigator                 = new FakeLoadingNavigator(onwardRoute)
-  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator = new FakeLocationOfGoodsNavigator(onwardRoute)
-  protected val fakeBorderNavigatorProvider: BorderNavigator           = new FakeBorderNavigator(onwardRoute)
-  protected val fakeContainerNavigator: ContainerNavigator             = new FakeContainerNavigator(onwardRoute)
-  protected val fakeEquipmentNavigator: EquipmentNavigator             = new FakeEquipmentNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                                               = new FakeNavigator(onwardRoute)
+  protected val fakeLoadingNavigator: LoadingNavigator                                 = new FakeLoadingNavigator(onwardRoute)
+  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator                 = new FakeLocationOfGoodsNavigator(onwardRoute)
+  protected val fakeBorderNavigatorProvider: BorderNavigator                           = new FakeBorderNavigator(onwardRoute)
+  protected val fakeContainerNavigator: ContainerNavigator                             = new FakeContainerNavigator(onwardRoute)
+  protected val fakeEquipmentNavigator: EquipmentNavigator                             = new FakeEquipmentNavigator(onwardRoute)
+  protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -80,7 +81,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
         bind[BorderNavigator].toInstance(fakeBorderNavigatorProvider),
         bind[ContainerNavigator].toInstance(fakeContainerNavigator),
-        bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator)
+        bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator),
+        bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
