@@ -72,13 +72,11 @@ object TestMessageData {
     )
   )
 
-  val departureTransportMeans: List[DepartureTransportMeans] =
-    List(
-      DepartureTransportMeans(
-        Some("10"),
-        Some("BX857GGE"),
-        Some("FR")
-      )
+  val departureTransportMeans: DepartureTransportMeans =
+    DepartureTransportMeans(
+      Some("10"),
+      Some("BX857GGE"),
+      Some("FR")
     )
 
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))

@@ -18,6 +18,7 @@ package models.messages
 
 import models.reference.Item
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 case class Consignment(
   containerIndicator: Option[String],
@@ -25,7 +26,7 @@ case class Consignment(
   inlandModeOfTransport: Option[String],
   TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
-  DepartureTransportMeans: Option[List[DepartureTransportMeans]],
+  DepartureTransportMeans: Option[DepartureTransportMeans],
   ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]
@@ -49,5 +50,19 @@ case class Consignment(
 }
 
 object Consignment {
-  implicit val format: OFormat[Consignment] = Json.format[Consignment]
+
+//  implicit val format: OFormat[Consignment] = Json.format[Consignment]
+  implicit val reads: Reads[Consignment] = (
+    (__ \ "containerIndicator").readNullable[String] and
+      (__ \ "modeOfTransportAtTheBorder").readNullable[String] and
+      (__ \ "inlandModeOfTransport").readNullable[String] and
+      (__ \ "TransportEquipment").readNullable[List[TransportEquipment]] and
+      (__ \ "LocationOfGoods").readNullable[LocationOfGoods] and
+      (__ \ "DepartureTransportMeans").readWithDefault[List[DepartureTransportMeans]](Nil).map(_.headOption) and
+      (__ \ "ActiveBorderTransportMeans").readNullable[Seq[ActiveBorderTransportMeans]] and
+      (__ \ "PlaceOfLoading").readNullable[PlaceOfLoading] and
+      (__ \ "HouseConsignment").read[Seq[HouseConsignment]]
+  )(Consignment.apply _)
+
+  implicit val writes: Writes[Consignment] = Json.writes[Consignment] //todo update
 }

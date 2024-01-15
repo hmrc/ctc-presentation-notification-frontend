@@ -91,7 +91,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers15 = UserAnswers.setDepartureTransportMeansAnswersLens.set(
-        Some(List(DepartureTransportMeans(Some(identificationType1.code), None, None)))
+        Some(DepartureTransportMeans(Some(identificationType1.code), None, None))
       )(emptyUserAnswers)
 
       val userAnswers = userAnswers15.setValue(InlandModePage, InlandMode("4", "Air"))

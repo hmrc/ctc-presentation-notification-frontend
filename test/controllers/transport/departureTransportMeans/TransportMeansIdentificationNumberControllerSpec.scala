@@ -93,12 +93,10 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
 
       val userAnswers = UserAnswers.setDepartureTransportMeansAnswersLens.set(
         Some(
-          List(
-            DepartureTransportMeans(
-              typeOfIdentification = Some(identificationType1.code),
-              identificationNumber = Some(validAnswer),
-              nationality = None
-            )
+          DepartureTransportMeans(
+            typeOfIdentification = Some(identificationType1.code),
+            identificationNumber = Some(validAnswer),
+            nationality = None
           )
         )
       )(emptyUserAnswers)

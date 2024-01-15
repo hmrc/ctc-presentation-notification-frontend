@@ -45,7 +45,7 @@ class DepartureTransportMeansAnswersHelper(
   def identificationType: Future[Option[SummaryListRow]] =
     fetchValue[TransportMeansIdentification](
       page = TransportMeansIdentificationPage,
-      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.head.typeOfIdentification),
+      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
       refDataLookup = checkYourAnswersReferenceDataService.getMeansOfTransportIdentificationType
     ).map {
       identificationType =>
@@ -62,14 +62,14 @@ class DepartureTransportMeansAnswersHelper(
     page = TransportMeansIdentificationNumberPage,
     formatAnswer = formatAsText,
     prefix = "consignment.departureTransportMeans.identificationNumber",
-    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.head.identificationNumber),
+    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
     id = Some("change-departure-transport-means-identification-number")
   )
 
   def nationality: Future[Option[SummaryListRow]] =
     fetchValue[Nationality](
       page = TransportMeansNationalityPage,
-      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.head.nationality),
+      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality),
       refDataLookup = checkYourAnswersReferenceDataService.getNationality
     ).map {
       nationality =>

@@ -51,9 +51,8 @@ class TransportMeansNationalityController @Inject() (
       service.getNationalities().map {
         nationalityList =>
           def nationalityFromDepartureData = {
-            val nationalityCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
-              _.headOption.flatMap(_.nationality)
-            )
+            val nationalityCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality)
+
             nationalityCode.flatMap(
               code => nationalityList.values.find(_.code == code)
             )

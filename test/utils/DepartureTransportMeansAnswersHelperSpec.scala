@@ -87,7 +87,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
       s"when $InlandModePage defined in the ie13/15" in {
         forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
           (mode, answers) =>
-            val number = answers.departureData.Consignment.DepartureTransportMeans.flatMap(_.headOption.flatMap(_.identificationNumber)).get
+            val number = answers.departureData.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber).get
             val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
             val result = helper.identificationNumberRow.get
 
@@ -152,7 +152,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
     s"when $TransportMeansIdentificationPage defined in the ie13/15" in {
       forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
         (mode, answers) =>
-          val identificationType = answers.departureData.Consignment.DepartureTransportMeans.flatMap(_.headOption.flatMap(_.typeOfIdentification)).get
+          val identificationType = answers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification).get
 
           when(refDataService.getMeansOfTransportIdentificationType(any())(any()))
             .thenReturn(Future.successful(TransportMeansIdentification(identificationType, "description")))
@@ -222,7 +222,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
     s"when $TransportMeansNationalityPage defined in the ie13/15" in {
       forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
         (mode, answers) =>
-          val nationalityCode = answers.departureData.Consignment.DepartureTransportMeans.flatMap(_.headOption.flatMap(_.nationality)).get
+          val nationalityCode = answers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality).get
           val nationality     = Nationality(nationalityCode, "description")
 
           when(refDataService.getNationality(any())(any()))

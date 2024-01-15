@@ -59,9 +59,8 @@ class TransportMeansIdentificationController @Inject() (
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identifiers =>
             def identificationFromDepartureData = {
-              val identificationCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
-                _.headOption.flatMap(_.typeOfIdentification)
-              )
+              val identificationCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification)
+
               identificationCode.flatMap(
                 code => identifiers.find(_.code == code)
               )

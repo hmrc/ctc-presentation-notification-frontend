@@ -59,9 +59,7 @@ class TransportMeansIdentificationNumberController @Inject() (
             .get(TransportMeansIdentificationNumberPage)
             .orElse(
               request.userAnswers.departureData.Consignment.DepartureTransportMeans
-                .flatMap(
-                  _.headOption.flatMap(_.identificationNumber)
-                )
+                flatMap (_.identificationNumber)
             )
 
           val preparedForm = fillForm match {
@@ -108,9 +106,7 @@ class TransportMeansIdentificationNumberController @Inject() (
 
   private def identificationPageIe015(implicit request: DataRequest[_]): Option[String] =
     request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
-      _.headOption.flatMap(
-        _.typeOfIdentification
-      )
+      _.typeOfIdentification
     )
 
   private def getReferenceDataFor15(implicit request: DataRequest[_]): Option[Future[TransportMeansIdentification]] =

@@ -17,8 +17,9 @@
 package models
 
 import base.SpecBase
-import models.messages.{Commodity, Consignment, ConsignmentItem, HouseConsignment}
+import models.messages.{Commodity, Consignment, ConsignmentItem, DepartureTransportMeans, HouseConsignment}
 import models.reference.Item
+import play.api.libs.json.Json
 
 class ConsignmentSpec extends SpecBase {
 
@@ -80,5 +81,58 @@ class ConsignmentSpec extends SpecBase {
         consignment.allItems mustBe expectedResult
       }
     }
+
+    "reads" - {
+      "must deserialise from json" in {
+
+        val json = Json.parse("""
+            |{
+            |  "DepartureTransportMeans": [
+            |    {
+            |      "typeOfIdentification": "1"
+            |    }
+            |  ],
+            |  "HouseConsignment" :[
+            |    {
+            |      "ConsignmentItem": [
+            |       {
+            |        "goodsItemNumber": "1",
+            |        "declarationGoodsItemNumber": 1,
+            |         "Commodity": {
+            |           "descriptionOfGoods": "desc"
+            |        }
+                   }
+            |    ]
+            |   }
+            | ]
+            |}
+            |""".stripMargin)
+
+        val result = json.as[Consignment]
+        result mustBe Consignment(
+          None,
+          None,
+          None,
+          None,
+          None,
+          DepartureTransportMeans = Some(DepartureTransportMeans(Some("1"), None, None)),
+          None,
+          None,
+          HouseConsignment = Seq(
+            HouseConsignment(
+              ConsignmentItem = List(
+                ConsignmentItem(
+                  goodsItemNumber = "1",
+                  declarationGoodsItemNumber = 1,
+                  Commodity = Commodity("desc")
+                )
+              )
+            )
+          )
+        )
+      }
+
+    }
   }
+
 }
