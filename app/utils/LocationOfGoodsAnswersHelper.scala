@@ -79,7 +79,10 @@ class LocationOfGoodsAnswersHelper(
     page = AddIdentifierYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "locationOfGoods.addIdentifierYesNo",
-    findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined),
+    findValueInDepartureData = message => {
+      println(message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined))
+      message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined)
+    },
     id = Some("change-add-additional-identifier")
   )
 
@@ -203,7 +206,7 @@ class LocationOfGoodsAnswersHelper(
         locationOfGoodsContactYesNo,
         locationOfGoodsContactPersonName,
         locationOfGoodsContactPersonNumber,
-        additionalIdentifierYesNo,
+        if (authorisationNumber.isDefined | eoriNumber.isDefined) additionalIdentifierYesNo else None,
         additionalIdentifierRow
       ).flatten
 
