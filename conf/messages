@@ -584,14 +584,22 @@ houseConsignment.index.departureTransportMeans.country.hint = Enter the country 
 houseConsignment.index.departureTransportMeans.country.error.required = Select the country the departure means of transport is registered to in house consignment {0}
 houseConsignment.index.departureTransportMeans.country.placeholder = Select a country
 
-consignment.index.departureTransportMeans.identification.subheading = Departure means of transport
-consignment.index.departureTransportMeans.identification.heading = Which identification do you want to use for the departure means of transport?
-consignment.index.departureTransportMeans.identification.title = Which identification do you want to use for the departure means of transport?
-consignment.index.departureTransportMeans.identification.error.required = Select which identification you want to use for the departure means of transport
+
+consignment.departureTransportMeans.identification.heading = Which identification do you want to use for the departure means of transport?
+consignment.departureTransportMeans.identification.title = Which identification do you want to use for the departure means of transport?
+consignment.departureTransportMeans.identification.error.required = Select which identification you want to use for the departure means of transport
 
 consignment.index.departureTransportMeans.nationality.heading = What country is the departure means of transport registered to?
 consignment.index.departureTransportMeans.nationality.title = What country is the departure means of transport registered to?
 consignment.index.departureTransportMeans.nationality.hint = Enter the country or code, like Austria or AT.
 consignment.index.departureTransportMeans.nationality.placeholder = Select a nationality
 consignment.index.departureTransportMeans.nationality.error.required = Select the country the departure means of transport is registered to
+
+consignment.departureTransportMeans.identificationNumber.title = What is the identification number for the departure means of transport?
+consignment.departureTransportMeans.identificationNumber.heading = What is the identification number for the departure means of transport?
+consignment.departureTransportMeans.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+consignment.departureTransportMeans.identificationNumber.checkYourAnswersLabel = Identification number
+consignment.departureTransportMeans.identificationNumber.error.length = The identification number must be 35 characters or less
+consignment.departureTransportMeans.identificationNumber.error.required = Enter the identification number for the departure means of transport
+consignment.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 

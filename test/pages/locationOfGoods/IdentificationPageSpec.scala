@@ -19,6 +19,7 @@ package pages.locationOfGoods
 import models.LocationOfGoodsIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.sections.locationOfGoods.QualifierOfIdentificationDetailsSection
 import play.api.libs.json.Json
 
@@ -45,6 +46,58 @@ class IdentificationPageSpec extends PageBehaviours {
             result.get(IdentificationPage) mustBe defined
             result.get(InferredIdentificationPage) must not be defined
             result.get(QualifierOfIdentificationDetailsSection) must not be defined
+        }
+      }
+
+      "must clean up AddIdentifierYesNoPage" in {
+        forAll(arbitrary[LocationOfGoodsIdentification]) {
+          qualifierOfIdentification =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddIdentifierYesNoPage, true)
+
+            val result = userAnswers.setValue(IdentificationPage, qualifierOfIdentification)
+
+            result.get(IdentificationPage) mustBe defined
+            result.get(AddIdentifierYesNoPage) must not be defined
+        }
+      }
+
+      "must clean up AddContactYesNoPage" in {
+        forAll(arbitrary[LocationOfGoodsIdentification]) {
+          qualifierOfIdentification =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddContactYesNoPage, true)
+
+            val result = userAnswers.setValue(IdentificationPage, qualifierOfIdentification)
+
+            result.get(IdentificationPage) mustBe defined
+            result.get(AddContactYesNoPage) must not be defined
+        }
+      }
+
+      "must clean up NamePage" in {
+        forAll(arbitrary[LocationOfGoodsIdentification]) {
+          qualifierOfIdentification =>
+            val userAnswers = emptyUserAnswers
+              .setValue(NamePage, "name")
+
+            val result = userAnswers.setValue(IdentificationPage, qualifierOfIdentification)
+
+            result.get(IdentificationPage) mustBe defined
+            result.get(NamePage) must not be defined
+        }
+      }
+
+      "must clean up PhoneNumberPage" in {
+        forAll(arbitrary[LocationOfGoodsIdentification]) {
+          qualifierOfIdentification =>
+            val userAnswers = emptyUserAnswers
+              .setValue(PhoneNumberPage, "080000166")
+
+            val result = userAnswers.setValue(IdentificationPage, qualifierOfIdentification)
+
+            result.get(IdentificationPage) mustBe defined
+            result.get(PhoneNumberPage) must not be defined
         }
       }
     }

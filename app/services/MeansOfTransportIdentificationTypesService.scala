@@ -17,8 +17,8 @@
 package services
 
 import config.Constants
+import config.Constants.{Fixed, Unknown}
 import config.Constants.MeansOfTransportIdentification._
-import config.Constants._
 import connectors.ReferenceDataConnector
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
@@ -57,6 +57,9 @@ class MeansOfTransportIdentificationTypesService @Inject() (
             )
           )
     }
+
+  def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
+    referenceDataConnector.getMeansOfTransportIdentificationType(code).map(_.head)
 
   private def filter(
     identificationTypes: Seq[TransportMeansIdentification],

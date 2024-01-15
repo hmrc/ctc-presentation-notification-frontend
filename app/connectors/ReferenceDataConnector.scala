@@ -170,6 +170,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header)
   }
 
+  def getMeansOfTransportIdentificationType(
+    code: String
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {
+    val queryParams: Seq[(String, String)] = Seq("data.type" -> code)
+    val url                                = s"${config.referenceDataUrl}/filtered-lists/TypeOfIdentificationOfMeansOfTransport"
+    http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header, queryParams = queryParams)
+  }
+
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )

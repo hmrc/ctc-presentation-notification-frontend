@@ -19,6 +19,7 @@ package pages.locationOfGoods
 import controllers.locationOfGoods.routes
 import models.{LocationOfGoodsIdentification, Mode, UserAnswers}
 import pages.QuestionPage
+import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.sections.locationOfGoods.{LocationOfGoodsSection, QualifierOfIdentificationDetailsSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -36,7 +37,7 @@ trait BaseIdentificationPage extends QuestionPage[LocationOfGoodsIdentification]
 
   override def cleanup(value: Option[LocationOfGoodsIdentification], userAnswers: UserAnswers): Try[UserAnswers] = {
 
-    val setOfPaths = Set(
+    val qualifierOfIdentificationDetailsSectionPaths = Set(
       JsPath \ "Consignment" \ "LocationOfGoods" \ "authorisationNumber",
       JsPath \ "Consignment" \ "LocationOfGoods" \ "additionalIdentifier",
       JsPath \ "Consignment" \ "LocationOfGoods" \ "UNLocode",
@@ -46,9 +47,25 @@ trait BaseIdentificationPage extends QuestionPage[LocationOfGoodsIdentification]
       JsPath \ "Consignment" \ "LocationOfGoods" \ "Address",
       JsPath \ "Consignment" \ "LocationOfGoods" \ "PostcodeAddress"
     )
+
+    val IE15AddAdditionalIdentifierPath = JsPath \ "Consignment" \ "LocationOfGoods" \ "addAdditionalIdentifier"
+    val IE15AdditionalIdentifierPath    = JsPath \ "Consignment" \ "LocationOfGoods" \ "additionalIdentifier"
+    val IE15AddContactPath              = JsPath \ "Consignment" \ "LocationOfGoods" \ "addContact"
+    val IE15ContactPersonPath           = JsPath \ "Consignment" \ "LocationOfGoods" \ "ContactPerson"
+    val IE15TelephoneNumberPath         = JsPath \ "Consignment" \ "LocationOfGoods" \ "telephoneNumber"
+
     value match {
-      case Some(_) => userAnswers.remove(QualifierOfIdentificationDetailsSection, setOfPaths).flatMap(cleanup)
-      case None    => super.cleanup(value, userAnswers)
+      case Some(_) =>
+        userAnswers
+          .remove(AdditionalIdentifierPage, IE15AddAdditionalIdentifierPath)
+          .flatMap(_.remove(AddIdentifierYesNoPage, IE15AdditionalIdentifierPath))
+          .flatMap(_.remove(AddContactYesNoPage, IE15AddContactPath))
+          .flatMap(_.remove(NamePage, IE15ContactPersonPath))
+          .flatMap(_.remove(PhoneNumberPage, IE15TelephoneNumberPath))
+          .flatMap(_.remove(QualifierOfIdentificationDetailsSection, qualifierOfIdentificationDetailsSectionPaths))
+          .flatMap(cleanup)
+
+      case None => super.cleanup(value, userAnswers)
     }
   }
 }

@@ -16,22 +16,19 @@
 
 package pages.transport.departureTransportMeans
 
-import models.reference.transport.transportMeans.TransportMeansIdentification
-import pages.behaviours.PageBehaviours
-import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
+import models.{Mode, UserAnswers}
+import controllers.transport.departureTransportMeans.routes
+import pages.QuestionPage
+import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class TransportMeansIdentificationPageSpec extends PageBehaviours {
+case object TransportMeansIdentificationNumberPage extends QuestionPage[String] {
 
-  "IdentificationPage" - {
+  override def path: JsPath = TransportMeansSection.path \ toString
 
-    beRetrievable[TransportMeansIdentification](TransportMeansIdentificationPage)
+  override def toString: String = "identificationNumber"
 
-    beSettable[TransportMeansIdentification](TransportMeansIdentificationPage)
-
-    beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage)
-
-    "cleanup" - {
-      // TODO Add clean-up test
-    }
-  }
+  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    Some(routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode))
 }

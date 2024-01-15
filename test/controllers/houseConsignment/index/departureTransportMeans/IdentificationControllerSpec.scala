@@ -67,7 +67,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   "Identification Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
@@ -87,7 +87,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
@@ -113,7 +113,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must redirect to the next page when valid data is submitted" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
@@ -132,7 +132,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any()))
+      when(mockTransportMeansIdentificationTypesService.getMeansOfTransportIdentificationTypes(any(), any())(any(), any()))
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
