@@ -113,7 +113,7 @@ class TransportEquipmentAnswersHelper(
 
   def getSection: Seq[Section] = {
 
-    val sectionSeals =
+    val sectionSeals: Section =
       Section(
         sectionTitle = messages("checkYourAnswers.transport.equipment.active.withIndex", equipmentIndex.display),
         rows = Seq(sealsYesNo, seals).flatten,
