@@ -47,6 +47,8 @@ object TestMessageData {
 
   val contactPerson: ContactPerson = ContactPerson("Paul Sully", "07508994566", Some("sullivan@epic.com"))
 
+  val representative: Representative = Representative("IdNumber", "2", Some(contactPerson))
+
   val locationOfGoods: LocationOfGoods = LocationOfGoods(
     "A",
     "Q",
@@ -114,7 +116,7 @@ object TestMessageData {
 
   val customsOfficeOfDestination: String = "GB000012"
 
-  val holderOfTheTransitProcedure = HolderOfTheTransitProcedure(
+  val holderOfTheTransitProcedure: HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
     identificationNumber = Some("identificationNumber"),
     TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
     ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
@@ -128,6 +130,7 @@ object TestMessageData {
       transitOperation,
       Some(authorisation),
       holderOfTheTransitProcedure,
+      Some(representative),
       customsOfficeOfTransitDeclared,
       None,
       consignment
@@ -175,6 +178,15 @@ object TestMessageData {
        |            "city":
        |            "Newcastle",
        |            "country": "GB"
+       |        }
+       |    },
+       |    "Representative": {
+       |        "identificationNumber": "IdNumber",
+       |        "status": "2",
+       |        "ContactPerson": {
+       |            "name": "Paul Sully",
+       |            "phoneNumber": "07508994566",
+       |            "eMailAddress": "sullivan@epic.com"
        |        }
        |    },
        |    "Consignment": {

@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages.representative
+package models.messages
 
-import models.{Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.representative.RepresentativeSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.json.{Json, OFormat}
 
-case object EoriPage extends QuestionPage[String] {
+case class Representative(
+  identificationNumber: String,
+  status: String,
+  ContactPerson: Option[ContactPerson]
+) {
+  val isContactPersonDefined: Boolean = ContactPerson.isDefined
+}
 
-  override def path: JsPath = RepresentativeSection.path \ toString
-
-  override def toString: String = "eori"
-
-  override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(controllers.representative.routes.EoriController.onPageLoad(departureId, mode))
-
+object Representative {
+  implicit val format: OFormat[Representative] = Json.format[Representative]
 }
