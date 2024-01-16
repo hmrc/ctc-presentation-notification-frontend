@@ -17,22 +17,24 @@
 package utils
 
 import models.{Index, Mode, UserAnswers}
-import pages.sections.transport.equipment.EquipmentsSection
+import pages.sections.transport.equipment.{EquipmentsSection, SealsSection}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
-import viewModels.Section
+import viewModels.{Link, Section}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportEquipmentAnswersHelper(
+class TransportEquipmentAnswersHelper (
   userAnswers: UserAnswers,
   departureId: String,
-  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode,
-  activeIndex: Index
+  equipmentIndex: Index
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
@@ -43,27 +45,78 @@ class TransportEquipmentAnswersHelper(
       .getOrElse(userAnswers.departureData.Consignment.ActiveBorderTransportMeans.map(_.length - 1).getOrElse(0))
   )
 
-  def addAnyTransportEquipmentYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addAnyTransportEquipmentYesNo(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddTransportEquipmentYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.equipment.addTransportEquipment",
-    findValueInDepartureData = message => Option(message.Consignment.TransportEquipment.isDefined),
+    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
     id = Some("change-add-transport-equipment")
   )
 
-  def getSection(): Future[Section] = {
+  def addContainerIdentificationNumberYesNo(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddContainerIdentificationNumberYesNoPage(equipmentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.equipment.index.addContainerIdentificationNumberYesNo",
+    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
+    id = Some("change-add-transport-equipment-container-identification-number-yes-no")
+  )
+
+  def containerIdentificationNumber(): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ContainerIdentificationNumberPage(equipmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "transport.equipment.index.containerIdentificationNumber",
+    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup,
+    id = Some("change-transport-equipment-container-identification-number")
+  )
+
+  def sealsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddSealYesNoPage(equipmentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transport.equipment.index.addSealYesNo",
+    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup,
+    id = Some("change-add-seals")
+  )
+
+  def seal(index: Index): Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = SealIdentificationNumberPage(equipmentIndex, index),
+      formatAnswer = formatAsText,
+      prefix = "transport.equipment.index.checkYourAnswers.seal",
+      findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
+      id = Some(s"change-seal-${index.display}"),
+      args = index.display
+    )
+
+  def seals: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(SealsSection(equipmentIndex))(seal)
+
+  def addOrRemoveSeals: Option[Link] = buildLink(SealsSection(equipmentIndex), false) {
+    Link(
+      id = "add-or-remove-seals",
+      text = messages("transport.equipment.index.checkYourAnswers.seals.addOrRemove"),
+      href = controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex).url
+    )
+  }
+
+  def getSection: Future[Section] = {
+
+    val sealYesNoPage = sealsYesNo
+    val addContaoner  = addContainerIdentificationNumberYesNo()
+    val addTransport  = addAnyTransportEquipmentYesNo()
+    val ua            = userAnswers
+    println(ua, addContaoner, addTransport)
 
     val rows = Seq(
-      addAnyTransportEquipmentYesNo
+//      addAnyTransportEquipmentYesNo(),
+      addContainerIdentificationNumberYesNo(),
+      containerIdentificationNumber(),
+      sealsYesNo,
+      seals
     ).flatten
 
     val ans = Section(
-      sectionTitle = messages("checkYourAnswers.transport.equipment.active.withIndex", activeIndex.display),
+      sectionTitle = messages("checkYourAnswers.transport.equipment.active.withIndex", equipmentIndex.display),
       rows = rows,
-      addAnotherLink = (userAnswers.departureData.CustomsOfficeOfTransitDeclared, lastIndex == activeIndex) match {
-        case (Some(_), true) => None //TODO addOrRemoveActiveBorderTransportsMeans()
-        case _               => None
-      }
+      addAnotherLink = addOrRemoveSeals
     )
     Future.successful(ans)
   }

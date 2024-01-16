@@ -96,7 +96,7 @@ object PresentationNotificationAnswersViewModel {
           case Some(jsArray) =>
             Future.sequence(jsArray.value.zipWithIndex.map {
               case (_, i) =>
-                transportEquipmentHelper(i).getSection()
+                transportEquipmentHelper(i).getSection
 
             }.toSeq)
 
@@ -104,7 +104,7 @@ object PresentationNotificationAnswersViewModel {
             Future.successful(
               Section(
                 sectionTitle = messages("checkYourAnswers.transport.equipment.active.withoutIndex"),
-                rows = Seq(transportEquipmentHelper(0).addAnyTransportEquipmentYesNo).flatten
+                rows = Seq(transportEquipmentHelper(0).addAnyTransportEquipmentYesNo()).flatten
               ).toSeq
             )
 
