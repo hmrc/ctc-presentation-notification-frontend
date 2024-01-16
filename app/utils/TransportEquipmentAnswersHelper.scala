@@ -16,9 +16,10 @@
 
 package utils
 
+import models.reference.Item
 import models.{Index, Mode, UserAnswers}
-import pages.sections.transport.equipment.{EquipmentsSection, SealsSection}
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.sections.transport.equipment.{EquipmentsSection, ItemsSection, SealsSection}
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
 import play.api.i18n.Messages
@@ -30,9 +31,10 @@ import viewModels.{Link, Section}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportEquipmentAnswersHelper (
+class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
+  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode,
   equipmentIndex: Index
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
@@ -97,28 +99,30 @@ class TransportEquipmentAnswersHelper (
     )
   }
 
-  def getSection: Future[Section] = {
-
-    val sealYesNoPage = sealsYesNo
-    val addContaoner  = addContainerIdentificationNumberYesNo()
-    val addTransport  = addAnyTransportEquipmentYesNo()
-    val ua            = userAnswers
-    println(ua, addContaoner, addTransport)
-
-    val rows = Seq(
-//      addAnyTransportEquipmentYesNo(),
-      addContainerIdentificationNumberYesNo(),
-      containerIdentificationNumber(),
-      sealsYesNo,
-      seals
-    ).flatten
-
-    val ans = Section(
-      sectionTitle = messages("checkYourAnswers.transport.equipment.active.withIndex", equipmentIndex.display),
-      rows = rows,
-      addAnotherLink = addOrRemoveSeals
+  def item(index: Index): Option[SummaryListRow] =
+    getAnswerAndBuildRow[Item](
+      page = ItemPage(equipmentIndex, index),
+      formatAnswer = formatAsText,
+      prefix = "transport.equipment.index.checkYourAnswers.item",
+      findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
+      id = Some(s"change-item-${index.display}"),
+      args = index.display
     )
-    Future.successful(ans)
+
+  def items: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(ItemsSection(equipmentIndex))(item)
+
+  def getSection: Seq[Section] = {
+
+    val sectionSeals =
+      Section(
+        sectionTitle = messages("checkYourAnswers.transport.equipment.active.withIndex", equipmentIndex.display),
+        rows = Seq(sealsYesNo, seals).flatten,
+        addAnotherLink = addOrRemoveSeals
+      )
+
+    val sectionItems: Section = Section(rows = items)
+
+    (Seq(sectionSeals, sectionItems))
   }
 
 }

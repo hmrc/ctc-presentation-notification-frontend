@@ -94,7 +94,7 @@ object PresentationNotificationAnswersViewModel {
         userAnswers
           .get(EquipmentsSection) match {
           case Some(jsArray) =>
-            Future.sequence(jsArray.value.zipWithIndex.map {
+            Future.successful(jsArray.value.zipWithIndex.flatMap {
               case (_, i) =>
                 transportEquipmentHelper(i).getSection
 

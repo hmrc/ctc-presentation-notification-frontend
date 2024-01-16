@@ -427,6 +427,9 @@ transport.equipment.index.seals.sealIdentificationNumber.error.duplicate = This 
 transport.equipment.index.checkYourAnswers.seal.checkYourAnswersLabel = Seal {0}
 transport.equipment.index.checkYourAnswers.seal.change.hidden = seal {0}
 
+transport.equipment.index.checkYourAnswers.item.checkYourAnswersLabel = Item {0}
+transport.equipment.index.checkYourAnswers.item.change.hidden = item {0}
+
 transport.equipment.index.checkYourAnswers.seals.addOrRemove = Add or remove seals
 
 transport.equipment.index.addSealYesNo.title = Do you want to add a seal?
