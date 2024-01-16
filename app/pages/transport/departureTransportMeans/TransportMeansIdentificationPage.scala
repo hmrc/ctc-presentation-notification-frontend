@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.transport.transportMeans
+package pages.transport.departureTransportMeans
 
 import models.{Mode, UserAnswers}
 import pages.QuestionPage

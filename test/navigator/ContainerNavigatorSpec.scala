@@ -48,6 +48,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 transitOperation.copy(security = security),
                 Some(authorisation),
                 holderOfTheTransitProcedure,
+                Some(representative),
                 None,
                 None,
                 consignment

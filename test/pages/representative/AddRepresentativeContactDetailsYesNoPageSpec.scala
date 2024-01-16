@@ -31,17 +31,18 @@ class AddRepresentativeContactDetailsYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when NO selected" - {
-        "must clean up name and telephone pages" in {
+        "must clean up name and telephone pages in 15/13/170" in {
           forAll(arbitrary[String], arbitrary[String]) {
             (name, telephone) =>
               val preChange = emptyUserAnswers
                 .setValue(AddRepresentativeContactDetailsYesNoPage, true)
                 .setValue(NamePage, name)
-              // TODO: set value for Telephone number page
+                .setValue(RepresentativePhoneNumberPage, telephone)
               val postChange = preChange.setValue(AddRepresentativeContactDetailsYesNoPage, false)
 
               postChange.get(NamePage) mustNot be(defined)
-            // TODO Check that Telephone number page is undefined
+              postChange.get(RepresentativePhoneNumberPage) mustNot be(defined)
+              postChange.departureData.Representative.flatMap(_.ContactPerson) mustNot be(defined)
           }
         }
       }
@@ -52,11 +53,12 @@ class AddRepresentativeContactDetailsYesNoPageSpec extends PageBehaviours {
             (name, telephone) =>
               val preChange = emptyUserAnswers
                 .setValue(NamePage, name)
-              // TODO: set value for Telephone number page
+                .setValue(RepresentativePhoneNumberPage, telephone)
               val postChange = preChange.setValue(AddRepresentativeContactDetailsYesNoPage, true)
 
               postChange.get(NamePage) must be(defined)
-            // TODO Check that Telephone number page is defined
+              postChange.get(RepresentativePhoneNumberPage) must be(defined)
+              postChange.departureData.Representative.flatMap(_.ContactPerson) must be(defined)
           }
         }
       }

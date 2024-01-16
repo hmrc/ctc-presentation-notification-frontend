@@ -20,7 +20,7 @@ import controllers.actions.Actions
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.RepresentativeNavigator
 import pages.ActingAsRepresentativePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ActingAsRepresentativeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: RepresentativeNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -47,7 +47,11 @@ class ActingAsRepresentativeController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ActingAsRepresentativePage) match {
+      val preparedForm = request.userAnswers
+        .get(ActingAsRepresentativePage)
+        .orElse {
+          Option(request.userAnswers.departureData.isRepresentativeDefined)
+        } match {
         case None        => form
         case Some(value) => form.fill(value)
       }

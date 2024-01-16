@@ -16,22 +16,17 @@
 
 package controllers.representative
 
-import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.representative.{routes => representativeRoutes}
 import controllers.routes
 import forms.EoriNumberFormProvider
-import models.messages.EconomicOperator
+import models.messages.Representative
 import models.{NormalMode, UserAnswers}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.representative.EoriPage
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.representative.EoriView
-
-import java.time.Instant
 
 class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
@@ -51,9 +46,9 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
   "Eori Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when Representative Section is unanswered in IE015/013" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, representativeEoriRoute)
       val result  = route(app, request).value
@@ -67,16 +62,16 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered IE015/013" in {
+      val uaIE015 = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative("IdNumber", "2", None)))(emptyUserAnswers)
 
-      val userAnswers = emptyUserAnswers.setValue(EoriPage, validAnswer)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(uaIE015)
 
       val request = FakeRequest(GET, representativeEoriRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> validAnswer))
+      val filledForm = form.bind(Map("value" -> "IdNumber"))
 
       val view = injector.instanceOf[EoriView]
 
