@@ -79,10 +79,7 @@ class LocationOfGoodsAnswersHelper(
     page = AddIdentifierYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "locationOfGoods.addIdentifierYesNo",
-    findValueInDepartureData = message => {
-      println(message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined))
-      message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined)
-    },
+    findValueInDepartureData = message => message.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined),
     id = Some("change-add-additional-identifier")
   )
 
