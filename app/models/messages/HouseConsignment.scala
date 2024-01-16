@@ -18,7 +18,7 @@ package models.messages
 
 import play.api.libs.json.{Json, OFormat}
 
-case class HouseConsignment(ConsignmentItem: List[ConsignmentItem])
+case class HouseConsignment(DepartureTransportMeans: Option[Seq[DepartureTransportMeans]], ConsignmentItem: List[ConsignmentItem])
 
 object HouseConsignment {
   implicit val format: OFormat[HouseConsignment] = Json.format[HouseConsignment]

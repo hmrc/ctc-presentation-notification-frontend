@@ -17,8 +17,12 @@
 package viewModels
 
 import config.FrontendAppConfig
+import models.reference.TransportMode.InlandMode
 import models.{CheckMode, Index, UserAnswers}
+import pages.sections.houseConsignment.HouseConsignmentListSection
 import pages.sections.transport.border.BorderActiveListSection
+import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import pages.transport.InlandModePage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
@@ -85,6 +89,21 @@ object PresentationNotificationAnswersViewModel {
                   case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, cyaRefDataService, mode, Index(i)).map(_.section)
                 }
                 .toSeq
+            )
+        }
+      }
+
+      val houseConsignmentSectionFuture: Future[Seq[Section]] = {
+        (userAnswers.get(InlandModePage),  userAnswers.departureData.Consignment.inlandModeOfTransport, userAnswers.get(TransportMeansSection)) match {
+          case (Some(InlandMode("5", _)), _, _) || (_, Some("5"), _) || (_, _, Some(_))  =>
+            Future.successful(
+             Seq.empty
+            )
+          case _ =>
+            Future.sequence(
+              userAnswers.departureData.Consignment.HouseConsignment.map(houseConsignment => {
+                ???
+              })
             )
         }
       }
