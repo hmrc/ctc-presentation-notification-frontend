@@ -16,10 +16,9 @@
 
 package services
 
-import akka.http.scaladsl.model.RemoteAddress.Unknown
 import cats.data.NonEmptyList
 import config.Constants
-import config.Constants.Fixed
+import config.Constants.{Fixed, Unknown}
 import config.Constants.MeansOfTransportIdentification._
 import connectors.ReferenceDataConnector
 import models.reference.TransportMode.InlandMode
