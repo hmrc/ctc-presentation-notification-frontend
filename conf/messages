@@ -72,6 +72,7 @@ checkYourAnswers.transportMeans.active.withoutIndex = Border means of transport
 checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
 checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
 checkYourAnswers.houseConsignment = House consignment {0}
+checkYourAnswers.departureTransportMeansWithIndex = Departure means of transport {0}
 checkYourAnswers.departureTransportMeans = Departure means of transport
 
 checkYourAnswers.locationOfGoods = Location of goods
@@ -566,6 +567,7 @@ addDepartureTransportMeansYesNo.paragraph = This is the means of transport used 
 departureTransportMeans.subheading = Departure means of transport
 
 houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport for house consignment {0}?
+houseConsignment.index.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.

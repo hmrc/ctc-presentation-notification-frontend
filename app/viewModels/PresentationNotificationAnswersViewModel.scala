@@ -94,17 +94,19 @@ object PresentationNotificationAnswersViewModel {
       }
 
       val houseConsignmentSectionFuture: Future[Seq[Section]] = {
-        (userAnswers.get(InlandModePage),  userAnswers.departureData.Consignment.inlandModeOfTransport, userAnswers.get(TransportMeansSection)) match {
-          case (Some(InlandMode("5", _)), _, _) || (_, Some("5"), _) || (_, _, Some(_))  =>
+        (userAnswers.get(InlandModePage), userAnswers.departureData.Consignment.inlandModeOfTransport, userAnswers.get(TransportMeansSection)) match {
+          case (Some(InlandMode("5", _)), _, _) | (_, Some("5"), _) | (_, _, Some(_)) =>
             Future.successful(
-             Seq.empty
+              Seq.empty
             )
           case _ =>
-            Future.sequence(
-              userAnswers.departureData.Consignment.HouseConsignment.map(houseConsignment => {
-                ???
-              })
-            )
+            val sectionFutures: Seq[Future[Seq[Section]]] =
+              userAnswers.departureData.Consignment.HouseConsignment.zipWithIndex.map {
+                case (_, i) =>
+                  new HouseConsignmentAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(i)).getSection()
+              }
+
+            Future.sequence(sectionFutures).map(_.flatten)
         }
       }
 
@@ -116,8 +118,9 @@ object PresentationNotificationAnswersViewModel {
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
+        houseConsignmentSection           <- houseConsignmentSectionFuture
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq ++ houseConsignmentSection
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }

@@ -35,6 +35,7 @@ import viewModels.{Link, Section}
 
 import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -47,21 +48,25 @@ class HouseConsignmentAnswersHelper(
 
   implicit val ua: UserAnswers = userAnswers
 
-
   def addDepartureTransportMeansYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddDepartureTransportMeansYesNoPage(houseConsignmentIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "houseConsignment.index.addDepartureTransportMeansYesNo",
     findValueInDepartureData = message => message.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).map(_.DepartureTransportMeans.isDefined),
-    id = Some("change-add-departure-means-of-transport")
+    id = Some("change-add-departure-means-of-transport"),
+    args = houseConsignmentIndex.display
   )
 
-  def identificationType(departureTransportMeansIndex:Index): Future[Option[SummaryListRow]] =
+  def identificationType(departureTransportMeansIndex: Index): Future[Option[SummaryListRow]] =
     fetchValue[TransportMeansIdentification](
       page = IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex),
-      valueFromDepartureData = userAnswers.departureData.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).flatMap(_.DepartureTransportMeans.flatMap(
-        seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.typeOfIdentification)
-      )),
+      valueFromDepartureData = userAnswers.departureData.Consignment.HouseConsignment
+        .lift(houseConsignmentIndex.position)
+        .flatMap(
+          _.DepartureTransportMeans.flatMap(
+            seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.typeOfIdentification)
+          )
+        ),
       refDataLookup = cyaRefDataService.getTransportMeansIdentification
     ).map {
       identification =>
@@ -75,23 +80,31 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
-  def identificationNumber(departureTransportMeansIndex:Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def identificationNumber(departureTransportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "houseConsignment.index.departureTransportMeans.identificationNumber",
-    findValueInDepartureData = _.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).flatMap(_.DepartureTransportMeans.flatMap(
-      seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.identificationNumber)
-    )),
+    findValueInDepartureData = _.Consignment.HouseConsignment
+      .lift(houseConsignmentIndex.position)
+      .flatMap(
+        _.DepartureTransportMeans.flatMap(
+          seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.identificationNumber)
+        )
+      ),
     id = Some("change-identification-number"),
     args = houseConsignmentIndex.display
   )
 
-  def nationality(departureTransportMeansIndex:Index): Future[Option[SummaryListRow]] =
+  def nationality(departureTransportMeansIndex: Index): Future[Option[SummaryListRow]] =
     fetchValue[Nationality](
       page = CountryPage(houseConsignmentIndex, departureTransportMeansIndex),
-      valueFromDepartureData = userAnswers.departureData.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).flatMap(_.DepartureTransportMeans.flatMap(
-        seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.nationality)
-      )),
+      valueFromDepartureData = userAnswers.departureData.Consignment.HouseConsignment
+        .lift(houseConsignmentIndex.position)
+        .flatMap(
+          _.DepartureTransportMeans.flatMap(
+            seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.nationality)
+          )
+        ),
       refDataLookup = cyaRefDataService.getNationality
     ).map {
       nationality =>
@@ -105,31 +118,53 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
+  def getSection(): Future[Seq[Section]] = {
 
-  def getSection(): Future[Option[Section]] = {
+    val sectionHC: Future[Seq[Section]] = successful(
+      Section(
+        sectionTitle = messages("checkYourAnswers.houseConsignment", houseConsignmentIndex.display),
+        rows = Seq(addDepartureTransportMeansYesNo).flatten
+      ).toSeq
+    )
 
-    (userAnswers.get(InlandModePage), userAnswers.departureData.Consignment.inlandModeOfTransport, userAnswers.get(TransportMeansSection)) match {
-      case (Some(InlandMode("5", _)), _, _) | (_, Some("5"), _) | (_, _, Some(_)) =>
-        successful(None)
-      case _ =>
-        val sectionHC: Section =
-          Section(
-            sectionTitle = messages("checkYourAnswers.houseConsignment", houseConsignmentIndex.display),
-            rows = Seq(addDepartureTransportMeansYesNo).flatten
-          )
+    val sectionDepartureTransportMeans: Future[Seq[Section]] =
+      userAnswers.departureData.Consignment.HouseConsignment
+        .lift(houseConsignmentIndex.position)
+        .map {
+          consignment =>
+            consignment.DepartureTransportMeans
+              .map {
+                departureTransportMeans =>
+                  val futureSections: Seq[Future[Section]] = departureTransportMeans.zipWithIndex.map {
+                    case (_, i) =>
+                      val futureSection: Future[Section] = for {
+                        identificationTypeRow   <- identificationType(Index(i))
+                        identificationNumberRow <- successful(identificationNumber(Index(i)))
+                        nationalityRow          <- nationality(Index(i))
+                      } yield Section(
+                        sectionTitle = messages("checkYourAnswers.departureTransportMeansWithIndex", Index(i).display),
+                        rows = Seq(
+                          identificationTypeRow,
+                          identificationNumberRow,
+                          nationalityRow
+                        ).flatten
+                      )
 
-        val sectionDepartureTransportMeans: Seq[Section] =
-          userAnswers.departureData.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).map(_.DepartureTransportMeans.zipWithIndex.map {
-            case (_, i) =>
-              Section(
-                sectionTitle = messages("checkYourAnswers.departureTransportMeans", Index(i).display),
-                rows = Seq(identificationType(Index(i)),
-                  successful(identificationType(Index(i))),
-                  nationality(Index(i))).flatten
-              )
-          }).getOrElse(Seq.empty)
+                      futureSection
+                  }.toSeq
 
-      sectionHC +: sectionDepartureTransportMeans
-    }
+                  Future.sequence(futureSections)
+              }
+              .getOrElse(Future.successful(Seq.empty))
+        }
+        .getOrElse(Future.successful(Seq.empty))
+
+    val result: Future[Seq[Section]] =
+      Future
+        .sequence(Seq(sectionHC, sectionDepartureTransportMeans))
+        .map(_.flatten)
+
+    result
   }
+
 }
