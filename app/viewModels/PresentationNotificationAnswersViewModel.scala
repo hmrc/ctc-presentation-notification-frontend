@@ -83,8 +83,6 @@ object PresentationNotificationAnswersViewModel {
         }
       }
 
-
-
       val firstSection = Section(
         rows = Seq(
           helper.limitDate,
