@@ -94,12 +94,13 @@ object PresentationNotificationAnswersViewModel {
         userAnswers
           .get(EquipmentsSection) match {
           case Some(jsArray) =>
-            Future.successful(jsArray.value.zipWithIndex.flatMap {
+            val pre = transportEquipmentHelper(0).preSection
+            val sec = jsArray.value.zipWithIndex.flatMap {
               case (_, i) =>
                 transportEquipmentHelper(i).getSection
 
-            }.toSeq)
-
+            }.toSeq
+            Future.successful(pre +: sec)
           case None =>
             Future.successful(
               Section(

@@ -111,6 +111,18 @@ class TransportEquipmentAnswersHelper(
 
   def items: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(ItemsSection(equipmentIndex))(item)
 
+  def addOrRemoveItems: Option[Link] = buildLink(SealsSection(equipmentIndex), false) {
+    Link(
+      id = "add-or-remove-items",
+      text = messages("transport.equipment.index.checkYourAnswers.items.addOrRemove"),
+      href = controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
+    )
+  }
+
+  val preSection: Section = Section(
+    rows = Seq(addAnyTransportEquipmentYesNo).flatten
+  )
+
   def getSection: Seq[Section] = {
 
     val sectionSeals: Section =
@@ -120,7 +132,7 @@ class TransportEquipmentAnswersHelper(
         addAnotherLink = addOrRemoveSeals
       )
 
-    val sectionItems: Section = Section(rows = items)
+    val sectionItems: Section = Section(rows = items, addOrRemoveItems)
 
     (Seq(sectionSeals, sectionItems))
   }

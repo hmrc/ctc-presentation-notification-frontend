@@ -42,7 +42,8 @@ class EquipmentNavigator extends Navigator {
     case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, departureId, mode, equipmentIndex, itemIndex)
   }
 
-  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] =
+    ???
 
   private def applyAnotherItemRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Option[Call] =
     ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
