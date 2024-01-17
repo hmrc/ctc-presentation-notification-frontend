@@ -29,11 +29,11 @@ import models.reference.transport.border.active.Identification
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import pages.transport.border.active._
 import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import play.api.libs.json.Json
 
 import java.time.Instant
@@ -46,6 +46,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in Normal mode" - {
       val mode = NormalMode
+
       "must go from Border mode of transport page" - {
 
         "when security is in set 1,2,3 and active border transport is not present navigate to Identification page" in {
@@ -390,6 +391,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in CheckMode" - {
       val mode = CheckMode
+
       "must go from AddBorderModeOfTransportYesNoPage" - {
 
         "to CYA page when No " in {

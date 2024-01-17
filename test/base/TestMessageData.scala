@@ -194,6 +194,13 @@ object TestMessageData {
        |        "containerIndicator": "1",
        |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
+       |        "DepartureTransportMeans": [
+       |         {
+       |          "typeOfIdentification": "10",
+       |          "identificationNumber" : "BX857GGE",
+       |          "nationality" : "FR"
+       |          }
+       |        ],
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",
@@ -249,11 +256,6 @@ object TestMessageData {
        |                "phoneNumber": "07508994566",
        |                "eMailAddress": "sullivan@epic.com"
        |            }
-       |        },
-       |        "DepartureTransportMeans": {
-       |                "typeOfIdentification": "10",
-       |                "identificationNumber": "BX857GGE",
-       |                "nationality": "FR"
        |        },
        |        "ActiveBorderTransportMeans": [
        |            {
@@ -319,6 +321,13 @@ object TestMessageData {
        |        "containerIndicator": "1",
        |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
+       |         "DepartureTransportMeans": [
+       |         {
+       |          "typeOfIdentification": "10",
+       |          "identificationNumber" : "BX857GGE",
+       |          "nationality" : "FR"
+       |          }
+       |        ],
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",

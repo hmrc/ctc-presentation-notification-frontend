@@ -47,13 +47,15 @@ object PresentationNotificationAnswersViewModel {
     ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val inlandModeAnswersHelper     = new InlandModeAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
-      val representativeHelper        = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
+      val helper                               = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val placeOfLoadingAnswersHelper          = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val locationOfGoodsHelper                = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val inlandModeAnswersHelper              = new InlandModeAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val transitHolderAnswerHelper            = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val activeBorderHelper                   = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      val departureTransportMeansAnswersHelper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+
+      val representativeHelper = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 
       val activeBorderTransportMeansSectionFuture: Future[Seq[Section]] = {
         (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
@@ -97,10 +99,11 @@ object PresentationNotificationAnswersViewModel {
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         inlandMode                        <- inlandModeAnswersHelper.buildInlandModeSection
+        departureTransportMeansSection    <- departureTransportMeansAnswersHelper.buildDepartureTransportMeansSection
         borderSection                     <- helper.borderModeSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ borderSection.toSeq ++ departureTransportMeansSection.toSeq ++ activeBorderTransportMeansSection
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }
