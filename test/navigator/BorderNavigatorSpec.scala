@@ -492,6 +492,52 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         }
       }
 
+      "must go from InlandModePage" - {
+
+        "to CYA page when InlandMode is 5" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, InlandMode("5", "test"))
+          navigator
+            .nextPage(InlandModePage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to DepartureMeansIdentificationPage when InlandMode is not 5" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, InlandMode("4", "test"))
+
+          navigator
+            .nextPage(InlandModePage, userAnswers, departureId, mode)
+            .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to inlandMode in ie170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, true)
+            .setValue(InlandModePage, InlandMode("1", "Air"))
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to inlandMode in IE15/13" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(inlandModeOfTransport = Some("test")))
+            )
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+      }
+
       "must go from BorderModeOfTransportPage to" - {
         "Add border means of transport page when Do you want to add border mode of transport?  is Yes and security type is 0" in {
           val userAnswers = emptyUserAnswers

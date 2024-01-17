@@ -30,77 +30,69 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
   val navigator = new DepartureTransportMeansNavigator
 
-  "BorderNavigator" - {
-
-    "in Normal mode" - {
-      val mode = NormalMode
-
-      "Must go from TransportMeansIdentificationPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
-            navigator
-              .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-      "Must go from TransportMeansIdentificationNumberPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationNumberPage, "test")
-            navigator
-              .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-      "Must go from TransportMeansNationalityPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansNationalityPage, Nationality("UK", "test"))
-            navigator
-              .nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-      }
-
-    }
+  "DepartureTransportMeansNavigator" - {
 
     "in CheckMode" - {
       val mode = CheckMode
 
-      "Must go from TransportMeansIdentificationPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
-            navigator
-              .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      "TransportMeansIdentificationPage" - {
 
+        "must go to TransportMeansIdentificationNumberPage when TransportMeansIdentificationNumberPage is empty" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
+                .removeValue(TransportMeansIdentificationNumberPage)
+
+              navigator
+                .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
+                .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode))
+          }
         }
 
-      }
-      "Must go from TransportMeansIdentificationNumberPage to check answers page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .setValue(TransportMeansIdentificationNumberPage, "test")
-            navigator
-              .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        "must go to CheckYourAnswers when TransportMeansIdentificationNumberPage is not empty" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
+                .setValue(TransportMeansIdentificationNumberPage, "test")
+              navigator
+                .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
+          }
+        }
+      }
+
+      "TransportMeansIdentificationNumberPage" - {
+
+        "must go to TransportMeansNationalityPage when TransportMeansNationalityPage is empty" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(TransportMeansIdentificationNumberPage, "test")
+                .removeValue(TransportMeansNationalityPage)
+
+              navigator
+                .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
+                .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode))
+          }
         }
 
+        "must go to CheckYourAnswers when TransportMeansNationalityPage is not empty" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(TransportMeansIdentificationNumberPage, "test")
+                .setValue(TransportMeansNationalityPage, Nationality("GB", "test"))
+              navigator
+                .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+          }
+        }
       }
+
       "Must go from TransportMeansNationalityPage to check answers page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -111,10 +103,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
-
       }
-
     }
   }
-
 }

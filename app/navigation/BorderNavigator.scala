@@ -60,7 +60,7 @@ class BorderNavigator @Inject() () extends Navigator {
     case AddBorderMeansOfTransportYesNoPage               => ua => addBorderMeansOfTransportYesNoCheckRoute(ua, departureId)
     case AddAnotherBorderModeOfTransportPage(activeIndex) => ua => addAnotherBorderNavigation(ua, departureId, mode, activeIndex)
     case AddInlandModeOfTransportYesNoPage                => ua => addInlandModeYesNoCheckRoute(ua, departureId)
-    case InlandModePage                                   => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case InlandModePage                                   => ua => inlandModeCheckRoute(ua, departureId, mode)
   }
 
   private def addBorderMeansOfTransportYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
@@ -79,6 +79,12 @@ class BorderNavigator @Inject() () extends Navigator {
     ua.departureData.TransitOperation.isSecurityTypeInSet match {
       case true  => Some(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)))
       case false => Some(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+    }
+
+  private def inlandModeCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    ua.get(InlandModePage).map(_.code) match {
+      case Some("5") => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _         => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
     }
 
   private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {

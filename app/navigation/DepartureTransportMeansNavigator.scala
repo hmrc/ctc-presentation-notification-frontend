@@ -28,18 +28,27 @@ import javax.inject.Inject
 class DepartureTransportMeansNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-
-    case TransportMeansIdentificationPage       => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case TransportMeansIdentificationNumberPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case TransportMeansNationalityPage          => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
+    case _ => _ => None
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case TransportMeansIdentificationPage       => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case TransportMeansIdentificationNumberPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case TransportMeansNationalityPage          => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case TransportMeansIdentificationPage       => ua => transportMeansIdentificationNavigation(ua, departureId, mode)
+    case TransportMeansIdentificationNumberPage => ua => transportMeansNumberNavigation(ua, departureId, mode)
+    case TransportMeansNationalityPage          => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
   }
+
+  private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    ua.get(TransportMeansIdentificationNumberPage) match {
+      case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case None    => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode))
+    }
+
+  private def transportMeansNumberNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    ua.get(TransportMeansNationalityPage) match {
+      case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case None    => Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode))
+    }
 
 }
