@@ -55,7 +55,7 @@ class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
                 .setValue(TransportMeansIdentificationNumberPage, "1234")
                 .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
 
-              val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
+              val result = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, false)
 
               result.departureData.Consignment.DepartureTransportMeans must not be defined
           }
