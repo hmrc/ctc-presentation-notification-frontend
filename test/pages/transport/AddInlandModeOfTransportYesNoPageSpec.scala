@@ -17,7 +17,6 @@
 package pages.transport
 
 import models.reference.Nationality
-import models.reference.TransportMode.InlandMode
 import pages.behaviours.PageBehaviours
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 
