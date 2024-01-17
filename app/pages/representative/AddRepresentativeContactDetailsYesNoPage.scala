@@ -31,14 +31,16 @@ case object AddRepresentativeContactDetailsYesNoPage extends QuestionPage[Boolea
 
   override def toString: String = "addRepresentativeContactDetailsYesNo"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val Ie015RepContactPath: JsPath = JsPath \ "Representative" \ "ContactPerson"
     value match {
       case Some(false) =>
         userAnswers
-          .remove(NamePage)
-      // TODO remove Telephone Number
+          .remove(NamePage, Ie015RepContactPath)
+          .flatMap(_.remove(RepresentativePhoneNumberPage))
       case _ => super.cleanup(value, userAnswers)
     }
+  }
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId, mode))

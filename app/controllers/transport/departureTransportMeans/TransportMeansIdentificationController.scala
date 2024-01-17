@@ -23,7 +23,7 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
 import pages.transport.InlandModePage
-import pages.transport.transportMeans.TransportMeansIdentificationPage
+import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -49,7 +49,7 @@ class TransportMeansIdentificationController @Inject() (
     with I18nSupport {
 
   private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("consignment.index.departureTransportMeans.identification", identificationTypes)
+    formProvider[TransportMeansIdentification]("consignment.departureTransportMeans.identification", identificationTypes)
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)

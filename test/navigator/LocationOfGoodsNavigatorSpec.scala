@@ -16,9 +16,10 @@
 
 package navigator
 
-import base.TestMessageData.{consignment, locationOfGoods, messageData, placeOfLoading, transitOperation}
+import base.TestMessageData._
 import base.{SpecBase, TestMessageData}
 import config.Constants._
+import controllers.locationOfGoods.routes
 import generators.Generators
 import models._
 import models.messages.AuthorisationType.{C521, C523}
@@ -718,12 +719,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "in Check Mode" - {
 
-      "must go from limit date page to check your answers page" in {
+      "must go from limit date page to AddContactYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(LimitDatePage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
 
       }
@@ -782,7 +783,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
           }
         }
-        "to CYA page if answer is No" in {
+        "to AddContactYesNoPage if answer is No" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               answers
@@ -791,41 +792,41 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                   updatedAnswers =>
                     navigator
                       .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, CheckMode)
-                      .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                      .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
                 }
                 .get
           }
         }
       }
 
-      "must go from AdditionalIdentifierPage to check your answers page" in {
+      "must go from AdditionalIdentifierPage to AddContactYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(AdditionalIdentifierPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
-      "must go from UnLocodePage to check your answers page" in {
+      "must go from UnLocodePage to AddContactYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(UnLocodePage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
-      "must go from CustomsOfficeIdentifierPage to check your answers page" in {
+      "must go from CustomsOfficeIdentifierPage to AddContactYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(CustomsOfficeIdentifierPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
-      "must go from EoriPage to add isentifier page" in {
+      "must go from EoriPage to add identifier page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
@@ -834,12 +835,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from CoordinatesPage to check your answers page" in {
+      "must go from CoordinatesPage to AddContactYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(CoordinatesPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -893,7 +894,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       }
 
-      "must go from CountryPage to check your answers page" in {
+      "must go from CountryPage to AddressPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
@@ -903,12 +904,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       }
 
-      "must go from AddressPage to check your answers page" in {
+      "must go from AddressPage to AddContactYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(AddressPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
 
       }

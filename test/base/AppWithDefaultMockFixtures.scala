@@ -67,6 +67,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeBorderNavigatorProvider: BorderNavigator           = new FakeBorderNavigator(onwardRoute)
   protected val fakeContainerNavigator: ContainerNavigator             = new FakeContainerNavigator(onwardRoute)
   protected val fakeEquipmentNavigator: EquipmentNavigator             = new FakeEquipmentNavigator(onwardRoute)
+  protected val fakeRepresentativeNavigator: RepresentativeNavigator   = new FakeRepresentativeNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -80,7 +81,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
         bind[BorderNavigator].toInstance(fakeBorderNavigatorProvider),
         bind[ContainerNavigator].toInstance(fakeContainerNavigator),
-        bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator)
+        bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator),
+        bind[RepresentativeNavigator].toInstance(fakeRepresentativeNavigator)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =

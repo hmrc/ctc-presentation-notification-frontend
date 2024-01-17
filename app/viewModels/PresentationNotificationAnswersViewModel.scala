@@ -53,13 +53,7 @@ object PresentationNotificationAnswersViewModel {
       val inlandModeAnswersHelper     = new InlandModeAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
       val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
-
-      val firstSection = Section(
-        rows = Seq(
-          helper.limitDate,
-          helper.containerIndicator
-        ).flatten
-      )
+      val representativeHelper        = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 
       val activeBorderTransportMeansSectionFuture: Future[Seq[Section]] = {
         (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
@@ -89,15 +83,26 @@ object PresentationNotificationAnswersViewModel {
         }
       }
 
+
+
+      val firstSection = Section(
+        rows = Seq(
+          helper.limitDate,
+          helper.containerIndicator
+        ).flatten
+      )
+
+      val representativeSection: Section = representativeHelper.representativeSection
+
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
-        placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
+        placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         inlandMode                        <- inlandModeAnswersHelper.buildInlandModeSection
         borderSection                     <- helper.borderModeSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }

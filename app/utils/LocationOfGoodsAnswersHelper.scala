@@ -203,7 +203,7 @@ class LocationOfGoodsAnswersHelper(
         locationOfGoodsContactYesNo,
         locationOfGoodsContactPersonName,
         locationOfGoodsContactPersonNumber,
-        additionalIdentifierYesNo,
+        if (authorisationNumber.isDefined | eoriNumber.isDefined) additionalIdentifierYesNo else None,
         additionalIdentifierRow
       ).flatten
 
