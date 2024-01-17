@@ -16,8 +16,10 @@
 
 package pages.transport
 
+import models.reference.Nationality
 import models.reference.TransportMode.InlandMode
 import pages.behaviours.PageBehaviours
+import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 
 class InlandModePageSpec extends PageBehaviours {
 
@@ -29,4 +31,25 @@ class InlandModePageSpec extends PageBehaviours {
 
     beRemovable[InlandMode](InlandModePage)
   }
+
+  "cleanup" - {
+    "when '5' entered" - {
+      "must remove departure means of transport section in 15/13/170" in {
+        forAll(arbitraryInlandModeOfTransport.arbitrary.suchThat(_.code != "5"), arbitraryTransportMeansIdentification.arbitrary) {
+          (inlandMode, identification) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddInlandModeOfTransportYesNoPage, true)
+              .setValue(InlandModePage, inlandMode)
+              .setValue(TransportMeansIdentificationPage, identification)
+              .setValue(TransportMeansIdentificationNumberPage, "1234")
+              .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
+
+            val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
+
+            result.departureData.Consignment.DepartureTransportMeans must not be defined
+        }
+      }
+    }
+  }
+
 }

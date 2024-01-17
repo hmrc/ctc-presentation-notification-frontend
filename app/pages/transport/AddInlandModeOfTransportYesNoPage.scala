@@ -37,6 +37,7 @@ case object AddInlandModeOfTransportYesNoPage extends QuestionPage[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     val ie015InlandModePath: JsPath = JsPath \ "Consignment" \ "inlandModeOfTransport"
     value match {
+
       case Some(false) => userAnswers.remove(InlandModePage, ie015InlandModePath)
       case _           => super.cleanup(value, userAnswers)
     }
