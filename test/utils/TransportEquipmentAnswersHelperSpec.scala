@@ -16,25 +16,21 @@
 
 package utils
 
+import base.SpecBase
 import base.TestMessageData.allOptionsNoneJsonValue
-import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models.messages.MessageData
 import models.{Mode, UserAnswers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
 import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
-import uk.gov.hmrc.govukfrontend.views.Aliases.Value
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.Instant
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import controllers.transport.equipment.index.ContainerIdentificationNumberController
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

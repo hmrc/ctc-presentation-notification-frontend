@@ -361,6 +361,46 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           }
         }
       }
+      "must go from AddContainerIdentificationNumberYesNoPage" - {
+        "to ContainerIdentificationNumber page when user answers yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+
+              navigator
+                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+          }
+        }
+
+        "to the cya page when user answers no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
+
+              navigator
+                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+      }
+
+      "must go from the container identification number page to CYA page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers =
+              answers
+                .setValue(ContainerIdentificationNumberPage(equipmentIndex), "67YU988")
+
+            navigator
+              .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
 
       "must go from add another seal page" - {
         "to seal identification number page when user answers yes" in {
