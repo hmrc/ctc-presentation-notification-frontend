@@ -20,7 +20,7 @@ import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models.messages.Authorisation
 import models.messages.AuthorisationType.{C521, C523}
-import models.{Index, NormalMode, UserAnswers}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -330,6 +330,71 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
           .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
       }
+    }
+    "in Check mode" - {
+      val mode = CheckMode
+
+      "must go from add seal yes no page" - {
+        "to seal identification number page when user answers yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(AddSealYesNoPage(equipmentIndex), true)
+
+              navigator
+                .nextPage(AddSealYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+          }
+        }
+
+        "to the cya page when user answers no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(AddSealYesNoPage(equipmentIndex), false)
+
+              navigator
+                .nextPage(AddSealYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+      }
+
+      "must go from add another seal page" - {
+        "to seal identification number page when user answers yes" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal1")
+            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), "Seal2")
+            .setValue(AddAnotherSealPage(equipmentIndex, Index(2)), true)
+          navigator
+            .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
+            .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
+        }
+      }
+
+      "to to the cya page when user answers no" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
+        navigator
+          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      }
+
+      "must go from the seal identification number page to add another seal page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers =
+              answers
+                .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "67YU988")
+
+            navigator
+              .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode)
+              .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
+        }
+      }
+
     }
   }
 }
