@@ -20,8 +20,11 @@ import controllers.houseConsignment.index.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.houseConsignment.HouseConsignmentSection
+import pages.sections.houseConsignment.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class AddDepartureTransportMeansYesNoPage(houseConsignmentIndex: Index) extends QuestionPage[Boolean] {
 
@@ -32,5 +35,11 @@ case class AddDepartureTransportMeansYesNoPage(houseConsignmentIndex: Index) ext
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, houseConsignmentIndex))
 
-// TODO  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = ???
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val ie015HCDepartureTransportMeansPath: JsPath = JsPath \ "Consignment" \ "HouseConsignment" \ houseConsignmentIndex.position \ "DepartureTransportMeans"
+    value match {
+      case Some(false) => userAnswers.remove(DepartureTransportMeansListSection(houseConsignmentIndex), ie015HCDepartureTransportMeansPath)
+      case _           => super.cleanup(value, userAnswers)
+    }
+  }
 }

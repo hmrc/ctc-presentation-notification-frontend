@@ -101,10 +101,19 @@ object PresentationNotificationAnswersViewModel {
             )
           case _ =>
             val sectionFutures: Seq[Future[Seq[Section]]] =
-              userAnswers.departureData.Consignment.HouseConsignment.zipWithIndex.map {
-                case (_, i) =>
-                  new HouseConsignmentAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(i)).getSection()
-              }
+              userAnswers
+                .get(HouseConsignmentListSection)
+                .getOrElse {
+                  val houseConsignment = userAnswers.departureData.Consignment.HouseConsignment
+                  Json.toJson(houseConsignment).as[JsArray]
+                }
+                .value
+                .zipWithIndex
+                .map {
+                  case (_, i) =>
+                    new HouseConsignmentAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(i)).getSection()
+                }
+                .toSeq
 
             Future.sequence(sectionFutures).map(_.flatten)
         }

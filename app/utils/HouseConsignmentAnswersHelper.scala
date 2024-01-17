@@ -24,9 +24,11 @@ import models.{Index, Mode, UserAnswers}
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import pages.houseConsignment.index.departureTransportMeans.{CountryPage, IdentificationNumberPage, IdentificationPage}
 import pages.sections.houseConsignment.HouseConsignmentListSection
+import pages.sections.houseConsignment.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.transport.InlandModePage
 import play.api.i18n.Messages
+import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -118,6 +120,19 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
+  private val departureTransportMeansListAnswer = {
+
+    userAnswers
+      .get(DepartureTransportMeansListSection(houseConsignmentIndex))
+      .getOrElse(
+        userAnswers.departureData.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).flatMap(_.DepartureTransportMeans) match {
+          case Some(departureActiveBorderMeans) =>
+            Json.toJson(departureActiveBorderMeans).as[JsArray]
+          case None => JsArray()
+        }
+      )
+  }
+
   def getSection(): Future[Seq[Section]] = {
 
     val sectionHC: Future[Seq[Section]] = successful(
@@ -127,37 +142,29 @@ class HouseConsignmentAnswersHelper(
       ).toSeq
     )
 
-    val sectionDepartureTransportMeans: Future[Seq[Section]] =
-      userAnswers.departureData.Consignment.HouseConsignment
-        .lift(houseConsignmentIndex.position)
-        .map {
-          consignment =>
-            consignment.DepartureTransportMeans
-              .map {
-                departureTransportMeans =>
-                  val futureSections: Seq[Future[Section]] = departureTransportMeans.zipWithIndex.map {
-                    case (_, i) =>
-                      val futureSection: Future[Section] = for {
-                        identificationTypeRow   <- identificationType(Index(i))
-                        identificationNumberRow <- successful(identificationNumber(Index(i)))
-                        nationalityRow          <- nationality(Index(i))
-                      } yield Section(
-                        sectionTitle = messages("checkYourAnswers.departureTransportMeansWithIndex", Index(i).display),
-                        rows = Seq(
-                          identificationTypeRow,
-                          identificationNumberRow,
-                          nationalityRow
-                        ).flatten
-                      )
+    val sectionDepartureTransportMeans: Future[Seq[Section]] = {
 
-                      futureSection
-                  }.toSeq
+      val futureSections: Seq[Future[Section]] = departureTransportMeansListAnswer.value.zipWithIndex.map {
+        case (_, i) =>
+          val futureSection: Future[Section] = for {
+            identificationTypeRow   <- identificationType(Index(i))
+            identificationNumberRow <- successful(identificationNumber(Index(i)))
+            nationalityRow          <- nationality(Index(i))
+          } yield Section(
+            sectionTitle = messages("checkYourAnswers.departureTransportMeansWithIndex", Index(i).display),
+            rows = Seq(
+              identificationTypeRow,
+              identificationNumberRow,
+              nationalityRow
+            ).flatten
+          )
 
-                  Future.sequence(futureSections)
-              }
-              .getOrElse(Future.successful(Seq.empty))
-        }
-        .getOrElse(Future.successful(Seq.empty))
+          futureSection
+      }.toSeq
+
+      Future.sequence(futureSections)
+
+    }
 
     val result: Future[Seq[Section]] =
       Future

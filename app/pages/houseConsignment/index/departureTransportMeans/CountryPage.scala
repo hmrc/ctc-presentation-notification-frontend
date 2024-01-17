@@ -16,7 +16,7 @@
 
 package pages.houseConsignment.index.departureTransportMeans
 
-import controllers.locationOfGoods.routes
+import controllers.houseConsignment.index.departureTransportMeans.routes
 import models.reference.Nationality
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
@@ -31,6 +31,6 @@ case class CountryPage(houseConsignmentIndex: Index, departureTransportMeansInde
   override def toString: String = "country"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.CountryController.onPageLoad(departureId, mode))
+    Some(routes.CountryController.onPageLoad(departureId, mode, houseConsignmentIndex, departureTransportMeansIndex))
 
 }

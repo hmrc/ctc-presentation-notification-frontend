@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.Navigator
+import navigation.{HouseConsignmentNavigator, Navigator}
 import pages.houseConsignment.index.departureTransportMeans.IdentificationNumberPage
 import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: HouseConsignmentNavigator,
   formProvider: IdentificationNumberFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   actions: Actions,

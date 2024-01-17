@@ -32,4 +32,5 @@ case class IdentificationPage(houseConsignmentIndex: Index, departureTransportMe
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.IdentificationController.onPageLoad(departureId, mode, houseConsignmentIndex, departureTransportMeansIndex))
+
 }

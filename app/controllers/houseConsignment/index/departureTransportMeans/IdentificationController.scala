@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.Navigator
+import navigation.{HouseConsignmentNavigator, Navigator}
 import pages.QuestionPage
 import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
 import pages.transport.InlandModePage
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: HouseConsignmentNavigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,

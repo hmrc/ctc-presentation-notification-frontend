@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.Navigator
+import navigation.{HouseConsignmentNavigator, Navigator}
 import pages.houseConsignment.index.departureTransportMeans.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CountryController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: HouseConsignmentNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: NationalitiesService,
