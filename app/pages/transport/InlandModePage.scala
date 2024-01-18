@@ -40,6 +40,7 @@ case object InlandModePage extends QuestionPage[InlandMode] {
 
     value match {
       case Some(value) if value.code == "5" => userAnswers.remove(TransportMeansSection, transportMeansPath)
+      case Some(value) if value.code != "5" => userAnswers.remove(TransportMeansSection)
       case _                                => super.cleanup(value, userAnswers)
     }
   }
