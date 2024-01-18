@@ -334,6 +334,51 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     "in Check mode" - {
       val mode = CheckMode
 
+      "must go from addTransportEquipmentPage" - {
+        "to CYA page when answer is No" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(AddTransportEquipmentYesNoPage, false)
+
+              navigator
+                .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+        "to add seals page" - {
+          "when declaration type is not simplified" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers =
+                  answers
+                    .setValue(AddTransportEquipmentYesNoPage, true)
+                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1235")))))
+
+                navigator
+                  .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
+                  .mustBe(AddSealYesNoPage(equipmentIndex).route(updatedAnswers, departureId, mode).value)
+            }
+          }
+
+          "when Auth type is not C523" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers =
+                  answers
+                    .setValue(AddTransportEquipmentYesNoPage, true)
+                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+                navigator
+                  .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
+                  .mustBe(AddSealYesNoPage(equipmentIndex).route(updatedAnswers, departureId, mode).value)
+            }
+          }
+        }
+
+      }
+
       "must go from add seal yes no page" - {
         "to seal identification number page when user answers yes" in {
           forAll(arbitrary[UserAnswers]) {
@@ -432,6 +477,34 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             navigator
               .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode)
               .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
+        }
+      }
+
+      "must go from ApplyAnotherItempage" - {
+        "to Item page when user answers yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
+
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+          }
+        }
+
+        "to CYA page when user answers no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
+
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
         }
       }
 

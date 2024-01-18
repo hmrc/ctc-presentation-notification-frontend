@@ -99,6 +99,14 @@ class TransportEquipmentAnswersHelper(
     )
   }
 
+  def addOrRemoveEquipments: Option[Link] = buildLink(EquipmentsSection, false) {
+    Link(
+      id = "add-or-remove-transport-equipment",
+      text = messages("checkYourAnswers.transportEquipment.addOrRemove"),
+      href = controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.lrn, mode).url
+    )
+  }
+
   def item(index: Index): Option[SummaryListRow] =
     getAnswerAndBuildRow[Item](
       page = ItemPage(equipmentIndex, index),
@@ -120,7 +128,7 @@ class TransportEquipmentAnswersHelper(
   }
 
   val preSection: Section = Section(
-    rows = Seq(addAnyTransportEquipmentYesNo).flatten
+    rows = Seq(addAnyTransportEquipmentYesNo, addContainerIdentificationNumberYesNo, containerIdentificationNumber).flatten
   )
 
   def getSection: Seq[Section] = {

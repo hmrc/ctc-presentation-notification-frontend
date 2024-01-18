@@ -30,9 +30,9 @@ class EquipmentNavigator extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) => ua => addContainerIdentificationNumberYesNoRoute(ua, equipmentIndex, departureId, mode)
-    case ContainerIdentificationNumberPage(equipmentIndex)         => ua => checkProcedureAuthRoute(ua, departureId, NormalMode, equipmentIndex)
-    case AddTransportEquipmentYesNoPage                            => ua => addTransportEquipmentYesNoNormalRoute(ua, departureId, NormalMode)
-    case AddSealYesNoPage(equipmentIndex)                          => ua => addSealYesNoNormalRoute(ua, departureId, NormalMode, equipmentIndex)
+    case ContainerIdentificationNumberPage(equipmentIndex)         => ua => checkProcedureAuthRoute(ua, departureId, mode, equipmentIndex)
+    case AddTransportEquipmentYesNoPage                            => ua => addTransportEquipmentYesNoNormalRoute(ua, departureId, mode)
+    case AddSealYesNoPage(equipmentIndex)                          => ua => addSealYesNoNormalRoute(ua, departureId, mode, equipmentIndex)
     case SealIdentificationNumberPage(equipmentIndex, _) =>
       _ => Some(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
     case AddAnotherSealPage(equipmentIndex, sealIndex)           => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex, sealIndex)
@@ -46,18 +46,24 @@ class EquipmentNavigator extends Navigator {
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) =>
       ua => addContainerIdentificationNumberYesNoCheckRoute(ua, equipmentIndex, departureId, mode)
     case ContainerIdentificationNumberPage(equipmentIndex) => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddTransportEquipmentYesNoPage                    => ua => addTransportEquipmentYesNoNormalRoute(ua, departureId, mode)
 
-    case AddSealYesNoPage(equipmentIndex)              => ua => addSealYesNoNormalRoute(ua, departureId, mode, equipmentIndex)
-    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex, sealIndex)
+    case AddSealYesNoPage(equipmentIndex) => ua => addSealYesNoNormalRoute(ua, departureId, mode, equipmentIndex)
     case SealIdentificationNumberPage(equipmentIndex, _) =>
       _ => Some(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
+    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex, sealIndex)
+    case ItemPage(equipmentIndex, _) =>
+      ua => Some(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
+    case ApplyAnotherItemPage(equipmentIndex, itemIndex)         => ua => applyAnotherItemRoute(ua, departureId, mode, equipmentIndex, itemIndex)
+    case AddAnotherTransportEquipmentPage(equipmentIndex: Index) => ua => addAnotherTransportEquipmentRoute(ua, equipmentIndex, departureId, mode)
   }
 
   private def applyAnotherItemRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Option[Call] =
     ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
-      case Some(true)  => ItemPage(equipmentIndex, itemIndex).route(ua, departureId, mode)
-      case Some(false) => Some(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+      case Some(true)                  => ItemPage(equipmentIndex, itemIndex).route(ua, departureId, mode)
+      case Some(false) if mode.isCheck => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case Some(false)                 => Some(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
+      case _                           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   private def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =

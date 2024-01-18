@@ -429,7 +429,7 @@ transport.equipment.index.checkYourAnswers.seal.change.hidden = seal {0}
 
 transport.equipment.index.checkYourAnswers.item.checkYourAnswersLabel = Item {0}
 transport.equipment.index.checkYourAnswers.item.change.hidden = item {0}
-transport.equipment.index.checkYourAnswers.items.addOrRemove = which items this transport equipment applies to
+transport.equipment.index.checkYourAnswers.items.addOrRemove = Add or remove items
 
 transport.equipment.index.checkYourAnswers.seals.addOrRemove = Add or remove seals
 
