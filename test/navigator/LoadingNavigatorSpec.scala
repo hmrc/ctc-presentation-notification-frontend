@@ -21,7 +21,7 @@ import base.TestMessageData.{allOptionsNoneJsonValue, consignment, messageData, 
 import generators.Generators
 import models._
 import models.messages.AuthorisationType.C521
-import models.messages.{Authorisation, AuthorisationType, MessageData}
+import models.messages.{Authorisation, AuthorisationType, MessageData, TransitOperation}
 import models.reference.Country
 import navigation.LoadingNavigator
 import org.scalacheck.Arbitrary
@@ -168,6 +168,22 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         navigator
           .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
           .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
+      }
+
+      "must go from LocationPage to BorderModePage when is NOT simplified and container indicator is present and limit date is not present" in {
+
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersUpdated = userAnswers.copy(
+          departureData = messageData.copy(
+            Consignment = consignment.copy(containerIndicator = Some("indicator")),
+            TransitOperation = transitOperation.copy(limitDate = None),
+            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          )
+        )
+
+        navigator
+          .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
+          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
     }
