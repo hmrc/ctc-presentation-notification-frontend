@@ -16,9 +16,7 @@
 
 package services
 
-import org.apache.pekko.http.scaladsl.model.RemoteAddress.Unknown
 import cats.data.NonEmptyList
-import config.Constants
 import config.Constants.{Fixed, Unknown}
 import config.Constants.MeansOfTransportIdentification._
 import connectors.ReferenceDataConnector
@@ -49,7 +47,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnect
               _,
               transportModeCodesService.getInlandModes().map {
                 inlandModes =>
-                  inlandModes.find(_.code == request.userAnswers.departureData.Consignment.inlandModeOfTransport.getOrElse(Constants.Unknown))
+                  inlandModes.find(_.code == request.userAnswers.departureData.Consignment.inlandModeOfTransport.getOrElse(Unknown))
               }
             )
           )
