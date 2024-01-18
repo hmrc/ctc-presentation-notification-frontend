@@ -34,7 +34,7 @@ class InlandModePageSpec extends PageBehaviours {
   }
 
   "cleanup" - {
-    "when '5' entered" - {
+    "when InlandMode with code ='5' entered" - {
       "must remove departure means of transport section in 15/13/170" in {
         forAll(arbitraryInlandModeOfTransport.arbitrary.suchThat(_.code != "5"), arbitraryTransportMeansIdentification.arbitrary) {
           (inlandMode, identification) =>
@@ -52,9 +52,9 @@ class InlandModePageSpec extends PageBehaviours {
       }
     }
 
-    "when '4' entered" - {
+    "when InlandMode with code not equal to '5' entered" - {
       "must remove departure means of transport section in 170" in {
-        forAll(arbitraryInlandModeOfTransport.arbitrary, arbitraryTransportMeansIdentification.arbitrary) {
+        forAll(arbitraryInlandModeOfTransport.arbitrary.suchThat(_.code != "5"), arbitraryTransportMeansIdentification.arbitrary) {
           (inlandMode, identification) =>
             val userAnswers = emptyUserAnswers
               .setValue(AddInlandModeOfTransportYesNoPage, true)
@@ -63,7 +63,7 @@ class InlandModePageSpec extends PageBehaviours {
               .setValue(TransportMeansIdentificationNumberPage, "1234")
               .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
 
-            val result = userAnswers.setValue(InlandModePage, InlandMode("4", "test"))
+            val result = userAnswers.setValue(InlandModePage, InlandMode(inlandMode.code, "test"))
 
             result.get(TransportMeansSection) mustNot be(defined)
         }
