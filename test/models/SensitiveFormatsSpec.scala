@@ -128,6 +128,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         None,
         None
       ),
+      Representative = None,
       Consignment = Consignment(
         containerIndicator = None,
         modeOfTransportAtTheBorder = None,

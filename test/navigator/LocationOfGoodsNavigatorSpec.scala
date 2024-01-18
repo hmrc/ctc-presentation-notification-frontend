@@ -16,7 +16,7 @@
 
 package navigator
 
-import base.TestMessageData.{consignment, locationOfGoods, messageData, placeOfLoading, transitOperation}
+import base.TestMessageData._
 import base.{SpecBase, TestMessageData}
 import config.Constants._
 import controllers.locationOfGoods.routes
