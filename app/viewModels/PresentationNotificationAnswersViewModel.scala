@@ -97,17 +97,13 @@ object PresentationNotificationAnswersViewModel {
           .get(EquipmentsSection) match {
           case Some(jsArray) =>
             val pre = transportEquipmentHelper(0).preSection
-//            val postSectionLink: Section = Section.apply(
-//              rows = Seq(SummaryListRow(key = Key.defaultObject, value = Value.defaultObject, actions = None)),
-//              addAnotherLink = transportEquipmentHelper(0).addOrRemoveEquipments
-//            )
             val sec = jsArray.value.zipWithIndex.flatMap {
               case (_, i) =>
                 transportEquipmentHelper(i).getSection
 
             }.toSeq
-            val ans: Seq[Section] = pre +: sec
-            ans
+             pre +: sec
+
           case None =>
             Section(
               sectionTitle = messages("checkYourAnswers.transport.equipment.active.withoutIndex"),
