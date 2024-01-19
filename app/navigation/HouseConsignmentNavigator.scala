@@ -39,61 +39,37 @@ class HouseConsignmentNavigator extends Navigator {
     case CountryPage(_, _) => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
   }
 
-  private def addDepartureTransportMeansYesNoCheckRoute(ua: UserAnswers, departureId: String, mode: Mode, houseConsignmentIndex: Index): Option[Call] = {
-    val isIe015HCDepartureTransportMeansDefined =
-      ua.departureData.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).map(_.DepartureTransportMeans.isDefined)
-
+  private def addDepartureTransportMeansYesNoCheckRoute(ua: UserAnswers, departureId: String, mode: Mode, houseConsignmentIndex: Index): Option[Call] =
     ua.get(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex)) match {
       case Some(true) =>
-        (ua.get(DepartureTransportMeansListSection(houseConsignmentIndex)), isIe015HCDepartureTransportMeansDefined) match {
-          case (None, Some(false)) => IdentificationPage(houseConsignmentIndex, Index(0)).route(ua, departureId, CheckMode)
-          case _                   => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        ua.get(DepartureTransportMeansListSection(houseConsignmentIndex)) match {
+          case None => IdentificationPage(houseConsignmentIndex, Index(0)).route(ua, departureId, CheckMode)
+          case _    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
     }
-
-  }
 
   private def IdentificationTypeCheckRoute(ua: UserAnswers,
                                            departureId: String,
                                            mode: Mode,
                                            houseConsignmentIndex: Index,
                                            departureTransportMeansIndex: Index
-  ): Option[Call] = {
-    val ie015IdentificationNumber = ua.departureData.Consignment.HouseConsignment
-      .lift(houseConsignmentIndex.position)
-      .flatMap(
-        _.DepartureTransportMeans.flatMap(
-          seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.typeOfIdentification)
-        )
-      )
-
-    (ua.get(IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex)), ie015IdentificationNumber) match {
-      case (None, None) => IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex).route(ua, departureId, CheckMode)
-      case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+  ): Option[Call] =
+    (ua.get(IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex))) match {
+      case None => IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex).route(ua, departureId, CheckMode)
+      case _    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-
-  }
 
   private def IdentificationNumberCheckRoute(ua: UserAnswers,
                                              departureId: String,
                                              mode: Mode,
                                              houseConsignmentIndex: Index,
                                              departureTransportMeansIndex: Index
-  ): Option[Call] = {
-    val ie015Country = ua.departureData.Consignment.HouseConsignment
-      .lift(houseConsignmentIndex.position)
-      .flatMap(
-        _.DepartureTransportMeans.flatMap(
-          seq => seq.lift(departureTransportMeansIndex.position).flatMap(_.nationality)
-        )
-      )
-
-    (ua.get(CountryPage(houseConsignmentIndex, departureTransportMeansIndex)), ie015Country) match {
-      case (None, None) => CountryPage(houseConsignmentIndex, departureTransportMeansIndex).route(ua, departureId, CheckMode)
-      case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+  ): Option[Call] =
+    (ua.get(CountryPage(houseConsignmentIndex, departureTransportMeansIndex))) match {
+      case None => CountryPage(houseConsignmentIndex, departureTransportMeansIndex).route(ua, departureId, CheckMode)
+      case _    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-  }
 
 }
