@@ -20,9 +20,8 @@ import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.{HouseConsignmentNavigator, Navigator}
-import pages.houseConsignment.index.departureTransportMeans.IdentificationNumberPage
-import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
+import navigation.HouseConsignmentNavigator
+import pages.houseConsignment.index.departureTransportMeans.{IdentificationNumberPage, IdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
