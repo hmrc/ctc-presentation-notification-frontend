@@ -35,6 +35,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo1",
@@ -49,6 +50,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
             )
           ),
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo3",
@@ -90,6 +92,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo1",
@@ -104,6 +107,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
             )
           ),
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo3",
@@ -145,6 +149,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo1",
@@ -180,6 +185,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignment(
+            None,
             List.empty
           )
         )
@@ -201,6 +207,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo1",
@@ -215,6 +222,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
             )
           ),
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo3",
@@ -250,6 +258,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo1",
@@ -264,6 +273,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
             )
           ),
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemNo3",

@@ -16,28 +16,22 @@
 
 package utils
 
-import models.reference.TransportMode.InlandMode
-import models.reference.transport.border.active.Identification
+import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.reference.{CustomsOffice, Nationality}
 import models.{Index, Mode, UserAnswers}
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import pages.houseConsignment.index.departureTransportMeans.{CountryPage, IdentificationNumberPage, IdentificationPage}
-import pages.sections.houseConsignment.HouseConsignmentListSection
 import pages.sections.houseConsignment.departureTransportMeans.DepartureTransportMeansListSection
-import pages.sections.transport.departureTransportMeans.TransportMeansSection
-import pages.transport.InlandModePage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.http.HeaderCarrier
-import viewModels.{Link, Section}
+import viewModels.Section
 
 import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -120,8 +114,7 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
-  private val departureTransportMeansListAnswer = {
-
+  private val departureTransportMeansListAnswer =
     userAnswers
       .get(DepartureTransportMeansListSection(houseConsignmentIndex))
       .getOrElse(
@@ -131,7 +124,6 @@ class HouseConsignmentAnswersHelper(
           case None => JsArray()
         }
       )
-  }
 
   def getSection(): Future[Seq[Section]] = {
 

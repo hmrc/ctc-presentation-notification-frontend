@@ -19,7 +19,7 @@ package controllers.houseConsignment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
@@ -34,7 +34,7 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
 
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("houseConsignment.index.addDepartureTransportMeansYesNo", houseConsignmentIndex.display)
-  private val mode         = NormalMode
+  private val mode         = CheckMode
 
   private lazy val addDepartureTransportMeansRoute =
     controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, houseConsignmentIndex).url

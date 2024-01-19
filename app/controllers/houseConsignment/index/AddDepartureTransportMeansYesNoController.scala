@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.{HouseConsignmentNavigator, Navigator}
+import navigation.HouseConsignmentNavigator
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -70,12 +70,10 @@ class AddDepartureTransportMeansYesNoController @Inject() (
     value: Boolean,
     departureId: String,
     houseConsignmentIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] = {
-    println(houseConsignmentIndex)
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), updatedAnswers, departureId, mode))
-  }
 
 }

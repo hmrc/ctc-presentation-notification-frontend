@@ -17,15 +17,11 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Index, Mode, UserAnswers}
 import pages.Page
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import pages.houseConsignment.index.departureTransportMeans.{CountryPage, IdentificationNumberPage, IdentificationPage}
 import pages.sections.houseConsignment.departureTransportMeans.DepartureTransportMeansListSection
-import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.index._
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
-import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.mvc.Call
 
 @Singleton

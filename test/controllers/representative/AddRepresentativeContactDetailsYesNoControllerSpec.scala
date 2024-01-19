@@ -23,7 +23,6 @@ import models.messages.{ContactPerson, Representative}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.representative.AddRepresentativeContactDetailsYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

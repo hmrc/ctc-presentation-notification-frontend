@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.{HouseConsignmentNavigator, Navigator}
+import navigation.HouseConsignmentNavigator
 import pages.QuestionPage
 import pages.houseConsignment.index.departureTransportMeans.IdentificationPage
 import pages.transport.InlandModePage

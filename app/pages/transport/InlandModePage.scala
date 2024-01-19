@@ -23,6 +23,8 @@ import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object InlandModePage extends QuestionPage[InlandMode] {
 
   override def path: JsPath = TransportSection.path \ toString
@@ -31,5 +33,13 @@ case object InlandModePage extends QuestionPage[InlandMode] {
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode))
+
+
+//    override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] =
+//      value match {
+//        case Some(false) => userAnswers.remove(TransportEquipmentPage)
+//        case _           => super.cleanup(value, userAnswers)
+//      }
+
 
 }

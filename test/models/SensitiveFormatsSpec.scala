@@ -140,6 +140,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         PlaceOfLoading = None,
         HouseConsignment = Seq(
           HouseConsignment(
+            None,
             List(
               ConsignmentItem(
                 "goodsItemsNo1",

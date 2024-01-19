@@ -61,13 +61,14 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator                               = new FakeNavigator(onwardRoute)
-  protected val fakeLoadingNavigator: LoadingNavigator                 = new FakeLoadingNavigator(onwardRoute)
-  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator = new FakeLocationOfGoodsNavigator(onwardRoute)
-  protected val fakeBorderNavigatorProvider: BorderNavigator           = new FakeBorderNavigator(onwardRoute)
-  protected val fakeContainerNavigator: ContainerNavigator             = new FakeContainerNavigator(onwardRoute)
-  protected val fakeEquipmentNavigator: EquipmentNavigator             = new FakeEquipmentNavigator(onwardRoute)
-  protected val fakeRepresentativeNavigator: RepresentativeNavigator   = new FakeRepresentativeNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                                 = new FakeNavigator(onwardRoute)
+  protected val fakeLoadingNavigator: LoadingNavigator                   = new FakeLoadingNavigator(onwardRoute)
+  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator   = new FakeLocationOfGoodsNavigator(onwardRoute)
+  protected val fakeBorderNavigatorProvider: BorderNavigator             = new FakeBorderNavigator(onwardRoute)
+  protected val fakeContainerNavigator: ContainerNavigator               = new FakeContainerNavigator(onwardRoute)
+  protected val fakeEquipmentNavigator: EquipmentNavigator               = new FakeEquipmentNavigator(onwardRoute)
+  protected val fakeRepresentativeNavigator: RepresentativeNavigator     = new FakeRepresentativeNavigator(onwardRoute)
+  protected val fakeHouseConsignmentNavigator: HouseConsignmentNavigator = new FakeHouseConsignmentNavigator(onwardRoute)
 
   private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -82,7 +83,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[BorderNavigator].toInstance(fakeBorderNavigatorProvider),
         bind[ContainerNavigator].toInstance(fakeContainerNavigator),
         bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator),
-        bind[RepresentativeNavigator].toInstance(fakeRepresentativeNavigator)
+        bind[RepresentativeNavigator].toInstance(fakeRepresentativeNavigator),
+        bind[HouseConsignmentNavigator].toInstance(fakeHouseConsignmentNavigator)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =

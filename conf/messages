@@ -568,6 +568,7 @@ departureTransportMeans.subheading = Departure means of transport
 
 houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add a departure means of transport for house consignment {0}?
+houseConsignment.index.addDepartureTransportMeansYesNo.change.hidden = if you want to add identification for the departure transport means
 houseConsignment.index.addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.

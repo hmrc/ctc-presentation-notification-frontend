@@ -61,3 +61,7 @@ class FakeEquipmentNavigator(desiredRoute: Call) extends EquipmentNavigator {
 class FakeRepresentativeNavigator(desiredRoute: Call) extends RepresentativeNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
+
+class FakeHouseConsignmentNavigator(desiredRoute: Call) extends HouseConsignmentNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}

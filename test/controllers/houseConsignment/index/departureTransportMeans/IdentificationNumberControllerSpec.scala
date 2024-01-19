@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.border.IdentificationNumberFormProvider
 import generators.Generators
-import models.NormalMode
+import models.CheckMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -40,7 +40,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
   private val formProvider = new IdentificationNumberFormProvider()
   private val form         = formProvider(prefix, houseConsignmentIndex.display)
-  private val mode         = NormalMode
+  private val mode         = CheckMode
 
   private lazy val identificationNumberRoute =
     controllers.houseConsignment.index.departureTransportMeans.routes.IdentificationNumberController

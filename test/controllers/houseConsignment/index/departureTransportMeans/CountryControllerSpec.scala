@@ -21,7 +21,7 @@ import controllers.houseConsignment.index.departureTransportMeans.{routes => dep
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList}
+import models.{CheckMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.departureTransportMeans.CountryPage
@@ -42,7 +42,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
   private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("houseConsignment.index.departureTransportMeans.country", nationalityList, houseConsignmentIndex.display)
-  private val mode         = NormalMode
+  private val mode         = CheckMode
 
   private lazy val countryRoute =
     departureTransportMeansRoutes.CountryController.onPageLoad(departureId, mode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex).url

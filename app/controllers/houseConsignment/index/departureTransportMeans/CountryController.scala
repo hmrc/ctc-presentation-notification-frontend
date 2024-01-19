@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.{HouseConsignmentNavigator, Navigator}
+import navigation.HouseConsignmentNavigator
 import pages.houseConsignment.index.departureTransportMeans.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

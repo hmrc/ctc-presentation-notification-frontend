@@ -39,6 +39,7 @@ class ConsignmentSpec extends SpecBase {
           None,
           Seq(
             HouseConsignment(
+              None,
               List(
                 ConsignmentItem(
                   "1",
@@ -53,6 +54,7 @@ class ConsignmentSpec extends SpecBase {
               )
             ),
             HouseConsignment(
+              None,
               List(
                 ConsignmentItem(
                   "3",

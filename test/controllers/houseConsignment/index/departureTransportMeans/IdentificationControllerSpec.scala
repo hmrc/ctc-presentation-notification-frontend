@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.mockito.ArgumentMatchers.any
@@ -45,7 +45,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val formProvider = new EnumerableFormProvider()
   private val form         = formProvider[TransportMeansIdentification]("houseConsignment.index.departureTransportMeans.identification", identificationTypes)
-  private val mode         = NormalMode
+  private val mode         = CheckMode
 
   private lazy val identificationRoute = controllers.houseConsignment.index.departureTransportMeans.routes.IdentificationController
     .onPageLoad(departureId, mode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex)

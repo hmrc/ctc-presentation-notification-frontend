@@ -81,6 +81,15 @@ object TestMessageData {
       Some("FR")
     )
 
+  val houseConsignmentDepartureTransportMeans: Seq[DepartureTransportMeans] =
+    Seq(
+      DepartureTransportMeans(
+        Some("10"),
+        Some("BX857GGE"),
+        Some("FR")
+      )
+    )
+
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
 
   val consignment: Consignment = Consignment(
@@ -94,6 +103,7 @@ object TestMessageData {
     PlaceOfLoading = Some(placeOfLoading),
     HouseConsignment = Seq(
       HouseConsignment(
+        DepartureTransportMeans = Some(houseConsignmentDepartureTransportMeans),
         List(
           ConsignmentItem(
             "18914",
@@ -271,6 +281,13 @@ object TestMessageData {
        |        },
        |        "HouseConsignment": [
        |            {
+       |                "DepartureTransportMeans": [
+       |                  {
+       |                    "typeOfIdentification": "10",
+       |                    "identificationNumber": "BX857GGE",
+       |                    "nationality": "FR"
+       |                  }
+       |                ],
        |                "ConsignmentItem": [
        |                    {
        |                        "goodsItemNumber": "18914",
