@@ -102,7 +102,7 @@ object PresentationNotificationAnswersViewModel {
                 transportEquipmentHelper(i).getSection
 
             }.toSeq
-             pre +: sec
+            pre +: sec
 
           case None =>
             Section(
