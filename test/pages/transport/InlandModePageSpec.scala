@@ -18,6 +18,9 @@ package pages.transport
 
 import models.reference.TransportMode.InlandMode
 import pages.behaviours.PageBehaviours
+import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
+import pages.houseConsignment.index.departureTransportMeans.{CountryPage, IdentificationNumberPage, IdentificationPage}
+import pages.sections.houseConsignment.HouseConsignmentListSection
 
 class InlandModePageSpec extends PageBehaviours {
 
@@ -28,5 +31,25 @@ class InlandModePageSpec extends PageBehaviours {
     beSettable[InlandMode](InlandModePage)
 
     beRemovable[InlandMode](InlandModePage)
+
+    "cleanup" - {
+      "when option 5 selected" - {
+        "must remove HouseConsignmentSection in 170" in {
+          forAll(arbitraryTransportMeansIdentification.arbitrary, nonEmptyString, arbitraryNationality.arbitrary) {
+            (identification, identificationNumber, nationality) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), true)
+                .setValue(IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identification)
+                .setValue(IdentificationNumberPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identificationNumber)
+                .setValue(CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), nationality)
+
+              val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
+
+              result.get(HouseConsignmentListSection) must not be defined
+
+          }
+        }
+      }
+    }
   }
 }

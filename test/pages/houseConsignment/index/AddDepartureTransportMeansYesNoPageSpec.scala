@@ -17,6 +17,8 @@
 package pages.houseConsignment.index
 
 import pages.behaviours.PageBehaviours
+import pages.houseConsignment.index.departureTransportMeans.{CountryPage, IdentificationNumberPage, IdentificationPage}
+import pages.sections.houseConsignment.departureTransportMeans.DepartureTransportMeansListSection
 
 class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
 
@@ -28,6 +30,24 @@ class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddDepartureTransportMeansYesNoPage(houseConsignmentIndex))
 
-    //    "cleanup" - {} // TODO Add cleanup logic test
+    "cleanup" - {
+      "when no selected" - {
+        "must remove DepartureTransportMeans from HC in 170" in {
+          forAll(arbitraryTransportMeansIdentification.arbitrary, nonEmptyString, arbitraryNationality.arbitrary) {
+            (identification, identificationNumber, nationality) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), true)
+                .setValue(IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identification)
+                .setValue(IdentificationNumberPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identificationNumber)
+                .setValue(CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), nationality)
+
+              val result = userAnswers.setValue(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), false)
+
+              result.get(DepartureTransportMeansListSection(houseConsignmentIndex)) must not be defined
+
+          }
+        }
+      }
+    }
   }
 }

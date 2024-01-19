@@ -19,6 +19,7 @@ package pages.transport
 import models.reference.TransportMode.InlandMode
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
+import pages.sections.houseConsignment.HouseConsignmentListSection
 import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,12 +35,10 @@ case object InlandModePage extends QuestionPage[InlandMode] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode))
 
-
-//    override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] =
-//      value match {
-//        case Some(false) => userAnswers.remove(TransportEquipmentPage)
-//        case _           => super.cleanup(value, userAnswers)
-//      }
-
+  override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(InlandMode("5", _)) => userAnswers.remove(HouseConsignmentListSection)
+      case _                        => super.cleanup(value, userAnswers)
+    }
 
 }
