@@ -103,6 +103,7 @@ object PresentationNotificationAnswersViewModel {
             val sectionFutures: Seq[Future[Seq[Section]]] =
               userAnswers
                 .get(HouseConsignmentListSection)
+                //TODO: Remove this when Kara's implementation is in place
                 .getOrElse {
                   val houseConsignment = userAnswers.departureData.Consignment.HouseConsignment
                   Json.toJson(houseConsignment).as[JsArray]

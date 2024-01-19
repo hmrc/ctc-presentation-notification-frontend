@@ -48,6 +48,7 @@ class HouseConsignmentAnswersHelper(
     page = AddDepartureTransportMeansYesNoPage(houseConsignmentIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "houseConsignment.index.addDepartureTransportMeansYesNo",
+    //TODO: Remove this when Kara's implementation is in place
     findValueInDepartureData = message => message.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).map(_.DepartureTransportMeans.isDefined),
     id = Some("change-add-departure-means-of-transport"),
     args = houseConsignmentIndex.display
@@ -56,6 +57,7 @@ class HouseConsignmentAnswersHelper(
   def identificationType(departureTransportMeansIndex: Index): Future[Option[SummaryListRow]] =
     fetchValue[TransportMeansIdentification](
       page = IdentificationPage(houseConsignmentIndex, departureTransportMeansIndex),
+      //TODO: Remove this when Kara's implementation is in place
       valueFromDepartureData = userAnswers.departureData.Consignment.HouseConsignment
         .lift(houseConsignmentIndex.position)
         .flatMap(
@@ -80,6 +82,7 @@ class HouseConsignmentAnswersHelper(
     page = IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "houseConsignment.index.departureTransportMeans.identificationNumber",
+    //TODO: Remove this when Kara's implementation is in place
     findValueInDepartureData = _.Consignment.HouseConsignment
       .lift(houseConsignmentIndex.position)
       .flatMap(
@@ -94,6 +97,7 @@ class HouseConsignmentAnswersHelper(
   def nationality(departureTransportMeansIndex: Index): Future[Option[SummaryListRow]] =
     fetchValue[Nationality](
       page = CountryPage(houseConsignmentIndex, departureTransportMeansIndex),
+      //TODO: Remove this when Kara's implementation is in place
       valueFromDepartureData = userAnswers.departureData.Consignment.HouseConsignment
         .lift(houseConsignmentIndex.position)
         .flatMap(
@@ -117,6 +121,7 @@ class HouseConsignmentAnswersHelper(
   private val departureTransportMeansListAnswer =
     userAnswers
       .get(DepartureTransportMeansListSection(houseConsignmentIndex))
+      //TODO: Remove this when Kara's implementation is in place
       .getOrElse(
         userAnswers.departureData.Consignment.HouseConsignment.lift(houseConsignmentIndex.position).flatMap(_.DepartureTransportMeans) match {
           case Some(departureActiveBorderMeans) =>
