@@ -305,7 +305,8 @@ object TestMessageData {
        |        }
        |    ],
        |    "TransitOperation": {
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "indicatorString"
        |    },
        |    "Authorisation": [
        |        {
@@ -402,11 +403,13 @@ object TestMessageData {
        |                "eMailAddress": "sullivan@epic.com"
        |            }
        |        },
-       |        "DepartureTransportMeans": {
+       |        "DepartureTransportMeans": [
+       |           {
        |                "typeOfIdentification": "10",
        |                "identificationNumber": "BX857GGE",
        |                "nationality": "FR"
-       |        },
+       |            }
+       |        ],
        |        "ActiveBorderTransportMeans": [
        |            {
        |                "sequenceNumber": "11",
