@@ -19,25 +19,21 @@ package utils
 import models.reference.Item
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.equipment.{EquipmentsSection, ItemsSection, SealsSection}
-import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.i18n.Messages
-import services.CheckYourAnswersReferenceDataService
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.{Link, Section}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
-  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode,
   equipmentIndex: Index
-)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   private val lastIndex: Index = Index(
@@ -91,7 +87,7 @@ class TransportEquipmentAnswersHelper(
 
   def seals: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(SealsSection(equipmentIndex))(seal)
 
-  def addOrRemoveSeals: Option[Link] = buildLink(SealsSection(equipmentIndex), false) {
+  def addOrRemoveSeals(): Option[Link] = buildLink(SealsSection(equipmentIndex), doesSectionExistInDepartureData = false) {
     Link(
       id = "add-or-remove-seals",
       text = messages("transport.equipment.index.checkYourAnswers.seals.addOrRemove"),
@@ -99,7 +95,7 @@ class TransportEquipmentAnswersHelper(
     )
   }
 
-  def addOrRemoveEquipments: Option[Link] = buildLink(EquipmentsSection, false) {
+  def addOrRemoveEquipments(): Option[Link] = buildLink(EquipmentsSection, doesSectionExistInDepartureData = false) {
     Link(
       id = "add-or-remove-transport-equipment",
       text = messages("checkYourAnswers.transportEquipment.addOrRemove"),
@@ -119,7 +115,7 @@ class TransportEquipmentAnswersHelper(
 
   def items: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(ItemsSection(equipmentIndex))(item)
 
-  def addOrRemoveItems: Option[Link] = buildLink(ItemsSection(equipmentIndex), false) {
+  def addOrRemoveItems(): Option[Link] = buildLink(ItemsSection(equipmentIndex), doesSectionExistInDepartureData = false) {
     Link(
       id = "add-or-remove-items",
       text = messages("transport.equipment.index.checkYourAnswers.items.addOrRemove"),
@@ -127,41 +123,63 @@ class TransportEquipmentAnswersHelper(
     )
   }
 
-  val preSection: Section = Section(
-    rows = Seq(addAnyTransportEquipmentYesNo, addContainerIdentificationNumberYesNo, containerIdentificationNumber).flatten
+  private val preSection: Section = Section(
+    rows = Seq(addAnyTransportEquipmentYesNo(), addContainerIdentificationNumberYesNo(), containerIdentificationNumber()).flatten
   )
 
-  def getSection: Seq[Section] = {
+  private def sealAndItemsSections: Seq[Section] = {
 
     val sectionSeals: Section =
       Section(
         sectionTitle = messages("checkYourAnswers.transport.equipment.active.withIndex", equipmentIndex.display),
         rows = Seq(sealsYesNo, seals).flatten,
-        addAnotherLink = addOrRemoveSeals
+        addAnotherLink = addOrRemoveSeals()
       )
 
-    val secondLink: Option[Link] = if (equipmentIndex == lastIndex) addOrRemoveEquipments else None
+    val secondLink: Option[Link] = if (equipmentIndex == lastIndex) addOrRemoveEquipments() else None
 
     val sectionItems: Section =
       Section(
         rows = items,
-        addAnotherLink = addOrRemoveItems,
+        addAnotherLink = addOrRemoveItems(),
         addSecondLink = secondLink,
         optionalInformationHeading = messages("checkYourAnswers.transportEquipment.item.subHeading")
       )
 
-    (Seq(sectionSeals, sectionItems))
+    Seq(sectionSeals, sectionItems)
   }
 
 }
 
 object TransportEquipmentAnswersHelper {
 
-  def apply(userAnswers: UserAnswers,
-            departureId: String,
-            checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
-            mode: Mode,
-            activeIndex: Index
-  )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier) =
-    new TransportEquipmentAnswersHelper(userAnswers, departureId, checkYourAnswersReferenceDataService, mode, activeIndex)
+  def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, activeIndex: Index)(implicit messages: Messages, ec: ExecutionContext) =
+    new TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
+
+  def sections(userAnswers: UserAnswers, departureId: String, mode: Mode)(implicit messages: Messages, ec: ExecutionContext): Seq[Section] = {
+
+    def transportEquipmentHelper(index: Int) =
+      TransportEquipmentAnswersHelper(userAnswers, departureId, mode, Index(index))
+
+    val pre: Section = transportEquipmentHelper(0).preSection
+
+    userAnswers
+      .get(EquipmentsSection) match {
+      case Some(jsArray) =>
+        val transportSec: Seq[Section] = jsArray.value.zipWithIndex.flatMap {
+          case (_, i) =>
+            transportEquipmentHelper(i).sealAndItemsSections
+
+        }.toSeq
+        pre +: transportSec
+
+      case None =>
+        Section(
+          sectionTitle = messages("checkYourAnswers.transport.equipment.active.withoutIndex"),
+          rows = Seq(transportEquipmentHelper(0).addAnyTransportEquipmentYesNo()).flatten
+        ).toSeq
+
+    }
+
+  }
 }

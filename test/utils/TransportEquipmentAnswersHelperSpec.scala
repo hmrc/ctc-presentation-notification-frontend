@@ -24,19 +24,16 @@ import models.reference.Item
 import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.sections.transport.equipment.{EquipmentSection, ItemSection, ItemsSection, SealSection}
+import pages.sections.transport.equipment.{EquipmentSection, ItemSection, SealSection}
 import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
 import play.api.libs.json.Json
-import services.CheckYourAnswersReferenceDataService
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val refDataService = mock[CheckYourAnswersReferenceDataService]
 
   "TransportEquipmentAnswersHelper" - {
 
@@ -48,7 +45,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
               val helper =
-                new TransportEquipmentAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, refDataService, mode, activeIndex)
+                new TransportEquipmentAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mode, activeIndex)
               val result = helper.addAnyTransportEquipmentYesNo()
 
               result mustBe None
@@ -61,7 +58,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, userAnswers) =>
               val setUserAnswers = userAnswers.setValue(AddTransportEquipmentYesNoPage, true)
-              val helper         = new TransportEquipmentAnswersHelper(setUserAnswers, departureId, refDataService, mode, activeIndex)
+              val helper         = new TransportEquipmentAnswersHelper(setUserAnswers, departureId, mode, activeIndex)
               val result         = helper.addAnyTransportEquipmentYesNo().get
 
               result.key.value mustBe "Do you want to add any transport equipment?"
@@ -84,7 +81,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when AddContainerIdentificationNumberYesNoPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.addContainerIdentificationNumberYesNo()
               result mustBe None
           }
@@ -98,7 +95,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val answers = emptyUserAnswers
                 .setValue(AddContainerIdentificationNumberYesNoPage(index), true)
 
-              val helper = TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
+              val helper = TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
               val result = helper.addContainerIdentificationNumberYesNo().get
 
               result.key.value mustBe "Do you want to add a container identification number?"
@@ -124,7 +121,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when ContainerIdentificationNumberPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.containerIdentificationNumber()
               result mustBe None
           }
@@ -138,7 +135,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val answers = emptyUserAnswers
                 .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
 
-              val helper = TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, index)
+              val helper = TransportEquipmentAnswersHelper(answers, departureId, mode, index)
               val result = helper.containerIdentificationNumber().get
 
               result.key.value mustBe "Container identification number"
@@ -162,7 +159,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when AddSealYesNoPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.sealsYesNo
               result mustBe None
           }
@@ -176,7 +173,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val answers = emptyUserAnswers
                 .setValue(AddSealYesNoPage(index), true)
 
-              val helper = new TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
+              val helper = new TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
               val result = helper.sealsYesNo.get
 
               result.key.value mustBe "Do you want to add a seal?"
@@ -200,7 +197,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when seal is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.seal(sealIndex)
               result mustBe None
           }
@@ -212,7 +209,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
           forAll(arbitrary[Mode], nonEmptyString) {
             (mode, sealIdNumber) =>
               val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)
-              val helper      = TransportEquipmentAnswersHelper(userAnswers, departureId, refDataService, mode, activeIndex)
+              val helper      = TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
               val result      = helper.seal(index).get
 
               result.key.value mustBe "Seal 1"
@@ -236,8 +233,8 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when seals array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
-              val result = helper.addOrRemoveSeals
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
+              val result = helper.addOrRemoveSeals()
               result mustBe None
           }
         }
@@ -248,8 +245,8 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers.setValue(SealSection(equipmentIndex, Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
-              val result  = helper.addOrRemoveSeals.get
+              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
+              val result  = helper.addOrRemoveSeals().get
 
               result.id mustBe "add-or-remove-seals"
               result.text mustBe "Add or remove seals"
@@ -264,8 +261,8 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when equipments array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, index)
-              val result = helper.addOrRemoveEquipments
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, index)
+              val result = helper.addOrRemoveEquipments()
               result mustBe None
           }
         }
@@ -276,8 +273,8 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers.setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, index)
-              val result  = helper.addOrRemoveEquipments.get
+              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, mode, index)
+              val result  = helper.addOrRemoveEquipments().get
 
               result.id mustBe "add-or-remove-transport-equipment"
               result.text mustBe "Add or remove transport equipment"
@@ -292,7 +289,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when item is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.item(itemIndex)
               result mustBe None
           }
@@ -304,7 +301,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
           forAll(arbitrary[Mode], nonEmptyString, positiveIntsMinMax(1, 100)) {
             (mode, description, itemNumber) =>
               val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, sealIndex), Item(goodsItemNumber = itemNumber, description = description))
-              val helper      = TransportEquipmentAnswersHelper(userAnswers, departureId, refDataService, mode, activeIndex)
+              val helper      = TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
               val result      = helper.item(itemIndex).get
 
               result.key.value mustBe "Item 1"
@@ -328,8 +325,8 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when items array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
-              val result = helper.addOrRemoveItems
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
+              val result = helper.addOrRemoveItems()
               result mustBe None
           }
         }
@@ -340,8 +337,8 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers.setValue(ItemSection(equipmentIndex, Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
-              val result  = helper.addOrRemoveItems.get
+              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
+              val result  = helper.addOrRemoveItems().get
 
               result.id mustBe "add-or-remove-items"
               result.text mustBe "Add or remove items"

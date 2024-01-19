@@ -19,12 +19,9 @@ package viewModels
 import config.FrontendAppConfig
 import models.{CheckMode, Index, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
-import pages.sections.transport.equipment.EquipmentsSection
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
@@ -50,12 +47,11 @@ object PresentationNotificationAnswersViewModel {
     ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                               = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val placeOfLoadingAnswersHelper          = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val locationOfGoodsHelper                = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val transitHolderAnswerHelper            = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val activeBorderHelper                   = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
-      def transportEquipmentHelper(index: Int) = TransportEquipmentAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(index))
+      val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
 
       val firstSection = Section(
         rows = Seq(
@@ -92,34 +88,13 @@ object PresentationNotificationAnswersViewModel {
         }
       }
 
-      val transportEquipmentSection: Seq[Section] = {
-        userAnswers
-          .get(EquipmentsSection) match {
-          case Some(jsArray) =>
-            val pre = transportEquipmentHelper(0).preSection
-            val sec = jsArray.value.zipWithIndex.flatMap {
-              case (_, i) =>
-                transportEquipmentHelper(i).getSection
-
-            }.toSeq
-            pre +: sec
-
-          case None =>
-            Section(
-              sectionTitle = messages("checkYourAnswers.transport.equipment.active.withoutIndex"),
-              rows = Seq(transportEquipmentHelper(0).addAnyTransportEquipmentYesNo()).flatten
-            ).toSeq
-
-        }
-
-      }
-
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
         borderSection                     <- helper.borderModeSection
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
+        transportEquipmentSection = TransportEquipmentAnswersHelper.sections(userAnswers, departureId, mode)
         sections =
           firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq ++ transportEquipmentSection
       } yield new PresentationNotificationAnswersViewModel(sections)

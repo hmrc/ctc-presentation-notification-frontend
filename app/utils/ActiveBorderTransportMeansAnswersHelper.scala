@@ -58,15 +58,14 @@ class ActiveBorderTransportMeansAnswersHelper(
     id = Some("change-add-identification-for-the-border-means-of-transport")
   )
 
-  def identificationType: Future[Option[SummaryListRow]] = {
-    val gg = fetchValue[Identification](
+  def identificationType: Future[Option[SummaryListRow]] =
+    fetchValue[Identification](
       page = IdentificationPage(activeIndex),
       valueFromDepartureData = userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
         seq => seq.lift(activeIndex.position).flatMap(_.typeOfIdentification)
       ),
       refDataLookup = cyaRefDataService.getBorderMeansIdentification
-    )
-    gg.map {
+    ).map {
       identification =>
         buildRowWithAnswer[Identification](
           page = IdentificationPage(activeIndex),
@@ -76,7 +75,6 @@ class ActiveBorderTransportMeansAnswersHelper(
           id = Some("change-identification")
         )
     }
-  }
 
   def identificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IdentificationNumberPage(activeIndex),
