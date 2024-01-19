@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.CheckMode
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.mockito.ArgumentMatchers.any

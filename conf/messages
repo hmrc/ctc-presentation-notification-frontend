@@ -567,7 +567,6 @@ addDepartureTransportMeansYesNo.paragraph = This is the means of transport used 
 departureTransportMeans.subheading = Departure means of transport
 
 
-//TODO: Ask Gavin to add this to the content page
 houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.change.hidden = if you want to add identification for the departure transport means
