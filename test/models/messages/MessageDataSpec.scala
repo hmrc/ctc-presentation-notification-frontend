@@ -16,7 +16,7 @@
 
 package models.messages
 
-import base.TestMessageData.{incompleteJsonValue, jsonValue, messageData}
+import base.TestMessageData.{incompleteJsonValue, jsonValue, jsonValueNormalNoLimitDate, messageData}
 import models.messages.AuthorisationType.{C521, C523, Other}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,12 +30,24 @@ class MessageDataSpec extends AnyFreeSpec with Matchers with OptionValues {
       jsonValue.as[MessageData] mustBe messageData
     }
 
-    "must return true when completed data sent through" in {
-      jsonValue.as[MessageData].isDataComplete mustBe true
+    "must return true when completed data sent through as simplified" in {
+      jsonValue.as[MessageData].isDataCompleteSimplified mustBe true
     }
 
-    "must return false when incomplete data sent through" in {
-      incompleteJsonValue.as[MessageData].isDataComplete mustBe false
+    "must return false when incomplete data sent through as simplified" in {
+      incompleteJsonValue.as[MessageData].isDataCompleteSimplified mustBe false
+    }
+
+    "must return false when incomplete data sent through as simplified - missing limit date" in {
+      jsonValueNormalNoLimitDate.as[MessageData].isDataCompleteSimplified mustBe false
+    }
+
+    "must return true when completed data sent through as normal" in {
+      jsonValueNormalNoLimitDate.as[MessageData].isDataCompleteNormal mustBe true
+    }
+
+    "must return false when incomplete data sent through as normal" in {
+      incompleteJsonValue.as[MessageData].isDataCompleteNormal mustBe false
     }
 
     "isSimplified" - {

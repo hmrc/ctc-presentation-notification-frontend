@@ -47,6 +47,8 @@ object TestMessageData {
 
   val contactPerson: ContactPerson = ContactPerson("Paul Sully", "07508994566", Some("sullivan@epic.com"))
 
+  val representative: Representative = Representative("IdNumber", "2", Some(contactPerson))
+
   val locationOfGoods: LocationOfGoods = LocationOfGoods(
     "A",
     "Q",
@@ -72,6 +74,13 @@ object TestMessageData {
     )
   )
 
+  val departureTransportMeans: DepartureTransportMeans =
+    DepartureTransportMeans(
+      Some("10"),
+      Some("BX857GGE"),
+      Some("FR")
+    )
+
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
 
   val consignment: Consignment = Consignment(
@@ -80,6 +89,7 @@ object TestMessageData {
     inlandModeOfTransport = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
+    DepartureTransportMeans = Some(departureTransportMeans),
     ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
     PlaceOfLoading = Some(placeOfLoading),
     HouseConsignment = Seq(
@@ -106,7 +116,7 @@ object TestMessageData {
 
   val customsOfficeOfDestination: String = "GB000012"
 
-  val holderOfTheTransitProcedure = HolderOfTheTransitProcedure(
+  val holderOfTheTransitProcedure: HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
     identificationNumber = Some("identificationNumber"),
     TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
     ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
@@ -120,6 +130,7 @@ object TestMessageData {
       transitOperation,
       Some(authorisation),
       holderOfTheTransitProcedure,
+      Some(representative),
       customsOfficeOfTransitDeclared,
       None,
       consignment
@@ -167,6 +178,15 @@ object TestMessageData {
        |            "city":
        |            "Newcastle",
        |            "country": "GB"
+       |        }
+       |    },
+       |    "Representative": {
+       |        "identificationNumber": "IdNumber",
+       |        "status": "2",
+       |        "ContactPerson": {
+       |            "name": "Paul Sully",
+       |            "phoneNumber": "07508994566",
+       |            "eMailAddress": "sullivan@epic.com"
        |        }
        |    },
        |    "Consignment": {
@@ -228,6 +248,161 @@ object TestMessageData {
        |                "phoneNumber": "07508994566",
        |                "eMailAddress": "sullivan@epic.com"
        |            }
+       |        },
+       |        "DepartureTransportMeans": {
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR"
+       |        },
+       |        "ActiveBorderTransportMeans": [
+       |            {
+       |                "sequenceNumber": "11",
+       |                "customsOfficeAtBorderReferenceNumber": "GB000028",
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR",
+       |                "conveyanceReferenceNumber": "REF2"
+       |            }
+       |        ],
+       |        "PlaceOfLoading": {
+       |            "UNLocode": "UNCODEX",
+       |            "country": "GB",
+       |            "location": "Sheffield"
+       |        },
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
+       |}
+       |""".stripMargin
+  )
+
+  val jsonValueNormalNoLimitDate: JsValue = Json.parse(
+    s"""
+       |{
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
+       |    },
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
+       |    },
+       |    "CustomsOfficeOfTransitDeclared": [
+       |        {
+       |        "referenceNumber": "GB000013"
+       |        }
+       |    ],
+       |    "TransitOperation": {
+       |        "security": "1"
+       |    },
+       |    "Authorisation": [
+       |        {
+       |            "type": "C521",
+       |            "referenceNumber": "AB123"
+       |        },
+       |        {
+       |            "type": "SomethingElse",
+       |            "referenceNumber": "CD123"
+       |        }
+       |    ],
+       |    "HolderOfTheTransitProcedure": {
+       |        "identificationNumber": "identificationNumber",
+       |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
+       |        "ContactPerson": {
+       |            "name": "name",
+       |            "phoneNumber": "phone",
+       |            "eMailAddress": "email"
+       |        },
+       |        "Address": {
+       |            "streetAndNumber": "Address Line 1",
+       |            "postcode": "NE53KL",
+       |            "city":
+       |            "Newcastle",
+       |            "country": "GB"
+       |        }
+       |    },
+       |    "Representative": {
+       |        "identificationNumber": "IdNumber",
+       |        "status": "2",
+       |        "ContactPerson": {
+       |            "name": "Paul Sully",
+       |            "phoneNumber": "07508994566",
+       |            "eMailAddress": "sullivan@epic.com"
+       |        }
+       |    },
+       |    "Consignment": {
+       |        "containerIndicator": "1",
+       |        "modeOfTransportAtTheBorder": "2",
+       |        "inlandModeOfTransport": "2",
+       |        "TransportEquipment": [
+       |            {
+       |                "sequenceNumber": "26754",
+       |                "containerIdentificationNumber": "CIN2",
+       |                "numberOfSeals": 1234,
+       |                "Seal": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "identifier": "seal1"
+       |                    },
+       |                    {
+       |                        "sequenceNumber": "2",
+       |                        "identifier": "seal2"
+       |                    }
+       |                ],
+       |                "GoodsReference": [
+       |                    {
+       |                        "sequenceNumber": "1",
+       |                        "declarationGoodsItemNumber": 5
+       |                    }
+       |                ]
+       |            }
+       |        ],
+       |        "LocationOfGoods": {
+       |            "typeOfLocation": "A",
+       |            "qualifierOfIdentification": "Q",
+       |            "authorisationNumber": "AUTH1",
+       |            "additionalIdentifier": "ADD1",
+       |            "UNLocode": "FG345UNLOCODE",
+       |            "CustomsOffice": {
+       |                "referenceNumber": "GB000068"
+       |            },
+       |            "GNSS": {
+       |                "latitude": "44.968046",
+       |                "longitude": "-94.420307"
+       |            },
+       |            "EconomicOperator": {
+       |                "identificationNumber": "ECO247"
+       |            },
+       |            "Address": {
+       |                "streetAndNumber": "Address Line 1",
+       |                "postcode": "NE53KL",
+       |                "city": "Newcastle",
+       |                "country": "GB"
+       |            },
+       |            "PostcodeAddress": {
+       |                "houseNumber": "House number 1",
+       |                "postcode": "NE52ZL",
+       |                "country": "GB"
+       |            },
+       |            "ContactPerson": {
+       |                "name": "Paul Sully",
+       |                "phoneNumber": "07508994566",
+       |                "eMailAddress": "sullivan@epic.com"
+       |            }
+       |        },
+       |        "DepartureTransportMeans": {
+       |                "typeOfIdentification": "10",
+       |                "identificationNumber": "BX857GGE",
+       |                "nationality": "FR"
        |        },
        |        "ActiveBorderTransportMeans": [
        |            {

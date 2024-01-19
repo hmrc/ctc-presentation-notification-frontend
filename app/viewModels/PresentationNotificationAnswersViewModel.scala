@@ -52,6 +52,7 @@ object PresentationNotificationAnswersViewModel {
       val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
       val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      val representativeHelper        = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 
       val firstSection = Section(
         rows = Seq(
@@ -88,6 +89,8 @@ object PresentationNotificationAnswersViewModel {
         }
       }
 
+      val representativeSection: Section = representativeHelper.representativeSection
+
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
         borderSection                     <- helper.borderModeSection
@@ -96,7 +99,7 @@ object PresentationNotificationAnswersViewModel {
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         transportEquipmentSection = TransportEquipmentAnswersHelper.sections(userAnswers, departureId, mode)
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq ++ transportEquipmentSection
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq ++ transportEquipmentSection
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }
