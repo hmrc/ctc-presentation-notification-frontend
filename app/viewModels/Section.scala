@@ -18,7 +18,12 @@ package viewModels
 
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow], addAnotherLink: Option[Link], addSecondLink: Option[Link] = None) {
+case class Section(sectionTitle: Option[String],
+                   rows: Seq[SummaryListRow],
+                   addAnotherLink: Option[Link],
+                   addSecondLink: Option[Link] = None,
+                   optionalInformationHeading: Option[String] = None
+) {
 
   def removeTitle(): Section = this.copy(sectionTitle = None)
 }
@@ -43,6 +48,7 @@ object Section {
   def apply(addAnotherLink: Option[Link]): Section =
     new Section(None, Nil, addAnotherLink)
 
-  def apply(sectionTitle: String, rows: Seq[SummaryListRow], addAnotherLink: Option[Link], addSecondLink: Option[Link]): Section =
-    new Section(Some(sectionTitle), rows, addAnotherLink, addSecondLink)
+  def apply(rows: Seq[SummaryListRow], addAnotherLink: Option[Link], addSecondLink: Option[Link], optionalInformationHeading: String): Section =
+    new Section(None, rows, addAnotherLink, addSecondLink, optionalInformationHeading = Some(optionalInformationHeading))
+
 }

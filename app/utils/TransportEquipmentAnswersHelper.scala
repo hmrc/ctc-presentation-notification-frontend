@@ -143,10 +143,11 @@ class TransportEquipmentAnswersHelper(
     val secondLink: Option[Link] = if (equipmentIndex == lastIndex) addOrRemoveEquipments else None
 
     val sectionItems: Section =
-      Section(sectionTitle = messages("checkYourAnswers.transportEquipment.item.subHeading"),
-              rows = items,
-              addAnotherLink = addOrRemoveItems,
-              addSecondLink = secondLink
+      Section(
+        rows = items,
+        addAnotherLink = addOrRemoveItems,
+        addSecondLink = secondLink,
+        optionalInformationHeading = messages("checkYourAnswers.transportEquipment.item.subHeading")
       )
 
     (Seq(sectionSeals, sectionItems))
