@@ -37,7 +37,7 @@ class CheckInformationControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(lrn.value)(request, messages).toString
+      contentAsString(result) mustEqual view(lrn.value, departureId)(request, messages).toString
     }
   }
 }

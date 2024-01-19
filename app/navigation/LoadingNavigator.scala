@@ -100,7 +100,7 @@ object LoadingNavigator {
           } else containerIndicatorPageNavigation(departureId, mode, ua)
         case None => LimitDatePage.route(ua, departureId, mode)
       }
-    } else if (ua.departureData.Consignment.containerIndicator.isEmpty | ua.departureData.TransitOperation.limitDate.isEmpty) {
+    } else if (ua.departureData.Consignment.containerIndicator.isEmpty) {
       ContainerIndicatorPage.route(ua, departureId, mode)
     } else containerIndicatorPageNavigation(departureId, mode, ua)
 

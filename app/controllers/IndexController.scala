@@ -56,10 +56,16 @@ class IndexController @Inject() (
               )
             )
         )
-      } yield departureData.data.isDataComplete match {
-        case true  => Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
-        case false => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
-      }).getOrElse(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
+      } yield
+        if (departureData.data.isSimplified) departureData.data.isDataCompleteSimplified match {
+          case true  => Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
+          case false => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+        }
+        else
+          departureData.data.isDataCompleteNormal match {
+            case true  => Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
+            case false => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+          }).getOrElse(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
   }
 
   private def retrieveLRN(messageData: MessageData, departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] =

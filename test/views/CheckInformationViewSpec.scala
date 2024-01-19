@@ -23,7 +23,7 @@ import views.html.CheckInformationView
 class CheckInformationViewSpec extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[CheckInformationView].apply(lrn.value)(fakeRequest, messages)
+    injector.instanceOf[CheckInformationView].apply(lrn.value, departureId)(fakeRequest, messages)
 
   override val prefix: String = "checkInformation"
 
