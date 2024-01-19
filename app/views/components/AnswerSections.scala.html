@@ -38,5 +38,9 @@
         @section.addAnotherLink.map { link =>
             <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
         }
+
+        @section.addSecondLink.map { secondLink =>
+            <p class="govuk-body"><a class="govuk-link" href="@secondLink.href" id="@secondLink.id">@secondLink.text</a></p>
+        }
     }
 }

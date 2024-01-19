@@ -73,7 +73,8 @@ checkYourAnswers.transportMeans.active.change.hidden = border means of transport
 
 checkYourAnswers.transport.equipment.active.withoutIndex = Transport Equipment
 checkYourAnswers.transport.equipment.active.withIndex = Transport Equipment {0}
-
+checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipment
+checkYourAnswers.transportEquipment.item.subHeading = Which items does this transport equipment apply to?
 checkYourAnswers.locationOfGoods = Location of goods
 
 moreInformation.title = More information needed to complete declaration

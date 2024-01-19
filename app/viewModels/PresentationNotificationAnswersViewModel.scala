@@ -23,6 +23,8 @@ import pages.sections.transport.equipment.EquipmentsSection
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
 import services.CheckYourAnswersReferenceDataService
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
@@ -90,24 +92,27 @@ object PresentationNotificationAnswersViewModel {
         }
       }
 
-      val transportEquipmentAnswersHelperSectionFuture: Future[Seq[Section]] = {
+      val transportEquipmentSection: Seq[Section] = {
         userAnswers
           .get(EquipmentsSection) match {
           case Some(jsArray) =>
             val pre = transportEquipmentHelper(0).preSection
+//            val postSectionLink: Section = Section.apply(
+//              rows = Seq(SummaryListRow(key = Key.defaultObject, value = Value.defaultObject, actions = None)),
+//              addAnotherLink = transportEquipmentHelper(0).addOrRemoveEquipments
+//            )
             val sec = jsArray.value.zipWithIndex.flatMap {
               case (_, i) =>
                 transportEquipmentHelper(i).getSection
 
             }.toSeq
-            Future.successful(pre +: sec)
+            val ans: Seq[Section] = pre +: sec
+            ans
           case None =>
-            Future.successful(
-              Section(
-                sectionTitle = messages("checkYourAnswers.transport.equipment.active.withoutIndex"),
-                rows = Seq(transportEquipmentHelper(0).addAnyTransportEquipmentYesNo()).flatten
-              ).toSeq
-            )
+            Section(
+              sectionTitle = messages("checkYourAnswers.transport.equipment.active.withoutIndex"),
+              rows = Seq(transportEquipmentHelper(0).addAnyTransportEquipmentYesNo()).flatten
+            ).toSeq
 
         }
 
@@ -119,7 +124,6 @@ object PresentationNotificationAnswersViewModel {
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
-        transportEquipmentSection         <- transportEquipmentAnswersHelperSectionFuture
         sections =
           firstSection.toSeq ++ transitHolderSection.toSeq ++ borderSection.toSeq ++ placeOfLoading.toSeq ++ activeBorderTransportMeansSection ++ locationOfGoods.toSeq ++ transportEquipmentSection
       } yield new PresentationNotificationAnswersViewModel(sections)

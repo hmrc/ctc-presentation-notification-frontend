@@ -20,10 +20,12 @@ import base.SpecBase
 import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
 import models.messages.MessageData
-import models.{Mode, UserAnswers}
+import models.reference.Item
+import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.sections.transport.equipment.{EquipmentSection, ItemSection, ItemsSection, SealSection}
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
 import play.api.libs.json.Json
@@ -224,6 +226,126 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
                 .url
               action.visuallyHiddenText.get mustBe "seal 1"
               action.id mustBe "change-seal-1"
+          }
+        }
+      }
+    }
+
+    "addOrRemoveSeals" - {
+      "must return None" - {
+        "when seals array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val result = helper.addOrRemoveSeals
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when seals array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(SealSection(equipmentIndex, Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
+              val result  = helper.addOrRemoveSeals.get
+
+              result.id mustBe "add-or-remove-seals"
+              result.text mustBe "Add or remove seals"
+              result.href mustBe controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex).url
+          }
+        }
+      }
+    }
+
+    "addOrRemoveEquipments" - {
+      "must return None" - {
+        "when equipments array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, index)
+              val result = helper.addOrRemoveEquipments
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when equipments array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, index)
+              val result  = helper.addOrRemoveEquipments.get
+
+              result.id mustBe "add-or-remove-transport-equipment"
+              result.text mustBe "Add or remove transport equipment"
+              result.href mustBe controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
+          }
+        }
+      }
+    }
+
+    "item" - {
+      "must return None" - {
+        "when item is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val result = helper.item(itemIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when item is defined" in {
+          forAll(arbitrary[Mode], nonEmptyString, positiveIntsMinMax(1, 100)) {
+            (mode, description, itemNumber) =>
+              val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, sealIndex), Item(goodsItemNumber = itemNumber, description = description))
+              val helper      = TransportEquipmentAnswersHelper(userAnswers, departureId, refDataService, mode, activeIndex)
+              val result      = helper.item(itemIndex).get
+
+              result.key.value mustBe "Item 1"
+              result.value.value mustBe description
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.equipment.routes.SelectItemsController
+                .onPageLoad(departureId, mode, equipmentIndex, sealIndex)
+                .url
+              action.visuallyHiddenText.get mustBe "item 1"
+              action.id mustBe "change-item-1"
+          }
+        }
+      }
+    }
+
+    "addOrRemoveItems" - {
+      "must return None" - {
+        "when items array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, refDataService, mode, activeIndex)
+              val result = helper.addOrRemoveItems
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when seals array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(ItemSection(equipmentIndex, Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = new TransportEquipmentAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
+              val result  = helper.addOrRemoveItems.get
+
+              result.id mustBe "add-or-remove-items"
+              result.text mustBe "Add or remove items"
+              result.href mustBe controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
           }
         }
       }

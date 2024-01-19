@@ -40,11 +40,11 @@ class TransportEquipmentAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
-  private val lastIndex = Index(
+  private val lastIndex: Index = Index(
     userAnswers
       .get(EquipmentsSection)
-      .map(_.value.length - 1)
-      .getOrElse(userAnswers.departureData.Consignment.ActiveBorderTransportMeans.map(_.length - 1).getOrElse(0))
+      .map(_.value.length - 2)
+      .getOrElse(0)
   )
 
   def addAnyTransportEquipmentYesNo(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -103,14 +103,14 @@ class TransportEquipmentAnswersHelper(
     Link(
       id = "add-or-remove-transport-equipment",
       text = messages("checkYourAnswers.transportEquipment.addOrRemove"),
-      href = controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.lrn, mode).url
+      href = controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
     )
   }
 
   def item(index: Index): Option[SummaryListRow] =
     getAnswerAndBuildRow[Item](
       page = ItemPage(equipmentIndex, index),
-      formatAnswer = formatAsText,
+      formatAnswer = formatAsItem,
       prefix = "transport.equipment.index.checkYourAnswers.item",
       findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
       id = Some(s"change-item-${index.display}"),
@@ -119,7 +119,7 @@ class TransportEquipmentAnswersHelper(
 
   def items: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(ItemsSection(equipmentIndex))(item)
 
-  def addOrRemoveItems: Option[Link] = buildLink(SealsSection(equipmentIndex), false) {
+  def addOrRemoveItems: Option[Link] = buildLink(ItemsSection(equipmentIndex), false) {
     Link(
       id = "add-or-remove-items",
       text = messages("transport.equipment.index.checkYourAnswers.items.addOrRemove"),
@@ -140,7 +140,14 @@ class TransportEquipmentAnswersHelper(
         addAnotherLink = addOrRemoveSeals
       )
 
-    val sectionItems: Section = Section(rows = items, addOrRemoveItems)
+    val secondLink: Option[Link] = if (equipmentIndex == lastIndex) addOrRemoveEquipments else None
+
+    val sectionItems: Section =
+      Section(sectionTitle = messages("checkYourAnswers.transportEquipment.item.subHeading"),
+              rows = items,
+              addAnotherLink = addOrRemoveItems,
+              addSecondLink = secondLink
+      )
 
     (Seq(sectionSeals, sectionItems))
   }
