@@ -125,6 +125,9 @@ object UserAnswers {
   private val borderMeansConsignmentLens: Lens[Consignment, Option[Seq[ActiveBorderTransportMeans]]] =
     GenLens[Consignment](_.ActiveBorderTransportMeans)
 
+  private val transportEquipmentConsignmentLens: Lens[Consignment, Option[List[TransportEquipment]]] =
+    GenLens[Consignment](_.TransportEquipment)
+
   private val addressLocationLens: Lens[LocationOfGoods, Option[Address]] =
     GenLens[LocationOfGoods](_.Address)
 
@@ -185,6 +188,9 @@ object UserAnswers {
 
   val setBorderMeansAnswersLens: Lens[UserAnswers, Option[Seq[ActiveBorderTransportMeans]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(borderMeansConsignmentLens)
+
+  val setTransportEquipmentLens: Lens[UserAnswers, Option[List[TransportEquipment]]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(transportEquipmentConsignmentLens)
 
   val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Option[DepartureTransportMeans]] =
     departureDataLens.composeLens(consignmentLens).composeLens(departureTransportMeansConsignmentLens)
