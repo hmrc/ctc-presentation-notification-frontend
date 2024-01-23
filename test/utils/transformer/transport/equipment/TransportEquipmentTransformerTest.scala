@@ -30,7 +30,7 @@ class TransportEquipmentTransformerTest extends SpecBase {
       val index       = Index(0)
       userAnswers.get(AddAnotherTransportEquipmentPage(index)) mustBe None
 
-      whenReady(transformer.transform(userAnswers)) {
+      whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(AddAnotherTransportEquipmentPage(index)) mustBe Some(true)
       }

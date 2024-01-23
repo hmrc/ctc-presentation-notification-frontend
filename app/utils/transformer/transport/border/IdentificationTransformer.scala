@@ -46,10 +46,11 @@ class IdentificationTransformer @Inject() (identificationService: MeansOfTranspo
           )
     }
 
-  override def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[UserAnswers] = transformFromDepartureWithRefData(
-    userAnswers = userAnswers,
-    fetchReferenceData = () => identificationService.getMeansOfTransportIdentificationTypesActive(),
-    extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
-    generateCapturedAnswers = generateCapturedAnswers
-  )
+  def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+    transformFromDepartureWithRefData(
+      userAnswers = userAnswers,
+      fetchReferenceData = () => identificationService.getMeansOfTransportIdentificationTypesActive(),
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
+      generateCapturedAnswers = generateCapturedAnswers
+    )
 }

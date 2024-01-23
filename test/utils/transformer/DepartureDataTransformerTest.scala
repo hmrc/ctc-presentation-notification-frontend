@@ -37,13 +37,23 @@ class DepartureDataTransformerTest extends SpecBase {
       val userAnswers                              = mock[UserAnswers]
       val userAnswersWithEquipment                 = mock[UserAnswers]
 
-      when(identificationTransformer.transform(userAnswers)).thenReturn(successful(userAnswers))
-      when(identificationNumberTransformer.transform(userAnswers)).thenReturn(successful(userAnswers))
-      when(transportEquipmentTransformer.transform(userAnswers)).thenReturn(successful(userAnswersWithEquipment))
+      when(identificationTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+      when(identificationNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+      when(transportEquipmentTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
 
       // this should be called after transportEquipmentTransformer because of parent-child relation
-      when(containerIdentificationNumberTransformer.transform(userAnswersWithEquipment)).thenReturn(successful(userAnswersWithEquipment))
-      when(sealTransformer.transform(userAnswersWithEquipment)).thenReturn(successful(userAnswersWithEquipment))
+      when(containerIdentificationNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+      when(sealTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
 
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
@@ -55,11 +65,11 @@ class DepartureDataTransformerTest extends SpecBase {
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
         _ =>
-          verify(identificationTransformer, times(1)).transform(userAnswers)
-          verify(identificationNumberTransformer, times(1)).transform(userAnswers)
-          verify(transportEquipmentTransformer, times(1)).transform(userAnswers)
-          verify(containerIdentificationNumberTransformer, times(1)).transform(userAnswersWithEquipment)
-          verify(sealTransformer, times(1)).transform(userAnswersWithEquipment)
+          verify(identificationTransformer, times(1)).transform(hc)
+          verify(identificationNumberTransformer, times(1)).transform(hc)
+          verify(transportEquipmentTransformer, times(1)).transform(hc)
+          verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
+          verify(sealTransformer, times(1)).transform(hc)
       }
     }
   }

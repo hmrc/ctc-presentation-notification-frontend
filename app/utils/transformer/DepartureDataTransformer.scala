@@ -34,13 +34,15 @@ class DepartureDataTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
-  def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] =
-    for {
-      withIdentification       <- identificationTransformer.transform(userAnswers)
-      withIdentificationNumber <- identificationNoTransformer.transform(withIdentification)
-      withTransportEquipments  <- transportEquipmentTransformer.transform(withIdentificationNumber)
-      withContainerId          <- containerIdTransformer.transform(withTransportEquipments)
-      withSeal                 <- sealTransformer.transform(withContainerId)
-    } yield withSeal
+  def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
+
+    val transformerPipeline = identificationTransformer.transform andThen
+      identificationNoTransformer.transform andThen
+      transportEquipmentTransformer.transform andThen
+      containerIdTransformer.transform andThen
+      sealTransformer.transform
+
+    transformerPipeline(userAnswers)
+  }
 
 }

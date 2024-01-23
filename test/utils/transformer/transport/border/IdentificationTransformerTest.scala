@@ -45,7 +45,7 @@ class IdentificationTransformerTest extends SpecBase {
         val index       = Index(0)
         userAnswers.get(IdentificationPage(index)) mustBe None
 
-        whenReady(transformer.transform(userAnswers)) {
+        whenReady(transformer.transform(hc)(userAnswers)) {
           updatedUserAnswers =>
             updatedUserAnswers.get(IdentificationPage(index)) mustBe Some(identification)
         }
@@ -60,7 +60,7 @@ class IdentificationTransformerTest extends SpecBase {
       val index       = Index(0)
       userAnswers.get(IdentificationPage(index)) mustBe None
 
-      whenReady(transformer.transform(userAnswers)) {
+      whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(IdentificationPage(index)) mustBe None
       }
@@ -73,7 +73,7 @@ class IdentificationTransformerTest extends SpecBase {
       val index       = Index(0)
       userAnswers.get(IdentificationPage(index)) mustBe None
 
-      whenReady[Throwable, Assertion](transformer.transform(userAnswers).failed) {
+      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
         _ mustBe an[Exception]
       }
     }
