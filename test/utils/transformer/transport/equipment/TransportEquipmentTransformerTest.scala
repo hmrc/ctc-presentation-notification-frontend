@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.transformer.transport.eqipment
+package utils.transformer.transport.equipment
 
 import base.SpecBase
 import models.Index

@@ -20,7 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.eqipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
