@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package utils.transformer.transport.eqipment
+package utils.transformer.transport.equipment
 
 import models.messages.TransportEquipment
 import models.{Index, UserAnswers}
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class ContainerIdentificationNumberTransformer extends PageTransformer {
+class TransportEquipmentTransformer extends PageTransformer {
 
-  override type DomainModelType              = String
+  override type DomainModelType              = Boolean
   override type ExtractedTypeInDepartureData = TransportEquipment
 
   override def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] =
@@ -34,14 +34,11 @@ class ContainerIdentificationNumberTransformer extends PageTransformer {
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment.toSeq.flatten,
       generateCapturedAnswers = transportEquipments => {
-        transportEquipments.zipWithIndex.flatMap {
-          case (transportEquipment, index) =>
-            val equipmentIndex = Index(index)
-            transportEquipment.containerIdentificationNumber.map {
-              containerIdentificationNumber =>
-                (ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber)
-            }
-        }
+        transportEquipments.zipWithIndex
+          .map {
+            case (_, index) =>
+              (AddAnotherTransportEquipmentPage(Index(index)), true)
+          }
       }
     )
 }
