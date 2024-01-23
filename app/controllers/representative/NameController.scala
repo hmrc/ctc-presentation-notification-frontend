@@ -20,7 +20,7 @@ import controllers.actions.Actions
 import forms.NameFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.{Navigator, RepresentativeNavigator}
+import navigation.RepresentativeNavigator
 import pages.representative.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

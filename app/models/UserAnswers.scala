@@ -113,6 +113,9 @@ object UserAnswers {
   private val modeOfTransportAtTheBorderConsignmentLens: Lens[Consignment, Option[String]] =
     GenLens[Consignment](_.modeOfTransportAtTheBorder)
 
+  private val inlandModeOfTransportConsignmentLens: Lens[Consignment, Option[String]] =
+    GenLens[Consignment](_.inlandModeOfTransport)
+
   private val locationOfGoodsConsignmentLens: Lens[Consignment, Option[LocationOfGoods]] =
     GenLens[Consignment](_.LocationOfGoods)
 
@@ -142,6 +145,9 @@ object UserAnswers {
 
   val setModeOfTransportAtTheBorderOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
     departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderConsignmentLens)
+
+  val setInlandModeOfTransportOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(inlandModeOfTransportConsignmentLens)
 
   val setLocationOfGoodsOnUserAnswersLens: Lens[UserAnswers, Option[LocationOfGoods]] =
     departureDataLens.composeLens(consignmentLens).composeLens(locationOfGoodsConsignmentLens)

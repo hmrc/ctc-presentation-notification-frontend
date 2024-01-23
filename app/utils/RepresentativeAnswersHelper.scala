@@ -21,7 +21,6 @@ import pages.ActingAsRepresentativePage
 import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
 
 import scala.concurrent.ExecutionContext
@@ -30,7 +29,7 @@ class RepresentativeAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def actingAsRepresentative: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

@@ -24,16 +24,11 @@ import models.reference.TransportMode.BorderMode
 import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
-import pages.transport.ContainerIndicatorPage
+import pages.transport.border._
 import pages.transport.border.active._
-import pages.transport.border.{
-  AddAnotherBorderModeOfTransportPage,
-  AddBorderMeansOfTransportYesNoPage,
-  AddBorderModeOfTransportYesNoPage,
-  BorderModeOfTransportPage
-}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -64,6 +59,8 @@ class BorderNavigator @Inject() () extends Navigator {
     case ConveyanceReferenceNumberPage(_)                 => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddBorderMeansOfTransportYesNoPage               => ua => addBorderMeansOfTransportYesNoCheckRoute(ua, departureId)
     case AddAnotherBorderModeOfTransportPage(activeIndex) => ua => addAnotherBorderNavigation(ua, departureId, mode, activeIndex)
+    case AddInlandModeOfTransportYesNoPage                => ua => addInlandModeYesNoCheckRoute(ua, departureId)
+    case InlandModePage                                   => ua => inlandModeCheckRoute(ua, departureId, mode)
   }
 
   private def addBorderMeansOfTransportYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
@@ -83,6 +80,24 @@ class BorderNavigator @Inject() () extends Navigator {
       case true  => Some(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)))
       case false => Some(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
     }
+
+  private def inlandModeCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    ua.get(InlandModePage).map(_.code) match {
+      case Some("5") => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _         => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
+    }
+
+  private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
+    val ie015InlandMode = ua.departureData.Consignment.inlandModeOfTransport
+    ua.get(AddInlandModeOfTransportYesNoPage) match {
+      case Some(true) =>
+        (ua.get(InlandModePage), ie015InlandMode) match {
+          case (None, None) => Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, CheckMode))
+          case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    }
+  }
 
   private def addBorderModeOfTransportYesNoNavigation(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddBorderModeOfTransportYesNoPage) match {

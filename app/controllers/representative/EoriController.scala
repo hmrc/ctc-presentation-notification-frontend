@@ -20,7 +20,7 @@ import controllers.actions.Actions
 import forms.EoriNumberFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.{Navigator, RepresentativeNavigator}
+import navigation.RepresentativeNavigator
 import pages.QuestionPage
 import pages.representative.EoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
