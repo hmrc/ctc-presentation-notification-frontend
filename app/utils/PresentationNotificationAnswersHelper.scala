@@ -17,7 +17,6 @@
 package utils
 
 import models.{Mode, UserAnswers}
-import pages.transport.border.active.IdentificationNumberPage
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
