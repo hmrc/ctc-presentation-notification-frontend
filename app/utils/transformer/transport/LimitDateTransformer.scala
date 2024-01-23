@@ -29,7 +29,7 @@ class LimitDateTransformer extends PageTransformer {
   override type DomainModelType              = LocalDate
   override type ExtractedTypeInDepartureData = String
 
-  override def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] =
+  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.TransitOperation.limitDate.toSeq,

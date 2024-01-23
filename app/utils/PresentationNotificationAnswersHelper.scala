@@ -17,6 +17,7 @@
 package utils
 
 import models.{Mode, UserAnswers}
+import pages.transport.border.active.IdentificationNumberPage
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
@@ -37,11 +38,11 @@ class PresentationNotificationAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
-  def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
+  def limitDate: Option[SummaryListRow] = buildRowWithAnswer[LocalDate](
     page = LimitDatePage,
+    optionalAnswer = userAnswers.get(LimitDatePage),
     formatAnswer = formatAsDate,
     prefix = "transport.limit.date",
-    findValueInDepartureData = _.TransitOperation.limitDate.map(_.asLocalDate),
     id = Some("change-limit-date")
   )
 
