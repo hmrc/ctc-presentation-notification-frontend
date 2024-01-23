@@ -50,7 +50,7 @@ class ContainerIdentificationNumberTransformerTest extends SpecBase {
       userAnswersWithEquipments.get(IdentificationNumberPage(Index(1))) mustBe None
       userAnswersWithEquipments.get(IdentificationNumberPage(Index(2))) mustBe None
 
-      whenReady(transformer.transform(userAnswersWithEquipments)) {
+      whenReady(transformer.transform(hc)(userAnswersWithEquipments)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(ContainerIdentificationNumberPage(Index(0))) mustBe Some("container id 1")
           updatedUserAnswers.get(ContainerIdentificationNumberPage(Index(1))) mustBe None

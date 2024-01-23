@@ -64,5 +64,5 @@ trait PageTransformer {
           accTry.flatMap(_.set(capturedAnswer._1, capturedAnswer._2))
       }
 
-  def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers]
+  def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers]
 }

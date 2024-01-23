@@ -50,7 +50,7 @@ class SealTransformerTest extends SpecBase {
       userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(2), Index(0))) mustBe None
       userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(2), Index(1))) mustBe None
 
-      whenReady(transformer.transform(userAnswersWithEquipments)) {
+      whenReady(transformer.transform(hc)(userAnswersWithEquipments)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(SealIdentificationNumberPage(Index(0), Index(0))) mustBe Some("seal1")
           updatedUserAnswers.get(SealIdentificationNumberPage(Index(1), Index(0))) mustBe None

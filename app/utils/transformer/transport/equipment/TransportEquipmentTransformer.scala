@@ -29,7 +29,7 @@ class TransportEquipmentTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
   override type ExtractedTypeInDepartureData = TransportEquipment
 
-  override def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] =
+  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment.toSeq.flatten,

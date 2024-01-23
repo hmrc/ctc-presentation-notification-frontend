@@ -30,7 +30,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.TimeMachine
 import utils.transformer.DepartureDataTransformer
-import utils.transformer.transport.border.IdentificationTransformer
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +40,6 @@ class IndexController @Inject() (
   sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
   service: DepartureMessageService,
-  identificationTransformer: IdentificationTransformer,
   departureDataTransformer: DepartureDataTransformer,
   timeMachine: TimeMachine
 )(implicit ec: ExecutionContext)

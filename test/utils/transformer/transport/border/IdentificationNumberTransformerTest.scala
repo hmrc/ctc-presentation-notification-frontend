@@ -18,8 +18,10 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
-import models.Index
+import models.{Index, UserAnswers}
 import pages.transport.border.active.IdentificationNumberPage
+
+import scala.concurrent.Future
 
 class IdentificationNumberTransformerTest extends SpecBase {
   val identificationNumber = activeBorderTransportMeansIdentificationNumber
@@ -31,7 +33,7 @@ class IdentificationNumberTransformerTest extends SpecBase {
       val index       = Index(0)
       userAnswers.get(IdentificationNumberPage(index)) mustBe None
 
-      whenReady(transformer.transform(userAnswers)) {
+      whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(IdentificationNumberPage(index)) mustBe Some(identificationNumber)
       }
