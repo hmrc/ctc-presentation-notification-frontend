@@ -80,6 +80,26 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               action.id mustBe "change-limit-date"
           }
         }
+
+        s"when $LimitDatePage defined in the ie15" in {
+          forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
+            (mode, customsOffice) =>
+              when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
+              val ie015WithLimitDateUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
+              val helper                        = new PresentationNotificationAnswersHelper(ie015WithLimitDateUserAnswers, departureId, mockReferenceDataService, mode)
+              val result                        = helper.limitDate.get
+
+              result.key.value mustBe s"Estimated arrival date at the office of destination"
+              result.value.value mustBe "9 June 2023"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.routes.LimitDateController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "estimated arrival date at the office of destination"
+              action.id mustBe "change-limit-date"
+          }
+        }
       }
     }
 

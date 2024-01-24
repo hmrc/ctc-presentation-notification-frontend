@@ -24,10 +24,8 @@ import play.api.libs.json.{JsValue, Json}
 
 object TestMessageData {
 
-  val limitDate = "2023-06-09"
-
   val transitOperation: TransitOperation =
-    TransitOperation(None, Some(limitDate), EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0")
+    TransitOperation(None, Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0")
 
   val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
 

@@ -19,12 +19,10 @@ package utils.transformer
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
-import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
 import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.concurrent.Future.successful
 
 class DepartureDataTransformerTest extends SpecBase {
@@ -36,15 +34,8 @@ class DepartureDataTransformerTest extends SpecBase {
       val transportEquipmentTransformer            = mock[TransportEquipmentTransformer]
       val containerIdentificationNumberTransformer = mock[ContainerIdentificationNumberTransformer]
       val sealTransformer                          = mock[SealTransformer]
-      val limitDateTransformer                     = mock[LimitDateTransformer]
       val userAnswers                              = mock[UserAnswers]
       val userAnswersWithEquipment                 = mock[UserAnswers]
-
-      val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
-        input =>
-          if (input != userAnswersWithEquipment) fail("This transformer must be called after transportEquipmentTransformer")
-          else successful(input)
-      }
 
       when(identificationTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
@@ -57,11 +48,11 @@ class DepartureDataTransformerTest extends SpecBase {
       )
 
       // this should be called after transportEquipmentTransformer because of parent-child relation
-      when(containerIdentificationNumberTransformer.transform(hc)).thenReturn(verifyTransportEquipmentTransformersOrder)
-      when(sealTransformer.transform(hc)).thenReturn(verifyTransportEquipmentTransformersOrder)
-
-      when(limitDateTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
+      when(containerIdentificationNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+      when(sealTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
       )
 
       val departureDataTransformer = new DepartureDataTransformer(
@@ -69,8 +60,7 @@ class DepartureDataTransformerTest extends SpecBase {
         identificationNumberTransformer,
         transportEquipmentTransformer,
         containerIdentificationNumberTransformer,
-        sealTransformer,
-        limitDateTransformer
+        sealTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -80,7 +70,6 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(transportEquipmentTransformer, times(1)).transform(hc)
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
-          verify(limitDateTransformer, times(1)).transform(hc)
       }
     }
   }

@@ -32,7 +32,7 @@ import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
 
-import java.time.{Instant, LocalDate}
+import java.time.Instant
 
 class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -81,7 +81,6 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         "to BorderMode of transport page when answer is No" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddExtraInformationYesNoPage, false)
-            .setValue(LimitDatePage, LocalDate.now())
 
           navigator
             .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
@@ -116,9 +115,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
       "must go from LocationPage to BorderModePage when is simplified and limit date exists and container indicator exists" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-          .setValue(LimitDatePage, LocalDate.now())
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersWithLimitDate = userAnswers.copy(
           departureData = messageData.copy(
             Consignment = consignment.copy(containerIndicator = Some("indicator")),
@@ -163,9 +160,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
       "must go from LocationPage to ContainerIndicatorPage when limit date exists, is simplified and container indicator is empty" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-          .setValue(LimitDatePage, LocalDate.now())
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
           departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
         )
