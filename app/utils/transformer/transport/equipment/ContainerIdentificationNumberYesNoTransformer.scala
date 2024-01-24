@@ -37,10 +37,7 @@ class ContainerIdentificationNumberYesNoTransformer extends PageTransformer {
         transportEquipments.zipWithIndex
           .map {
             case (transportEquipment, index) =>
-              transportEquipment.containerIdentificationNumber match {
-                case None => (AddContainerIdentificationNumberYesNoPage(Index(index)), false)
-                case _    => (AddContainerIdentificationNumberYesNoPage(Index(index)), true)
-              }
+              (AddContainerIdentificationNumberYesNoPage(Index(index)), transportEquipment.containerIdentificationNumber.toList.flatten.nonEmpty)
           }
       }
     )

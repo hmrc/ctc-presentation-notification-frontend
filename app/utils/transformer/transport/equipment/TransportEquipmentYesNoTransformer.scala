@@ -33,10 +33,6 @@ class TransportEquipmentYesNoTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment.toSeq.flatten,
-      generateCapturedAnswers = {
-        case Nil => Seq((AddTransportEquipmentYesNoPage, false))
-        case _   => Seq((AddTransportEquipmentYesNoPage, true))
-
-      }
+      generateCapturedAnswers = transportEquipments => Seq((AddTransportEquipmentYesNoPage, transportEquipments.nonEmpty))
     )
 }

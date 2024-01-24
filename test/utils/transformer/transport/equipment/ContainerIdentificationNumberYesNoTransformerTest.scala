@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.messages.TransportEquipment
 import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 
-class AddContainerIdentificationNumberlYesNoTransformerTest extends SpecBase {
+class ContainerIdentificationNumberYesNoTransformerTest extends SpecBase {
 
   val transformer = new ContainerIdentificationNumberYesNoTransformer()
 

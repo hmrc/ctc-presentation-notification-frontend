@@ -37,10 +37,7 @@ class AddSealYesNoTransformer extends PageTransformer {
         transportEquipments.zipWithIndex
           .map {
             case (transportEquipment, index) =>
-              transportEquipment.Seal.toList.flatten match {
-                case Nil => (AddSealYesNoPage(Index(index)), false)
-                case _   => (AddSealYesNoPage(Index(index)), true)
-              }
+              (AddSealYesNoPage(Index(index)), transportEquipment.Seal.toList.flatten.nonEmpty)
           }
       }
     )

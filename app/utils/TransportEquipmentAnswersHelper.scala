@@ -39,7 +39,7 @@ class TransportEquipmentAnswersHelper(
   private val lastIndex: Index = Index(
     userAnswers
       .get(EquipmentsSection)
-      .map(_.value.length - 2)
+      .map(_.value.length - 1)
       .getOrElse(0)
   )
 
