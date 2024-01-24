@@ -28,26 +28,26 @@
         button: Button
 )
 
-@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("consignment.index.departureTransportMeans.nationality.title", index.display),
+    title = messages("consignment.departureTransportMeans.nationality.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TransportMeansNationalityController.onSubmit(departureId, mode, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TransportMeansNationalityController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("consignment.index.departureTransportMeans.nationality.heading", index.display),
+                heading = messages("consignment.departureTransportMeans.nationality.heading"),
                 caption = Some(messages("departureMeansOfTransport.caption"))
             ),
-            hint = Some(messages("consignment.index.departureTransportMeans.nationality.hint")),
+            hint = Some(messages("consignment.departureTransportMeans.nationality.hint")),
             selectItems = nationalities.toSelectItems(form.value),
-            placeholder = messages("consignment.index.departureTransportMeans.nationality.placeholder")
+            placeholder = messages("consignment.departureTransportMeans.nationality.placeholder")
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))

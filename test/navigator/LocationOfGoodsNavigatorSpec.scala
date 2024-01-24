@@ -34,7 +34,7 @@ import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
-import pages.transport.{ContainerIndicatorPage, LimitDatePage}
+import pages.transport.{CheckInformationPage, ContainerIndicatorPage, LimitDatePage}
 import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
 
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -46,6 +46,16 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
     "in Normal Mode" - {
 
       val mode = NormalMode
+
+      "must go from check information page to Check your answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(CheckInformationPage, answers, departureId, NormalMode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
       "must go from LocationTypePage to IdentificationPage" - {
 
         "when value is inferred" in {

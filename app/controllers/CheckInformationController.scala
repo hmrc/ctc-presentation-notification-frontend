@@ -17,6 +17,9 @@
 package controllers
 
 import controllers.actions._
+import models.NormalMode
+import navigation.LocationOfGoodsNavigator
+import pages.transport.CheckInformationPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -28,6 +31,7 @@ import javax.inject.{Inject, Singleton}
 class CheckInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  navigator: LocationOfGoodsNavigator,
   view: CheckInformationView
 ) extends FrontendBaseController
     with I18nSupport {
@@ -35,7 +39,12 @@ class CheckInformationController @Inject() (
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val lrn = request.userAnswers.lrn
-      Ok(view(lrn))
+      Ok(view(lrn, departureId))
+  }
+
+  def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
+    implicit request =>
+      Redirect(navigator.nextPage(CheckInformationPage, request.userAnswers, departureId, NormalMode))
   }
 
 }

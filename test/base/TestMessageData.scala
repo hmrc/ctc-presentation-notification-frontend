@@ -25,7 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 object TestMessageData {
 
   val transitOperation: TransitOperation =
-    TransitOperation(None, Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails)
+    TransitOperation(None, Some("2023-06-09"), EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0")
 
   val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
 
@@ -63,12 +63,15 @@ object TestMessageData {
     Some(contactPerson)
   )
 
+  val activeBorderTransportMeansIdentification       = "10"
+  val activeBorderTransportMeansIdentificationNumber = "BX857GGE"
+
   val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
     ActiveBorderTransportMeans(
       "11",
       Some("GB000028"),
-      Some("10"),
-      Some("BX857GGE"),
+      Some(activeBorderTransportMeansIdentification),
+      Some(activeBorderTransportMeansIdentificationNumber),
       Some("FR"),
       Some("REF2")
     )
@@ -85,8 +88,8 @@ object TestMessageData {
 
   val consignment: Consignment = Consignment(
     containerIndicator = Some("1"),
+    inlandModeOfTransport = Some("3"),
     modeOfTransportAtTheBorder = Some("2"),
-    inlandModeOfTransport = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
     DepartureTransportMeans = Some(departureTransportMeans),
@@ -152,7 +155,8 @@ object TestMessageData {
        |    ],
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "Authorisation": [
        |        {
@@ -191,8 +195,15 @@ object TestMessageData {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
+       |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
-       |        "inlandModeOfTransport": "2",
+       |        "DepartureTransportMeans": [
+       |         {
+       |          "typeOfIdentification": "10",
+       |          "identificationNumber" : "BX857GGE",
+       |          "nationality" : "FR"
+       |          }
+       |        ],
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",
@@ -248,11 +259,6 @@ object TestMessageData {
        |                "phoneNumber": "07508994566",
        |                "eMailAddress": "sullivan@epic.com"
        |            }
-       |        },
-       |        "DepartureTransportMeans": {
-       |                "typeOfIdentification": "10",
-       |                "identificationNumber": "BX857GGE",
-       |                "nationality": "FR"
        |        },
        |        "ActiveBorderTransportMeans": [
        |            {
@@ -302,7 +308,8 @@ object TestMessageData {
        |        }
        |    ],
        |    "TransitOperation": {
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "indicatorString"
        |    },
        |    "Authorisation": [
        |        {
@@ -399,11 +406,13 @@ object TestMessageData {
        |                "eMailAddress": "sullivan@epic.com"
        |            }
        |        },
-       |        "DepartureTransportMeans": {
+       |        "DepartureTransportMeans": [
+       |           {
        |                "typeOfIdentification": "10",
        |                "identificationNumber": "BX857GGE",
        |                "nationality": "FR"
-       |        },
+       |            }
+       |        ],
        |        "ActiveBorderTransportMeans": [
        |            {
        |                "sequenceNumber": "11",
@@ -449,7 +458,8 @@ object TestMessageData {
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
        |        "security": "1",
-       |        "LRN": "testLrn"
+       |        "LRN": "testLrn",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "Authorisation": [
        |        {
@@ -465,8 +475,15 @@ object TestMessageData {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
-       |        "inlandModeOfTransport": "2",
+       |        "inlandModeOfTransport": "3",
        |        "modeOfTransportAtTheBorder": "2",
+       |         "DepartureTransportMeans": [
+       |         {
+       |          "typeOfIdentification": "10",
+       |          "identificationNumber" : "BX857GGE",
+       |          "nationality" : "FR"
+       |          }
+       |        ],
        |        "TransportEquipment": [
        |            {
        |                "sequenceNumber": "26754",
@@ -567,13 +584,13 @@ object TestMessageData {
        |    },
        |    "TransitOperation": {
        |        "limitDate": "2023-06-09",
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "HolderOfTheTransitProcedure": {
        |    },
        |    "Consignment": {
        |        "containerIndicator": "1",
-       |        "inlandModeOfTransport": "2",
        |        "modeOfTransportAtTheBorder": "2",
        |        "TransportEquipment": [
        |            {
@@ -664,7 +681,8 @@ object TestMessageData {
        |        "referenceNumber": "GB000012"
        |    },
        |    "TransitOperation": {
-       |        "security": "1"
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "0"
        |    },
        |    "HolderOfTheTransitProcedure": {
        |    },
@@ -686,4 +704,39 @@ object TestMessageData {
        |}
        |""".stripMargin
   )
+
+  val allOptionsNoneReducedDatasetTrueJsonValue: JsValue = Json.parse(
+    s"""
+       |{
+       |    "CustomsOfficeOfDeparture": {
+       |        "referenceNumber": "GB000011"
+       |    },
+       |    "CustomsOfficeOfDestinationDeclared": {
+       |        "referenceNumber": "GB000012"
+       |    },
+       |    "TransitOperation": {
+       |        "security": "1",
+       |        "reducedDatasetIndicator": "1"
+       |    },
+       |    "HolderOfTheTransitProcedure": {
+       |    },
+       |    "Consignment": {
+       |        "HouseConsignment": [
+       |            {
+       |                "ConsignmentItem": [
+       |                    {
+       |                        "goodsItemNumber": "18914",
+       |                        "declarationGoodsItemNumber": 1458,
+       |                        "Commodity": {
+       |                            "descriptionOfGoods": "descOfGoods"
+       |                        }
+       |                    }
+       |                ]
+       |            }
+       |        ]
+       |    }
+       |}
+       |""".stripMargin
+  )
+
 }
