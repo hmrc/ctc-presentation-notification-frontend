@@ -20,7 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, ItemTransformer, SealTransformer, TransportEquipmentTransformer}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
@@ -36,6 +36,7 @@ class DepartureDataTransformerTest extends SpecBase {
       val sealTransformer                          = mock[SealTransformer]
       val userAnswers                              = mock[UserAnswers]
       val userAnswersWithEquipment                 = mock[UserAnswers]
+      val itemTransformer                          = mock[ItemTransformer]
 
       when(identificationTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
@@ -60,7 +61,8 @@ class DepartureDataTransformerTest extends SpecBase {
         identificationNumberTransformer,
         transportEquipmentTransformer,
         containerIdentificationNumberTransformer,
-        sealTransformer
+        sealTransformer,
+        itemTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {

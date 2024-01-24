@@ -43,44 +43,44 @@ class TransportEquipmentAnswersHelper(
       .getOrElse(0)
   )
 
-  def addAnyTransportEquipmentYesNo(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addAnyTransportEquipmentYesNo(): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddTransportEquipmentYesNoPage,
+    optionalAnswer = userAnswers.get(AddTransportEquipmentYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.equipment.addTransportEquipment",
-    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
     id = Some("change-add-transport-equipment")
   )
 
-  def addContainerIdentificationNumberYesNo(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addContainerIdentificationNumberYesNo(): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddContainerIdentificationNumberYesNoPage(equipmentIndex),
+    optionalAnswer = userAnswers.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.equipment.index.addContainerIdentificationNumberYesNo",
-    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
     id = Some("change-add-transport-equipment-container-identification-number-yes-no")
   )
 
-  def containerIdentificationNumber(): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def containerIdentificationNumber(): Option[SummaryListRow] = buildRowWithAnswer[String](
     page = ContainerIdentificationNumberPage(equipmentIndex),
+    optionalAnswer = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)),
     formatAnswer = formatAsText,
     prefix = "transport.equipment.index.containerIdentificationNumber",
-    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup,
     id = Some("change-transport-equipment-container-identification-number")
   )
 
-  def sealsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def sealsYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddSealYesNoPage(equipmentIndex),
+    optionalAnswer = userAnswers.get(AddSealYesNoPage(equipmentIndex)),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.equipment.index.addSealYesNo",
-    findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup,
     id = Some("change-add-seals")
   )
 
   def seal(index: Index): Option[SummaryListRow] =
-    getAnswerAndBuildRow[String](
+    buildRowWithAnswer[String](
       page = SealIdentificationNumberPage(equipmentIndex, index),
+      optionalAnswer = userAnswers.get(SealIdentificationNumberPage(equipmentIndex, index)),
       formatAnswer = formatAsText,
       prefix = "transport.equipment.index.checkYourAnswers.seal",
-      findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
       id = Some(s"change-seal-${index.display}"),
       args = index.display
     )
@@ -104,11 +104,11 @@ class TransportEquipmentAnswersHelper(
   }
 
   def item(index: Index): Option[SummaryListRow] =
-    getAnswerAndBuildRow[Item](
+    buildRowWithAnswer[Item](
       page = ItemPage(equipmentIndex, index),
+      optionalAnswer = userAnswers.get(ItemPage(equipmentIndex, index)),
       formatAnswer = formatAsItem,
       prefix = "transport.equipment.index.checkYourAnswers.item",
-      findValueInDepartureData = _ => None, //TODO not needed as this should be read into ie170 data on app startup
       id = Some(s"change-item-${index.display}"),
       args = index.display
     )

@@ -17,9 +17,10 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import models.messages.{Seal, TransportEquipment}
+import models.messages.{GoodsReference, Seal, TransportEquipment}
+import models.reference.Item
 import models.{Index, UserAnswers}
-import pages.transport.equipment.AddAnotherTransportEquipmentPage
+import pages.transport.equipment.{AddAnotherTransportEquipmentPage, ItemPage}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
 class ItemTransformerTest extends SpecBase {
@@ -27,14 +28,14 @@ class ItemTransformerTest extends SpecBase {
   val transformer = new ItemTransformer()
 
   "ItemTransformer" - {
-    "must return updated answers with ItemPage if Items. for the equipment" in {
+    "must return updated answers with ItemPage if Items exist for the equipment" in {
       val userAnswersWithEquipments = UserAnswers.setTransportEquipmentLens
         .set(
           Option(
             List(
-              TransportEquipment("1", Some("container id 1"), 1, Some(List(Seal("1", "seal1"))), None),
-              TransportEquipment("2", None, 0, None, None),
-              TransportEquipment("3", Some("container id 3"), 2, Some(List(Seal("2", "seal2"), Seal("3", "seal3"))), None)
+              TransportEquipment("1", None, 0, None, Some(List(GoodsReference("1", 1458)))),
+              TransportEquipment("1", None, 0, None, Some(List(GoodsReference("2", 1458)))),
+              TransportEquipment("1", None, 0, None, Some(List(GoodsReference("3", 1458))))
             )
           )
         )(emptyUserAnswers)
@@ -45,17 +46,18 @@ class ItemTransformerTest extends SpecBase {
         .set(AddAnotherTransportEquipmentPage(Index(2)), true)
         .get
 
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(0), Index(0))) mustBe None
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(1), Index(0))) mustBe None
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(2), Index(0))) mustBe None
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(2), Index(1))) mustBe None
+      userAnswersWithEquipments.get(ItemPage(Index(0), Index(0))) mustBe None
+      userAnswersWithEquipments.get(ItemPage(Index(1), Index(0))) mustBe None
+      userAnswersWithEquipments.get(ItemPage(Index(2), Index(0))) mustBe None
+      userAnswersWithEquipments.get(ItemPage(Index(3), Index(0))) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswersWithEquipments)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(0), Index(0))) mustBe Some("seal1")
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(1), Index(0))) mustBe None
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(2), Index(0))) mustBe Some("seal2")
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(2), Index(1))) mustBe Some("seal3")
+          updatedUserAnswers.get(ItemPage(Index(0), Index(0))) mustBe Some(Item(1458, "descOfGoods"))
+          updatedUserAnswers.get(ItemPage(Index(1), Index(0))) mustBe Some(Item(1458, "descOfGoods"))
+          updatedUserAnswers.get(ItemPage(Index(2), Index(0))) mustBe Some(Item(1458, "descOfGoods"))
+          updatedUserAnswers.get(ItemPage(Index(3), Index(0))) mustBe None
+
       }
     }
   }
