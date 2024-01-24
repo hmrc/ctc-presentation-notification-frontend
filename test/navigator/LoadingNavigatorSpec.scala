@@ -21,7 +21,7 @@ import base.TestMessageData.{allOptionsNoneJsonValue, consignment, messageData, 
 import generators.Generators
 import models._
 import models.messages.AuthorisationType.C521
-import models.messages.{Authorisation, AuthorisationType, MessageData, TransitOperation}
+import models.messages.{Authorisation, AuthorisationType, MessageData}
 import models.reference.Country
 import navigation.LoadingNavigator
 import org.scalacheck.Arbitrary
