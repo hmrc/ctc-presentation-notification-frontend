@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.transport.DateFormProvider
 import models.Mode
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.Navigator
 import pages.transport.LimitDatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class LimitDateController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: LocationOfGoodsNavigator,
+  navigator: Navigator,
   formProvider: DateFormProvider,
   actions: Actions,
   config: FrontendAppConfig,
