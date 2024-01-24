@@ -124,7 +124,7 @@ class TransportEquipmentAnswersHelper(
   }
 
   private val preSection: Section = Section(
-    rows = Seq(addAnyTransportEquipmentYesNo(), addContainerIdentificationNumberYesNo(), containerIdentificationNumber()).flatten
+    rows = Seq(addAnyTransportEquipmentYesNo()).flatten
   )
 
   private def sealAndItemsSections: Seq[Section] = {
@@ -132,7 +132,7 @@ class TransportEquipmentAnswersHelper(
     val sectionSeals: Section =
       Section(
         sectionTitle = messages("checkYourAnswers.transport.equipment.active.withIndex", equipmentIndex.display),
-        rows = Seq(sealsYesNo, seals).flatten,
+        rows = Seq(addContainerIdentificationNumberYesNo(), containerIdentificationNumber(), sealsYesNo, seals).flatten,
         addAnotherLink = addOrRemoveSeals()
       )
 
