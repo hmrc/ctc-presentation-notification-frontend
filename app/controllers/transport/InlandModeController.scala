@@ -54,9 +54,22 @@ class InlandModeController @Inject() (
     implicit request =>
       service.getInlandModes().map {
         inlandModeCodes =>
-          val preparedForm = request.userAnswers.get(InlandModePage) match {
-            case None        => form(inlandModeCodes)
-            case Some(value) => form(inlandModeCodes).fill(value)
+          val inlandMode =
+            request.userAnswers
+              .get(InlandModePage)
+              .map(_.code)
+              .orElse {
+                request.userAnswers.departureData.Consignment.inlandModeOfTransport
+              }
+
+          val preparedForm = inlandMode match {
+            case None => form(inlandModeCodes)
+            case Some(value) =>
+              val getInlandMode = inlandModeCodes.find(_.code == value)
+              getInlandMode match {
+                case Some(inlandMode) => form(inlandModeCodes).fill(inlandMode)
+                case None             => form(inlandModeCodes)
+              }
           }
 
           Ok(view(preparedForm, departureId, inlandModeCodes, mode))

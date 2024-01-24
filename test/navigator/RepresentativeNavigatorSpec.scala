@@ -20,6 +20,7 @@ import base.TestMessageData.representative
 import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models._
+import models.messages.{Consignment, TransportEquipment}
 import navigation.RepresentativeNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

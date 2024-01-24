@@ -22,7 +22,6 @@ import controllers.houseConsignment.index.departureTransportMeans.routes
 import generators.Generators
 import models._
 import models.messages.MessageData
-import models.reference.transport.transportMeans.TransportMeansIdentification
 import navigation.HouseConsignmentNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage

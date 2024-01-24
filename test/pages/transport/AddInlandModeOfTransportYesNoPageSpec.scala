@@ -16,7 +16,9 @@
 
 package pages.transport
 
+import models.reference.Nationality
 import pages.behaviours.PageBehaviours
+import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 
 class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
 
@@ -25,5 +27,40 @@ class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
     beRetrievable[Boolean](AddInlandModeOfTransportYesNoPage)
     beSettable[Boolean](AddInlandModeOfTransportYesNoPage)
     beRemovable[Boolean](AddInlandModeOfTransportYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove country and location pages in 15/13/170" in {
+          forAll(arbitraryInlandModeOfTransport.arbitrary) {
+            inlandMode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddInlandModeOfTransportYesNoPage, true)
+                .setValue(InlandModePage, inlandMode)
+
+              val result = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, false)
+
+              result.get(InlandModePage) must not be defined
+              result.departureData.Consignment.inlandModeOfTransport must not be defined
+          }
+        }
+
+        "must remove departure means of transport section in 15/13/170" in {
+          forAll(arbitraryInlandModeOfTransport.arbitrary.suchThat(_.code != "5"), arbitraryTransportMeansIdentification.arbitrary) {
+            (inlandMode, identification) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddInlandModeOfTransportYesNoPage, true)
+                .setValue(InlandModePage, inlandMode)
+                .setValue(TransportMeansIdentificationPage, identification)
+                .setValue(TransportMeansIdentificationNumberPage, "1234")
+                .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
+
+              val result = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, false)
+
+              result.departureData.Consignment.DepartureTransportMeans must not be defined
+          }
+        }
+      }
+    }
+
   }
 }

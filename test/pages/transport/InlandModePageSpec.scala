@@ -16,8 +16,11 @@
 
 package pages.transport
 
+import models.reference.Nationality
 import models.reference.TransportMode.InlandMode
 import pages.behaviours.PageBehaviours
+import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
 import pages.houseConsignment.index.departureTransportMeans.{CountryPage, IdentificationNumberPage, IdentificationPage}
 import pages.sections.houseConsignment.HouseConsignmentListSection
@@ -31,25 +34,62 @@ class InlandModePageSpec extends PageBehaviours {
     beSettable[InlandMode](InlandModePage)
 
     beRemovable[InlandMode](InlandModePage)
+  }
 
-    "cleanup" - {
-      "when option 5 selected" - {
-        "must remove HouseConsignmentSection in 170" in {
-          forAll(arbitraryTransportMeansIdentification.arbitrary, nonEmptyString, arbitraryNationality.arbitrary) {
-            (identification, identificationNumber, nationality) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), true)
-                .setValue(IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identification)
-                .setValue(IdentificationNumberPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identificationNumber)
-                .setValue(CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), nationality)
+  "cleanup" - {
+    "when InlandMode with code ='5' entered" - {
+      "must remove departure means of transport section in 15/13/170" in {
+        forAll(arbitraryInlandModeOfTransport.arbitrary.suchThat(_.code != "5"), arbitraryTransportMeansIdentification.arbitrary) {
+          (inlandMode, identification) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddInlandModeOfTransportYesNoPage, true)
+              .setValue(InlandModePage, inlandMode)
+              .setValue(TransportMeansIdentificationPage, identification)
+              .setValue(TransportMeansIdentificationNumberPage, "1234")
+              .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
 
-              val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
+            val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
 
-              result.get(HouseConsignmentListSection) must not be defined
+            result.departureData.Consignment.DepartureTransportMeans must not be defined
+        }
+      }
+    }
 
-          }
+    "when InlandMode with code not equal to '5' entered" - {
+      "must remove departure means of transport section in 170" in {
+        forAll(arbitraryInlandModeOfTransport.arbitrary.suchThat(_.code != "5"), arbitraryTransportMeansIdentification.arbitrary) {
+          (inlandMode, identification) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddInlandModeOfTransportYesNoPage, true)
+              .setValue(InlandModePage, inlandMode)
+              .setValue(TransportMeansIdentificationPage, identification)
+              .setValue(TransportMeansIdentificationNumberPage, "1234")
+              .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
+
+            val result = userAnswers.setValue(InlandModePage, InlandMode(inlandMode.code, "test"))
+
+            result.get(TransportMeansSection) mustNot be(defined)
+        }
+      }
+    }
+
+    "when option 5 selected" - {
+      "must remove HouseConsignmentSection in 170" in {
+        forAll(arbitraryTransportMeansIdentification.arbitrary, nonEmptyString, arbitraryNationality.arbitrary) {
+          (identification, identificationNumber, nationality) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex), true)
+              .setValue(IdentificationPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identification)
+              .setValue(IdentificationNumberPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), identificationNumber)
+              .setValue(CountryPage(houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex), nationality)
+
+            val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
+
+            result.get(HouseConsignmentListSection) must not be defined
+
         }
       }
     }
   }
+
 }

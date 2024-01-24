@@ -19,7 +19,7 @@ package controllers.transport
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -46,23 +46,61 @@ class AddInlandModeOfTransportYesNoControllerSpec extends SpecBase with AppWithD
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(UserAnswers.setInlandModeOfTransportOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addInlandModeOfTransportYesNoRoute)
       val result  = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "false"))
 
       val view = injector.instanceOf[AddInlandModeOfTransportYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode)(request, messages).toString
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must return OK and the correct view for a GET when set in the IE015" in {
+
+      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(Some("Air"))(emptyUserAnswers))
+
+      val request = FakeRequest(GET, addInlandModeOfTransportYesNoRoute)
+      val result  = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddInlandModeOfTransportYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers.setValue(AddInlandModeOfTransportYesNoPage, true)
       setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addInlandModeOfTransportYesNoRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AddInlandModeOfTransportYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, departureId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously  been answered in the IE015" in {
+
+      val userAnswers15 = UserAnswers.setInlandModeOfTransportOnUserAnswersLens.set(Some("Air"))(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addInlandModeOfTransportYesNoRoute)
 

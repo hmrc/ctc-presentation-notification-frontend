@@ -170,6 +170,22 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
+      "must go from LocationPage to BorderModePage when is NOT simplified and container indicator is present and limit date is not present" in {
+
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersUpdated = userAnswers.copy(
+          departureData = messageData.copy(
+            Consignment = consignment.copy(containerIndicator = Some("indicator")),
+            TransitOperation = transitOperation.copy(limitDate = None),
+            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          )
+        )
+
+        navigator
+          .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
+          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
+      }
+
     }
     "in Check mode" - {
       val mode = CheckMode

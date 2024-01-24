@@ -24,16 +24,16 @@ import generators.Generators
 import models._
 import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared, MessageData}
 import models.reference.CustomsOffice
-import models.reference.TransportMode.BorderMode
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.transport.border.active.Identification
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.ContainerIndicatorPage
 import pages.transport.border.active._
 import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import play.api.libs.json.Json
 
 import java.time.Instant
@@ -46,6 +46,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in Normal mode" - {
       val mode = NormalMode
+
       "must go from Border mode of transport page" - {
 
         "when security is in set 1,2,3 and active border transport is not present navigate to Identification page" in {
@@ -390,6 +391,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in CheckMode" - {
       val mode = CheckMode
+
       "must go from AddBorderModeOfTransportYesNoPage" - {
 
         "to CYA page when No " in {
@@ -435,6 +437,102 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             )
           navigator
             .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+      }
+
+      "must go from AddInlandModeYesNoPage" - {
+
+        "to CYA page when No " in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, false)
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to InlandModePage when Yes and there is no answer to border mode of transport" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(inlandModeOfTransport = None))
+            )
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to inlandMode in ie170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, true)
+            .setValue(InlandModePage, InlandMode("1", "Air"))
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to inlandMode in IE15/13" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(inlandModeOfTransport = Some("test")))
+            )
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+      }
+
+      "must go from InlandModePage" - {
+
+        "to CYA page when InlandMode is 5" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, InlandMode("5", "test"))
+          navigator
+            .nextPage(InlandModePage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to DepartureMeansIdentificationPage when InlandMode is not 5" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, InlandMode("4", "test"))
+
+          navigator
+            .nextPage(InlandModePage, userAnswers, departureId, mode)
+            .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to inlandMode in ie170" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, true)
+            .setValue(InlandModePage, InlandMode("1", "Air"))
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+
+        }
+
+        "to CheckYourAnswers when Yes and there is an answer to inlandMode in IE15/13" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddInlandModeOfTransportYesNoPage, true)
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(inlandModeOfTransport = Some("test")))
+            )
+          navigator
+            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
@@ -575,21 +673,13 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
-        "to CYA page when identification does exist in the 170" in {
-
+        "to CYA page when identification number exist in the 170" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddBorderMeansOfTransportYesNoPage, true)
             .setValue(IdentificationPage(activeIndex), Identification("Air", "desc"))
+            .setValue(IdentificationNumberPage(activeIndex), "identificationNumber")
           navigator
             .nextPage(IdentificationPage(activeIndex), userAnswers, departureId, CheckMode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-        "to CYA page when identification does exist in the 15/13" in {
-
-          navigator
-            .nextPage(IdentificationPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
