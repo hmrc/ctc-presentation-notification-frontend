@@ -28,8 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class DepartureDataTransformer @Inject() (
   identificationTransformer: IdentificationTransformer,
   identificationNoTransformer: IdentificationNumberTransformer,
-  transportEquipmentYesNoTransformer: TransportEquipmentYesNoTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
+  transportEquipmentYesNoTransformer: TransportEquipmentYesNoTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   containerIdentificationNumberYesNoTransformer: ContainerIdentificationNumberYesNoTransformer,
   sealTransformer: SealTransformer,

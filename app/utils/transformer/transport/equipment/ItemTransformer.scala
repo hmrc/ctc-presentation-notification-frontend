@@ -20,7 +20,6 @@ import models.messages.TransportEquipment
 import models.reference.Item
 import models.{Index, UserAnswers}
 import pages.transport.equipment.ItemPage
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 

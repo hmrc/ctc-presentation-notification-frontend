@@ -17,11 +17,11 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{Index, Mode, NormalMode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.Page
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index._
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.mvc.Call
 
@@ -82,7 +82,7 @@ class EquipmentNavigator extends Navigator {
     ua.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) match {
       case Some(true) =>
         Some(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
-      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   def checkProcedureAuthRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =

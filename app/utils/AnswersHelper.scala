@@ -18,7 +18,7 @@ package utils
 
 import cats.implicits._
 import models.messages.MessageData
-import models.{Index, Mode, RichJsArray, RichOptionalJsArray, UserAnswers}
+import models.{Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
 import pages.sections.Section
 import play.api.i18n.Messages

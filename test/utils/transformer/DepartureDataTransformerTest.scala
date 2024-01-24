@@ -19,8 +19,8 @@ package utils.transformer
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, ItemTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.border._
+import utils.transformer.transport.equipment._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
@@ -29,14 +29,17 @@ class DepartureDataTransformerTest extends SpecBase {
 
   "DepartureDataTransformer" - {
     "should call all transformers" in {
-      val identificationTransformer                = mock[IdentificationTransformer]
-      val identificationNumberTransformer          = mock[IdentificationNumberTransformer]
-      val transportEquipmentTransformer            = mock[TransportEquipmentTransformer]
-      val containerIdentificationNumberTransformer = mock[ContainerIdentificationNumberTransformer]
-      val sealTransformer                          = mock[SealTransformer]
-      val userAnswers                              = mock[UserAnswers]
-      val userAnswersWithEquipment                 = mock[UserAnswers]
-      val itemTransformer                          = mock[ItemTransformer]
+      val identificationTransformer                     = mock[IdentificationTransformer]
+      val identificationNumberTransformer               = mock[IdentificationNumberTransformer]
+      val transportEquipmentTransformer                 = mock[TransportEquipmentTransformer]
+      val transportEquipmentYesNoTransformer            = mock[TransportEquipmentYesNoTransformer]
+      val containerIdentificationNumberTransformer      = mock[ContainerIdentificationNumberTransformer]
+      val containerIdentificationNumberYesNoTransformer = mock[ContainerIdentificationNumberYesNoTransformer]
+      val sealTransformer                               = mock[SealTransformer]
+      val sealYesNoTransformer                          = mock[AddSealYesNoTransformer]
+      val userAnswers                                   = mock[UserAnswers]
+      val userAnswersWithEquipment                      = mock[UserAnswers]
+      val itemTransformer                               = mock[ItemTransformer]
 
       when(identificationTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
@@ -44,6 +47,11 @@ class DepartureDataTransformerTest extends SpecBase {
       when(identificationNumberTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
       )
+
+      when(transportEquipmentYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+
       when(transportEquipmentTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswersWithEquipment)
       )
@@ -52,7 +60,20 @@ class DepartureDataTransformerTest extends SpecBase {
       when(containerIdentificationNumberTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswersWithEquipment)
       )
+
+      when(containerIdentificationNumberYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+
       when(sealTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+
+      when(sealYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+
+      when(itemTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswersWithEquipment)
       )
 
@@ -60,8 +81,11 @@ class DepartureDataTransformerTest extends SpecBase {
         identificationTransformer,
         identificationNumberTransformer,
         transportEquipmentTransformer,
+        transportEquipmentYesNoTransformer,
         containerIdentificationNumberTransformer,
+        containerIdentificationNumberYesNoTransformer,
         sealTransformer,
+        sealYesNoTransformer,
         itemTransformer
       )
 
@@ -70,8 +94,12 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(identificationTransformer, times(1)).transform(hc)
           verify(identificationNumberTransformer, times(1)).transform(hc)
           verify(transportEquipmentTransformer, times(1)).transform(hc)
+          verify(transportEquipmentYesNoTransformer, times(1)).transform(hc)
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
+          verify(containerIdentificationNumberYesNoTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
+          verify(sealYesNoTransformer, times(1)).transform(hc)
+          verify(itemTransformer, times(1)).transform(hc)
       }
     }
   }
