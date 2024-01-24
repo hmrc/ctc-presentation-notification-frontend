@@ -80,7 +80,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     }
 
   private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
-    ua.departureData.Consignment.containerIndicator match {
+    ua.get(LimitDatePage) match {
       case Some(_) =>
         containerIndicatorPageNavigation(departureId, mode, ua)
       case None => ContainerIndicatorPage.route(ua, departureId, mode)
