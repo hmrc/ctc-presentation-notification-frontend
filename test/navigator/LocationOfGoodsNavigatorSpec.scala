@@ -745,12 +745,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "in Check Mode" - {
 
-      "must go from limit date page to check your answers page" in {
+      "must go from limit date page to AddContactYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(LimitDatePage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
 
       }
