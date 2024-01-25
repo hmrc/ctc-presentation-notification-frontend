@@ -32,7 +32,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
-import services.CheckYourAnswersReferenceDataService
+import services.{CheckYourAnswersReferenceDataService, TransportModeCodesService}
 
 import java.time.{Instant, LocalDate}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,7 +42,8 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
   "PresentationNotificationAnswersHelper" - {
 
-    val mockReferenceDataService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
+    val mockReferenceDataService: CheckYourAnswersReferenceDataService   = mock[CheckYourAnswersReferenceDataService]
+    val mockTransportModeReferenceDataService: TransportModeCodesService = mock[TransportModeCodesService]
 
     "limitDate" - {
       "must return None when no limit date in ie15/170" - {
@@ -168,12 +169,12 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
           forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
-              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(borderModeOfTransport))
+              when(mockTransportModeReferenceDataService.getBorderModes()(any())).thenReturn(Future.successful(Seq(borderModeOfTransport)))
 
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
               val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.borderModeOfTransportRow(borderModeOfTransport.description)
+              val result = helper.borderModeOfTransportRow.get
 
               result.key.value mustBe s"Mode"
               result.value.value mustBe borderModeOfTransport.description
@@ -186,54 +187,6 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               action.id mustBe "change-border-mode-of-transport"
           }
         }
-
-        "when ModeCrossingBorderPage defined in ie15" in {
-          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
-            (mode, borderModeOfTransport) =>
-              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(Future.successful(borderModeOfTransport))
-
-              val answers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
-              val helper  = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result  = helper.borderModeOfTransportRow(borderModeOfTransport.description)
-
-              result.key.value mustBe s"Mode"
-              result.value.value mustBe borderModeOfTransport.description
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "border mode of transport"
-              action.id mustBe "change-border-mode-of-transport"
-          }
-        }
-      }
-      "future must return a failure" - {
-        s"when reference data call fails to find the code" in {
-
-          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
-            (mode, borderModeOfTransport) =>
-              when(mockReferenceDataService.getBorderMode(any())(any())).thenReturn(
-                Future.failed(new NoReferenceDataFoundException)
-              )
-
-              val answers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData]).copy(departureData =
-                  emptyUserAnswers.departureData.copy(Consignment =
-                    emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = Some(borderModeOfTransport.code))
-                  )
-                )
-
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.borderModeSection
-
-              whenReady[Throwable, Assertion](result.failed) {
-                _ mustBe a[NoReferenceDataFoundException]
-              }
-
-          }
-        }
-
       }
 
     }

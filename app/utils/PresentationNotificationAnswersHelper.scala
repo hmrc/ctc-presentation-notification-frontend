@@ -16,6 +16,7 @@
 
 package utils
 
+import models.reference.TransportMode.BorderMode
 import models.{Mode, UserAnswers}
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
@@ -61,36 +62,18 @@ class PresentationNotificationAnswersHelper(
     id = Some("change-add-border-mode")
   )
 
-  def borderModeOfTransportRow(answer: String): SummaryListRow = buildSimpleRow(
-    answer = Text(answer),
-    label = messages("transport.border.borderModeOfTransport.checkYourAnswersLabel"),
+  def borderModeOfTransportRow: Option[SummaryListRow] = buildRowWithAnswer[BorderMode](
+    page = BorderModeOfTransportPage,
+    optionalAnswer = userAnswers.get(BorderModeOfTransportPage),
+    formatAnswer = formatAsText,
     prefix = "transport.border.borderModeOfTransport",
-    id = Some("change-border-mode-of-transport"),
-    call = Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode)),
-    args = Seq.empty
+    id = Some("change-border-mode-of-transport")
   )
 
-  def borderModeSection: Future[Section] = {
-    implicit val ua: UserAnswers = userAnswers
-    val rows = for {
-
-      border <- fetchValue(BorderModeOfTransportPage,
-                           checkYourAnswersReferenceDataService.getBorderMode,
-                           userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
-      )
-      borderMode = border.map(
-        lt => borderModeOfTransportRow(lt.toString)
-      )
-
-    } yield Seq(borderMode).flatten
-
-    rows.map {
-      borderModeOfTransport =>
-        Section(
-          sectionTitle = messages("transport.border.borderModeOfTransport.caption"),
-          Seq(borderModeOfTransportYesNo, borderModeOfTransport).flatten
-        )
-    }
-  }
+  def borderModeSection: Section =
+    Section(
+      sectionTitle = messages("transport.border.borderModeOfTransport.caption"),
+      Seq(borderModeOfTransportYesNo, borderModeOfTransportRow.toList).flatten
+    )
 
 }
