@@ -37,6 +37,8 @@ import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{CheckInformationPage, ContainerIndicatorPage, LimitDatePage}
 import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
 
+import java.time.LocalDate
+
 class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new LocationOfGoodsNavigator
@@ -212,6 +214,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
+              .setValue(LimitDatePage, LocalDate.now())
               .copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(containerIndicator = None)))
 
             navigator
@@ -226,6 +229,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
               .setValue(ContainerIndicatorPage, true)
+              .setValue(LimitDatePage, LocalDate.now())
               .copy(departureData =
                 TestMessageData.messageData.copy(
                   TransitOperation = transitOperation.copy(security = NoSecurityDetails)
@@ -281,6 +285,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
+              .setValue(LimitDatePage, LocalDate.now())
               .copy(departureData = TestMessageData.messageData.copy(Consignment = consignment.copy(containerIndicator = None)))
 
             navigator
@@ -348,9 +353,11 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
-        val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
-        )
+        val userAnswersUpdated = userAnswers
+          .copy(
+            departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
+          )
+          .setValue(LimitDatePage, LocalDate.now())
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
@@ -366,6 +373,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
                 .setValue(ContainerIndicatorPage, true)
+                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   TestMessageData.messageData.copy(
                     TransitOperation = transitOperation.copy(security = NoSecurityDetails)
@@ -388,6 +396,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
                 .setValue(ContainerIndicatorPage, false)
+                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   TestMessageData.messageData.copy(
                     TransitOperation = transitOperation.copy(security = NoSecurityDetails)
@@ -408,6 +417,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             answers =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, true)
+                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   TestMessageData.messageData.copy(
                     TransitOperation = transitOperation.copy(security = NoSecurityDetails),
@@ -476,6 +486,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
+                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   TestMessageData.messageData.copy(
                     Authorisation = Some(Seq(Authorisation(C521, "1234"))),
@@ -506,6 +517,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                     Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
                   )
                 )
+                .setValue(LimitDatePage, LocalDate.now())
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
@@ -576,6 +588,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               val updatedAnswers = answers
                 .setValue(AddPlaceOfLoadingYesNoPage, true)
                 .setValue(ContainerIndicatorPage, None)
+                .setValue(LimitDatePage, LocalDate.now())
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   TestMessageData.messageData.copy(
@@ -635,6 +648,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(AddContactYesNoPage, false)
                 .setValue(AddPlaceOfLoadingYesNoPage, true)
                 .setValue(ContainerIndicatorPage, None)
+                .setValue(LimitDatePage, LocalDate.now())
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   TestMessageData.messageData.copy(
@@ -665,6 +679,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                     Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
                   )
                 )
+                .setValue(LimitDatePage, LocalDate.now())
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
@@ -694,6 +709,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                     )
                   )
                 )
+                .setValue(LimitDatePage, LocalDate.now())
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
@@ -729,12 +745,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "in Check Mode" - {
 
-      "must go from limit date page to AddContactYesNoPage" in {
+      "must go from limit date page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(LimitDatePage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
       }
