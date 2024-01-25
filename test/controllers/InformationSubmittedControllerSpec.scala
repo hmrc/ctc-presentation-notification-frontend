@@ -22,17 +22,25 @@ import models.reference.CustomsOffice
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CustomsOfficesService
 import views.html.InformationSubmittedView
 
 import scala.concurrent.Future
 
 class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private lazy val declarationSubmittedRoute: String = routes.InformationSubmittedController.onPageLoad("ABCD1234567890123").url
+  private lazy val declarationSubmittedRoute: String = routes.InformationSubmittedController.onPageLoad("651431d7e3b05b21").url
 
   private val customsOffice = CustomsOffice("AB123", "BIRMINGHAM CONTAINERBASE", Some("+44 (0)121 345 6789"))
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficeService))
 
   "InformationSubmittedController" - {
 
@@ -65,11 +73,9 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
+      status(result) mustEqual SEE_OTHER
 
-      println(redirectLocation(result).value)
-
-//      mustEqual controllers.routes.MoreInformationController.onPageLoad(departureId).url
+      redirectLocation(result).value mustEqual controllers.routes.MoreInformationController.onPageLoad(departureId).url
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
