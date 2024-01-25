@@ -20,6 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import models.reference.TransportMode.BorderMode
 import org.mockito.Mockito.{reset, when}
+import org.scalatest.Assertion
 import pages.transport.border.BorderModeOfTransportPage
 import services.TransportModeCodesService
 
@@ -58,5 +59,17 @@ class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase {
           updatedUserAnswers.get(BorderModeOfTransportPage) mustBe None
       }
     }
+
+    "must return failure if the service fails" in {
+      when(service.getBorderModes()).thenReturn(Future.failed(new RuntimeException("")))
+
+      val userAnswers = emptyUserAnswers
+      userAnswers.get(BorderModeOfTransportPage) mustBe None
+
+      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
+        _ mustBe an[Exception]
+      }
+    }
+
   }
 }
