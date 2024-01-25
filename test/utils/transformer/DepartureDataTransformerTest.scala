@@ -21,7 +21,12 @@ import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -37,6 +42,7 @@ class DepartureDataTransformerTest extends SpecBase {
       val containerIdentificationNumberTransformer = mock[ContainerIdentificationNumberTransformer]
       val sealTransformer                          = mock[SealTransformer]
       val limitDateTransformer                     = mock[LimitDateTransformer]
+      val containerIndicatorTransformer            = mock[ContainerIndicatorTransformer]
       val userAnswers                              = mock[UserAnswers]
       val userAnswersWithEquipment                 = mock[UserAnswers]
 
@@ -64,13 +70,18 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(containerIndicatorTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
         transportEquipmentTransformer,
         containerIdentificationNumberTransformer,
         sealTransformer,
-        limitDateTransformer
+        limitDateTransformer,
+        containerIndicatorTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -81,6 +92,7 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
+          verify(containerIndicatorTransformer, times(1)).transform(hc)
       }
     }
   }

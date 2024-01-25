@@ -21,7 +21,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +37,8 @@ class DepartureDataTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
-  limitDateTransformer: LimitDateTransformer
+  limitDateTransformer: LimitDateTransformer,
+  containerIndicatorTransformer: ContainerIndicatorTransformer
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
@@ -43,7 +49,8 @@ class DepartureDataTransformer @Inject() (
       transportEquipmentTransformer.transform andThen
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
-      limitDateTransformer.transform
+      limitDateTransformer.transform andThen
+      containerIndicatorTransformer.transform
 
     transformerPipeline(userAnswers)
   }
