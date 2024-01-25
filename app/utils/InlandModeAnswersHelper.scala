@@ -20,65 +20,52 @@ import models.reference.TransportMode.InlandMode
 import models.{Mode, UserAnswers}
 import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
 import play.api.i18n.Messages
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
 
-import scala.concurrent.Future.successful
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class InlandModeAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
-  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers
 
-  def inlandModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def inlandModeOfTransportYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddInlandModeOfTransportYesNoPage,
+    optionalAnswer = userAnswers.get(AddInlandModeOfTransportYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.addInlandModeOfTransport",
-    findValueInDepartureData = _.Consignment.isInlandModeDefined,
     id = Some("change-add-inland-mode-of-transport")
   )
 
-  def inlandMode: Future[Option[SummaryListRow]] =
-    fetchValue[InlandMode](
+  def inlandMode: Option[SummaryListRow] =
+    buildRowWithAnswer[InlandMode](
       page = InlandModePage,
-      valueFromDepartureData = userAnswers.departureData.Consignment.inlandModeOfTransport,
-      refDataLookup = checkYourAnswersReferenceDataService.getInlandModeOfTransport
-    ).map {
-      inlandMode =>
-        buildRowWithAnswer[InlandMode](
-          page = InlandModePage,
-          optionalAnswer = inlandMode,
-          formatAnswer = formatDynamicEnumAsText(_),
-          prefix = "transport.inlandModeOfTransport",
-          id = Some("change-transport-inland-mode")
-        )
-    }
+      optionalAnswer = userAnswers.get(InlandModePage),
+      formatAnswer = formatDynamicEnumAsText(_),
+      prefix = "transport.inlandModeOfTransport",
+      id = Some("change-transport-inland-mode")
+    )
 
-  def buildInlandModeSection: Future[Option[Section]] =
+  def buildInlandModeSection: Option[Section] =
     if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator.asBoolean) {
-      val inlandModeYesNoRow  = inlandModeOfTransportYesNo
-      val inlandModeFutureRow = inlandMode
+      val inlandModeYesNoRow = inlandModeOfTransportYesNo
+      val inlandModeRow      = inlandMode
 
-      inlandModeFutureRow.map {
-        inlandModeRow =>
-          val rows = Seq(inlandModeYesNoRow, inlandModeRow).flatten
+      val rows = Seq(inlandModeYesNoRow, inlandModeRow).flatten
 
-          Some(
-            Section(
-              sectionTitle = messages("checkYourAnswers.inlandMode"),
-              rows = rows
-            )
-          )
-      }
+      Some(
+        Section(
+          sectionTitle = messages("checkYourAnswers.inlandMode"),
+          rows = rows
+        )
+      )
+
     } else {
-      successful(None)
+      None
     }
 }

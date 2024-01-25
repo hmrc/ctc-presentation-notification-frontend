@@ -86,9 +86,11 @@ object TestMessageData {
 
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
 
+  val inlandModeOfTransport = "3"
+
   val consignment: Consignment = Consignment(
     containerIndicator = Some("1"),
-    inlandModeOfTransport = Some("3"),
+    inlandModeOfTransport = Some(inlandModeOfTransport),
     modeOfTransportAtTheBorder = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),

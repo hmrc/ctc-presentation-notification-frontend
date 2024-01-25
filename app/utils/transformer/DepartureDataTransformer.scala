@@ -19,6 +19,7 @@ package utils.transformer
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
+import utils.transformer.transport.{AddInlandModeYesNoTransformer, InlandModeTransformer}
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
 import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
 
@@ -28,6 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class DepartureDataTransformer @Inject() (
   identificationTransformer: IdentificationTransformer,
   identificationNoTransformer: IdentificationNumberTransformer,
+  inlandModeTransformer: InlandModeTransformer,
+  addInlandModeYesNoTransformer: AddInlandModeYesNoTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer
@@ -38,6 +41,8 @@ class DepartureDataTransformer @Inject() (
 
     val transformerPipeline = identificationTransformer.transform andThen
       identificationNoTransformer.transform andThen
+      inlandModeTransformer.transform andThen
+      addInlandModeYesNoTransformer.transform andThen
       transportEquipmentTransformer.transform andThen
       containerIdTransformer.transform andThen
       sealTransformer.transform

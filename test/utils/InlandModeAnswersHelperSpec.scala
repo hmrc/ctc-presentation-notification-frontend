@@ -20,16 +20,11 @@ import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, allOptionsNoneReducedDatasetTrueJsonValue}
 import generators.Generators
 import models.messages.MessageData
-import models.reference.TransportMode.InlandMode
 import models.{Mode, UserAnswers}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
 import play.api.libs.json.Json
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
@@ -37,23 +32,21 @@ import viewModels.Section
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val refDataService = mock[CheckYourAnswersReferenceDataService]
 
   "InlandModeAnswersHelper" - {
 
     "addInlandModeOfTransportYesNo" - {
-      "must return No when AddInlandModeOfTransportYesNo has not been answered in ie15/ie13" - {
+      "must return No when AddInlandModeOfTransportYesNo is false" - {
         s"when $AddInlandModeOfTransportYesNoPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val ie015WithNoAddInlandModeOfTransportYesNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                  .setValue(AddInlandModeOfTransportYesNoPage, false)
               val helper =
-                new InlandModeAnswersHelper(ie015WithNoAddInlandModeOfTransportYesNoUserAnswers, departureId, refDataService, mode)
+                new InlandModeAnswersHelper(ie015WithNoAddInlandModeOfTransportYesNoUserAnswers, departureId, mode)
               val result = helper.inlandModeOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add an inland mode of transport?"
@@ -70,11 +63,13 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
         }
       }
 
-      "must return Yes when AddInlandModeOfTransportYesNo has been answered in ie15/ie13" - {
+      "must return Yes when AddInlandModeOfTransportYesNo is true" - {
         s"when $AddInlandModeOfTransportYesNoPage undefined" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, userAnswers) =>
-              val helper = new InlandModeAnswersHelper(userAnswers, departureId, refDataService, mode)
+              val updatedAnswers = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, true)
+
+              val helper = new InlandModeAnswersHelper(updatedAnswers, departureId, mode)
               val result = helper.inlandModeOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add an inland mode of transport?"
@@ -93,67 +88,43 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
     }
 
     "inlandMode" - {
-      "must return None when no inlandMode type in ie13/ie15/170" - {
+      "must return None when no inlandMode type " - {
         s"when $InlandModePage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val noInlandModeUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new InlandModeAnswersHelper(noInlandModeUserAnswers, departureId, refDataService, mode)
+                  .removeValue(InlandModePage)
+              val helper = new InlandModeAnswersHelper(noInlandModeUserAnswers, departureId, mode)
               val result = helper.inlandMode
-              result.futureValue mustBe None
+              result mustBe None
           }
         }
       }
 
       "must return Some(Row)" - {
-        s"when $InlandModePage defined in the ie170" in {
+        s"when $InlandModePage defined" in {
           forAll(arbitrary[Mode], arbitraryInlandModeOfTransport.arbitrary) {
             (mode, inlandMode) =>
               val answers = emptyUserAnswers
                 .setValue(InlandModePage, inlandMode)
-              val helper = new InlandModeAnswersHelper(answers, departureId, refDataService, mode)
+              val helper = new InlandModeAnswersHelper(answers, departureId, mode)
 
-              whenReady[Option[SummaryListRow], Assertion](helper.inlandMode) {
-                optionResult =>
-                  val result = optionResult.get
+              val result = helper.inlandMode.get
 
-                  result.key.value mustBe s"Mode"
-                  result.value.value mustBe inlandMode.asString
-                  val actions = result.actions.get.items
-                  actions.size mustBe 1
-                  val action = actions.head
-                  action.content.value mustBe "Change"
-                  action.href mustBe controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode).url
-                  action.visuallyHiddenText.get mustBe "inland mode of transport"
-                  action.id mustBe "change-transport-inland-mode"
-              }
-          }
-        }
-
-        s"when $InlandModePage defined in the ie13/15" in {
-          forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
-            (mode, answers) =>
-              val code = answers.departureData.Consignment.inlandModeOfTransport.get
-              when(refDataService.getInlandModeOfTransport(any())(any())).thenReturn(Future.successful(InlandMode(code, "description")))
-              val helper = new InlandModeAnswersHelper(answers, departureId, refDataService, mode)
-
-              whenReady[Option[SummaryListRow], Assertion](helper.inlandMode) {
-                optionResult =>
-                  val result = optionResult.get
-                  result.key.value mustBe s"Mode"
-                  result.value.value mustBe "description"
-                  val actions = result.actions.get.items
-                  actions.size mustBe 1
-                  val action = actions.head
-                  action.content.value mustBe "Change"
-                  action.href mustBe controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode).url
-                  action.visuallyHiddenText.get mustBe "inland mode of transport"
-                  action.id mustBe "change-transport-inland-mode"
-              }
+              result.key.value mustBe s"Mode"
+              result.value.value mustBe inlandMode.asString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustBe "inland mode of transport"
+              action.id mustBe "change-transport-inland-mode"
           }
         }
       }
+
     }
 
     "buildInlandModeSection" - {
@@ -163,8 +134,8 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
             val ie015withReducedDataSetFalseUserAnswers =
               UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneReducedDatasetTrueJsonValue.as[MessageData])
             val helper =
-              new InlandModeAnswersHelper(ie015withReducedDataSetFalseUserAnswers, departureId, refDataService, mode)
-            val result = helper.buildInlandModeSection.futureValue
+              new InlandModeAnswersHelper(ie015withReducedDataSetFalseUserAnswers, departureId, mode)
+            val result = helper.buildInlandModeSection
             result mustBe None
         }
       }
@@ -174,10 +145,11 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
           (mode, inlandMode) =>
             val answers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
+              .setValue(AddInlandModeOfTransportYesNoPage, true)
 
             val helper =
-              new InlandModeAnswersHelper(answers, departureId, refDataService, mode)
-            val result = helper.buildInlandModeSection.futureValue
+              new InlandModeAnswersHelper(answers, departureId, mode)
+            val result = helper.buildInlandModeSection
 
             val inlandModeYesNoRow = SummaryListRow(
               key = Key(Text("Do you want to add an inland mode of transport?")),
