@@ -53,7 +53,8 @@ object PresentationNotificationAnswersViewModel {
       val inlandModeAnswersHelper     = new InlandModeAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
       val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
-      //val departureTransportMeansAnswersHelper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode) //TODO: come back to
+      val departureTransportMeansAnswersHelper =
+        new DepartureTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0)) //TODO: When adding multiplicity remove index and map over list
 
       val representativeHelper = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 
@@ -93,17 +94,17 @@ object PresentationNotificationAnswersViewModel {
       )
 
       val representativeSection: Section = representativeHelper.representativeSection
+      val departureTransportMeansSection = departureTransportMeansAnswersHelper.buildDepartureTransportMeansSection
 
       for {
-        transitHolderSection <- transitHolderAnswerHelper.transitHolderSection
-        locationOfGoods      <- locationOfGoodsHelper.locationOfGoodsSection
-        placeOfLoading       <- placeOfLoadingAnswersHelper.placeOfLoadingSection
-        inlandMode           <- inlandModeAnswersHelper.buildInlandModeSection
-        //departureTransportMeansSection    <- departureTransportMeansAnswersHelper.buildDepartureTransportMeansSection
+        transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
+        locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
+        placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
+        inlandMode                        <- inlandModeAnswersHelper.buildInlandModeSection
         borderSection                     <- helper.borderModeSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ departureTransportMeansSection.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }

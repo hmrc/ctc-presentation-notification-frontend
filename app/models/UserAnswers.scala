@@ -122,7 +122,7 @@ object UserAnswers {
   private val placeOfLoadingConsignmentLens: Lens[Consignment, Option[PlaceOfLoading]] =
     GenLens[Consignment](_.PlaceOfLoading)
 
-  private val departureTransportMeansConsignmentLens: Lens[Consignment, Option[DepartureTransportMeans]] =
+  private val departureTransportMeansConsignmentLens: Lens[Consignment, Option[Seq[DepartureTransportMeans]]] =
     GenLens[Consignment](_.DepartureTransportMeans)
 
   private val borderMeansConsignmentLens: Lens[Consignment, Option[Seq[ActiveBorderTransportMeans]]] =
@@ -198,7 +198,7 @@ object UserAnswers {
   val setTransportEquipmentLens: Lens[UserAnswers, Option[List[TransportEquipment]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(transportEquipmentConsignmentLens)
 
-  val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Option[DepartureTransportMeans]] =
+  val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Option[Seq[DepartureTransportMeans]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(departureTransportMeansConsignmentLens)
 
   import play.api.libs.functional.syntax._

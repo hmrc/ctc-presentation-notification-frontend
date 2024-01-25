@@ -16,10 +16,10 @@
 
 package pages.transport.departureTransportMeans
 
-import models.{Index, Mode, UserAnswers}
 import controllers.transport.departureTransportMeans.routes
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transport.departureTransportMeans.{TransportMeansListSection, TransportMeansSection}
+import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

@@ -94,7 +94,7 @@ object TestMessageData {
     modeOfTransportAtTheBorder = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
-    DepartureTransportMeans = Some(departureTransportMeans),
+    DepartureTransportMeans = Some(Seq(departureTransportMeans)),
     ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
     PlaceOfLoading = Some(placeOfLoading),
     HouseConsignment = Seq(

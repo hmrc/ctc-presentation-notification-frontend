@@ -50,16 +50,8 @@ class TransportMeansNationalityController @Inject() (
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
-          def nationalityFromDepartureData = {
-            val nationalityCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality)
-
-            nationalityCode.flatMap(
-              code => nationalityList.values.find(_.code == code)
-            )
-          }
-
           val form = formProvider("consignment.departureTransportMeans.nationality", nationalityList)
-          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage(transportIndex)).orElse(nationalityFromDepartureData) match {
+          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage(transportIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }

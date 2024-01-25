@@ -20,10 +20,9 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.messages.DepartureTransportMeans
+import models.NormalMode
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -84,32 +83,6 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       contentAsString(result) mustEqual
         view(form, departureId, identificationTypes, mode, transportIndex)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously  been answered in the IE015" in {
-      when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any(), any()))
-        .thenReturn(Future.successful(identificationTypes))
-
-      val userAnswers15 = UserAnswers.setDepartureTransportMeansAnswersLens.set(
-        Some(DepartureTransportMeans(Some(identificationType1.code), None, None))
-      )(emptyUserAnswers)
-
-      val userAnswers = userAnswers15.setValue(InlandModePage, InlandMode("4", "Air"))
-
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, identificationRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> identificationType1.code))
-
-      val view = injector.instanceOf[TransportMeansIdentificationView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, identificationTypes, mode, transportIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

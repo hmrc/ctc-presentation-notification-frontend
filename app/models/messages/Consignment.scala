@@ -26,7 +26,7 @@ case class Consignment(
   modeOfTransportAtTheBorder: Option[String],
   TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
-  DepartureTransportMeans: Option[DepartureTransportMeans],
+  DepartureTransportMeans: Option[Seq[DepartureTransportMeans]],
   ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]
@@ -57,7 +57,7 @@ object Consignment {
       (__ \ "modeOfTransportAtTheBorder").readNullable[String] and
       (__ \ "TransportEquipment").readNullable[List[TransportEquipment]] and
       (__ \ "LocationOfGoods").readNullable[LocationOfGoods] and
-      (__ \ "DepartureTransportMeans").readWithDefault[List[DepartureTransportMeans]](Nil).map(_.headOption) and
+      (__ \ "DepartureTransportMeans").readNullable[Seq[DepartureTransportMeans]] and
       (__ \ "ActiveBorderTransportMeans").readNullable[Seq[ActiveBorderTransportMeans]] and
       (__ \ "PlaceOfLoading").readNullable[PlaceOfLoading] and
       (__ \ "HouseConsignment").read[Seq[HouseConsignment]]
@@ -69,7 +69,7 @@ object Consignment {
       (__ \ "modeOfTransportAtTheBorder").writeNullable[String] and
       (__ \ "TransportEquipment").writeNullable[List[TransportEquipment]] and
       (__ \ "LocationOfGoods").writeNullable[LocationOfGoods] and
-      (__ \ "DepartureTransportMeans").writeNullable[Seq[DepartureTransportMeans]].contramap[Option[DepartureTransportMeans]](_.map(Seq(_))) and
+      (__ \ "DepartureTransportMeans").writeNullable[Seq[DepartureTransportMeans]] and
       (__ \ "ActiveBorderTransportMeans").writeNullable[Seq[ActiveBorderTransportMeans]] and
       (__ \ "PlaceOfLoading").writeNullable[PlaceOfLoading] and
       (__ \ "HouseConsignment").write[Seq[HouseConsignment]]

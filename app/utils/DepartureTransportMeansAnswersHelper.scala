@@ -21,66 +21,48 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Index, Mode, UserAnswers}
 import pages.transport.departureTransportMeans._
 import play.api.i18n.Messages
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
 
-import scala.concurrent.Future.successful
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
-  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode,
   transportIndex: Index
-)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers
 
-  def identificationType: Future[Option[SummaryListRow]] =
-    fetchValue[TransportMeansIdentification](
+  def identificationType: Option[SummaryListRow] =
+    buildRowWithAnswer[TransportMeansIdentification](
       page = TransportMeansIdentificationPage(transportIndex),
-      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
-      refDataLookup = checkYourAnswersReferenceDataService.getMeansOfTransportIdentificationType
-    ).map {
-      identificationType =>
-        buildRowWithAnswer[TransportMeansIdentification](
-          page = TransportMeansIdentificationPage(transportIndex),
-          optionalAnswer = identificationType,
-          formatAnswer = formatDynamicEnumAsText(_),
-          prefix = "consignment.departureTransportMeans.identification",
-          id = Some("change-transport-means-identification")
-        )
-    }
+      optionalAnswer = userAnswers.get(TransportMeansIdentificationPage(transportIndex)),
+      formatAnswer = formatDynamicEnumAsText(_),
+      prefix = "consignment.departureTransportMeans.identification",
+      id = Some("change-transport-means-identification")
+    )
 
-  def identificationNumberRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def identificationNumberRow: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = TransportMeansIdentificationNumberPage(transportIndex),
+    optionalAnswer = userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex)),
     formatAnswer = formatAsText,
     prefix = "consignment.departureTransportMeans.identificationNumber",
-    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
     id = Some("change-departure-transport-means-identification-number")
   )
 
-  def nationality: Future[Option[SummaryListRow]] =
-    fetchValue[Nationality](
+  def nationality: Option[SummaryListRow] =
+    buildRowWithAnswer[Nationality](
       page = TransportMeansNationalityPage(transportIndex),
-      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality),
-      refDataLookup = checkYourAnswersReferenceDataService.getNationality
-    ).map {
-      nationality =>
-        buildRowWithAnswer[Nationality](
-          page = TransportMeansNationalityPage(transportIndex),
-          optionalAnswer = nationality,
-          formatAnswer = formatAsText,
-          prefix = "consignment.departureTransportMeans.nationality",
-          id = Some("change-departure-transport-means-nationality")
-        )
-    }
+      optionalAnswer = userAnswers.get(TransportMeansNationalityPage(transportIndex)),
+      formatAnswer = formatAsText,
+      prefix = "consignment.departureTransportMeans.nationality",
+      id = Some("change-departure-transport-means-nationality")
+    )
 
-  def buildDepartureTransportMeansSection: Future[Option[Section]] = {
+  def buildDepartureTransportMeansSection: Option[Section] = {
 
     val predicate: Boolean = userAnswers.departureData.Consignment.inlandModeOfTransport match {
       case Some(value) => value != "5"
@@ -89,22 +71,16 @@ class DepartureTransportMeansAnswersHelper(
 
     if (predicate) {
 
-      for {
-        identificationTypeRow   <- identificationType
-        identificationNumberRow <- successful(identificationNumberRow)
-        nationalityRow          <- nationality
-      } yield {
-        val rows = Seq(identificationTypeRow, identificationNumberRow, nationalityRow).flatten
+      val rows = Seq(identificationType, identificationNumberRow, nationality).flatten
 
-        Some(
-          Section(
-            sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
-            rows = rows
-          )
+      Some(
+        Section(
+          sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
+          rows = rows
         )
-      }
+      )
     } else {
-      successful(None)
+      None
     }
   }
 }

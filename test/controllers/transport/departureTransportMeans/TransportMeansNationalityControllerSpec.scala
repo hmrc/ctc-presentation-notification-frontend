@@ -20,8 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.messages.DepartureTransportMeans
-import models.{NormalMode, SelectableList, UserAnswers}
+import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transport.departureTransportMeans.TransportMeansNationalityPage
@@ -69,29 +68,6 @@ class TransportMeansNationalityControllerSpec extends SpecBase with AppWithDefau
 
       contentAsString(result) mustEqual
         view(form, departureId, nationalityList.values, mode, transportIndex)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-
-      val userAnswers = UserAnswers.setDepartureTransportMeansAnswersLens.set(
-        Some(DepartureTransportMeans(None, None, Some(nationality1.code)))
-      )(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, nationalityRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> nationality1.code))
-
-      val view = injector.instanceOf[TransportMeansNationalityView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, nationalityList.values, mode, transportIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
