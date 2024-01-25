@@ -64,11 +64,11 @@ class RepresentativeAnswersHelper(
     id = Some("change-representative-name")
   )
 
-  def phoneNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def phoneNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = RepresentativePhoneNumberPage,
+    optionalAnswer = userAnswers.get(RepresentativePhoneNumberPage),
     formatAnswer = formatAsText,
     prefix = "representative.representativeTelephoneNumber",
-    findValueInDepartureData = _.Representative.flatMap(_.ContactPerson.map(_.phoneNumber)),
     id = Some("change-representative-phone-number")
   )
 
