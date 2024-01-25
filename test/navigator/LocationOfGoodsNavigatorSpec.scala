@@ -745,7 +745,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "in Check Mode" - {
 
-      "must go from limit date page to check your answers page" in {
+      "must go from limit date page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
