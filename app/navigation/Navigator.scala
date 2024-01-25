@@ -18,7 +18,8 @@ package navigation
 
 import controllers.routes
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages.Page
+import pages.transport.CheckInformationPage
+import pages.{MoreInformationPage, Page}
 import play.api.mvc.Call
 
 trait Navigator {

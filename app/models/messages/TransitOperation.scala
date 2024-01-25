@@ -19,7 +19,7 @@ package models.messages
 import config.Constants.{EntryAndExitSummaryDeclarationSecurityDetails, EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails}
 import play.api.libs.json.{Json, OFormat}
 
-case class TransitOperation(LRN: Option[String], limitDate: Option[String], security: String) {
+case class TransitOperation(LRN: Option[String], limitDate: Option[String], security: String, reducedDatasetIndicator: String) {
 
   def isSecurityTypeInSet: Boolean = {
     val allowed = Set(EntrySummaryDeclarationSecurityDetails, ExitSummaryDeclarationSecurityDetails, EntryAndExitSummaryDeclarationSecurityDetails)

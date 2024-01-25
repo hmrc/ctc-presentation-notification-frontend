@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -75,6 +75,25 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       contentAsString(result) mustEqual
         view(form, departureId, inlandModes, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
+      when(mockTransportModeCodesService.getInlandModes()(any())).thenReturn(Future.successful(inlandModes))
+      val userAnswers15 = UserAnswers.setInlandModeOfTransportOnUserAnswersLens.set(Some(inlandModes.head.code))(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers15)
+
+      val request = FakeRequest(GET, inlandModeOfTransportRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> inlandModes.head.code))
+
+      val view = injector.instanceOf[InlandModeView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual view(filledForm, departureId, inlandModes, mode)(request, messages).toString
+
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

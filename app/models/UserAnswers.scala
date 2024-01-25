@@ -113,6 +113,9 @@ object UserAnswers {
   private val modeOfTransportAtTheBorderConsignmentLens: Lens[Consignment, Option[String]] =
     GenLens[Consignment](_.modeOfTransportAtTheBorder)
 
+  private val inlandModeOfTransportConsignmentLens: Lens[Consignment, Option[String]] =
+    GenLens[Consignment](_.inlandModeOfTransport)
+
   private val locationOfGoodsConsignmentLens: Lens[Consignment, Option[LocationOfGoods]] =
     GenLens[Consignment](_.LocationOfGoods)
 
@@ -124,6 +127,9 @@ object UserAnswers {
 
   private val borderMeansConsignmentLens: Lens[Consignment, Option[Seq[ActiveBorderTransportMeans]]] =
     GenLens[Consignment](_.ActiveBorderTransportMeans)
+
+  private val transportEquipmentConsignmentLens: Lens[Consignment, Option[List[TransportEquipment]]] =
+    GenLens[Consignment](_.TransportEquipment)
 
   private val addressLocationLens: Lens[LocationOfGoods, Option[Address]] =
     GenLens[LocationOfGoods](_.Address)
@@ -139,6 +145,9 @@ object UserAnswers {
 
   val setModeOfTransportAtTheBorderOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
     departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderConsignmentLens)
+
+  val setInlandModeOfTransportOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(inlandModeOfTransportConsignmentLens)
 
   val setLocationOfGoodsOnUserAnswersLens: Lens[UserAnswers, Option[LocationOfGoods]] =
     departureDataLens.composeLens(consignmentLens).composeLens(locationOfGoodsConsignmentLens)
@@ -185,6 +194,9 @@ object UserAnswers {
 
   val setBorderMeansAnswersLens: Lens[UserAnswers, Option[Seq[ActiveBorderTransportMeans]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(borderMeansConsignmentLens)
+
+  val setTransportEquipmentLens: Lens[UserAnswers, Option[List[TransportEquipment]]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(transportEquipmentConsignmentLens)
 
   val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Option[DepartureTransportMeans]] =
     departureDataLens.composeLens(consignmentLens).composeLens(departureTransportMeansConsignmentLens)

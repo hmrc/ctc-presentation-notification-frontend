@@ -71,6 +71,7 @@ checkYourAnswers.transportMeans.active.withIndex = Border means of transport {0}
 checkYourAnswers.transportMeans.active.withoutIndex = Border means of transport
 checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
 checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
+checkYourAnswers.departureTransportMeans = Departure means of transport
 
 checkYourAnswers.locationOfGoods = Location of goods
 
@@ -513,15 +514,21 @@ representative.name.error.length = Your name must be {0} characters or less
 representative.name.error.invalid = Your name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 representative.name.change.hidden = representative’s name
 
+checkYourAnswers.inlandMode = Inland mode of transport
+
 transport.addInlandModeOfTransport.heading = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.title = Do you want to add an inland mode of transport?
 transport.addInlandModeOfTransport.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
 transport.addInlandModeOfTransport.no = No - the goods are already at the port or airport
 transport.addInlandModeOfTransport.error.required = Select yes if you want to add an inland mode of transport
+transport.addInlandModeOfTransport.checkYourAnswersLabel = Do you want to add an inland mode of transport?
+transport.addInlandModeOfTransport.change.hidden = if you want to add an inland mode of transport
 
 transport.inlandModeOfTransport.heading = Which inland mode of transport are you using?
 transport.inlandModeOfTransport.title = Which inland mode of transport are you using?
 transport.inlandModeOfTransport.error.required = Select which inland mode of transport you’re using
+transport.inlandModeOfTransport.checkYourAnswersLabel = Mode
+transport.inlandModeOfTransport.change.hidden = inland mode of transport
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
@@ -587,16 +594,19 @@ houseConsignment.index.departureTransportMeans.country.hint = Enter the country 
 houseConsignment.index.departureTransportMeans.country.error.required = Select the country the departure means of transport is registered to in house consignment {0}
 houseConsignment.index.departureTransportMeans.country.placeholder = Select a country
 
-
 consignment.departureTransportMeans.identification.heading = Which identification do you want to use for the departure means of transport?
 consignment.departureTransportMeans.identification.title = Which identification do you want to use for the departure means of transport?
 consignment.departureTransportMeans.identification.error.required = Select which identification you want to use for the departure means of transport
+consignment.departureTransportMeans.identification.change.hidden = identification type for the departure means of transport
+consignment.departureTransportMeans.identification.checkYourAnswersLabel = Identification type
 
-consignment.index.departureTransportMeans.nationality.heading = What country is the departure means of transport registered to?
-consignment.index.departureTransportMeans.nationality.title = What country is the departure means of transport registered to?
-consignment.index.departureTransportMeans.nationality.hint = Enter the country or code, like Austria or AT.
-consignment.index.departureTransportMeans.nationality.placeholder = Select a nationality
-consignment.index.departureTransportMeans.nationality.error.required = Select the country the departure means of transport is registered to
+consignment.departureTransportMeans.nationality.heading = What country is the departure means of transport registered to?
+consignment.departureTransportMeans.nationality.title = What country is the departure means of transport registered to?
+consignment.departureTransportMeans.nationality.hint = Enter the country or code, like Austria or AT.
+consignment.departureTransportMeans.nationality.placeholder = Select a nationality
+consignment.departureTransportMeans.nationality.error.required = Select the country the departure means of transport is registered to
+consignment.departureTransportMeans.nationality.change.hidden = registered country for the departure means of transport
+consignment.departureTransportMeans.nationality.checkYourAnswersLabel = Registered country
 
 consignment.departureTransportMeans.identificationNumber.title = What is the identification number for the departure means of transport?
 consignment.departureTransportMeans.identificationNumber.heading = What is the identification number for the departure means of transport?
@@ -605,6 +615,7 @@ consignment.departureTransportMeans.identificationNumber.checkYourAnswersLabel =
 consignment.departureTransportMeans.identificationNumber.error.length = The identification number must be 35 characters or less
 consignment.departureTransportMeans.identificationNumber.error.required = Enter the identification number for the departure means of transport
 consignment.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+consignment.departureTransportMeans.identificationNumber.change.hidden = the identification number for the departure means of transport
 
 information.sent.title = Information sent
 information.sent.heading = Information sent

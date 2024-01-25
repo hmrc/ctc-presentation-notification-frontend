@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.DepartureTransportMeansNavigator
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import play.api.data.Form
@@ -38,11 +38,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportMeansIdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationView,
+  navigator: DepartureTransportMeansNavigator,
   service: MeansOfTransportIdentificationTypesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -57,10 +57,19 @@ class TransportMeansIdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identifiers =>
-            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage) match {
+            def identificationFromDepartureData = {
+              val identificationCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification)
+
+              identificationCode.flatMap(
+                code => identifiers.find(_.code == code)
+              )
+            }
+
+            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage).orElse(identificationFromDepartureData) match {
               case None        => form(identifiers)
               case Some(value) => form(identifiers).fill(value)
             }
+
             Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
         }
     }
@@ -78,15 +87,15 @@ class TransportMeansIdentificationController @Inject() (
                   Future.successful(
                     BadRequest(view(formWithErrors, departureId, identificationTypeList, mode))
                   ),
-                value => redirect(mode, value, departureId)
+                value => redirect(value, departureId, mode)
               )
         }
     }
 
   private def redirect(
-    mode: Mode,
     value: TransportMeansIdentification,
-    departureId: String
+    departureId: String,
+    mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage, value))

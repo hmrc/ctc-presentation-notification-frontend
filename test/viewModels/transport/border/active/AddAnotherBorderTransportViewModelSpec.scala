@@ -82,7 +82,8 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(None, None, security = NoSecurityDetails),
+                  departureData = TestMessageData.messageData.copy(TransitOperation =
+                                                                     TransitOperation(None, None, security = NoSecurityDetails, reducedDatasetIndicator = "0"),
                                                                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
@@ -116,7 +117,8 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation = TransitOperation(None, None, security = NoSecurityDetails),
+                  departureData = TestMessageData.messageData.copy(TransitOperation =
+                                                                     TransitOperation(None, None, security = NoSecurityDetails, reducedDatasetIndicator = "0"),
                                                                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
@@ -147,9 +149,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation =
-                                                                     TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails),
-                                                                   CustomsOfficeOfTransitDeclared = None
+                  departureData = TestMessageData.messageData.copy(
+                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
+                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -181,7 +183,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
               val userAnswers = emptyUserAnswers
                 .copy(
                   departureData = TestMessageData.messageData.copy(
-                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails),
+                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
                     CustomsOfficeOfTransitDeclared = TestMessageData.customsOfficeOfTransitDeclared
                   )
                 )
@@ -215,9 +217,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation =
-                                                                     TransitOperation(LRN = None, limitDate = None, security = NoSecurityDetails),
-                                                                   CustomsOfficeOfTransitDeclared = None
+                  departureData = TestMessageData.messageData.copy(
+                    TransitOperation = TransitOperation(LRN = None, limitDate = None, security = NoSecurityDetails, reducedDatasetIndicator = "0"),
+                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -241,9 +243,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation =
-                                                                     TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails),
-                                                                   CustomsOfficeOfTransitDeclared = None
+                  departureData = TestMessageData.messageData.copy(
+                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
+                    CustomsOfficeOfTransitDeclared = None
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -275,7 +277,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
               val userAnswers = emptyUserAnswers
                 .copy(
                   departureData = TestMessageData.messageData.copy(
-                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails),
+                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
                     CustomsOfficeOfTransitDeclared = TestMessageData.customsOfficeOfTransitDeclared
                   )
                 )

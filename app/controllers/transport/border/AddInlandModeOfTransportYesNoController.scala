@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.BorderNavigator
 import pages.transport.AddInlandModeOfTransportYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddInlandModeOfTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: BorderNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -47,7 +47,12 @@ class AddInlandModeOfTransportYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddInlandModeOfTransportYesNoPage) match {
+      val inlandModeYesNoAnswer = request.userAnswers
+        .get(AddInlandModeOfTransportYesNoPage)
+        .orElse {
+          Some(request.userAnswers.departureData.Consignment.inlandModeOfTransport.isDefined)
+        }
+      val preparedForm = inlandModeYesNoAnswer match {
         case None        => form
         case Some(value) => form.fill(value)
       }

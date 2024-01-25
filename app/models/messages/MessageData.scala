@@ -51,9 +51,20 @@ case class MessageData(
 
   val isRepresentativeDefined: Boolean = Representative.isDefined
 
-  def isDataComplete: Boolean =
+  def isDataCompleteSimplified: Boolean =
     List(
       TransitOperation.limitDate,
+      Consignment.containerIndicator,
+      Consignment.modeOfTransportAtTheBorder,
+      Consignment.inlandModeOfTransport,
+      Consignment.TransportEquipment,
+      Consignment.LocationOfGoods,
+      Consignment.ActiveBorderTransportMeans,
+      Consignment.PlaceOfLoading
+    ).sequence.isDefined
+
+  def isDataCompleteNormal: Boolean =
+    List(
       Consignment.containerIndicator,
       Consignment.modeOfTransportAtTheBorder,
       Consignment.inlandModeOfTransport,
