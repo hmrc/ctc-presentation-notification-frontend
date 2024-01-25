@@ -51,8 +51,8 @@ class DepartureDataTransformer @Inject() (
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
       limitDateTransformer.transform andThen
-      modeOfTransportAtTheBorderTransformer.transform
-    addBorderModeOfTransportYesNoTransformer.transform
+      modeOfTransportAtTheBorderTransformer.transform andThen
+      addBorderModeOfTransportYesNoTransformer.transform
 
     transformerPipeline(userAnswers)
   }
