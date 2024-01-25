@@ -93,7 +93,7 @@ object LoadingNavigator {
 
   private[navigation] def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
     if (ua.departureData.isSimplified) {
-      ua.departureData.TransitOperation.limitDate match {
+      ua.get(LimitDatePage) match {
         case Some(_) =>
           if (ua.departureData.Consignment.containerIndicator.isEmpty) {
             ContainerIndicatorPage.route(ua, departureId, mode)
