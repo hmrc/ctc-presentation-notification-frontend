@@ -101,10 +101,11 @@ object LoadingNavigator {
           }
         case None => LimitDatePage.route(ua, departureId, mode)
       }
-    } else ua.get(ContainerIndicatorPage) match {
-      case Some(_) => containerIndicatorPageNavigation(departureId, mode, ua)
-      case None => ContainerIndicatorPage.route(ua, departureId, mode)
-    }
+    } else
+      ua.get(ContainerIndicatorPage) match {
+        case Some(_) => containerIndicatorPageNavigation(departureId, mode, ua)
+        case None    => ContainerIndicatorPage.route(ua, departureId, mode)
+      }
 
   private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
     if (ua.departureData.TransitOperation.isSecurityTypeInSet)
