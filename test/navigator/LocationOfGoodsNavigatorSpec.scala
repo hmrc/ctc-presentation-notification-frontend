@@ -358,6 +358,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
           )
           .setValue(LimitDatePage, LocalDate.now())
+          .setValue(ContainerIndicatorPage, false)
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
