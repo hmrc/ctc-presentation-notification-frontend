@@ -48,10 +48,7 @@ class NameController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers
-        .get(NamePage)
-        .orElse {
-          request.userAnswers.departureData.Representative.flatMap(_.ContactPerson.map(_.name))
-        } match {
+        .get(NamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

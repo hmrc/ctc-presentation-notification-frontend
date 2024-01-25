@@ -226,29 +226,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "must return Some(Row)" - {
-        s"when Representative Contact is defined in departure data IE015/013" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithRepresentativeAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-
-              val helper = new RepresentativeAnswersHelper(ie015WithRepresentativeAnswers, departureId, mode)
-              val result = helper.name.get
-
-              result.key.value mustBe "Name"
-              result.value.value mustBe messageData.Representative.flatMap(_.ContactPerson.map(_.name)).get
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.representative.routes.NameController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "representative’s name"
-              action.id mustBe "change-representative-name"
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when Representative Contact is answered in IE170" in {
+        s"when Representative Contact name is answered" in {
           forAll(arbitrary[Mode], Gen.alphaNumStr) {
             (mode, name) =>
               val answers = emptyUserAnswers.setValue(NamePage, name)

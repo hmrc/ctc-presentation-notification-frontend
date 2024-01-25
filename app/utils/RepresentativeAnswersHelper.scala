@@ -56,11 +56,11 @@ class RepresentativeAnswersHelper(
     id = Some("change-add-contact-details")
   )
 
-  def name: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def name: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = NamePage,
+    optionalAnswer = userAnswers.get(NamePage),
     formatAnswer = formatAsText,
     prefix = "representative.name",
-    findValueInDepartureData = _.Representative.flatMap(_.ContactPerson.map(_.name)),
     id = Some("change-representative-name")
   )
 

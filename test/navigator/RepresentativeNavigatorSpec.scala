@@ -47,6 +47,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           "must go from AddRepresentativeContactDetailsYesNoPage to CYA page" in {
             val userAnswers = emptyUserAnswers
               .setValue(AddRepresentativeContactDetailsYesNoPage, arbitrary[Boolean].sample.value)
+              .setValue(NamePage, nonEmptyString.sample.value)
             navigator
               .nextPage(AddRepresentativeContactDetailsYesNoPage, userAnswers, departureId, mode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))

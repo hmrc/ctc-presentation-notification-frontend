@@ -16,25 +16,25 @@
 
 package utils.transformer.representative
 
-import base.TestMessageData.{contactPhoneNumber, representative}
+import base.TestMessageData.{contactName, representative}
 import base.{SpecBase, TestMessageData}
-import pages.representative.RepresentativePhoneNumberPage
+import pages.representative.NamePage
 
-class RepresentativePhoneNumberTransformerSpec extends SpecBase {
-  val transformer = new RepresentativePhoneNumberTransformer()
+class RepresentativeNameTransformerSpec extends SpecBase {
+  val transformer = new RepresentativeNameTransformer()
 
-  "RepresentativePhoneNumberTransformer" - {
-    "must return updated answers with RepresentativePhoneNumberPage" in {
+  "RepresentativeNameTransformer" - {
+    "must return updated answers with representative NamePage" in {
       val userAnswers = emptyUserAnswers
-      userAnswers.get(RepresentativePhoneNumberPage) mustBe None
+      userAnswers.get(NamePage) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(RepresentativePhoneNumberPage) mustBe Some(contactPhoneNumber)
+          updatedUserAnswers.get(NamePage) mustBe Some(contactName)
       }
     }
 
-    "must not update if representative phone number is None" in {
+    "must not update if representative phone name is None" in {
       val userAnswers =
         emptyUserAnswers.copy(departureData =
           TestMessageData.messageData.copy(
@@ -42,11 +42,11 @@ class RepresentativePhoneNumberTransformerSpec extends SpecBase {
           )
         )
 
-      userAnswers.get(RepresentativePhoneNumberPage) mustBe None
+      userAnswers.get(NamePage) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(RepresentativePhoneNumberPage) mustBe None
+          updatedUserAnswers.get(NamePage) mustBe None
       }
     }
   }

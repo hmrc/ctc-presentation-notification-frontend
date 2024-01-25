@@ -47,9 +47,9 @@ class RepresentativeNavigator @Inject() () extends Navigator {
   }
 
   private def addRepresentativeContactDetailsCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    val isContactDetailsDefined = ua.departureData.Representative.exists(_.ContactPerson.isDefined) || ua.get(NamePage).exists(_.nonEmpty)
+    val isContactNameDefined = ua.get(NamePage).exists(_.nonEmpty)
 
-    (ua.get(AddRepresentativeContactDetailsYesNoPage), isContactDetailsDefined) match {
+    (ua.get(AddRepresentativeContactDetailsYesNoPage), isContactNameDefined) match {
       case (Some(true), false) => NamePage.route(ua, departureId, CheckMode)
       case _                   => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
