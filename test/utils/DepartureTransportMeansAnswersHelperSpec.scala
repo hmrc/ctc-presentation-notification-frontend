@@ -52,7 +52,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val userAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode)
+              val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode, transportIndex)
               val result = helper.identificationNumberRow
               result mustBe None
           }
@@ -64,8 +64,8 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           forAll(arbitrary[Mode], Gen.alphaNumStr) {
             (mode, number) =>
               val answers = emptyUserAnswers
-                .setValue(TransportMeansIdentificationNumberPage, number)
-              val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+                .setValue(TransportMeansIdentificationNumberPage(transportIndex), number)
+              val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
 
               val result = helper.identificationNumberRow.get
 
@@ -76,7 +76,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
-                .onPageLoad(departureId, mode)
+                .onPageLoad(departureId, mode, transportIndex)
                 .url
               action.visuallyHiddenText.get mustBe "the identification number for the departure means of transport"
               action.id mustBe "change-departure-transport-means-identification-number"
@@ -88,7 +88,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
         forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
           (mode, answers) =>
             val number = answers.departureData.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber).get
-            val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+            val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
             val result = helper.identificationNumberRow.get
 
             result.key.value mustBe "Identification number"
@@ -98,7 +98,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             val action = actions.head
             action.content.value mustBe "Change"
             action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
-              .onPageLoad(departureId, mode)
+              .onPageLoad(departureId, mode, transportIndex)
               .url
             action.visuallyHiddenText.get mustBe "the identification number for the departure means of transport"
             action.id mustBe "change-departure-transport-means-identification-number"
@@ -114,7 +114,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           mode =>
             val userAnswers =
               UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-            val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode)
+            val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode, transportIndex)
             val result = helper.identificationType
             result.futureValue mustBe None
         }
@@ -126,9 +126,9 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
         forAll(arbitrary[Mode], arbitrary[TransportMeansIdentification]) {
           (mode, means) =>
             val answers = emptyUserAnswers
-              .setValue(TransportMeansIdentificationPage, means)
+              .setValue(TransportMeansIdentificationPage(transportIndex), means)
 
-            val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+            val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
             whenReady[Option[SummaryListRow], Assertion](helper.identificationType) {
               optionResult =>
                 val result = optionResult.get
@@ -140,7 +140,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController
-                  .onPageLoad(departureId, mode)
+                  .onPageLoad(departureId, mode, transportIndex)
                   .url
                 action.visuallyHiddenText.get mustBe "identification type for the departure means of transport"
                 action.id mustBe "change-transport-means-identification"
@@ -157,7 +157,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           when(refDataService.getMeansOfTransportIdentificationType(any())(any()))
             .thenReturn(Future.successful(TransportMeansIdentification(identificationType, "description")))
 
-          val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+          val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
           whenReady[Option[SummaryListRow], Assertion](helper.identificationType) {
             optionResult =>
               val result = optionResult.get
@@ -169,7 +169,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController
-                .onPageLoad(departureId, mode)
+                .onPageLoad(departureId, mode, transportIndex)
                 .url
               action.visuallyHiddenText.get mustBe "identification type for the departure means of transport"
               action.id mustBe "change-transport-means-identification"
@@ -184,7 +184,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           mode =>
             val userAnswers =
               UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-            val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode)
+            val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, refDataService, mode, transportIndex)
             val result = helper.nationality
             result.futureValue mustBe None
         }
@@ -196,9 +196,9 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
         forAll(arbitrary[Mode], arbitrary[Nationality]) {
           (mode, nationality) =>
             val answers = emptyUserAnswers
-              .setValue(TransportMeansNationalityPage, nationality)
+              .setValue(TransportMeansNationalityPage(transportIndex), nationality)
 
-            val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+            val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
             whenReady[Option[SummaryListRow], Assertion](helper.nationality) {
               optionResult =>
                 val result = optionResult.get
@@ -210,7 +210,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController
-                  .onPageLoad(departureId, mode)
+                  .onPageLoad(departureId, mode, transportIndex)
                   .url
                 action.visuallyHiddenText.get mustBe "registered country for the departure means of transport"
                 action.id mustBe "change-departure-transport-means-nationality"
@@ -228,7 +228,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           when(refDataService.getNationality(any())(any()))
             .thenReturn(Future.successful(nationality))
 
-          val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+          val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
           whenReady[Option[SummaryListRow], Assertion](helper.nationality) {
             optionResult =>
               val result = optionResult.get
@@ -240,7 +240,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController
-                .onPageLoad(departureId, mode)
+                .onPageLoad(departureId, mode, transportIndex)
                 .url
               action.visuallyHiddenText.get mustBe "registered country for the departure means of transport"
               action.id mustBe "change-departure-transport-means-nationality"
@@ -257,7 +257,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           val ie015withReducedDataSetFalseUserAnswers =
             UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), jsonData)
           val helper =
-            new DepartureTransportMeansAnswersHelper(ie015withReducedDataSetFalseUserAnswers, departureId, refDataService, mode)
+            new DepartureTransportMeansAnswersHelper(ie015withReducedDataSetFalseUserAnswers, departureId, refDataService, mode, transportIndex)
           val result = helper.buildDepartureTransportMeansSection.futureValue
           result mustBe None
       }
@@ -270,7 +270,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             .setValue(InlandModePage, inlandMode)
 
           val helper =
-            new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+            new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
           val result = helper.buildDepartureTransportMeansSection.futureValue
 
           result.get.rows.size mustBe 3
@@ -283,7 +283,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
         mode =>
           val answers = emptyUserAnswers
 
-          val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode)
+          val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, refDataService, mode, transportIndex)
           val result = helper.buildDepartureTransportMeansSection.futureValue
 
           result.get.rows.size mustBe 3

@@ -20,7 +20,7 @@ import controllers.transport.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.border.BorderSection
-import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -41,7 +41,7 @@ case object AddInlandModeOfTransportYesNoPage extends QuestionPage[Boolean] {
 
     value match {
 
-      case Some(false) => userAnswers.remove(InlandModePage, ie015InlandModePath).flatMap(_.remove(TransportMeansSection, transportMeansPath))
+      case Some(false) => userAnswers.remove(InlandModePage, ie015InlandModePath).flatMap(_.remove(TransportMeansListSection, transportMeansPath))
       case _           => super.cleanup(value, userAnswers)
     }
   }

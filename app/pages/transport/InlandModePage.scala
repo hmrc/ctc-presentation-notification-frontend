@@ -20,7 +20,7 @@ import models.reference.TransportMode.InlandMode
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
-import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -39,8 +39,8 @@ case object InlandModePage extends QuestionPage[InlandMode] {
     val transportMeansPath: JsPath = JsPath \ "Consignment" \ "DepartureTransportMeans"
 
     value match {
-      case Some(value) if value.code == "5" => userAnswers.remove(TransportMeansSection, transportMeansPath)
-      case Some(value) if value.code != "5" => userAnswers.remove(TransportMeansSection)
+      case Some(value) if value.code == "5" => userAnswers.remove(TransportMeansListSection, transportMeansPath)
+      case Some(value) if value.code != "5" => userAnswers.remove(TransportMeansListSection)
       case _                                => super.cleanup(value, userAnswers)
     }
   }

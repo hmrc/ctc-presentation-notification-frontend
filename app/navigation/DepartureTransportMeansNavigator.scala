@@ -33,22 +33,23 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case TransportMeansIdentificationPage       => ua => transportMeansIdentificationNavigation(ua, departureId, mode)
-    case TransportMeansIdentificationNumberPage => ua => transportMeansNumberNavigation(ua, departureId, mode)
-    case TransportMeansNationalityPage          => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case TransportMeansIdentificationPage(transportIndex)       => ua => transportMeansIdentificationNavigation(ua, departureId, mode, transportIndex)
+    case TransportMeansIdentificationNumberPage(transportIndex) => ua => transportMeansNumberNavigation(ua, departureId, mode, transportIndex)
+    case TransportMeansNationalityPage(_)                       => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
   }
 
-  private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    ua.get(TransportMeansIdentificationNumberPage) match {
+  private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
+    ua.get(TransportMeansIdentificationNumberPage(transportIndex)) match {
       case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case None    => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode))
+      case None =>
+        Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode, transportIndex))
     }
 
-  private def transportMeansNumberNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    ua.get(TransportMeansNationalityPage) match {
+  private def transportMeansNumberNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
+    ua.get(TransportMeansNationalityPage(transportIndex)) match {
       case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case None    => Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode))
+      case None    => Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
     }
 
 }

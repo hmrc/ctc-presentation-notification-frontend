@@ -18,7 +18,7 @@ package utils
 
 import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.transport.departureTransportMeans._
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
@@ -33,7 +33,8 @@ class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
-  mode: Mode
+  mode: Mode,
+  transportIndex: Index
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
@@ -41,13 +42,13 @@ class DepartureTransportMeansAnswersHelper(
 
   def identificationType: Future[Option[SummaryListRow]] =
     fetchValue[TransportMeansIdentification](
-      page = TransportMeansIdentificationPage,
+      page = TransportMeansIdentificationPage(transportIndex),
       valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
       refDataLookup = checkYourAnswersReferenceDataService.getMeansOfTransportIdentificationType
     ).map {
       identificationType =>
         buildRowWithAnswer[TransportMeansIdentification](
-          page = TransportMeansIdentificationPage,
+          page = TransportMeansIdentificationPage(transportIndex),
           optionalAnswer = identificationType,
           formatAnswer = formatDynamicEnumAsText(_),
           prefix = "consignment.departureTransportMeans.identification",
@@ -56,7 +57,7 @@ class DepartureTransportMeansAnswersHelper(
     }
 
   def identificationNumberRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = TransportMeansIdentificationNumberPage,
+    page = TransportMeansIdentificationNumberPage(transportIndex),
     formatAnswer = formatAsText,
     prefix = "consignment.departureTransportMeans.identificationNumber",
     findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
@@ -65,13 +66,13 @@ class DepartureTransportMeansAnswersHelper(
 
   def nationality: Future[Option[SummaryListRow]] =
     fetchValue[Nationality](
-      page = TransportMeansNationalityPage,
+      page = TransportMeansNationalityPage(transportIndex),
       valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality),
       refDataLookup = checkYourAnswersReferenceDataService.getNationality
     ).map {
       nationality =>
         buildRowWithAnswer[Nationality](
-          page = TransportMeansNationalityPage,
+          page = TransportMeansNationalityPage(transportIndex),
           optionalAnswer = nationality,
           formatAnswer = formatAsText,
           prefix = "consignment.departureTransportMeans.nationality",

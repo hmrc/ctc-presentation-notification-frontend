@@ -51,7 +51,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
     mock[MeansOfTransportIdentificationTypesService]
 
   private lazy val identificationNumberRoute =
-    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode).url
+    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode, transportIndex).url
 
   private val validAnswer = "testString"
 
@@ -69,7 +69,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
             None
           )(
             emptyUserAnswers
-              .setValue(TransportMeansIdentificationPage, identifier)
+              .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
           )
 
           setExistingUserAnswers(userAnswers)
@@ -82,7 +82,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, departureId, mode, identifier.asString)(request, messages).toString
+            view(form, departureId, mode, identifier.asString, transportIndex)(request, messages).toString
       }
     }
 
@@ -113,7 +113,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, mode, identificationType1.asString)(request, messages).toString
+        view(filledForm, departureId, mode, identificationType1.asString, transportIndex)(request, messages).toString
 
     }
 
@@ -121,8 +121,8 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
       forAll(arbitrary[TransportMeansIdentification]) {
         identifier =>
           val userAnswers = emptyUserAnswers
-            .setValue(TransportMeansIdentificationPage, identifier)
-            .setValue(TransportMeansIdentificationNumberPage, "testString")
+            .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
+            .setValue(TransportMeansIdentificationNumberPage(transportIndex), "testString")
 
           setExistingUserAnswers(userAnswers)
 
@@ -136,7 +136,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, departureId, mode, identifier.asString)(request, messages).toString
+            view(filledForm, departureId, mode, identifier.asString, transportIndex)(request, messages).toString
       }
     }
 
@@ -144,7 +144,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
       forAll(arbitrary[TransportMeansIdentification]) {
         identifier =>
           val userAnswers = emptyUserAnswers
-            .setValue(TransportMeansIdentificationPage, identifier)
+            .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
 
           setExistingUserAnswers(userAnswers)
 
@@ -166,7 +166,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
         forAll(arbitrary[TransportMeansIdentification]) {
           identifier =>
             val userAnswers = emptyUserAnswers
-              .setValue(TransportMeansIdentificationPage, identifier)
+              .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
             setExistingUserAnswers(userAnswers)
 
             val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
@@ -179,7 +179,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
             val view = injector.instanceOf[TransportMeansIdentificationNumberView]
 
             contentAsString(result) mustEqual
-              view(filledForm, departureId, mode, identifier.asString)(request, messages).toString
+              view(filledForm, departureId, mode, identifier.asString, transportIndex)(request, messages).toString
         }
       }
 

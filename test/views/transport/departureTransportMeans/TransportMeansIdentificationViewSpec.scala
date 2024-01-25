@@ -30,7 +30,7 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
   override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
-    injector.instanceOf[TransportMeansIdentificationView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[TransportMeansIdentificationView].apply(form, departureId, values, NormalMode, transportIndex)(fakeRequest, messages)
 
   override val prefix: String = "consignment.departureTransportMeans.identification"
 

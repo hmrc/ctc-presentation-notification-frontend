@@ -41,12 +41,15 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
-                .removeValue(TransportMeansIdentificationNumberPage)
+                .setValue(TransportMeansIdentificationPage(transportIndex), TransportMeansIdentification("10", "test"))
+                .removeValue(TransportMeansIdentificationNumberPage(transportIndex))
 
               navigator
-                .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode))
+                .nextPage(TransportMeansIdentificationPage(transportIndex), updatedAnswers, departureId, mode)
+                .mustBe(
+                  controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
+                    .onPageLoad(departureId, mode, transportIndex)
+                )
           }
         }
 
@@ -54,10 +57,10 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .setValue(TransportMeansIdentificationPage, TransportMeansIdentification("10", "test"))
-                .setValue(TransportMeansIdentificationNumberPage, "test")
+                .setValue(TransportMeansIdentificationPage(transportIndex), TransportMeansIdentification("10", "test"))
+                .setValue(TransportMeansIdentificationNumberPage(transportIndex), "test")
               navigator
-                .nextPage(TransportMeansIdentificationPage, updatedAnswers, departureId, mode)
+                .nextPage(TransportMeansIdentificationPage(transportIndex), updatedAnswers, departureId, mode)
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
           }
@@ -70,12 +73,12 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .setValue(TransportMeansIdentificationNumberPage, "test")
-                .removeValue(TransportMeansNationalityPage)
+                .setValue(TransportMeansIdentificationNumberPage(transportIndex), "test")
+                .removeValue(TransportMeansNationalityPage(transportIndex))
 
               navigator
-                .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode))
+                .nextPage(TransportMeansIdentificationNumberPage(transportIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
           }
         }
 
@@ -83,10 +86,10 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .setValue(TransportMeansIdentificationNumberPage, "test")
-                .setValue(TransportMeansNationalityPage, Nationality("GB", "test"))
+                .setValue(TransportMeansIdentificationNumberPage(transportIndex), "test")
+                .setValue(TransportMeansNationalityPage(transportIndex), Nationality("GB", "test"))
               navigator
-                .nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode)
+                .nextPage(TransportMeansIdentificationNumberPage(transportIndex), updatedAnswers, departureId, mode)
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
           }
@@ -97,9 +100,9 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .setValue(TransportMeansNationalityPage, Nationality("UK", "test"))
+              .setValue(TransportMeansNationalityPage(transportIndex), Nationality("UK", "test"))
             navigator
-              .nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode)
+              .nextPage(TransportMeansNationalityPage(transportIndex), updatedAnswers, departureId, mode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }

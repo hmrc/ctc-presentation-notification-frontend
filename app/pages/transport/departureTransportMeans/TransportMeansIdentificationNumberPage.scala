@@ -16,19 +16,19 @@
 
 package pages.transport.departureTransportMeans
 
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import controllers.transport.departureTransportMeans.routes
 import pages.QuestionPage
-import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import pages.sections.transport.departureTransportMeans.{TransportMeansListSection, TransportMeansSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object TransportMeansIdentificationNumberPage extends QuestionPage[String] {
+case class TransportMeansIdentificationNumberPage(transportIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = TransportMeansSection.path \ toString
+  override def path: JsPath = TransportMeansSection(transportIndex).path \ toString
 
   override def toString: String = "identificationNumber"
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    Some(routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode))
+    Some(routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode, transportIndex))
 }

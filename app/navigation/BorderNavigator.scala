@@ -24,6 +24,7 @@ import models.reference.TransportMode.BorderMode
 import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
 import pages.sections.transport.border.BorderActiveListSection
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.border._
 import pages.transport.border.active._
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
@@ -82,9 +83,10 @@ class BorderNavigator @Inject() () extends Navigator {
     }
 
   private def inlandModeCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    //TODO: have a look again
     ua.get(InlandModePage).map(_.code) match {
       case Some("5") => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case _         => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
+      case _         => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)))
     }
 
   private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {

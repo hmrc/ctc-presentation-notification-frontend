@@ -49,7 +49,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   private val mode         = NormalMode
 
   private lazy val identificationRoute =
-    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode).url
+    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex).url
 
   private val mockMeansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService =
     mock[MeansOfTransportIdentificationTypesService]
@@ -83,7 +83,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, identificationTypes, mode)(request, messages).toString
+        view(form, departureId, identificationTypes, mode, transportIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously  been answered in the IE015" in {
@@ -109,7 +109,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, identificationTypes, mode)(request, messages).toString
+        view(filledForm, departureId, identificationTypes, mode, transportIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -118,7 +118,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       val userAnswers = emptyUserAnswers
         .setValue(InlandModePage, InlandMode("4", "Air"))
-        .setValue(TransportMeansIdentificationPage, identificationType1)
+        .setValue(TransportMeansIdentificationPage(transportIndex), identificationType1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)
@@ -132,7 +132,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, identificationTypes, mode)(request, messages).toString
+        view(filledForm, departureId, identificationTypes, mode, transportIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -173,7 +173,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, identificationTypes, mode)(request, messages).toString
+        view(boundForm, departureId, identificationTypes, mode, transportIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

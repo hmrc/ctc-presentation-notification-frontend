@@ -18,7 +18,7 @@ package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
-import models.Mode
+import models.{Index, Mode}
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.{DataRequest, MandatoryDataRequest}
 import navigation.DepartureTransportMeansNavigator
@@ -48,7 +48,7 @@ class TransportMeansIdentificationNumberController @Inject() (
 
   private val prefix = "consignment.departureTransportMeans.identificationNumber"
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] =
+  def onPageLoad(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
       .async {
@@ -56,7 +56,7 @@ class TransportMeansIdentificationNumberController @Inject() (
           val form = formProvider(prefix)
 
           val fillForm = request.userAnswers
-            .get(TransportMeansIdentificationNumberPage)
+            .get(TransportMeansIdentificationNumberPage(transportIndex))
             .orElse(
               request.userAnswers.departureData.Consignment.DepartureTransportMeans
                 flatMap (_.identificationNumber)
@@ -66,13 +66,13 @@ class TransportMeansIdentificationNumberController @Inject() (
             case None        => form
             case Some(value) => form.fill(value)
           }
-          getIdentification().map {
-            case Some(identificationType) => Ok(view(preparedForm, departureId, mode, identificationType.asString))
+          getIdentification(transportIndex).map {
+            case Some(identificationType) => Ok(view(preparedForm, departureId, mode, identificationType.asString, transportIndex))
             case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
           }
       }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] =
+  def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
       .async {
@@ -83,26 +83,27 @@ class TransportMeansIdentificationNumberController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                getIdentification().map {
-                  case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString))
+                getIdentification(transportIndex).map {
+                  case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString, transportIndex))
                   case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
                 },
-              value => redirect(value, departureId, mode)
+              value => redirect(value, departureId, mode, transportIndex)
             )
       }
 
   private def redirect(
     value: String,
     departureId: String,
-    mode: Mode
+    mode: Mode,
+    transportIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage(transportIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(TransportMeansIdentificationNumberPage(transportIndex), updatedAnswers, departureId, mode))
 
-  private def identificationPageIe170(implicit request: DataRequest[_]): Option[TransportMeansIdentification] =
-    request.userAnswers.get(TransportMeansIdentificationPage)
+  private def identificationPageIe170(transportIndex: Index)(implicit request: DataRequest[_]): Option[TransportMeansIdentification] =
+    request.userAnswers.get(TransportMeansIdentificationPage(transportIndex))
 
   private def identificationPageIe015(implicit request: DataRequest[_]): Option[String] =
     request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
@@ -115,16 +116,17 @@ class TransportMeansIdentificationNumberController @Inject() (
         service.getBorderMeansIdentification(str)
     }
 
-  private def getIdentification()(implicit request: DataRequest[_]): Future[Option[TransportMeansIdentification]] = identificationPageIe170 match {
-    case Some(value) => Future.successful(Some(value))
-    case None =>
-      getReferenceDataFor15 match {
-        case Some(identification) =>
-          identification.map(
-            Some(_)
-          )
-        case None => Future.successful(None)
-      }
-  }
+  private def getIdentification(transportIndex: Index)(implicit request: DataRequest[_]): Future[Option[TransportMeansIdentification]] =
+    identificationPageIe170(transportIndex) match {
+      case Some(value) => Future.successful(Some(value))
+      case None =>
+        getReferenceDataFor15 match {
+          case Some(identification) =>
+            identification.map(
+              Some(_)
+            )
+          case None => Future.successful(None)
+        }
+    }
 
 }
