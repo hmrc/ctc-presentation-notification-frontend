@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import navigation.Navigator
+import logging.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -27,15 +27,14 @@ import views.html.CheckYourAnswersView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckYourAnswersController @Inject() (
-  actions: Actions,
-  val controllerComponents: MessagesControllerComponents,
-  viewModelProvider: PresentationNotificationAnswersViewModelProvider,
-  navigator: Navigator,
-  view: CheckYourAnswersView
+class CheckYourAnswersController @Inject() (actions: Actions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            viewModelProvider: PresentationNotificationAnswersViewModelProvider,
+                                            view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
@@ -48,8 +47,8 @@ class CheckYourAnswersController @Inject() (
         }
   }
 
-  def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
-    implicit request => //todo will redirect to Declaration submitted page once implemented
-      ???
-  }
+  def onSubmit(departureId: String): Action[AnyContent] = actions
+    .requireData(departureId) {
+      Redirect(controllers.routes.InformationSubmittedController.onPageLoad(departureId))
+    }
 }
