@@ -61,7 +61,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       contentAsString(result) mustEqual view(lrn.value, departureId, sampleSections)(request, messages).toString
     }
 
-    "redirect successfully when calling onSubmit" in { //todo not implemented yet - will be confirmation page
+    "redirect successfully when calling onSubmit" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
