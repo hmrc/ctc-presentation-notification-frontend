@@ -77,7 +77,7 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderTransportController
+        redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderMeansOfTransportYesNoController
           .onPageLoad(departureId, mode)
           .url
 
@@ -100,7 +100,7 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderTransportController
+        redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderMeansOfTransportYesNoController
           .onPageLoad(departureId, mode)
           .url
 
@@ -123,7 +123,9 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode).url
+      redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderMeansOfTransportYesNoController
+        .onPageLoad(departureId, mode)
+        .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

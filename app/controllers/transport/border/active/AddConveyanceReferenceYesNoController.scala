@@ -47,17 +47,8 @@ class AddConveyanceReferenceYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      def getAnswerFromDepartureData =
-        request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
-          list =>
-            list
-              .lift(activeIndex.position)
-              .map(_.conveyanceReferenceNumber.isDefined)
-        )
-
       val preparedForm = request.userAnswers
-        .get(AddConveyanceReferenceYesNoPage(activeIndex))
-        .orElse(getAnswerFromDepartureData) match {
+        .get(AddConveyanceReferenceYesNoPage(activeIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

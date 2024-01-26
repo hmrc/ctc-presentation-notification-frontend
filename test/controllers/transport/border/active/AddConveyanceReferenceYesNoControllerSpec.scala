@@ -16,7 +16,7 @@
 
 package controllers.transport.border.active
 
-import base.TestMessageData.activeBorderTransportMeans
+import base.TestMessageData.borderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
@@ -47,13 +47,7 @@ class AddConveyanceReferenceYesNoControllerSpec extends SpecBase with AppWithDef
   "AddConveyanceReferenceYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Option(
-          Seq(
-            activeBorderTransportMeans.head.copy(conveyanceReferenceNumber = None)
-          )
-        )
-      )(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(AddConveyanceReferenceYesNoPage(index), false)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, conveyanceReferenceRoute)
@@ -73,30 +67,6 @@ class AddConveyanceReferenceYesNoControllerSpec extends SpecBase with AppWithDef
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers.setValue(AddConveyanceReferenceYesNoPage(index), true)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, conveyanceReferenceRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val view = injector.instanceOf[AddConveyanceReferenceYesNoView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode, index)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Option(
-          Seq(
-            activeBorderTransportMeans.head.copy(conveyanceReferenceNumber = Some("reference"))
-          )
-        )
-      )(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, conveyanceReferenceRoute)

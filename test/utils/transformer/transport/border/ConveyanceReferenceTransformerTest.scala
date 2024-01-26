@@ -17,15 +17,13 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
 import models.{Index, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
-import pages.transport.border.active.IdentificationNumberPage
+import pages.transport.border.active.{ConveyanceReferenceNumberPage, IdentificationNumberPage}
 
-class IdentificationNumberTransformerTest extends SpecBase {
-  val identificationNumber: String = activeBorderTransportMeansIdentificationNumber
-  val transformer                  = new IdentificationNumberTransformer()
+class ConveyanceReferenceTransformerTest extends SpecBase {
+  val transformer = new ConveyanceReferenceTransformer()
 
   "IdentificationNumberTransformer" - {
 
@@ -43,11 +41,11 @@ class IdentificationNumberTransformerTest extends SpecBase {
     "must return updated answers with IdentificationNumberPage" in {
       val userAnswers = emptyUserAnswers
       val index       = Index(0)
-      userAnswers.get(IdentificationNumberPage(index)) mustBe None
+      userAnswers.get(ConveyanceReferenceNumberPage(index)) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(IdentificationNumberPage(index)) mustBe Some(identificationNumber)
+          updatedUserAnswers.get(ConveyanceReferenceNumberPage(index)) mustBe Some("REF2")
       }
     }
   }
