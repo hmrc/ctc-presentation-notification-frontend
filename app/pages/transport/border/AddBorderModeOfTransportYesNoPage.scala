@@ -34,12 +34,10 @@ case object AddBorderModeOfTransportYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddBorderModeOfTransportYesNoController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val modeOfTransportAtTheBorderPath: JsPath = JsPath \ "Consignment" \ "modeOfTransportAtTheBorder"
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(BorderModeOfTransportPage, modeOfTransportAtTheBorderPath)
+      case Some(false) => userAnswers.remove(BorderModeOfTransportPage)
       case _           => super.cleanup(value, userAnswers)
     }
-  }
 
 }
