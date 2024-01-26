@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
@@ -51,15 +51,15 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val borderMode8 = BorderMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted border modes" in {
-        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any()))
+        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any(), any()))
           .thenReturn(
-            Future.successful(NonEmptyList(borderMode1, List(borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
+            Future.successful(NonEmptySet.of(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8))
           )
 
         service.getBorderModes().futureValue mustBe
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
-        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any(), any())
       }
     }
 
@@ -75,15 +75,15 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted inland modes" in {
-        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any()))
+        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any(), any()))
           .thenReturn(
-            Future.successful(NonEmptyList(inlandMode1, List(inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
+            Future.successful(NonEmptySet.of(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8))
           )
 
         service.getInlandModes().futureValue mustBe
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
 
-        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any(), any())
       }
     }
   }

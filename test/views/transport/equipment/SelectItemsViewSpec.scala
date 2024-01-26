@@ -20,6 +20,7 @@ import forms.SelectableFormProvider
 import forms.behaviours.InputSelectViewBehaviours
 import models.reference.Item
 import models.{Index, NormalMode, SelectableList}
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.transport.equipment.SelectItemsViewModel
@@ -34,7 +35,7 @@ class SelectItemsViewSpec extends InputSelectViewBehaviours[Item] {
   override def applyView(form: Form[Item]): HtmlFormat.Appendable =
     injector.instanceOf[SelectItemsView].apply(form, Index(0), Index(0), departureId, viewModel.copy(SelectableList(values)), NormalMode)(fakeRequest, messages)
 
-  implicit override val arbitraryT = arbitraryItem
+  implicit override val arbitraryT: Arbitrary[Item] = arbitraryItem
 
   override val prefix: String = "transport.equipment.selectItems"
 

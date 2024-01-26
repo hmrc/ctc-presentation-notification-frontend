@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import config.Constants._
 import connectors.ReferenceDataConnector
 import models.{LocationOfGoodsIdentification, LocationType}
@@ -41,18 +41,15 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
   private val addressIdentifier: LocationOfGoodsIdentification       = LocationOfGoodsIdentification(AddressIdentifier, "test6")
   private val postalCode: LocationOfGoodsIdentification              = LocationOfGoodsIdentification(PostalCodeIdentifier, "test7")
 
-  private val identifiers: NonEmptyList[LocationOfGoodsIdentification] =
-    NonEmptyList(
-      postalCode,
-      List(
-        unlocodeIdentifier,
-        customsOfficeIdentifier,
-        coordinatesIdentifier,
-        eoriNumberIdentifier,
-        authorisationNumber,
-        addressIdentifier
-      )
-    )
+  private val identifiers = NonEmptySet.of(
+    postalCode,
+    unlocodeIdentifier,
+    customsOfficeIdentifier,
+    coordinatesIdentifier,
+    eoriNumberIdentifier,
+    authorisationNumber,
+    addressIdentifier
+  )
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
