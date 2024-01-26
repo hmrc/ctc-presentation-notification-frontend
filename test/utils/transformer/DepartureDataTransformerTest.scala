@@ -19,9 +19,9 @@ package utils.transformer
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
-import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport._
+import utils.transformer.transport.border._
+import utils.transformer.transport.equipment._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -31,14 +31,17 @@ class DepartureDataTransformerTest extends SpecBase {
 
   "DepartureDataTransformer" - {
     "should call all transformers" in {
-      val identificationTransformer                = mock[IdentificationTransformer]
-      val identificationNumberTransformer          = mock[IdentificationNumberTransformer]
-      val transportEquipmentTransformer            = mock[TransportEquipmentTransformer]
-      val containerIdentificationNumberTransformer = mock[ContainerIdentificationNumberTransformer]
-      val sealTransformer                          = mock[SealTransformer]
-      val limitDateTransformer                     = mock[LimitDateTransformer]
-      val userAnswers                              = mock[UserAnswers]
-      val userAnswersWithEquipment                 = mock[UserAnswers]
+      val identificationTransformer                     = mock[IdentificationTransformer]
+      val identificationNumberTransformer               = mock[IdentificationNumberTransformer]
+      val transportEquipmentTransformer                 = mock[TransportEquipmentTransformer]
+      val containerIdentificationNumberTransformer      = mock[ContainerIdentificationNumberTransformer]
+      val sealTransformer                               = mock[SealTransformer]
+      val limitDateTransformer                          = mock[LimitDateTransformer]
+      val transportMeansIdentificationNumberTransformer = mock[TransportMeansIdentificationNumberTransformer]
+      val transportMeansIdentificationTransformer       = mock[TransportMeansIdentificationTransformer]
+      val transportMeansNationalityTransformer          = mock[TransportMeansNationalityTransformer]
+      val userAnswers                                   = mock[UserAnswers]
+      val userAnswersWithEquipment                      = mock[UserAnswers]
 
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
         input =>
@@ -64,13 +67,28 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(transportMeansIdentificationNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(transportMeansIdentificationTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(transportMeansNationalityTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
         transportEquipmentTransformer,
         containerIdentificationNumberTransformer,
         sealTransformer,
-        limitDateTransformer
+        limitDateTransformer,
+        transportMeansIdentificationNumberTransformer,
+        transportMeansIdentificationTransformer,
+        transportMeansNationalityTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -81,6 +99,9 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
+          verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
+          verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
+          verify(transportMeansNationalityTransformer, times(1)).transform(hc)
       }
     }
   }

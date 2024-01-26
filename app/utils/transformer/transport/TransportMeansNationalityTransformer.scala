@@ -16,42 +16,43 @@
 
 package utils.transformer.transport
 
-import connectors.ReferenceDataConnector
-import models.reference.transport.transportMeans.TransportMeansIdentification
+import models.reference.Nationality
 import models.{Index, UserAnswers}
-import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
+import pages.transport.departureTransportMeans.TransportMeansNationalityPage
+import services.NationalitiesService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportMeansIdentificationTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit
+class TransportMeansNationalityTransformer @Inject() (nationalitiesService: NationalitiesService)(implicit
   ec: ExecutionContext
 ) extends PageTransformer {
 
-  override type DomainModelType              = TransportMeansIdentification
+  override type DomainModelType              = Nationality
   override type ExtractedTypeInDepartureData = String
 
   private def generateCapturedAnswers(
-    departureDataIdentificationCodes: Seq[String],
-    identificationList: Seq[TransportMeansIdentification]
-  ): Seq[(TransportMeansIdentificationPage, TransportMeansIdentification)] =
-    departureDataIdentificationCodes.zipWithIndex.collect {
+    departureDataNationalityCodes: Seq[String],
+    nationalityList: Seq[Nationality]
+  ): Seq[(TransportMeansNationalityPage, Nationality)] =
+    departureDataNationalityCodes.zipWithIndex.collect {
+
       case (code, i) =>
         val index = Index(i)
-        identificationList
+        nationalityList
           .find(_.code == code)
           .map(
-            identification => (TransportMeansIdentificationPage(index), identification)
+            nationality => (TransportMeansNationalityPage(index), nationality)
           )
     }.flatten
 
   def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
-      fetchReferenceData = () => referenceDataConnector.getMeansOfTransportIdentificationTypes().map(_.toList),
-      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
+      fetchReferenceData = () => nationalitiesService.getNationalities().map(_.values),
+      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toList.flatten.flatMap(_.nationality),
       generateCapturedAnswers = generateCapturedAnswers
     )
 

@@ -19,7 +19,12 @@ package utils.transformer
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import utils.transformer.transport.LimitDateTransformer
+import utils.transformer.transport.{
+  LimitDateTransformer,
+  TransportMeansIdentificationNumberTransformer,
+  TransportMeansIdentificationTransformer,
+  TransportMeansNationalityTransformer
+}
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
 import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
 
@@ -32,7 +37,10 @@ class DepartureDataTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
-  limitDateTransformer: LimitDateTransformer
+  limitDateTransformer: LimitDateTransformer,
+  transportMeansIdentificationNumberTransformer: TransportMeansIdentificationNumberTransformer,
+  transportMeansIdentificationTransformer: TransportMeansIdentificationTransformer,
+  transportMeansNationalityTransformer: TransportMeansNationalityTransformer
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
@@ -43,7 +51,10 @@ class DepartureDataTransformer @Inject() (
       transportEquipmentTransformer.transform andThen
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
-      limitDateTransformer.transform
+      limitDateTransformer.transform andThen
+      transportMeansIdentificationNumberTransformer.transform andThen
+      transportMeansIdentificationTransformer.transform andThen
+      transportMeansNationalityTransformer.transform
 
     transformerPipeline(userAnswers)
   }
