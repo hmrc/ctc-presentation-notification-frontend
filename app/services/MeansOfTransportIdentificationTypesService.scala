@@ -16,9 +16,8 @@
 
 package services
 
-import cats.data.NonEmptyList
-import config.Constants.{Fixed, Unknown}
 import config.Constants.MeansOfTransportIdentification._
+import config.Constants.{Fixed, Unknown}
 import connectors.ReferenceDataConnector
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
@@ -29,8 +28,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector,
-                                                            transportModeCodesService: TransportModeCodesService
+class MeansOfTransportIdentificationTypesService @Inject() (
+  referenceDataConnector: ReferenceDataConnector,
+  transportModeCodesService: TransportModeCodesService
 )(implicit ec: ExecutionContext) {
 
   def getMeansOfTransportIdentificationTypes(inlandMode: Option[InlandMode])(implicit
@@ -38,34 +38,34 @@ class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnect
     request: DataRequest[AnyContent]
   ): Future[Seq[TransportMeansIdentification]] =
     inlandMode match {
-      case Some(InlandMode(_, _)) => referenceDataConnector.getMeansOfTransportIdentificationTypes().flatMap(filter(_, Future.successful(inlandMode))).map(sort)
+      case Some(InlandMode(_, _)) =>
+        referenceDataConnector
+          .getMeansOfTransportIdentificationTypes()
+          .map(_.toSeq)
+          .flatMap(filter(_, Future.successful(inlandMode)))
       case None =>
         referenceDataConnector
           .getMeansOfTransportIdentificationTypes()
+          .map(_.toSeq)
           .flatMap(
             filter(
               _,
               transportModeCodesService.getInlandModes().map {
-                inlandModes =>
-                  inlandModes.find(_.code == request.userAnswers.departureData.Consignment.inlandModeOfTransport.getOrElse(Unknown))
+                _.find(_.code == request.userAnswers.departureData.Consignment.inlandModeOfTransport.getOrElse(Unknown))
               }
             )
           )
-          .map(sort)
     }
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
     referenceDataConnector.getMeansOfTransportIdentificationType(code).map(_.head)
 
   private def filter(
-    identificationTypes: NonEmptyList[TransportMeansIdentification],
+    identificationTypes: Seq[TransportMeansIdentification],
     inlandMode: Future[Option[InlandMode]]
   ): Future[Seq[TransportMeansIdentification]] =
     inlandMode.map {
       case Some(InlandMode(code, _)) if code != Fixed && code != Unknown => identificationTypes.filter(_.code.startsWith(code))
       case _                                                             => identificationTypes.filterNot(_.code == UnknownIdentification)
     }
-
-  private def sort(identificationTypes: Seq[TransportMeansIdentification]): Seq[TransportMeansIdentification] =
-    identificationTypes.sortBy(_.code.toLowerCase)
 }

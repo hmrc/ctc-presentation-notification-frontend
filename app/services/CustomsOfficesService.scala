@@ -16,8 +16,6 @@
 
 package services
 
-import cats.data.NonEmptyList
-import cats.implicits.toTraverseOps
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
@@ -36,7 +34,7 @@ class CustomsOfficesService @Inject() (
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfTransitForCountry(countryCode)
-      .map(sort)
+      .map(_.toSelectableList)
 
   def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[Option[CustomsOffice]] =
     referenceDataConnector
@@ -47,40 +45,30 @@ class CustomsOfficesService @Inject() (
         case _: NoReferenceDataFoundException => None
       }
 
-  // TODO this could be refactored in the customs reference data service to get multiple offices rather than traverse
   def getCustomsOfficesByMultipleIds(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[CustomsOffice]] =
-    ids.flatTraverse[Future, CustomsOffice] {
-      customsOfficeId =>
-        referenceDataConnector
-          .getCustomsOfficeForId(customsOfficeId)
-          .map(_.toList)
-          .recover {
-            case _: NoReferenceDataFoundException => Nil
-          }
-    }
+    referenceDataConnector
+      .getCustomsOfficesForIds(ids)
+      .map(_.toSeq)
 
   def getCustomsOfficesOfDestinationForCountry(
     countryCode: CountryCode
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfDestinationForCountry(countryCode)
-      .map(sort)
+      .map(_.toSelectableList)
 
   def getCustomsOfficesOfExitForCountry(
     countryCode: CountryCode
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfExitForCountry(countryCode)
-      .map(sort)
+      .map(_.toSelectableList)
 
   def getCustomsOfficesOfDepartureForCountry(
     countryCode: String
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfDepartureForCountry(countryCode)
-      .map(sort)
-
-  private def sort(customsOffices: NonEmptyList[CustomsOffice]): SelectableList[CustomsOffice] =
-    SelectableList(customsOffices.toList.sortBy(_.name.toLowerCase))
+      .map(_.toSelectableList)
 
 }

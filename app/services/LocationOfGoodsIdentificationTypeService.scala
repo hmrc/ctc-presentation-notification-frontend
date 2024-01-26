@@ -16,7 +16,6 @@
 
 package services
 
-import cats.data.NonEmptyList
 import config.Constants._
 import connectors.ReferenceDataConnector
 import models.LocationOfGoodsIdentification
@@ -46,11 +45,8 @@ class LocationOfGoodsIdentificationTypeService @Inject() (
 
     referenceDataConnector
       .getQualifierOfTheIdentifications()
-      .map(sort)
+      .map(_.toSeq)
       .map(filter)
   }
-
-  private def sort(locationOfGoodsIdentification: NonEmptyList[LocationOfGoodsIdentification]): Seq[LocationOfGoodsIdentification] =
-    locationOfGoodsIdentification.toList.sortBy(_.qualifier.toLowerCase)
 
 }
