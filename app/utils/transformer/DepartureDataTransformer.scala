@@ -34,6 +34,7 @@ class DepartureDataTransformer @Inject() (
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
   limitDateTransformer: LimitDateTransformer,
+  actingAsRepresentativeTransformer: ActingAsRepresentativeTransformer,
   representativeEoriTransformer: RepresentativeEoriTransformer,
   addRepresentativeContactDetailsYesNoTransformer: AddRepresentativeContactDetailsYesNoTransformer,
   representativeNameTransformer: RepresentativeNameTransformer,
@@ -50,6 +51,7 @@ class DepartureDataTransformer @Inject() (
       sealTransformer.transform andThen
       limitDateTransformer.transform andThen
       addRepresentativeContactDetailsYesNoTransformer.transform andThen
+      actingAsRepresentativeTransformer.transform andThen
       representativeEoriTransformer.transform andThen
       representativeNameTransformer.transform andThen
       representativePhoneNumberTransformer.transform

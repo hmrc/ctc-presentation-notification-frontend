@@ -38,6 +38,7 @@ class DepartureDataTransformerTest extends SpecBase {
       val containerIdentificationNumberTransformer        = mock[ContainerIdentificationNumberTransformer]
       val sealTransformer                                 = mock[SealTransformer]
       val limitDateTransformer                            = mock[LimitDateTransformer]
+      val actingAsRepresentativeTransformer               = mock[ActingAsRepresentativeTransformer]
       val representativeEoriTransformer                   = mock[RepresentativeEoriTransformer]
       val addRepresentativeContactDetailsYesNoTransformer = mock[AddRepresentativeContactDetailsYesNoTransformer]
       val representativeNameTransformer                   = mock[RepresentativeNameTransformer]
@@ -69,6 +70,10 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(actingAsRepresentativeTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       when(representativeEoriTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
       )
@@ -92,6 +97,7 @@ class DepartureDataTransformerTest extends SpecBase {
         containerIdentificationNumberTransformer,
         sealTransformer,
         limitDateTransformer,
+        actingAsRepresentativeTransformer,
         representativeEoriTransformer,
         addRepresentativeContactDetailsYesNoTransformer,
         representativeNameTransformer,
@@ -106,6 +112,7 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
+          verify(actingAsRepresentativeTransformer, times(1)).transform(hc)
           verify(representativeEoriTransformer, times(1)).transform(hc)
           verify(addRepresentativeContactDetailsYesNoTransformer, times(1)).transform(hc)
           verify(representativeNameTransformer, times(1)).transform(hc)
