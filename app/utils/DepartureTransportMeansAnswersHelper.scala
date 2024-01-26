@@ -57,7 +57,7 @@ class DepartureTransportMeansAnswersHelper(
     buildRowWithAnswer[Nationality](
       page = TransportMeansNationalityPage(transportIndex),
       optionalAnswer = userAnswers.get(TransportMeansNationalityPage(transportIndex)),
-      formatAnswer = formatAsText,
+      formatAnswer = formatAsNationality,
       prefix = "consignment.departureTransportMeans.nationality",
       id = Some("change-departure-transport-means-nationality")
     )

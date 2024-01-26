@@ -143,7 +143,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             val result = helper.nationality.get
 
             result.key.value mustBe "Registered country"
-            result.value.value mustBe nationality.toString
+            result.value.value mustBe nationality.description
             val actions = result.actions.get.items
             actions.size mustBe 1
             val action = actions.head
