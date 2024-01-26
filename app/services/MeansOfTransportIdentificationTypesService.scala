@@ -16,9 +16,8 @@
 
 package services
 
-import config.Constants
-import config.Constants.{Fixed, Unknown}
 import config.Constants.MeansOfTransportIdentification._
+import config.Constants.{Fixed, Unknown}
 import connectors.ReferenceDataConnector
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
@@ -52,7 +51,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (
             filter(
               _,
               transportModeCodesService.getInlandModes().map {
-                _.find(_.code == request.userAnswers.departureData.Consignment.inlandModeOfTransport.getOrElse(Constants.Unknown))
+                _.find(_.code == request.userAnswers.departureData.Consignment.inlandModeOfTransport.getOrElse(Unknown))
               }
             )
           )

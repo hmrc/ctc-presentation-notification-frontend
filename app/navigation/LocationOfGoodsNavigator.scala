@@ -23,7 +23,7 @@ import navigation.LoadingNavigator._
 import pages._
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import pages.transport.{ContainerIndicatorPage, LimitDatePage}
+import pages.transport.{CheckInformationPage, ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -36,6 +36,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case IdentificationPage                                                                       => ua => routeIdentificationPageNavigation(ua, departureId, mode)
     case CountryPage                                                                              => ua => AddressPage.route(ua, departureId, mode)
     case MoreInformationPage                                                                      => ua => locationOfGoodsNavigation(ua, departureId, mode)
+    case CheckInformationPage                                                                     => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case EoriPage | AuthorisationNumberPage                                                       => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
     case AddIdentifierYesNoPage                                                                   => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)
@@ -47,7 +48,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case LimitDatePage                                 => ua => AddContactYesNoPage.route(ua, departureId, mode)
+    case LimitDatePage                                 => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case InferredIdentificationPage | LocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
     case AddIdentifierYesNoPage                        => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case EoriPage | AuthorisationNumberPage =>

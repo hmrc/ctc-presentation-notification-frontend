@@ -328,7 +328,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
             .futureValue
             .section
 
-          ie15ActiveBorderSection.rows.size mustBe 7
+          ie15ActiveBorderSection.rows.size mustBe 5
           ie15ActiveBorderSection.sectionTitle mustBe Some("Border means of transport 1")
           ie15ActiveBorderSection.sectionTitle mustBe defined
           ie15ActiveBorderSection.addAnotherLink mustBe defined

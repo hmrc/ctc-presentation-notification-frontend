@@ -20,7 +20,7 @@ import controllers.actions.Actions
 import forms.NameFormProvider
 import models.Mode
 import models.requests.MandatoryDataRequest
-import navigation.Navigator
+import navigation.RepresentativeNavigator
 import pages.representative.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NameController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: RepresentativeNavigator,
   formProvider: NameFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -47,7 +47,11 @@ class NameController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NamePage) match {
+      val preparedForm = request.userAnswers
+        .get(NamePage)
+        .orElse {
+          request.userAnswers.departureData.Representative.flatMap(_.ContactPerson.map(_.name))
+        } match {
         case None        => form
         case Some(value) => form.fill(value)
       }

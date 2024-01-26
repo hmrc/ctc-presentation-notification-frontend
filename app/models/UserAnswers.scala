@@ -106,11 +106,15 @@ final case class UserAnswers(
 
 object UserAnswers {
   import monocle.std.option._
-  private val departureDataLens: Lens[UserAnswers, MessageData] = GenLens[UserAnswers](_.departureData)
-  private val consignmentLens: Lens[MessageData, Consignment]   = GenLens[MessageData](_.Consignment)
+  private val departureDataLens: Lens[UserAnswers, MessageData]             = GenLens[UserAnswers](_.departureData)
+  private val consignmentLens: Lens[MessageData, Consignment]               = GenLens[MessageData](_.Consignment)
+  private val representativeLens: Lens[MessageData, Option[Representative]] = GenLens[MessageData](_.Representative)
 
   private val modeOfTransportAtTheBorderConsignmentLens: Lens[Consignment, Option[String]] =
     GenLens[Consignment](_.modeOfTransportAtTheBorder)
+
+  private val inlandModeOfTransportConsignmentLens: Lens[Consignment, Option[String]] =
+    GenLens[Consignment](_.inlandModeOfTransport)
 
   private val locationOfGoodsConsignmentLens: Lens[Consignment, Option[LocationOfGoods]] =
     GenLens[Consignment](_.LocationOfGoods)
@@ -124,6 +128,9 @@ object UserAnswers {
   private val borderMeansConsignmentLens: Lens[Consignment, Option[Seq[ActiveBorderTransportMeans]]] =
     GenLens[Consignment](_.ActiveBorderTransportMeans)
 
+  private val transportEquipmentConsignmentLens: Lens[Consignment, Option[List[TransportEquipment]]] =
+    GenLens[Consignment](_.TransportEquipment)
+
   private val addressLocationLens: Lens[LocationOfGoods, Option[Address]] =
     GenLens[LocationOfGoods](_.Address)
 
@@ -132,16 +139,24 @@ object UserAnswers {
 
   private val lensContactPerson: Lens[LocationOfGoods, Option[ContactPerson]] = GenLens[LocationOfGoods](_.ContactPerson)
 
+  private val lensRepresentativeContactPerson: Lens[Representative, Option[ContactPerson]] = GenLens[Representative](_.ContactPerson)
+
   private val lensAdditionalIdentifier: Lens[LocationOfGoods, Option[String]] = GenLens[LocationOfGoods](_.additionalIdentifier)
 
   val setModeOfTransportAtTheBorderOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
     departureDataLens.composeLens(consignmentLens).composeLens(modeOfTransportAtTheBorderConsignmentLens)
+
+  val setInlandModeOfTransportOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(inlandModeOfTransportConsignmentLens)
 
   val setLocationOfGoodsOnUserAnswersLens: Lens[UserAnswers, Option[LocationOfGoods]] =
     departureDataLens.composeLens(consignmentLens).composeLens(locationOfGoodsConsignmentLens)
 
   val setPlaceOfLoadingOnUserAnswersLens: Lens[UserAnswers, Option[PlaceOfLoading]] =
     departureDataLens.composeLens(consignmentLens).composeLens(placeOfLoadingConsignmentLens)
+
+  val setRepresentativeOnUserAnswersLens: Lens[UserAnswers, Option[Representative]] =
+    departureDataLens composeLens representativeLens
 
   val setAddressOnUserAnswersLens: Optional[UserAnswers, Address] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens addressLocationLens composePrism some
@@ -151,6 +166,9 @@ object UserAnswers {
 
   val setContactPersonOnUserAnswersLens: Optional[UserAnswers, ContactPerson] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensContactPerson composePrism some
+
+  val setRepresentativeContactPersonDetailsOnUserAnswersLens: Optional[UserAnswers, ContactPerson] =
+    departureDataLens composeLens representativeLens composePrism some composeLens lensRepresentativeContactPerson composePrism some
 
   val setAdditionalIdentifierOnUserAnswersLens: Optional[UserAnswers, String] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensAdditionalIdentifier composePrism some
@@ -176,6 +194,9 @@ object UserAnswers {
 
   val setBorderMeansAnswersLens: Lens[UserAnswers, Option[Seq[ActiveBorderTransportMeans]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(borderMeansConsignmentLens)
+
+  val setTransportEquipmentLens: Lens[UserAnswers, Option[List[TransportEquipment]]] =
+    departureDataLens.composeLens(consignmentLens).composeLens(transportEquipmentConsignmentLens)
 
   val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Option[DepartureTransportMeans]] =
     departureDataLens.composeLens(consignmentLens).composeLens(departureTransportMeansConsignmentLens)

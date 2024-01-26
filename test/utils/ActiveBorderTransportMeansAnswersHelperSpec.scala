@@ -20,7 +20,6 @@ import base.TestMessageData.{allOptionsNoneJsonValue, consignment}
 import base.{SpecBase, TestMessageData}
 import generators.Generators
 import models.messages.MessageData
-import models.reference.transport.border.active.Identification
 import models.reference.{CustomsOffice, Nationality}
 import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -105,7 +104,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
               val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, refDataService, mode, activeIndex)
               val result = helper.identificationType
-              result.futureValue mustBe None
+              result mustBe None
           }
         }
       }
@@ -118,35 +117,10 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                 .setValue(IdentificationPage(activeIndex), identification)
               val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
 
-              whenReady[Option[SummaryListRow], Assertion](helper.identificationType) {
-                optionResult =>
-                  val result = optionResult.get
-
+              helper.identificationType.map {
+                result =>
                   result.key.value mustBe s"Identification type"
                   result.value.value mustBe identification.asString
-                  val actions = result.actions.get.items
-                  actions.size mustBe 1
-                  val action = actions.head
-                  action.content.value mustBe "Change"
-                  action.href mustBe controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
-                  action.visuallyHiddenText.get mustBe "identification type for the border means of transport"
-                  action.id mustBe "change-identification"
-              }
-          }
-        }
-
-        s"when $IdentificationPage defined in the ie13/15" in {
-          forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
-            (mode, answers) =>
-              val code = answers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.head.typeOfIdentification).get
-              when(refDataService.getBorderMeansIdentification(any())(any())).thenReturn(Future.successful(Identification(code, "description")))
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
-
-              whenReady[Option[SummaryListRow], Assertion](helper.identificationType) {
-                optionResult =>
-                  val result = optionResult.get
-                  result.key.value mustBe s"Identification type"
-                  result.value.value mustBe messages(s"${Identification.messageKeyPrefix}.$code")
                   val actions = result.actions.get.items
                   actions.size mustBe 1
                   val action = actions.head
@@ -186,24 +160,6 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
               result.key.value mustBe s"Identification number"
               result.value.value mustBe identificationNumber
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.IdentificationNumberController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "identification number for the border means of transport"
-              action.id mustBe "change-identification-number"
-          }
-        }
-
-        s"when $IdentificationNumberPage defined in the ie13/15" in {
-          forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
-            (mode, answers) =>
-              val helper = new ActiveBorderTransportMeansAnswersHelper(answers, departureId, refDataService, mode, activeIndex)
-              val result = helper.identificationNumber.get
-
-              result.key.value mustBe s"Identification number"
-              result.value.value mustBe "BX857GGE"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

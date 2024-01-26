@@ -116,11 +116,11 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "MessageData" - {
     val encryptedValue =
-      "mIbM/atO3ZhRAjHRlmRA/+BifQvy1dB2N5ZGaMhT+GOtBwAVwl61S0dNj/trZHk+SRRxV/O9DFQCVWItEqyrSkqkCleyEZF9LEGnQa+69jHiyAZBezqZGwrQObtfZbtboT2d/kqDIazVSUQBWUOZdW4H4SFQ2EvbaOEVKDCqwYtF546Iq0W55T0un9eMF6iuxdEsLmfPUGrlvy806QOsEce8jPOIrNutVHgj9UlvrxTn1lRrUboJ3KxZudhHXGswM9vW+Hw/37OZloHv8wriJgXQi+DRNGa0xPZPVu9uo7UkrfuRBBXdKWKZkZQFmA9VCFGNC7hmtEqa/228X6EhdQo2tHmas2xt7uHPmeXFF3AR/D9gbCNY6brlcUllUDOnXZ0CcgT7gg00abyVmM6ZWrm7LVdVDLec6X+/W/u98cFxWMORF1/C73ei92hUBHk5uGP+EoSmAZFaQd177lqxkcee3tILyQVTOE0eNr38IBUH+PiIFBdWLHvXhkaXM/3XPYCUdg9s+RD5NSth2bEQgfdKLosnhBJwwtFNrP3YmHzUTAjPGEziyN8YWFJg8DJei+3y1HhiOaQrOv9GwpQ77Hdknio+8IftK0NBD/Ll9WkG8sAY+F3NXFJIJNk="
+      "IxCJkQSsWDU4gBMmgr1iKMlIAUmUTgdwCEy47wRm0zz1SnRnMJMecwNMLvge+4sTxAGu9aES6ugd7SemYZljokr7e8BWVABHjihQFcw9ugOwcU50crt/haN8omRipWNXDAtAlICqF0RlG1yrEi29VQWG5k6g8BVYl+0tqMMlxsEoDXWjBEkw4GhW/mF1J6SnRj+D1bP31CQaE05H3uEiKSVy4NpAa5KRqDzmV0Cko+t2ChwObnt2aUZO3pxsRcwyubOU9MN+sOZNlHMXCZ57p9O/bw239cJX6uvTOnYNlZ5VVIF8L5Co7E7j0jf59FJ5/XLM1MKD6eegkQhJJ80r51bNkYL0CFOAb09DOGVHtQVHXKhg3fTiJtDk3ru9feeUIvvFOx80H70I031oi50ur/UDd5D4qDWxOrG6lP1RcbmNtpnXFGplh6ohZFLF9zSTu81mvZuKEI10eJXABT1w5WCBESoCXol3h+IZRKZofXtC4VDuIj9345SbgbNZ2XfuSuP2NA4QNwO8HILwYr5QpquJVOM8P/VuULrdUrbK5tLacc2eB8srqb1crUkwKIeKmvNRXkDSS3kTj3TU0YDYIqgzpPnIFVYDtMHhfa2ZWEgwptbSJ045yy1+ELB82tkCERHnTNDhUJOn0F4cROGcNGJHwVG7F3lv0pm81qBD"
 
     val decryptedValue = MessageData(
       CustomsOfficeOfDeparture = "",
-      TransitOperation = TransitOperation(None, None, EntrySummaryDeclarationSecurityDetails),
+      TransitOperation = TransitOperation(None, None, EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
       Authorisation = None,
       HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
         Some("identificationNumber"),
@@ -128,11 +128,12 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         None,
         None
       ),
+      Representative = None,
       Consignment = Consignment(
         containerIndicator = None,
+        inlandModeOfTransport = None,
         modeOfTransportAtTheBorder = None,
         TransportEquipment = None,
-        inlandModeOfTransport = None,
         LocationOfGoods = None,
         DepartureTransportMeans = None,
         ActiveBorderTransportMeans = None,

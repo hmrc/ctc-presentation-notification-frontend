@@ -50,10 +50,18 @@ class FakeLoadingNavigator(desiredRoute: Call) extends LoadingNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
+class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends DepartureTransportMeansNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}
+
 class FakeBorderNavigator(desiredRoute: Call) extends BorderNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
 class FakeEquipmentNavigator(desiredRoute: Call) extends EquipmentNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}
+
+class FakeRepresentativeNavigator(desiredRoute: Call) extends RepresentativeNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }

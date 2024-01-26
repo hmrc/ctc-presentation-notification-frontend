@@ -21,7 +21,7 @@ import forms.border.IdentificationNumberFormProvider
 import models.Mode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.{DataRequest, MandatoryDataRequest}
-import navigation.Navigator
+import navigation.DepartureTransportMeansNavigator
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,9 +36,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportMeansIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
+  navigator: DepartureTransportMeansNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationNumberView,
   service: MeansOfTransportIdentificationTypesService
@@ -59,9 +59,7 @@ class TransportMeansIdentificationNumberController @Inject() (
             .get(TransportMeansIdentificationNumberPage)
             .orElse(
               request.userAnswers.departureData.Consignment.DepartureTransportMeans
-                .flatMap(
-                  _.identificationNumber
-                )
+                flatMap (_.identificationNumber)
             )
 
           val preparedForm = fillForm match {
@@ -89,14 +87,14 @@ class TransportMeansIdentificationNumberController @Inject() (
                   case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString))
                   case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
                 },
-              value => redirect(mode, value, departureId)
+              value => redirect(value, departureId, mode)
             )
       }
 
   private def redirect(
-    mode: Mode,
     value: String,
-    departureId: String
+    departureId: String,
+    mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage, value))

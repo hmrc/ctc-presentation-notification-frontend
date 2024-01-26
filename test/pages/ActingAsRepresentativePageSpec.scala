@@ -18,7 +18,7 @@ package pages
 
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.locationOfGoods.EoriPage
+import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
 
 class ActingAsRepresentativePageSpec extends PageBehaviours {
 
@@ -31,6 +31,25 @@ class ActingAsRepresentativePageSpec extends PageBehaviours {
     beRemovable[Boolean](ActingAsRepresentativePage)
 
     "cleanup" - {
+      "when NO selected" - {
+        "must clean up Representative pages in 15/13/170" in {
+          forAll(arbitrary[String], arbitrary[String], arbitrary[String]) {
+            (eori, name, telephone) =>
+              val preChange = emptyUserAnswers
+                .setValue(ActingAsRepresentativePage, true)
+                .setValue(EoriPage, eori)
+                .setValue(AddRepresentativeContactDetailsYesNoPage, true)
+                .setValue(NamePage, name)
+                .setValue(RepresentativePhoneNumberPage, telephone)
+              val postChange = preChange.setValue(ActingAsRepresentativePage, false)
+
+              postChange.get(EoriPage) mustNot be(defined)
+              postChange.get(NamePage) mustNot be(defined)
+              postChange.get(RepresentativePhoneNumberPage) mustNot be(defined)
+              postChange.departureData.Representative mustNot be(defined)
+          }
+        }
+      }
 
       "when YES selected" - {
         "must do nothing" in {
@@ -40,6 +59,7 @@ class ActingAsRepresentativePageSpec extends PageBehaviours {
               val postChange = preChange.setValue(ActingAsRepresentativePage, true)
 
               postChange.get(EoriPage) must be(defined)
+              postChange.departureData.Representative must be(defined)
           }
         }
       }
