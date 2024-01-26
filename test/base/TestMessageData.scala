@@ -68,6 +68,9 @@ object TestMessageData {
   val activeBorderTransportMeansIdentification       = "10"
   val activeBorderTransportMeansIdentificationNumber = "BX857GGE"
 
+  val departureTransportMeansIdentification = "10"
+  val transportMeansIdentificationNumber    = "BX857GGE"
+
   val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
     ActiveBorderTransportMeans(
       "11",
