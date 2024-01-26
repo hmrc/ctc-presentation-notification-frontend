@@ -23,6 +23,7 @@ import models.messages.{ContactPerson, Representative}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.representative.AddRepresentativeContactDetailsYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -44,28 +45,27 @@ class AddRepresentativeContactDetailsYesNoControllerSpec extends SpecBase with A
   "AddRepresentativeContactDetailsYesNo Controller" - {
 
     "must return OK and the correct view for a GET when unanswered in IE015/013" in {
-      val uaIE015 = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative("IdNumber", "2", None)))(emptyUserAnswers)
 
-      setExistingUserAnswers(uaIE015)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, addRepresentativeRoute)
 
       val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "false"))
 
       val view = injector.instanceOf[AddRepresentativeContactDetailsYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
+        view(form, departureId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered in IE013/015" in {
 
-      val uaIE015 = UserAnswers.setRepresentativeContactPersonDetailsOnUserAnswersLens.set(ContactPerson("name", "number", None))(emptyUserAnswers)
-      setExistingUserAnswers(uaIE015)
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(AddRepresentativeContactDetailsYesNoPage, true)
+      )
 
       val request = FakeRequest(GET, addRepresentativeRoute)
 

@@ -32,17 +32,18 @@ class DepartureDataTransformerTest extends SpecBase {
 
   "DepartureDataTransformer" - {
     "should call all transformers" in {
-      val identificationTransformer                = mock[IdentificationTransformer]
-      val identificationNumberTransformer          = mock[IdentificationNumberTransformer]
-      val transportEquipmentTransformer            = mock[TransportEquipmentTransformer]
-      val containerIdentificationNumberTransformer = mock[ContainerIdentificationNumberTransformer]
-      val sealTransformer                          = mock[SealTransformer]
-      val limitDateTransformer                     = mock[LimitDateTransformer]
-      val representativeEoriTransformer            = mock[RepresentativeEoriTransformer]
-      val representativeNameTransformer            = mock[RepresentativeNameTransformer]
-      val representativePhoneNumberTransformer     = mock[RepresentativePhoneNumberTransformer]
-      val userAnswers                              = mock[UserAnswers]
-      val userAnswersWithEquipment                 = mock[UserAnswers]
+      val identificationTransformer                       = mock[IdentificationTransformer]
+      val identificationNumberTransformer                 = mock[IdentificationNumberTransformer]
+      val transportEquipmentTransformer                   = mock[TransportEquipmentTransformer]
+      val containerIdentificationNumberTransformer        = mock[ContainerIdentificationNumberTransformer]
+      val sealTransformer                                 = mock[SealTransformer]
+      val limitDateTransformer                            = mock[LimitDateTransformer]
+      val representativeEoriTransformer                   = mock[RepresentativeEoriTransformer]
+      val addRepresentativeContactDetailsYesNoTransformer = mock[AddRepresentativeContactDetailsYesNoTransformer]
+      val representativeNameTransformer                   = mock[RepresentativeNameTransformer]
+      val representativePhoneNumberTransformer            = mock[RepresentativePhoneNumberTransformer]
+      val userAnswers                                     = mock[UserAnswers]
+      val userAnswersWithEquipment                        = mock[UserAnswers]
 
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
         input =>
@@ -72,6 +73,10 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(addRepresentativeContactDetailsYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       when(representativeNameTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
       )
@@ -88,6 +93,7 @@ class DepartureDataTransformerTest extends SpecBase {
         sealTransformer,
         limitDateTransformer,
         representativeEoriTransformer,
+        addRepresentativeContactDetailsYesNoTransformer,
         representativeNameTransformer,
         representativePhoneNumberTransformer
       )
@@ -101,6 +107,7 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
           verify(representativeEoriTransformer, times(1)).transform(hc)
+          verify(addRepresentativeContactDetailsYesNoTransformer, times(1)).transform(hc)
           verify(representativeNameTransformer, times(1)).transform(hc)
           verify(representativePhoneNumberTransformer, times(1)).transform(hc)
       }
