@@ -32,27 +32,27 @@ class RepresentativeAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
-  def actingAsRepresentative: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def actingAsRepresentative: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = ActingAsRepresentativePage,
+    optionalAnswer = userAnswers.get(ActingAsRepresentativePage),
     formatAnswer = formatAsYesOrNo,
     prefix = "actingRepresentative",
-    findValueInDepartureData = data => Option(data.isRepresentativeDefined),
     id = Some("change-acting-as-representative")
   )
 
-  def eori: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def eori: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = EoriPage,
+    optionalAnswer = userAnswers.get(EoriPage),
     formatAnswer = formatAsText,
     prefix = "representative.eori",
-    findValueInDepartureData = _.Representative.map(_.identificationNumber),
     id = Some("change-representative-eori")
   )
 
-  def addRepresentativeContactDetails(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addRepresentativeContactDetails(): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddRepresentativeContactDetailsYesNoPage,
+    optionalAnswer = userAnswers.get(AddRepresentativeContactDetailsYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "addRepresentativeContactDetailsYesNo",
-    findValueInDepartureData = _.Representative.map(_.isContactPersonDefined),
     id = Some("change-add-contact-details")
   )
 

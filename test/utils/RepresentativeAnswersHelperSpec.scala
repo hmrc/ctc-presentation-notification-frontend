@@ -24,7 +24,8 @@ import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.representative.{EoriPage, NamePage, RepresentativePhoneNumberPage}
+import pages.ActingAsRepresentativePage
+import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
 import play.api.libs.json.Json
 
 import java.time.Instant
@@ -35,37 +36,24 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
   "RepresentativeAnswersHelper" - {
 
     "actingAsRepresentative" - {
-      "must return No" - {
-        s"when Representative is undefined in departure data IE015/013" in {
+      "must return None" - {
+        "when ActingAsRepresentativePage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithoutRepresentativeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-
-              val helper = new RepresentativeAnswersHelper(ie015WithoutRepresentativeUserAnswers, departureId, mode)
-              val result = helper.actingAsRepresentative.get
-
-              result.key.value mustBe "Are you acting as a representative?"
-              result.value.value mustBe "No"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you are acting as a representative"
-              action.id mustBe "change-acting-as-representative"
+              val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
+              val result = helper.actingAsRepresentative
+              result mustBe None
           }
         }
       }
 
       "must return Some(Row)" - {
-        s"when Representative is defined in departure data IE015/013" in {
+        s"when Representative is defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithRepresentativeAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-
-              val helper = new RepresentativeAnswersHelper(ie015WithRepresentativeAnswers, departureId, mode)
-              val result = helper.actingAsRepresentative.get
+              val answers = emptyUserAnswers.setValue(ActingAsRepresentativePage, true)
+              val helper  = new RepresentativeAnswersHelper(answers, departureId, mode)
+              val result  = helper.actingAsRepresentative.get
 
               result.key.value mustBe "Are you acting as a representative?"
               result.value.value mustBe "Yes"
@@ -98,29 +86,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "must return Some(Row)" - {
-        s"when Representative is defined in departure data IE015/013" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithRepresentativeAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-
-              val helper = new RepresentativeAnswersHelper(ie015WithRepresentativeAnswers, departureId, mode)
-              val result = helper.eori.get
-
-              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
-              result.value.value mustBe messageData.Representative.map(_.identificationNumber).get
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.representative.routes.EoriController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "representative’s EORI number or Trader Identification Number (TIN)"
-              action.id mustBe "change-representative-eori"
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when Eori is answered in IE170" in {
+        s"when Eori is answered" in {
           forAll(arbitrary[Mode], Gen.alphaNumStr) {
             (mode, eori) =>
               val answers = emptyUserAnswers.setValue(EoriPage, eori)
@@ -143,13 +109,10 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
     "addRepresentativeContactDetails" - {
       "must return None" - {
-        s"when Representative is undefined in departure data IE015/013" in {
+        s"when Representative Contact is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithoutRepresentativeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-
-              val helper = new RepresentativeAnswersHelper(ie015WithoutRepresentativeUserAnswers, departureId, mode)
+              val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.addRepresentativeContactDetails()
 
               result mustBe None
@@ -157,40 +120,13 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         }
       }
 
-      "must return No" - {
-        s"when Representative Contact Details is undefined in departure data IE015/013" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val dataWithoutRepresentativeContactDetails = messageData.copy(
-                Representative = Some(representative.copy(ContactPerson = None))
-              )
-              val ie015WithoutRepresentativeContactDetailsUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), dataWithoutRepresentativeContactDetails)
-
-              val helper = new RepresentativeAnswersHelper(ie015WithoutRepresentativeContactDetailsUserAnswers, departureId, mode)
-              val result = helper.addRepresentativeContactDetails().get
-
-              result.key.value mustBe "Do you want to add your details?"
-              result.value.value mustBe "No"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.representative.routes.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add your details"
-              action.id mustBe "change-add-contact-details"
-          }
-        }
-      }
-
       "must return Some(Row)" - {
-        s"when Representative is defined in departure data IE015/013" in {
+        s"when Representative is defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithRepresentativeAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-
-              val helper = new RepresentativeAnswersHelper(ie015WithRepresentativeAnswers, departureId, mode)
-              val result = helper.addRepresentativeContactDetails().get
+              val answers = emptyUserAnswers.setValue(AddRepresentativeContactDetailsYesNoPage, true)
+              val helper  = new RepresentativeAnswersHelper(answers, departureId, mode)
+              val result  = helper.addRepresentativeContactDetails().get
 
               result.key.value mustBe "Do you want to add your details?"
               result.value.value mustBe "Yes"
