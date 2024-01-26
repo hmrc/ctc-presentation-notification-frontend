@@ -19,7 +19,7 @@ package utils.transformer
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
-import utils.transformer.representative.{RepresentativeNameTransformer, RepresentativePhoneNumberTransformer}
+import utils.transformer.representative._
 import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
 import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
@@ -38,8 +38,9 @@ class DepartureDataTransformerTest extends SpecBase {
       val containerIdentificationNumberTransformer = mock[ContainerIdentificationNumberTransformer]
       val sealTransformer                          = mock[SealTransformer]
       val limitDateTransformer                     = mock[LimitDateTransformer]
-      val representativePhoneNumberTransformer     = mock[RepresentativePhoneNumberTransformer]
+      val representativeEoriTransformer            = mock[RepresentativeEoriTransformer]
       val representativeNameTransformer            = mock[RepresentativeNameTransformer]
+      val representativePhoneNumberTransformer     = mock[RepresentativePhoneNumberTransformer]
       val userAnswers                              = mock[UserAnswers]
       val userAnswersWithEquipment                 = mock[UserAnswers]
 
@@ -67,6 +68,10 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(representativeEoriTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       when(representativeNameTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
       )
@@ -82,6 +87,7 @@ class DepartureDataTransformerTest extends SpecBase {
         containerIdentificationNumberTransformer,
         sealTransformer,
         limitDateTransformer,
+        representativeEoriTransformer,
         representativeNameTransformer,
         representativePhoneNumberTransformer
       )
@@ -94,6 +100,7 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
+          verify(representativeEoriTransformer, times(1)).transform(hc)
           verify(representativeNameTransformer, times(1)).transform(hc)
           verify(representativePhoneNumberTransformer, times(1)).transform(hc)
       }

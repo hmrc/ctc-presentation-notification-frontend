@@ -17,13 +17,13 @@
 package utils.transformer.representative
 
 import models.UserAnswers
-import pages.representative.NamePage
+import pages.representative.EoriPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class RepresentativeNameTransformer extends PageTransformer {
+class RepresentativeEoriTransformer extends PageTransformer {
 
   override type DomainModelType              = String
   override type ExtractedTypeInDepartureData = String
@@ -31,10 +31,10 @@ class RepresentativeNameTransformer extends PageTransformer {
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Representative.flatMap(_.ContactPerson.map(_.name)).toSeq,
-      generateCapturedAnswers = representativeName =>
-        representativeName.map(
-          repName => (NamePage, repName)
+      extractDataFromDepartureData = _.departureData.Representative.map(_.identificationNumber).toSeq,
+      generateCapturedAnswers = representativeEori =>
+        representativeEori.map(
+          repEori => (EoriPage, repEori)
         )
     )
 }

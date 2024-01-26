@@ -19,8 +19,7 @@ package controllers.representative
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.{representative, routes}
 import forms.TelephoneNumberFormProvider
-import models.messages.{ContactPerson, Representative}
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.representative.RepresentativePhoneNumberPage

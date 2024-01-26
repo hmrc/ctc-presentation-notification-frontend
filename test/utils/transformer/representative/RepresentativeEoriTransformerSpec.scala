@@ -16,37 +16,37 @@
 
 package utils.transformer.representative
 
-import base.TestMessageData.{contactName, representative}
+import base.TestMessageData.representativeEori
 import base.{SpecBase, TestMessageData}
-import pages.representative.NamePage
+import pages.representative.EoriPage
 
-class RepresentativeNameTransformerSpec extends SpecBase {
-  val transformer = new RepresentativeNameTransformer()
+class RepresentativeEoriTransformerSpec extends SpecBase {
+  val transformer = new RepresentativeEoriTransformer()
 
-  "RepresentativeNameTransformer" - {
-    "must return updated answers with representative NamePage" in {
+  "RepresentativeEoriTransformer" - {
+    "must return updated answers with representative EoriPage" in {
       val userAnswers = emptyUserAnswers
-      userAnswers.get(NamePage) mustBe None
+      userAnswers.get(EoriPage) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(NamePage) mustBe Some(contactName)
+          updatedUserAnswers.get(EoriPage) mustBe Some(representativeEori)
       }
     }
 
-    "must not update if representative name is None" in {
+    "must not update if representative eori is None" in {
       val userAnswers =
         emptyUserAnswers.copy(departureData =
           TestMessageData.messageData.copy(
-            Representative = Some(representative.copy(ContactPerson = None))
+            Representative = None
           )
         )
 
-      userAnswers.get(NamePage) mustBe None
+      userAnswers.get(EoriPage) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(NamePage) mustBe None
+          updatedUserAnswers.get(EoriPage) mustBe None
       }
     }
   }

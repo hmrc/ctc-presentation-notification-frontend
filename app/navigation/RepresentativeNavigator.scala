@@ -38,7 +38,7 @@ class RepresentativeNavigator @Inject() () extends Navigator {
   }
 
   private def actingAsRepresentativeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    val isEoriDefined = ua.departureData.Representative.map(_.identificationNumber).exists(_.nonEmpty) || ua.get(EoriPage).exists(_.nonEmpty)
+    val isEoriDefined = ua.get(EoriPage).exists(_.nonEmpty)
 
     (ua.get(ActingAsRepresentativePage), isEoriDefined) match {
       case (Some(true), false) => EoriPage.route(ua, departureId, CheckMode)

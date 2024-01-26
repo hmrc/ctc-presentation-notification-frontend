@@ -53,7 +53,9 @@ object TestMessageData {
 
   val contactPerson: ContactPerson = ContactPerson(contactName, contactPhoneNumber, Some(contactEmail))
 
-  val representative: Representative = Representative("IdNumber", "2", Some(contactPerson))
+  val representativeEori = "IdNumber"
+
+  val representative: Representative = Representative(representativeEori, "2", Some(contactPerson))
 
   val locationOfGoods: LocationOfGoods = LocationOfGoods(
     "A",
