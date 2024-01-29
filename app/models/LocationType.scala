@@ -16,6 +16,7 @@
 
 package models
 
+import cats.Order
 import play.api.libs.json.{Format, Json}
 
 case class LocationType(`type`: String, description: String) extends Radioable[LocationType] {
@@ -27,6 +28,8 @@ case class LocationType(`type`: String, description: String) extends Radioable[L
 
 object LocationType extends DynamicEnumerableType[LocationType] {
   implicit val format: Format[LocationType] = Json.format[LocationType]
+
+  implicit val order: Order[LocationType] = (x: LocationType, y: LocationType) => x.`type`.compareToIgnoreCase(y.`type`)
 
   val messageKeyPrefix = "locationOfGoods.locationType"
 }

@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.LocationType
 import org.mockito.ArgumentMatchers.any
@@ -36,7 +36,7 @@ class LocationTypeServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val lt2 = LocationType("C", "Approved place")
   private val lt3 = LocationType("B", "Authorised place")
   private val lt4 = LocationType("A", "Designated location")
-  private val lts = NonEmptyList(lt1, List(lt2, lt3, lt4))
+  private val lts = NonEmptySet.of(lt1, lt2, lt3, lt4)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

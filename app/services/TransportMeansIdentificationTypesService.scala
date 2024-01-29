@@ -16,7 +16,6 @@
 
 package services
 
-import cats.data.NonEmptyList
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
 import models.Index
@@ -38,10 +37,14 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
     request: DataRequest[AnyContent]
   ): Future[Seq[TransportMeansIdentification]] = inlandModeOfTransport match {
     case Some(InlandMode(_, _)) =>
-      referenceDataConnector.getMeansOfTransportIdentificationTypes().flatMap(filter(_, index, Future.successful(inlandModeOfTransport)).map(sort))
+      referenceDataConnector
+        .getMeansOfTransportIdentificationTypes()
+        .map(_.toSeq)
+        .flatMap(filter(_, index, Future.successful(inlandModeOfTransport)))
     case None =>
       referenceDataConnector
         .getMeansOfTransportIdentificationTypes()
+        .map(_.toSeq)
         .flatMap(
           filter(
             _,
@@ -54,11 +57,10 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
             }
           )
         )
-        .map(sort)
   }
 
   private def filter(
-    transportMeansIdentificationsTypes: NonEmptyList[TransportMeansIdentification],
+    transportMeansIdentificationsTypes: Seq[TransportMeansIdentification],
     index: Index,
     inlandModeOfTransport: Future[Option[InlandMode]]
   ): Future[Seq[TransportMeansIdentification]] = {
@@ -70,7 +72,4 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
       case _ => identificationTypesExcludingUnknown
     }
   }
-
-  private def sort(identificationTypes: Seq[TransportMeansIdentification]): Seq[TransportMeansIdentification] =
-    identificationTypes.sortBy(_.code.toLowerCase)
 }

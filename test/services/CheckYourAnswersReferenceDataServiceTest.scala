@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.Nationality
 import models.reference.transport.border.active.Identification
@@ -42,7 +42,7 @@ class CheckYourAnswersReferenceDataServiceTest extends SpecBase with BeforeAndAf
       val identification = Identification("code", "description")
 
       when(connector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
-        .thenReturn(Future.successful(NonEmptyList(identification, Nil)))
+        .thenReturn(Future.successful(NonEmptySet.of(identification)))
 
       service.getBorderMeansIdentification("code").futureValue mustBe identification
 
@@ -53,7 +53,7 @@ class CheckYourAnswersReferenceDataServiceTest extends SpecBase with BeforeAndAf
       val nationality = Nationality("code", "description")
 
       when(connector.getNationality(any())(any(), any()))
-        .thenReturn(Future.successful(NonEmptyList(nationality, Nil)))
+        .thenReturn(Future.successful(NonEmptySet.of(nationality)))
 
       service.getNationality("code").futureValue mustBe nationality
 

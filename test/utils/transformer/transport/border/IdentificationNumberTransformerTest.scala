@@ -22,8 +22,8 @@ import models.Index
 import pages.transport.border.active.IdentificationNumberPage
 
 class IdentificationNumberTransformerTest extends SpecBase {
-  val identificationNumber = activeBorderTransportMeansIdentificationNumber
-  val transformer          = new IdentificationNumberTransformer()
+  val identificationNumber: String = activeBorderTransportMeansIdentificationNumber
+  val transformer                  = new IdentificationNumberTransformer()
 
   "IdentificationNumberTransformer" - {
     "must return updated answers with IdentificationNumberPage" in {
