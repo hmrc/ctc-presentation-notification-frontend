@@ -63,17 +63,11 @@ class BorderNavigator @Inject() () extends Navigator {
     case InlandModePage                                   => ua => inlandModeCheckRoute(ua, departureId, mode)
   }
 
-  private def addBorderMeansOfTransportYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    val ie015ActiveBorderListSection = ua.departureData.Consignment.ActiveBorderTransportMeans
+  private def addBorderMeansOfTransportYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddBorderMeansOfTransportYesNoPage) match {
-      case Some(true) =>
-        (ua.get(BorderActiveListSection), ie015ActiveBorderListSection) match {
-          case (None, None) => Some(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, CheckMode, Index(0)))
-          case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case Some(true) => Some(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, CheckMode, Index(0)))
+      case _          => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-  }
 
   private def borderModeOfTransportCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.departureData.TransitOperation.isSecurityTypeInSet match {

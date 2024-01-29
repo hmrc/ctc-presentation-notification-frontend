@@ -637,27 +637,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
 
         }
-
-        "to CheckYourAnswers when Yes and there is an answer to identification in ie170" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddBorderMeansOfTransportYesNoPage, true)
-            .setValue(IdentificationPage(activeIndex), Identification("2", "desc"))
-          navigator
-            .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-        "to CheckYourAnswers when Yes and there is an answer to border mode of transport in IE15/13" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddBorderMeansOfTransportYesNoPage, true)
-          navigator
-            .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
       }
 
       "must go from identification page" - {
