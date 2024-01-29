@@ -53,10 +53,8 @@ class InlandModeAnswersHelper(
 
   def buildInlandModeSection: Option[Section] =
     if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator.asBoolean) {
-      val inlandModeYesNoRow = inlandModeOfTransportYesNo
-      val inlandModeRow      = inlandMode
 
-      val rows = Seq(inlandModeYesNoRow, inlandModeRow).flatten
+      val rows = Seq(inlandModeOfTransportYesNo, inlandMode).flatten
 
       Some(
         Section(
