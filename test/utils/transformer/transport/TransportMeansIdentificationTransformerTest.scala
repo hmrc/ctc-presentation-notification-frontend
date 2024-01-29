@@ -33,14 +33,14 @@ class TransportMeansIdentificationTransformerTest extends SpecBase {
   private val referenceDataConnector                               = mock[ReferenceDataConnector]
   private val transformer: TransportMeansIdentificationTransformer = new TransportMeansIdentificationTransformer(referenceDataConnector)
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(referenceDataConnector)
 
   "IdentificationTransformer" - {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
         val transportMeansIdentification = TransportMeansIdentification(departureTransportMeansIdentification, "desc")
-        when(referenceDataConnector.getMeansOfTransportIdentificationTypes).thenReturn(Future.successful(NonEmptyList(transportMeansIdentification, Nil)))
+        when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptyList(transportMeansIdentification, Nil)))
 
         val userAnswers = emptyUserAnswers
         val index       = Index(0)
@@ -55,7 +55,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase {
 
     "must return None when the code from departure data cannot be found in service response" in {
       val transportMeansIdentification = TransportMeansIdentification("foo", "desc")
-      when(referenceDataConnector.getMeansOfTransportIdentificationTypes).thenReturn(Future.successful(NonEmptyList(transportMeansIdentification, Nil)))
+      when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptyList(transportMeansIdentification, Nil)))
 
       val userAnswers = emptyUserAnswers
       val index       = Index(0)
@@ -68,7 +68,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase {
     }
 
     "must return failure if the service fails" in {
-      when(referenceDataConnector.getMeansOfTransportIdentificationTypes).thenReturn(Future.failed(new RuntimeException("")))
+      when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.failed(new RuntimeException("")))
 
       val userAnswers = emptyUserAnswers
       val index       = Index(0)

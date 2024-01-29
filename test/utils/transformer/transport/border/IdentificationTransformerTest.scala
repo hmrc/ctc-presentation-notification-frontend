@@ -39,7 +39,7 @@ class IdentificationTransformerTest extends SpecBase {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
         val identification = Identification(activeBorderTransportMeansIdentification, "description")
-        when(service.getMeansOfTransportIdentificationTypesActive).thenReturn(Future.successful(Seq(identification)))
+        when(service.getMeansOfTransportIdentificationTypesActive()).thenReturn(Future.successful(Seq(identification)))
 
         val userAnswers = emptyUserAnswers
         val index       = Index(0)
@@ -54,7 +54,7 @@ class IdentificationTransformerTest extends SpecBase {
 
     "must return None when the code from departure data cannot be found in service response" in {
       val identification = Identification("something else", "description")
-      when(service.getMeansOfTransportIdentificationTypesActive).thenReturn(Future.successful(Seq(identification)))
+      when(service.getMeansOfTransportIdentificationTypesActive()).thenReturn(Future.successful(Seq(identification)))
 
       val userAnswers = emptyUserAnswers
       val index       = Index(0)
@@ -67,7 +67,7 @@ class IdentificationTransformerTest extends SpecBase {
     }
 
     "must return failure if the service fails" in {
-      when(service.getMeansOfTransportIdentificationTypesActive).thenReturn(Future.failed(new RuntimeException("")))
+      when(service.getMeansOfTransportIdentificationTypesActive()).thenReturn(Future.failed(new RuntimeException("")))
 
       val userAnswers = emptyUserAnswers
       val index       = Index(0)
