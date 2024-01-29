@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
-import viewModels.Section
+import viewModels.{Link, Section}
 
 import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
@@ -98,7 +98,8 @@ class DepartureTransportMeansAnswersHelper(
         Some(
           Section(
             sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
-            rows = rows
+            rows = rows,
+            addAnotherLink = addOrRemoveDepartureTransportsMeans
           )
         )
       }
@@ -106,4 +107,13 @@ class DepartureTransportMeansAnswersHelper(
       successful(None)
     }
   }
+
+  private def addOrRemoveDepartureTransportsMeans(): Option[Link] =
+    Some(
+      Link(
+        id = "add-or-remove-departure-transport-means",
+        text = messages("checkYourAnswers.departureTransportMeans.addOrRemove"),
+        href = ""
+      )
+    )
 }
