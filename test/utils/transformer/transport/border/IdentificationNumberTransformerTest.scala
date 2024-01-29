@@ -18,10 +18,8 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
-import models.{Index, UserAnswers}
+import models.Index
 import pages.transport.border.active.IdentificationNumberPage
-
-import scala.concurrent.Future
 
 class IdentificationNumberTransformerTest extends SpecBase {
   val identificationNumber = activeBorderTransportMeansIdentificationNumber

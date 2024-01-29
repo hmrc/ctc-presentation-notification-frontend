@@ -39,7 +39,7 @@ class TransportMeansNationalityTransformerTest extends SpecBase {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
         val transportMeansNationality = Nationality(departureTransportMeansNationality, "desc")
-        when(nationalitiesService.getNationalities).thenReturn(Future.successful(SelectableList(List(transportMeansNationality))))
+        when(nationalitiesService.getNationalities()).thenReturn(Future.successful(SelectableList(List(transportMeansNationality))))
 
         val userAnswers = emptyUserAnswers
         val index       = Index(0)
@@ -54,7 +54,7 @@ class TransportMeansNationalityTransformerTest extends SpecBase {
 
     "must return None when the code from departure data cannot be found in service response" in {
       val transportMeansNationality = Nationality("foo", "desc")
-      when(nationalitiesService.getNationalities).thenReturn(Future.successful(SelectableList(List(transportMeansNationality))))
+      when(nationalitiesService.getNationalities()).thenReturn(Future.successful(SelectableList(List(transportMeansNationality))))
 
       val userAnswers = emptyUserAnswers
       val index       = Index(0)
@@ -67,7 +67,7 @@ class TransportMeansNationalityTransformerTest extends SpecBase {
     }
 
     "must return failure if the service fails" in {
-      when(nationalitiesService.getNationalities).thenReturn(Future.failed(new RuntimeException("")))
+      when(nationalitiesService.getNationalities()).thenReturn(Future.failed(new RuntimeException("")))
 
       val userAnswers = emptyUserAnswers
       val index       = Index(0)
