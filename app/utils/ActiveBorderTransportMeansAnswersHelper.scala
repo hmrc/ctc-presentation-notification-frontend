@@ -20,6 +20,7 @@ import models.reference.transport.border.active.Identification
 import models.reference.{CustomsOffice, Nationality}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
+import pages.transport.InlandModePage
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import pages.transport.border.active._
 import play.api.i18n.Messages
@@ -175,10 +176,15 @@ class ActiveBorderTransportMeansAnswersHelper(
         sectionTitle = messages("checkYourAnswers.transportMeans.active.withIndex", activeIndex.display),
         rows = rows,
         addAnotherLink = (userAnswers.departureData.CustomsOfficeOfTransitDeclared, lastIndex == activeIndex) match {
-          case (Some(_), true) => addOrRemoveActiveBorderTransportsMeans()
-          case _               => None
+          case (Some(_), true)           => addOrRemoveActiveBorderTransportsMeans()
+          case _ if !doesInlandModeExist => addOrRemoveActiveBorderTransportsMeans()
+          case _                         => None
         }
       )
     }
   }
+
+  private def doesInlandModeExist()(implicit userAnswers: UserAnswers): Boolean =
+    userAnswers.get(InlandModePage).isDefined || userAnswers.departureData.Consignment.inlandModeOfTransport.isDefined
+
 }
