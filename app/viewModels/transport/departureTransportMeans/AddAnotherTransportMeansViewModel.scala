@@ -32,11 +32,11 @@ case class AddAnotherTransportMeansViewModel(userAnswers: UserAnswers, listItems
 
   val isInlandModeRoad: Boolean = userAnswers.get(InlandModePage).exists(_.code == Road)
 
-  private val roadOrNonRoad: String = if (isInlandModeRoad) "road" else "nonRoad"
+  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxTransportMeans
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = if (isInlandModeRoad) config.maxRoadTransportMeans else config.maxNonRoadTransportMeans
+  override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.nonRoad.maxLimit.label")
 
-  override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.$roadOrNonRoad.maxLimit.label")
+  def inlandLimitWarningLabel(implicit messages: Messages): String = messages(s"$prefix.road.maxLimit.label")
 
 }
 
