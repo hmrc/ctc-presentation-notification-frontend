@@ -30,7 +30,7 @@ import viewModels.{AddAnotherViewModel, ListItem}
 case class AddAnotherTransportMeansViewModel(userAnswers: UserAnswers, listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "consignment.departureTransportMeans.addAnotherTransportMeans"
 
-  private val isInlandModeRoad: Boolean = userAnswers.get(InlandModePage).exists(_.code == Road)
+  val isInlandModeRoad: Boolean = userAnswers.get(InlandModePage).exists(_.code == Road)
 
   private val roadOrNonRoad: String = if (isInlandModeRoad) "road" else "nonRoad"
 

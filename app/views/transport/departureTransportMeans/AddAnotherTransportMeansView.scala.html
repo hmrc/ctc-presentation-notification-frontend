@@ -54,8 +54,18 @@
                     legend = viewModel.legend
                 )
             )
-        } else {
+        } else if(!viewModel.isInlandModeRoad) {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
+        } else {
+
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithLegendAndAdditionalHtml(
+                    legend = viewModel.legend,
+                    additionalHtml = Html(<p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>.toString())
+                )
+            )
+
         }
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
