@@ -622,7 +622,7 @@ consignment.departureTransportMeans.addAnotherTransportMeans.plural.title = You 
 consignment.departureTransportMeans.addAnotherTransportMeans.singular.heading = You have added 1 departure means of transport
 consignment.departureTransportMeans.addAnotherTransportMeans.plural.heading = You have added {0} departure means of transport
 consignment.departureTransportMeans.addAnotherTransportMeans.label = Do you want to add another departure means of transport?
-consignment.departureTransportMeans.addAnotherTransportMeans.nonRoad.maxLimit.label = You cannot add any more departure means of transport. To add another, you need to remove one first.
+consignment.departureTransportMeans.addAnotherTransportMeans.maxLimit.label = You cannot add any more departure means of transport. To add another, you need to remove one first.
 consignment.departureTransportMeans.addAnotherTransportMeans.road.maxLimit.label = You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first.
 consignment.departureTransportMeans.addAnotherTransportMeans.error.required = Select yes if you want to add another departure means of transport
 

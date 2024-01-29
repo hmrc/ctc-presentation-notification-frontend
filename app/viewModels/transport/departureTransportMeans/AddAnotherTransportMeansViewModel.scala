@@ -34,7 +34,7 @@ case class AddAnotherTransportMeansViewModel(userAnswers: UserAnswers, listItems
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxTransportMeans
 
-  override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.nonRoad.maxLimit.label")
+  override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
   def inlandLimitWarningLabel(implicit messages: Messages): String = messages(s"$prefix.road.maxLimit.label")
 
