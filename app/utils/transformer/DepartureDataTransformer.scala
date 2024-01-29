@@ -50,8 +50,8 @@ class DepartureDataTransformer @Inject() (
       containerIdentificationNumberYesNoTransformer.transform andThen
       sealTransformer.transform andThen
       addSealYesNoTransformer.transform andThen
-      limitDateTransformer.transform
-    itemTransformer.transform
+      limitDateTransformer.transform andThen
+      itemTransformer.transform
 
     transformerPipeline(userAnswers)
   }
