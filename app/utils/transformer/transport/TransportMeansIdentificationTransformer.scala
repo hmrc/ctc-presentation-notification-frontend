@@ -16,6 +16,7 @@
 
 package utils.transformer.transport
 
+import cats.implicits.toFoldableOps
 import connectors.ReferenceDataConnector
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Index, UserAnswers}

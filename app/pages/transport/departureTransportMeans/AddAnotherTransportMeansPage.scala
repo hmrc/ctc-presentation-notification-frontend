@@ -16,11 +16,12 @@
 
 package pages.transport.departureTransportMeans
 
+import models.Index
 import pages.QuestionPage
-import pages.sections.transport.departureTransportMeans.TransportMeansListSection
+import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 
-case object AddAnotherTransportMeansPage extends QuestionPage[Boolean] {
+case class AddAnotherTransportMeansPage(transportIndex: Index) extends QuestionPage[Boolean] {
   override def toString: String = "addAnotherTransportMeans"
-  override def path: JsPath     = TransportMeansListSection.path \ toString
+  override def path: JsPath     = TransportMeansSection(transportIndex).path \ toString
 }

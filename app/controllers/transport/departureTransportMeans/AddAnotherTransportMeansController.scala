@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.BorderNavigator
+import navigation.DepartureTransportMeansNavigator
 import pages.transport.departureTransportMeans.AddAnotherTransportMeansPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +43,7 @@ class AddAnotherTransportMeansController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherTransportMeansView,
   viewModelProvider: AddAnotherTransportMeansViewModelProvider,
-  navigator: BorderNavigator
+  navigator: DepartureTransportMeansNavigator
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -67,18 +67,21 @@ class AddAnotherTransportMeansController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
-          value => redirect(departureId, mode, value)
+          value => redirect(departureId, mode, value, viewModel.nextIndex)
         )
   }
 
   private def redirect(
     departureId: String,
     mode: Mode,
-    value: Boolean
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+    value: Boolean,
+    transportIndex: Index
+  )(implicit request: MandatoryDataRequest[_]): Future[Result] = {
+    println(value)
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportMeansPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportMeansPage(transportIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddAnotherTransportMeansPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AddAnotherTransportMeansPage(transportIndex), updatedAnswers, departureId, mode))
+  }
 
 }

@@ -31,6 +31,7 @@ case class AddAnotherTransportMeansViewModel(userAnswers: UserAnswers, listItems
   override val prefix: String = "consignment.departureTransportMeans.addAnotherTransportMeans"
 
   val isInlandModeRoad: Boolean = userAnswers.get(InlandModePage).exists(_.code == Road)
+  println("inland mode is" + userAnswers.get(InlandModePage))
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxTransportMeans
 

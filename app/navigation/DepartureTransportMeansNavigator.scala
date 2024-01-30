@@ -19,7 +19,12 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
-import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
+import pages.transport.departureTransportMeans.{
+  AddAnotherTransportMeansPage,
+  TransportMeansIdentificationNumberPage,
+  TransportMeansIdentificationPage,
+  TransportMeansNationalityPage
+}
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -35,21 +40,33 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
 
     case TransportMeansIdentificationPage(transportIndex)       => ua => transportMeansIdentificationNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansIdentificationNumberPage(transportIndex) => ua => transportMeansNumberNavigation(ua, departureId, mode, transportIndex)
-    case TransportMeansNationalityPage(_)                       => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case TransportMeansNationalityPage(_) =>
+      _ => Some(controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode))
+    case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, mode, transportIndex)
 
   }
 
-  private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
+  private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] = {
+    println(ua.get(TransportMeansIdentificationNumberPage(transportIndex)))
     ua.get(TransportMeansIdentificationNumberPage(transportIndex)) match {
       case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       case None =>
         Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode, transportIndex))
     }
+  }
 
   private def transportMeansNumberNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
     ua.get(TransportMeansNationalityPage(transportIndex)) match {
       case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       case None    => Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
+    }
+
+  private def addAnotherTransportMeansNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
+    ua.get(AddAnotherTransportMeansPage(transportIndex)) match {
+      case Some(true) =>
+        Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex))
+      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
 }

@@ -22,8 +22,6 @@ import models.{Index, Mode, UserAnswers}
 import pages.transport.departureTransportMeans._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
-import viewModels.Section
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.{Link, Section}
 
 import scala.concurrent.ExecutionContext
@@ -64,6 +62,15 @@ class DepartureTransportMeansAnswersHelper(
       id = Some("change-departure-transport-means-nationality")
     )
 
+  private def addOrRemoveDepartureTransportsMeans(): Option[Link] =
+    Some(
+      Link(
+        id = "add-or-remove-departure-transport-means",
+        text = messages("checkYourAnswers.departureTransportMeans.addOrRemove"),
+        href = controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode).url
+      )
+    )
+
   def buildDepartureTransportMeansSection: Option[Section] = {
 
     val predicate: Boolean = userAnswers.departureData.Consignment.inlandModeOfTransport match {
@@ -75,24 +82,16 @@ class DepartureTransportMeansAnswersHelper(
 
       val rows = Seq(identificationType, identificationNumberRow, nationality).flatten
 
-        Some(
-          Section(
-            sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
-            rows = rows,
-            addAnotherLink = addOrRemoveDepartureTransportsMeans()
-          )
+      Some(
+        Section(
+          sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
+          rows = rows,
+          addAnotherLink = addOrRemoveDepartureTransportsMeans()
         )
-      } else {
+      )
+    } else {
       None
     }
   }
 
-  private def addOrRemoveDepartureTransportsMeans(): Option[Link] =
-    Some(
-      Link(
-        id = "add-or-remove-departure-transport-means",
-        text = messages("checkYourAnswers.departureTransportMeans.addOrRemove"),
-        href = ""
-      )
-    )
 }

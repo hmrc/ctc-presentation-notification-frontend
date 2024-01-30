@@ -23,6 +23,8 @@ import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class TransportMeansIdentificationPage(transportIndex: Index) extends QuestionPage[TransportMeansIdentification] {
 
   override def path: JsPath = TransportMeansSection(transportIndex).path \ toString
@@ -31,4 +33,12 @@ case class TransportMeansIdentificationPage(transportIndex: Index) extends Quest
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex))
+
+  override def cleanup(value: Option[TransportMeansIdentification], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+
+      case Some(_) =>
+        userAnswers.remove(TransportMeansIdentificationNumberPage(transportIndex)).flatMap(_.remove(TransportMeansNationalityPage(transportIndex)))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

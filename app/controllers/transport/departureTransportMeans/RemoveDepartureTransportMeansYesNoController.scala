@@ -54,7 +54,11 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
   private val form: Form[Boolean] =
     formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans")
 
-  private def addAnother(departureId: String, mode: Mode): Call = Call("GET", "#") //TODO redirect to addAnother departureTransportMeans controller
+  private def addAnother(departureId: String, mode: Mode): Call =
+    controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(
+      departureId,
+      mode
+    )
 
   def onPageLoad(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, TransportMeansSection(transportIndex), addAnother(departureId, mode))
