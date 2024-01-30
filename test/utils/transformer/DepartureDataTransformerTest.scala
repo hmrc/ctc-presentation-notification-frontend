@@ -20,7 +20,12 @@ import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
+import utils.transformer.transport.border.{
+  AddBorderModeOfTransportYesNoTransformer,
+  IdentificationNumberTransformer,
+  IdentificationTransformer,
+  ModeOfTransportAtTheBorderTransformer
+}
 import utils.transformer.transport.equipment.{
   ContainerIdentificationNumberTransformer,
   ContainerIndicatorTransformer,
@@ -45,6 +50,8 @@ class DepartureDataTransformerTest extends SpecBase {
       val containerIndicatorTransformer            = mock[ContainerIndicatorTransformer]
       val userAnswers                              = mock[UserAnswers]
       val userAnswersWithEquipment                 = mock[UserAnswers]
+      val modeOfTransportAtTheBorderTransformer    = mock[ModeOfTransportAtTheBorderTransformer]
+      val addBorderModeOfTransportYesNoTransformer = mock[AddBorderModeOfTransportYesNoTransformer]
 
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
         input =>
@@ -74,6 +81,14 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(modeOfTransportAtTheBorderTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addBorderModeOfTransportYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
@@ -81,7 +96,9 @@ class DepartureDataTransformerTest extends SpecBase {
         containerIdentificationNumberTransformer,
         sealTransformer,
         limitDateTransformer,
-        containerIndicatorTransformer
+        containerIndicatorTransformer,
+        modeOfTransportAtTheBorderTransformer,
+        addBorderModeOfTransportYesNoTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -93,6 +110,8 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
           verify(containerIndicatorTransformer, times(1)).transform(hc)
+          verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
+          verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)
       }
     }
   }
