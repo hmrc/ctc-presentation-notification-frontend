@@ -47,7 +47,6 @@ class AddAnotherTransportMeansViewSpec extends ListWithActionsViewBehaviours {
       .instanceOf[AddAnotherTransportMeansView]
       .apply(formProvider(maxedOutViewModel), departureId, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
-
   override val prefix: String = "consignment.departureTransportMeans.addAnotherTransportMeans"
 
   behave like pageWithBackLink()

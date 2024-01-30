@@ -68,8 +68,8 @@ object AddAnotherTransportMeansViewModel {
                   changeUrl =
                     controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url,
                   removeUrl = Some(
-                    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url
-                  ) //TODO: Change to remove url when remove page added
+                    controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, index).url
+                  )
                 )
             }
         }

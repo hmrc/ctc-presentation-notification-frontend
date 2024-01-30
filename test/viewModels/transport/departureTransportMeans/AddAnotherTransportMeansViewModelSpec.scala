@@ -21,15 +21,13 @@ import config.Constants._
 import generators.Generators
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.{CheckMode, Index, Mode}
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.sections.houseConsignment.departureTransportMeans.DepartureTransportMeansListSection
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans._
 import viewModels.ListItem
-import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
 import viewModels.transport.departureTransportMeans.AddAnotherTransportMeansViewModel.AddAnotherTransportMeansViewModelProvider
 
 class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -111,10 +109,9 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
                 name = s"${identification.asString} - $identificationNumber",
                 changeUrl =
                   controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)).url,
-                removeUrl = //TODO: Change remove url when remove page added
-                  Some(
-                    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)).url
-                  )
+                removeUrl = Some(
+                  controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, Index(0)).url
+                )
               )
             )
         }

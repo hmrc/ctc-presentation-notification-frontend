@@ -21,7 +21,6 @@ import controllers.routes
 import forms.YesNoFormProvider
 import generators.Generators
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
