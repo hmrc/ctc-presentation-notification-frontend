@@ -41,6 +41,8 @@ class DepartureDataTransformerTest extends SpecBase {
       val transportMeansIdentificationTransformer       = mock[TransportMeansIdentificationTransformer]
       val transportMeansNationalityTransformer          = mock[TransportMeansNationalityTransformer]
       val containerIndicatorTransformer                 = mock[ContainerIndicatorTransformer]
+      val modeOfTransportAtTheBorderTransformer         = mock[ModeOfTransportAtTheBorderTransformer]
+      val addBorderModeOfTransportYesNoTransformer      = mock[AddBorderModeOfTransportYesNoTransformer]
       val userAnswers                                   = mock[UserAnswers]
       val userAnswersWithEquipment                      = mock[UserAnswers]
 
@@ -84,6 +86,14 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(modeOfTransportAtTheBorderTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addBorderModeOfTransportYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
@@ -94,7 +104,9 @@ class DepartureDataTransformerTest extends SpecBase {
         transportMeansIdentificationNumberTransformer,
         transportMeansIdentificationTransformer,
         transportMeansNationalityTransformer,
-        containerIndicatorTransformer
+        containerIndicatorTransformer,
+        modeOfTransportAtTheBorderTransformer,
+        addBorderModeOfTransportYesNoTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -109,6 +121,8 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
           verify(transportMeansNationalityTransformer, times(1)).transform(hc)
           verify(containerIndicatorTransformer, times(1)).transform(hc)
+          verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
+          verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)
       }
     }
   }

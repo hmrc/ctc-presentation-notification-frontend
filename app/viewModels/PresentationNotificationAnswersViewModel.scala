@@ -97,11 +97,11 @@ object PresentationNotificationAnswersViewModel {
       val departureTransportMeansSection = departureTransportMeansAnswersHelper.buildDepartureTransportMeansSection
 
       for {
-        transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
-        locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
-        placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
-        inlandMode                        <- inlandModeAnswersHelper.buildInlandModeSection
-        borderSection                     <- helper.borderModeSection
+        transitHolderSection <- transitHolderAnswerHelper.transitHolderSection
+        locationOfGoods      <- locationOfGoodsHelper.locationOfGoodsSection
+        placeOfLoading       <- placeOfLoadingAnswersHelper.placeOfLoadingSection
+        inlandMode           <- inlandModeAnswersHelper.buildInlandModeSection
+        borderSection = helper.borderModeSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         sections =
           firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ departureTransportMeansSection.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection
