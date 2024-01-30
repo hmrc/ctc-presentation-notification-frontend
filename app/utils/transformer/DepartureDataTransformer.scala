@@ -26,7 +26,12 @@ import utils.transformer.transport.border.{
   IdentificationTransformer,
   ModeOfTransportAtTheBorderTransformer
 }
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +43,7 @@ class DepartureDataTransformer @Inject() (
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
   limitDateTransformer: LimitDateTransformer,
+  containerIndicatorTransformer: ContainerIndicatorTransformer,
   modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
   addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer
 )(implicit ec: ExecutionContext)
@@ -51,6 +57,7 @@ class DepartureDataTransformer @Inject() (
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
       limitDateTransformer.transform andThen
+      containerIndicatorTransformer.transform andThen
       modeOfTransportAtTheBorderTransformer.transform andThen
       addBorderModeOfTransportYesNoTransformer.transform
 

@@ -46,11 +46,11 @@ class PresentationNotificationAnswersHelper(
     id = Some("change-limit-date")
   )
 
-  def containerIndicator: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def containerIndicator: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = ContainerIndicatorPage,
+    optionalAnswer = userAnswers.get(ContainerIndicatorPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.containers.containerIndicator",
-    findValueInDepartureData = _.Consignment.containerIndicator.map(_.asBoolean),
     id = Some("change-container-indicator")
   )
 

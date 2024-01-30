@@ -118,25 +118,6 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               action.id mustBe "change-container-indicator"
           }
         }
-
-        s"when $ContainerIndicatorPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithContainerIndicatorUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                                 = new PresentationNotificationAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, mockReferenceDataService, mode)
-              val result                                 = helper.containerIndicator.get
-
-              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
-              result.value.value mustBe "Yes"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
-              action.id mustBe "change-container-indicator"
-          }
-        }
       }
     }
 

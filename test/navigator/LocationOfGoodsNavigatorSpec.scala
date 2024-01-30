@@ -358,6 +358,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
           )
           .setValue(LimitDatePage, LocalDate.now())
+          .setValue(ContainerIndicatorPage, false)
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
@@ -745,12 +746,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "in Check Mode" - {
 
-      "must go from limit date page to AddContactYesNoPage" in {
+      "must go from limit date page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(LimitDatePage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
       }
