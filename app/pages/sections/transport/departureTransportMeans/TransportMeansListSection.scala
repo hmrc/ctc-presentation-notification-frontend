@@ -18,10 +18,11 @@ package pages.sections.transport.departureTransportMeans
 
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
+import pages.sections.transport.TransportSection
 
 case object TransportMeansListSection extends Section[JsArray] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = TransportSection.path \ toString
 
   override def toString: String = "transportMeansList"
 }

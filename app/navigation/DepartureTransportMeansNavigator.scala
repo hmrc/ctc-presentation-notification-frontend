@@ -46,14 +46,12 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
 
   }
 
-  private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] = {
-    println(ua.get(TransportMeansIdentificationNumberPage(transportIndex)))
+  private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
     ua.get(TransportMeansIdentificationNumberPage(transportIndex)) match {
       case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       case None =>
         Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode, transportIndex))
     }
-  }
 
   private def transportMeansNumberNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
     ua.get(TransportMeansNationalityPage(transportIndex)) match {
