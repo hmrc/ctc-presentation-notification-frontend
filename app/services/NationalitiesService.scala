@@ -16,7 +16,6 @@
 
 package services
 
-import cats.data.NonEmptyList
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.Nationality
@@ -32,9 +31,6 @@ class NationalitiesService @Inject() (
   def getNationalities()(implicit hc: HeaderCarrier): Future[SelectableList[Nationality]] =
     referenceDataConnector
       .getNationalities()
-      .map(sort)
-
-  private def sort(nationalities: NonEmptyList[Nationality]): SelectableList[Nationality] =
-    SelectableList(nationalities.toList.sortBy(_.description.toLowerCase))
+      .map(_.toSelectableList)
 
 }

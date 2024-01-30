@@ -40,6 +40,7 @@ class DepartureDataTransformerTest extends SpecBase {
       val transportMeansIdentificationNumberTransformer = mock[TransportMeansIdentificationNumberTransformer]
       val transportMeansIdentificationTransformer       = mock[TransportMeansIdentificationTransformer]
       val transportMeansNationalityTransformer          = mock[TransportMeansNationalityTransformer]
+      val containerIndicatorTransformer                 = mock[ContainerIndicatorTransformer]
       val userAnswers                                   = mock[UserAnswers]
       val userAnswersWithEquipment                      = mock[UserAnswers]
 
@@ -79,6 +80,10 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(containerIndicatorTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
@@ -88,7 +93,8 @@ class DepartureDataTransformerTest extends SpecBase {
         limitDateTransformer,
         transportMeansIdentificationNumberTransformer,
         transportMeansIdentificationTransformer,
-        transportMeansNationalityTransformer
+        transportMeansNationalityTransformer,
+        containerIndicatorTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -102,6 +108,7 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
           verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
           verify(transportMeansNationalityTransformer, times(1)).transform(hc)
+          verify(containerIndicatorTransformer, times(1)).transform(hc)
       }
     }
   }

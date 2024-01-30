@@ -17,13 +17,13 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.{CountryCode, CustomsOffice}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -33,9 +33,9 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new CustomsOfficesService(mockRefDataConnector)
 
-  val gbCustomsOffice1: CustomsOffice               = CustomsOffice("GB1", "BOSTON", None)
-  val gbCustomsOffice2: CustomsOffice               = CustomsOffice("GB2", "Appledore", None)
-  val gbCustomsOffices: NonEmptyList[CustomsOffice] = NonEmptyList(gbCustomsOffice1, List(gbCustomsOffice2))
+  val gbCustomsOffice1: CustomsOffice = CustomsOffice("GB1", "BOSTON", None)
+  val gbCustomsOffice2: CustomsOffice = CustomsOffice("GB2", "Appledore", None)
+  val gbCustomsOffices                = NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -61,7 +61,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return the head of the customs office list" in {
 
         when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
-          .thenReturn(Future.successful(gbCustomsOffices))
+          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice1)))
 
         service.getCustomsOfficeById("GB1").futureValue mustBe Some(gbCustomsOffice1)
 
@@ -79,34 +79,30 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "getCustomsOfficeByMultipleIds" - {
-      "must customs office list for multiple ids" in {
+    "getCustomsOfficesByMultipleIds" - {
+      "must get customs office list for multiple ids" in {
 
-        when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB1"))(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(gbCustomsOffice1, Nil)))
+        when(mockRefDataConnector.getCustomsOfficesForIds(eqTo(Seq("GB1", "GB2")))(any(), any()))
+          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2)))
 
-        when(mockRefDataConnector.getCustomsOfficeForId(eqTo("GB2"))(any(), any()))
-          .thenReturn(Future.successful(NonEmptyList(gbCustomsOffice2, Nil)))
+        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq(gbCustomsOffice2, gbCustomsOffice1)
 
-        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe gbCustomsOffices.toList
-
-        verify(mockRefDataConnector, times(2)).getCustomsOfficeForId(any())(any(), any())
+        verify(mockRefDataConnector).getCustomsOfficesForIds(any())(any(), any())
       }
 
-      "must return empty list when given an empty list" in {
-        service.getCustomsOfficesByMultipleIds(Nil).futureValue mustBe Seq.empty
+      "must throw exception if no matches" in {
 
-        verify(mockRefDataConnector, times(0)).getCustomsOfficeForId(any())(any(), any())
-      }
-
-      "must return empty list for non matching" in {
-
-        when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
+        when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
           .thenReturn(Future.failed(new NoReferenceDataFoundException))
 
-        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq.empty
+        val result = service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2"))
 
-        verify(mockRefDataConnector, times(2)).getCustomsOfficeForId(any())(any(), any())
+        whenReady[Throwable, Assertion](result.failed) {
+          x =>
+            verify(mockRefDataConnector).getCustomsOfficesForIds(any())(any(), any())
+
+            x mustBe a[NoReferenceDataFoundException]
+        }
       }
     }
 
