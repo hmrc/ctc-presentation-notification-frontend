@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

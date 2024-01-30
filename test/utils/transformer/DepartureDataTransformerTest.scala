@@ -19,13 +19,9 @@ package utils.transformer
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
-import utils.transformer.transport._
-import utils.transformer.transport.border._
-import utils.transformer.transport.equipment._
-import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.{AddInlandModeYesNoTransformer, InlandModeTransformer}
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
 import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -46,16 +42,8 @@ class DepartureDataTransformerTest extends SpecBase {
       val transportMeansNationalityTransformer          = mock[TransportMeansNationalityTransformer]
       val userAnswers                                   = mock[UserAnswers]
       val userAnswersWithEquipment                      = mock[UserAnswers]
-      val identificationTransformer                = mock[IdentificationTransformer]
-      val identificationNumberTransformer          = mock[IdentificationNumberTransformer]
-      val inlandModeTransformer                    = mock[InlandModeTransformer]
-      val addInlandModeYesNoTransformer            = mock[AddInlandModeYesNoTransformer]
-      val transportEquipmentTransformer            = mock[TransportEquipmentTransformer]
-      val containerIdentificationNumberTransformer = mock[ContainerIdentificationNumberTransformer]
-      val sealTransformer                          = mock[SealTransformer]
-      val limitDateTransformer                     = mock[LimitDateTransformer]
-      val userAnswers                              = mock[UserAnswers]
-      val userAnswersWithEquipment                 = mock[UserAnswers]
+      val inlandModeTransformer                         = mock[InlandModeTransformer]
+      val addInlandModeYesNoTransformer                 = mock[AddInlandModeYesNoTransformer]
 
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
         input =>

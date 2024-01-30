@@ -82,6 +82,8 @@ class DepartureTransportMeansAnswersHelper(
 
       val rows = Seq(identificationType, identificationNumberRow, nationality).flatten
 
+      println("identification number is" + userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex)))
+
       Some(
         Section(
           sectionTitle = messages("checkYourAnswers.departureTransportMeans"),

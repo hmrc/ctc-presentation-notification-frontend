@@ -18,7 +18,7 @@ package utils.transformer.transport
 
 import base.SpecBase
 import base.TestMessageData.departureTransportMeansIdentification
-import cats.data.NonEmptyList
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.Index
 import models.reference.transport.transportMeans.TransportMeansIdentification
@@ -40,7 +40,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
         val transportMeansIdentification = TransportMeansIdentification(departureTransportMeansIdentification, "desc")
-        when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptyList(transportMeansIdentification, Nil)))
+        when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptySet.of(transportMeansIdentification)))
 
         val userAnswers = emptyUserAnswers
         val index       = Index(0)
@@ -55,7 +55,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase {
 
     "must return None when the code from departure data cannot be found in service response" in {
       val transportMeansIdentification = TransportMeansIdentification("foo", "desc")
-      when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptyList(transportMeansIdentification, Nil)))
+      when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptySet.of(transportMeansIdentification)))
 
       val userAnswers = emptyUserAnswers
       val index       = Index(0)
