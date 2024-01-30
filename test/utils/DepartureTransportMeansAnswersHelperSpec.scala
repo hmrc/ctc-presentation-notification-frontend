@@ -38,7 +38,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
   "DepartureTransportMeansAnswersHelper" - {
 
     "identification number row" - {
-      "must return None when no identification number in ie13/ie15/170" - {
+      "must return None when no identification number in ie170" - {
         s"when $TransportMeansIdentificationNumberPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
@@ -186,7 +186,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           val result = helper.buildDepartureTransportMeansSection
 
           result.get.rows.size mustBe 3
-          result.get.sectionTitle.get mustBe "Departure means of transport"
+          result.get.sectionTitle.get mustBe s"Departure means of transport ${transportIndex.position}"
       }
     }
 
@@ -202,7 +202,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           val result = helper.buildDepartureTransportMeansSection
 
           result.get.rows.size mustBe 3
-          result.get.sectionTitle.get mustBe "Departure means of transport"
+          result.get.sectionTitle.get mustBe s"Departure means of transport ${transportIndex.position}"
       }
     }
 

@@ -75,7 +75,7 @@ class DepartureTransportMeansAnswersHelper(
 
       Some(
         Section(
-          sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
+          sectionTitle = messages("checkYourAnswers.departureTransportMeans", transportIndex.position),
           rows = rows
         )
       )
