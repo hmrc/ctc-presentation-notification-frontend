@@ -32,7 +32,7 @@ class IdentificationTransformerTest extends SpecBase {
   private val service     = mock[MeansOfTransportIdentificationTypesActiveService]
   private val transformer = new IdentificationTransformer(service)
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(service)
 
   "IdentificationTransformer" - {

@@ -72,6 +72,7 @@ checkYourAnswers.transportMeans.active.withoutIndex = Border means of transport
 checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
 checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
 checkYourAnswers.departureTransportMeans = Departure means of transport
+checkYourAnswers.departureTransportMeans.addOrRemove = Add or remove departure means of transport
 
 checkYourAnswers.locationOfGoods = Location of goods
 
