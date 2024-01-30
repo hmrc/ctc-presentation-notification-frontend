@@ -617,6 +617,11 @@ consignment.departureTransportMeans.identificationNumber.error.required = Enter 
 consignment.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 consignment.departureTransportMeans.identificationNumber.change.hidden = the identification number for the departure means of transport
 
+consignment.departureTransportMeans.removeDepartureTransportMeans.title = Are you sure you want to remove this departure means of transport?
+consignment.departureTransportMeans.removeDepartureTransportMeans.heading = Are you sure you want to remove this departure means of transport?
+consignment.departureTransportMeans.removeDepartureTransportMeans.inset = {0} - {1}
+consignment.departureTransportMeans.removeDepartureTransportMeans.error.required = Select yes if you want to remove this departure means of transport
+
 consignment.departureTransportMeans.addAnotherTransportMeans.singular.title = You have added 1 departure means of transport
 consignment.departureTransportMeans.addAnotherTransportMeans.plural.title = You have added {0} departure means of transport
 consignment.departureTransportMeans.addAnotherTransportMeans.singular.heading = You have added 1 departure means of transport

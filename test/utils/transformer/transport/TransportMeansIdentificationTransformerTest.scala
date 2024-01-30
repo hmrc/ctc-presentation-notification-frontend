@@ -33,7 +33,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase {
   private val referenceDataConnector                               = mock[ReferenceDataConnector]
   private val transformer: TransportMeansIdentificationTransformer = new TransportMeansIdentificationTransformer(referenceDataConnector)
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(referenceDataConnector)
 
   "IdentificationTransformer" - {
