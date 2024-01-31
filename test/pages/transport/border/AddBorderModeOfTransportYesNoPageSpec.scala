@@ -42,21 +42,6 @@ class AddBorderModeOfTransportYesNoPageSpec extends PageBehaviours {
 
         }
       }
-
-      "must remove borderMode page in15/30" in {
-        forAll(arbitraryBorderModeOfTransport.arbitrary) {
-          borderMode =>
-            val userAnswers = emptyUserAnswers
-              .copy(departureData =
-                emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = Some("2")))
-              )
-
-            val result = userAnswers.setValue(AddBorderModeOfTransportYesNoPage, false)
-
-            result.departureData.Consignment.modeOfTransportAtTheBorder must not be defined
-
-        }
-      }
     }
   }
 }

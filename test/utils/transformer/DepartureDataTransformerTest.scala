@@ -22,6 +22,19 @@ import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
 import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
 import utils.transformer.transport._
+import utils.transformer.transport.LimitDateTransformer
+import utils.transformer.transport.border.{
+  AddBorderModeOfTransportYesNoTransformer,
+  IdentificationNumberTransformer,
+  IdentificationTransformer,
+  ModeOfTransportAtTheBorderTransformer
+}
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -44,6 +57,9 @@ class DepartureDataTransformerTest extends SpecBase {
       val userAnswersWithEquipment                      = mock[UserAnswers]
       val inlandModeTransformer                         = mock[InlandModeTransformer]
       val addInlandModeYesNoTransformer                 = mock[AddInlandModeYesNoTransformer]
+      val containerIndicatorTransformer            = mock[ContainerIndicatorTransformer]
+      val modeOfTransportAtTheBorderTransformer    = mock[ModeOfTransportAtTheBorderTransformer]
+      val addBorderModeOfTransportYesNoTransformer = mock[AddBorderModeOfTransportYesNoTransformer]
 
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
         input =>
@@ -90,6 +106,18 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(containerIndicatorTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(modeOfTransportAtTheBorderTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addBorderModeOfTransportYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
@@ -101,7 +129,10 @@ class DepartureDataTransformerTest extends SpecBase {
         limitDateTransformer,
         transportMeansIdentificationTransformer,
         transportMeansIdentificationNumberTransformer,
-        transportMeansNationalityTransformer
+        transportMeansNationalityTransformer,
+        containerIndicatorTransformer,
+        modeOfTransportAtTheBorderTransformer,
+        addBorderModeOfTransportYesNoTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -117,6 +148,9 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
           verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
           verify(transportMeansNationalityTransformer, times(1)).transform(hc)
+          verify(containerIndicatorTransformer, times(1)).transform(hc)
+          verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
+          verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)
       }
     }
   }
