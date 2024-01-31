@@ -88,7 +88,6 @@ object PresentationNotificationAnswersViewModel {
       }
 
       val departureTransportMeansSections: Seq[Section] = {
-        println("inland mode is " + userAnswers.get(InlandModePage))
         userAnswers.get(InlandModePage) match {
           case Some(value) if value == InlandMode("5", "Mail (Active mode of transport unknown)") => Seq.empty
           case _ =>
