@@ -27,6 +27,13 @@ import utils.transformer.transport.equipment.{
   SealTransformer,
   TransportEquipmentTransformer
 }
+import utils.transformer.transport.placeOfLoading.{
+  AddExtraInformationYesNoTransformer,
+  AddUnLocodeYesNoTransformer,
+  CountryTransformer,
+  LocationTransformer,
+  UnLocodeTransformer
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,6 +50,11 @@ class DepartureDataTransformerTest extends SpecBase {
       val sealTransformer                          = mock[SealTransformer]
       val limitDateTransformer                     = mock[LimitDateTransformer]
       val containerIndicatorTransformer            = mock[ContainerIndicatorTransformer]
+      val unLocodeTransformer                      = mock[UnLocodeTransformer]
+      val addUnLocodeYesNoTransformer              = mock[AddUnLocodeYesNoTransformer]
+      val addExtraInformationYesNoTransformer      = mock[AddExtraInformationYesNoTransformer]
+      val locationTransformer                      = mock[LocationTransformer]
+      val countryTransformer                       = mock[CountryTransformer]
       val userAnswers                              = mock[UserAnswers]
       val userAnswersWithEquipment                 = mock[UserAnswers]
 
@@ -74,6 +86,26 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(unLocodeTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addUnLocodeYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addExtraInformationYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(locationTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(countryTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
@@ -81,7 +113,12 @@ class DepartureDataTransformerTest extends SpecBase {
         containerIdentificationNumberTransformer,
         sealTransformer,
         limitDateTransformer,
-        containerIndicatorTransformer
+        containerIndicatorTransformer,
+        unLocodeTransformer,
+        addUnLocodeYesNoTransformer,
+        addExtraInformationYesNoTransformer,
+        locationTransformer,
+        countryTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -93,6 +130,11 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
           verify(containerIndicatorTransformer, times(1)).transform(hc)
+          verify(unLocodeTransformer, times(1)).transform(hc)
+          verify(addUnLocodeYesNoTransformer, times(1)).transform(hc)
+          verify(addExtraInformationYesNoTransformer, times(1)).transform(hc)
+          verify(locationTransformer, times(1)).transform(hc)
+          verify(countryTransformer, times(1)).transform(hc)
       }
     }
   }

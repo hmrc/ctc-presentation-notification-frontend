@@ -68,25 +68,6 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               action.id mustBe "change-add-unlocode"
           }
         }
-
-        s"when $AddUnLocodeYesNoPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mockReferenceDataService, mode)
-              val result                      = helper.addUnlocodeYesNo.get
-
-              result.key.value mustBe s"Do you want to add a UN/LOCODE for the place of loading?"
-              result.value.value mustBe "Yes"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.AddUnLocodeYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want a UN/LOCODE for the place of loading"
-              action.id mustBe "change-add-unlocode"
-          }
-        }
       }
     }
 
@@ -124,25 +105,6 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               action.id mustBe "change-unlocode"
           }
         }
-
-        s"when $UnLocodePage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mockReferenceDataService, mode)
-              val result                      = helper.unlocode.get
-
-              result.key.value mustBe s"UN/LOCODE"
-              result.value.value mustBe messageData.Consignment.PlaceOfLoading.flatMap(_.UNLocode).get
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.UnLocodeController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "UN/LOCODE for the place of loading"
-              action.id mustBe "change-unlocode"
-          }
-        }
       }
     }
 
@@ -168,25 +130,6 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                 .setValue(AddExtraInformationYesNoPage, true)
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
               val result = helper.addExtraInformationYesNo.get
-
-              result.key.value mustBe s"Do you want to add extra information for the place of loading?"
-              result.value.value mustBe "Yes"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add extra information for the place of loading"
-              action.id mustBe "change-add-extra-information"
-          }
-        }
-
-        s"when $AddExtraInformationYesNoPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mockReferenceDataService, mode)
-              val result                      = helper.addExtraInformationYesNo.get
 
               result.key.value mustBe s"Do you want to add extra information for the place of loading?"
               result.value.value mustBe "Yes"
@@ -236,26 +179,6 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               action.id mustBe "change-country"
           }
         }
-
-        s"when $CountryPage defined in the ie15" in {
-          forAll(arbitrary[Mode], arbitrary[Country]) {
-            (mode, countryType) =>
-              val ie015WithLoadingUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                      = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mockReferenceDataService, mode)
-              val result                      = helper.countryTypeRow(countryType.description).get
-
-              result.key.value mustBe s"Country"
-              //TODO: Change once we pull ref data to format country answer in the 15
-              result.value.value mustBe countryType.description
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.CountryController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "country for the place of loading"
-              action.id mustBe "change-country"
-          }
-        }
       }
     }
 
@@ -284,25 +207,6 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
               result.key.value mustBe s"Location"
               result.value.value mustBe location
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.LocationController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "location for the place of loading"
-              action.id mustBe "change-location"
-          }
-        }
-
-        s"when $LocationPage defined in the ie15" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val ie015WithContainerIndicatorUserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-              val helper                                 = new PlaceOfLoadingAnswersHelper(ie015WithContainerIndicatorUserAnswers, departureId, mockReferenceDataService, mode)
-              val result                                 = helper.location.get
-
-              result.key.value mustBe s"Location"
-              result.value.value mustBe messageData.Consignment.PlaceOfLoading.flatMap(_.location).get
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

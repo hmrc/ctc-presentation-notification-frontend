@@ -34,14 +34,10 @@ case object AddExtraInformationYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val Ie015LoadingCountryPath: JsPath  = JsPath \ "Consignment" \ "PlaceOfLoading" \ "country"
-    val Ie015LoadingLocationPath: JsPath = JsPath \ "Consignment" \ "PlaceOfLoading" \ "location"
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(CountryPage, Ie015LoadingCountryPath).flatMap(_.remove(LocationPage, Ie015LoadingLocationPath))
-      case Some(true)  => userAnswers.remove(CountryPage, Ie015LoadingCountryPath).flatMap(_.remove(LocationPage, Ie015LoadingLocationPath))
+      case Some(false) => userAnswers.remove(CountryPage).flatMap(_.remove(LocationPage))
+      case Some(true)  => userAnswers.remove(CountryPage).flatMap(_.remove(LocationPage))
       case _           => super.cleanup(value, userAnswers)
     }
-  }
-
 }

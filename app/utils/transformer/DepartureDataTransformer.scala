@@ -27,6 +27,13 @@ import utils.transformer.transport.equipment.{
   SealTransformer,
   TransportEquipmentTransformer
 }
+import utils.transformer.transport.placeOfLoading.{
+  AddExtraInformationYesNoTransformer,
+  AddUnLocodeYesNoTransformer,
+  CountryTransformer,
+  LocationTransformer,
+  UnLocodeTransformer
+}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +45,12 @@ class DepartureDataTransformer @Inject() (
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
   limitDateTransformer: LimitDateTransformer,
-  containerIndicatorTransformer: ContainerIndicatorTransformer
+  containerIndicatorTransformer: ContainerIndicatorTransformer,
+  unLocodeTransformer: UnLocodeTransformer,
+  addUnLocodeYesNoTransformer: AddUnLocodeYesNoTransformer,
+  addExtraInformationYesNoTransformer: AddExtraInformationYesNoTransformer,
+  locationTransformer: LocationTransformer,
+  countryTransformer: CountryTransformer
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
@@ -50,7 +62,12 @@ class DepartureDataTransformer @Inject() (
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
       limitDateTransformer.transform andThen
-      containerIndicatorTransformer.transform
+      containerIndicatorTransformer.transform andThen
+      addUnLocodeYesNoTransformer.transform andThen
+      unLocodeTransformer.transform andThen
+      addExtraInformationYesNoTransformer.transform andThen
+      countryTransformer.transform andThen
+      locationTransformer.transform
 
     transformerPipeline(userAnswers)
   }

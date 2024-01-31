@@ -35,54 +35,57 @@ class PlaceOfLoadingAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
-  def countryTypeRow(answer: String): Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+  def countryTypeRow(answer: String): Option[SummaryListRow] = buildRowWithAnswer[Country](
     page = CountryPage,
+    optionalAnswer = userAnswers.get(CountryPage),
     formatAnswer = formatAsCountry,
     prefix = "loading.country",
-    findValueInDepartureData = message =>
-      message.Consignment.PlaceOfLoading.flatMap(
-        _.country.map(
-          y => Country(CountryCode(y), answer)
-        )
-      ),
     id = Some("change-country")
   )
 
-  def addUnlocodeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addUnlocodeYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddUnLocodeYesNoPage,
+    optionalAnswer = userAnswers.get(AddUnLocodeYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "loading.addUnLocodeYesNo",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.map(_.isUnlocodePresent),
     id = Some("change-add-unlocode")
   )
 
-  def unlocode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = UnLocodePage,
-    formatAnswer = formatAsText,
-    prefix = "loading.unLocode",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.UNLocode),
-    id = Some("change-unlocode")
-  )
+  def unlocode: Option[SummaryListRow] = {
+    val answers = userAnswers.get(UnLocodePage)
+    println(answers)
+    val code = buildRowWithAnswer[String](
+      page = UnLocodePage,
+      optionalAnswer = userAnswers.get(UnLocodePage),
+      formatAnswer = formatAsText,
+      prefix = "loading.unLocode",
+      id = Some("change-unlocode")
+    )
+    val row = code.isDefined
+    println("code is defined? = " + row)
+    code
+  }
 
-  def addExtraInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addExtraInformationYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddExtraInformationYesNoPage,
+    optionalAnswer = userAnswers.get(AddExtraInformationYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "loading.addExtraInformationYesNo",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.map(_.isAdditionalInformationPresent),
     id = Some("change-add-extra-information")
   )
 
-  def location: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def location: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = LocationPage,
+    optionalAnswer = userAnswers.get(LocationPage),
     formatAnswer = formatAsText,
     prefix = "loading.location",
-    findValueInDepartureData = _.Consignment.PlaceOfLoading.flatMap(_.location),
     id = Some("change-location")
   )
 
   def placeOfLoadingSection: Future[Section] = {
     implicit val ua: UserAnswers = userAnswers
 
+    println("placeOfLoadingSection....")
     val rows = for {
 
       country <- fetchValue[Country](
@@ -104,13 +107,17 @@ class PlaceOfLoadingAnswersHelper(
 
     } yield rowAcc
 
-    rows.map(
+    rows.map {
       convertedRows =>
+        println("convertedRows....")
+        convertedRows.foreach(
+          row => println(" Key =" + row.key + " Value =" + row.value)
+        )
         Section(
           sectionTitle = messages("checkYourAnswers.placeOfLoading"),
           convertedRows
         )
-    )
+    }
 
   }
 

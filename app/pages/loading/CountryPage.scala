@@ -35,11 +35,9 @@ case object CountryPage extends QuestionPage[Country] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.CountryController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[Country], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val Ie015PlaceOfLoadingLocationPath: JsPath = JsPath \ "Consignment" \ "PlaceOfLoading" \ "location"
+  override def cleanup(value: Option[Country], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(LocationPage, Ie015PlaceOfLoadingLocationPath)
+      case Some(_) => userAnswers.remove(LocationPage)
       case None    => super.cleanup(value, userAnswers)
     }
-  }
 }

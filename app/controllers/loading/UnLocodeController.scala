@@ -54,8 +54,7 @@ class UnLocodeController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       val preparedForm = request.userAnswers
-        .get(UnLocodePage)
-        .orElse(request.userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(_.UNLocode)) match {
+        .get(UnLocodePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -64,6 +63,7 @@ class UnLocodeController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
+      println("UnLocodeController - calling onSubmit..")
       form
         .bindFromRequest()
         .fold(
