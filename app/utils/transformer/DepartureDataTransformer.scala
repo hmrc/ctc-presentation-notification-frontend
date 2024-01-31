@@ -19,7 +19,7 @@ package utils.transformer
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import utils.transformer.transport.LimitDateTransformer
+import utils.transformer.transport._
 import utils.transformer.transport.border.{
   AddBorderModeOfTransportYesNoTransformer,
   IdentificationNumberTransformer,
@@ -32,9 +32,6 @@ import utils.transformer.transport.equipment.{
   SealTransformer,
   TransportEquipmentTransformer
 }
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
-import utils.transformer.transport._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -70,7 +67,7 @@ class DepartureDataTransformer @Inject() (
       containerIndicatorTransformer.transform andThen
       modeOfTransportAtTheBorderTransformer.transform andThen
       addBorderModeOfTransportYesNoTransformer.transform
-      transportMeansIdentificationTransformer.transform andThen
+    transportMeansIdentificationTransformer.transform andThen
       transportMeansIdentificationNumberTransformer.transform andThen
       transportMeansNationalityTransformer.transform
 

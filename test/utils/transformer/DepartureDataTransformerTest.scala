@@ -19,22 +19,9 @@ package utils.transformer
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
 import utils.transformer.transport._
-import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.border.{
-  AddBorderModeOfTransportYesNoTransformer,
-  IdentificationNumberTransformer,
-  IdentificationTransformer,
-  ModeOfTransportAtTheBorderTransformer
-}
-import utils.transformer.transport.equipment.{
-  ContainerIdentificationNumberTransformer,
-  ContainerIndicatorTransformer,
-  SealTransformer,
-  TransportEquipmentTransformer
-}
+import utils.transformer.transport.border.{AddBorderModeOfTransportYesNoTransformer, IdentificationNumberTransformer, IdentificationTransformer, ModeOfTransportAtTheBorderTransformer}
+import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, ContainerIndicatorTransformer, SealTransformer, TransportEquipmentTransformer}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,9 +44,9 @@ class DepartureDataTransformerTest extends SpecBase {
       val userAnswersWithEquipment                      = mock[UserAnswers]
       val inlandModeTransformer                         = mock[InlandModeTransformer]
       val addInlandModeYesNoTransformer                 = mock[AddInlandModeYesNoTransformer]
-      val containerIndicatorTransformer            = mock[ContainerIndicatorTransformer]
-      val modeOfTransportAtTheBorderTransformer    = mock[ModeOfTransportAtTheBorderTransformer]
-      val addBorderModeOfTransportYesNoTransformer = mock[AddBorderModeOfTransportYesNoTransformer]
+      val containerIndicatorTransformer                 = mock[ContainerIndicatorTransformer]
+      val modeOfTransportAtTheBorderTransformer         = mock[ModeOfTransportAtTheBorderTransformer]
+      val addBorderModeOfTransportYesNoTransformer      = mock[AddBorderModeOfTransportYesNoTransformer]
 
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
         input =>
@@ -127,12 +114,12 @@ class DepartureDataTransformerTest extends SpecBase {
         containerIdentificationNumberTransformer,
         sealTransformer,
         limitDateTransformer,
-        transportMeansIdentificationTransformer,
-        transportMeansIdentificationNumberTransformer,
-        transportMeansNationalityTransformer,
         containerIndicatorTransformer,
         modeOfTransportAtTheBorderTransformer,
-        addBorderModeOfTransportYesNoTransformer
+        addBorderModeOfTransportYesNoTransformer,
+        transportMeansIdentificationTransformer,
+        transportMeansIdentificationNumberTransformer,
+        transportMeansNationalityTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
