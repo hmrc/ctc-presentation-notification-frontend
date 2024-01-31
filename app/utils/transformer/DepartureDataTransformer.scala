@@ -66,8 +66,8 @@ class DepartureDataTransformer @Inject() (
       limitDateTransformer.transform andThen
       containerIndicatorTransformer.transform andThen
       modeOfTransportAtTheBorderTransformer.transform andThen
-      addBorderModeOfTransportYesNoTransformer.transform
-    transportMeansIdentificationTransformer.transform andThen
+      addBorderModeOfTransportYesNoTransformer.transform andThen
+      transportMeansIdentificationTransformer.transform andThen
       transportMeansIdentificationNumberTransformer.transform andThen
       transportMeansNationalityTransformer.transform
 

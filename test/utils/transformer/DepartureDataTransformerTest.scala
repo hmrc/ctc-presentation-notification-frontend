@@ -20,8 +20,18 @@ import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.transport._
-import utils.transformer.transport.border.{AddBorderModeOfTransportYesNoTransformer, IdentificationNumberTransformer, IdentificationTransformer, ModeOfTransportAtTheBorderTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, ContainerIndicatorTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.border.{
+  AddBorderModeOfTransportYesNoTransformer,
+  IdentificationNumberTransformer,
+  IdentificationTransformer,
+  ModeOfTransportAtTheBorderTransformer
+}
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
