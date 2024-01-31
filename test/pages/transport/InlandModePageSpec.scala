@@ -47,7 +47,7 @@ class InlandModePageSpec extends PageBehaviours {
 
             val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
 
-            result.departureData.Consignment.DepartureTransportMeans must not be defined
+            result.get(TransportMeansListSection) mustNot be(defined)
         }
       }
     }
