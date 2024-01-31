@@ -21,7 +21,7 @@ import config.Constants._
 import generators.Generators
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.{Index, Mode}
+import models.{Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -108,7 +108,7 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
               ListItem(
                 name = s"${identification.asString} - $identificationNumber",
                 changeUrl =
-                  controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)).url,
+                  controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url,
                 removeUrl = Some(
                   controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, Index(0)).url
                 )
@@ -131,7 +131,7 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
               ListItem(
                 name = s"${identification.asString} - $identificationNumber",
                 changeUrl =
-                  controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)).url,
+                  controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url,
                 removeUrl = None
               )
             )
