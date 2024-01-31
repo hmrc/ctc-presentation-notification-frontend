@@ -21,7 +21,7 @@ import controllers.routes
 import controllers.transport.departureTransportMeans.{routes => departureTransportMeansRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

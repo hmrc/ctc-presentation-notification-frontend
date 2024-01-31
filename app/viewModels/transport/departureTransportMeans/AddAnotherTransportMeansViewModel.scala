@@ -18,7 +18,7 @@ package viewModels.transport.departureTransportMeans
 
 import config.Constants.Mail
 import config.FrontendAppConfig
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import models.{Index, Mode, NormalMode, UserAnswers}
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}

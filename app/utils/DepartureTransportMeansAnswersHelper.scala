@@ -19,6 +19,7 @@ package utils
 import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Index, Mode, UserAnswers}
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.departureTransportMeans._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -35,6 +36,13 @@ class DepartureTransportMeansAnswersHelper(
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers
+
+  private val lastIndex = Index(
+    userAnswers
+      .get(TransportMeansListSection)
+      .map(_.value.length - 1)
+      .getOrElse(0)
+  )
 
   def identificationType: Option[SummaryListRow] =
     buildRowWithAnswer[TransportMeansIdentification](
@@ -71,29 +79,13 @@ class DepartureTransportMeansAnswersHelper(
       )
     )
 
-  def buildDepartureTransportMeansSection: Option[Section] = {
+  def buildDepartureTransportMeansSection: Section = {
+    val rows = Seq(identificationType, identificationNumberRow, nationality).flatten
 
-    val predicate: Boolean = userAnswers.departureData.Consignment.inlandModeOfTransport match {
-      case Some(value) => value != "5"
-      case None        => true
-    }
-
-    if (predicate) {
-
-      val rows = Seq(identificationType, identificationNumberRow, nationality).flatten
-
-      println("identification number is" + userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex)))
-
-      Some(
-        Section(
-          sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
-          rows = rows,
-          addAnotherLink = addOrRemoveDepartureTransportsMeans()
-        )
-      )
-    } else {
-      None
-    }
+    Section(
+      sectionTitle = messages("checkYourAnswers.departureTransportMeans", transportIndex.display),
+      rows = rows,
+      addAnotherLink = if (lastIndex == transportIndex) addOrRemoveDepartureTransportsMeans() else None
+    )
   }
-
 }

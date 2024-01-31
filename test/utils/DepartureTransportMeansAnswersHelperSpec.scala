@@ -159,18 +159,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
   }
 
   "buildDepartureTransportMeansSection" - {
-    "must return None inland mode is 5" in {
-      forAll(arbitrary[Mode]) {
-        mode =>
-          val jsonData = jsonValue.as[MessageData].copy(Consignment = consignment.copy(inlandModeOfTransport = Some("5")))
-          val ie015withReducedDataSetFalseUserAnswers =
-            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), jsonData)
-          val helper =
-            new DepartureTransportMeansAnswersHelper(ie015withReducedDataSetFalseUserAnswers, departureId, mode, transportIndex)
-          val result = helper.buildDepartureTransportMeansSection
-          result mustBe None
-      }
-    }
 
     "must return Some(Section()) when inland mode is not 5 " in {
       forAll(arbitrary[Mode], arbitraryInlandModeOfTransport.arbitrary.suchThat(_.isNotOneOf("5"))) {
@@ -185,8 +173,8 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             new DepartureTransportMeansAnswersHelper(answers, departureId, mode, transportIndex)
           val result = helper.buildDepartureTransportMeansSection
 
-          result.get.rows.size mustBe 3
-          result.get.sectionTitle.get mustBe "Departure means of transport"
+          result.rows.size mustBe 3
+          result.sectionTitle.get mustBe "Departure means of transport 1"
       }
     }
 
@@ -201,8 +189,8 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, mode, transportIndex)
           val result = helper.buildDepartureTransportMeansSection
 
-          result.get.rows.size mustBe 3
-          result.get.sectionTitle.get mustBe "Departure means of transport"
+          result.rows.size mustBe 3
+          result.sectionTitle.get mustBe "Departure means of transport 1"
       }
     }
 
