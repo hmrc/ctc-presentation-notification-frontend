@@ -52,8 +52,6 @@ class PlaceOfLoadingAnswersHelper(
   )
 
   def unlocode: Option[SummaryListRow] = {
-    val answers = userAnswers.get(UnLocodePage)
-    println(answers)
     val code = buildRowWithAnswer[String](
       page = UnLocodePage,
       optionalAnswer = userAnswers.get(UnLocodePage),
@@ -61,8 +59,6 @@ class PlaceOfLoadingAnswersHelper(
       prefix = "loading.unLocode",
       id = Some("change-unlocode")
     )
-    val row = code.isDefined
-    println("code is defined? = " + row)
     code
   }
 
@@ -85,7 +81,6 @@ class PlaceOfLoadingAnswersHelper(
   def placeOfLoadingSection: Future[Section] = {
     implicit val ua: UserAnswers = userAnswers
 
-    println("placeOfLoadingSection....")
     val rows = for {
 
       country <- fetchValue[Country](
@@ -109,10 +104,6 @@ class PlaceOfLoadingAnswersHelper(
 
     rows.map {
       convertedRows =>
-        println("convertedRows....")
-        convertedRows.foreach(
-          row => println(" Key =" + row.key + " Value =" + row.value)
-        )
         Section(
           sectionTitle = messages("checkYourAnswers.placeOfLoading"),
           convertedRows

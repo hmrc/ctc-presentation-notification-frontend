@@ -63,7 +63,6 @@ class UnLocodeController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      println("UnLocodeController - calling onSubmit..")
       form
         .bindFromRequest()
         .fold(

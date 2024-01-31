@@ -46,7 +46,6 @@ object PresentationNotificationAnswersViewModel {
       hc: HeaderCarrier
     ): Future[PresentationNotificationAnswersViewModel] = {
 
-      println("PresentationNotificationAnswersViewModel....")
       val mode = CheckMode
 
       val helper                               = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
@@ -95,7 +94,6 @@ object PresentationNotificationAnswersViewModel {
       )
 
       val representativeSection: Section = representativeHelper.representativeSection
-      println("calling helpers....")
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
@@ -104,7 +102,6 @@ object PresentationNotificationAnswersViewModel {
         departureTransportMeansSection    <- departureTransportMeansAnswersHelper.buildDepartureTransportMeansSection
         borderSection                     <- helper.borderModeSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
-        _ = println("placeOfLoading..." + placeOfLoading.toSeq)
         sections =
           firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandMode.toSeq ++ departureTransportMeansSection.toSeq ++ borderSection.toSeq ++ activeBorderTransportMeansSection
       } yield new PresentationNotificationAnswersViewModel(sections)

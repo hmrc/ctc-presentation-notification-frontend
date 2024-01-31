@@ -30,7 +30,6 @@ class AddUnLocodeYesNoTransformer extends PageTransformer {
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     userAnswers =>
-      println("AddUnLocodeYesNoTransformer.....")
       transformFromDeparture(
         userAnswers = userAnswers,
         extractDataFromDepartureData = _.departureData.Consignment.PlaceOfLoading.toSeq,

@@ -47,12 +47,8 @@ class LoadingNavigator extends Navigator {
 
   private def unLocodeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddExtraInformationYesNoPage) match {
-      case None =>
-        println("unLocodeCheckRoute....NONE")
-        AddExtraInformationYesNoPage.route(ua, departureId, CheckMode)
-      case _ =>
-        println("unLocodeCheckRoute....Some")
-        Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case None => AddExtraInformationYesNoPage.route(ua, departureId, CheckMode)
+      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   private def addUnlocodeNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
@@ -81,7 +77,6 @@ class LoadingNavigator extends Navigator {
     }
 
   private def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    println("addExtraInformationYesNoCheckRoute....")
     ua.get(AddExtraInformationYesNoPage) match {
       case Some(true) =>
         ua.get(CountryPage) match {
