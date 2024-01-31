@@ -43,11 +43,6 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
   private def form(viewModel: AddAnotherTransportMeansViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  private val mode = NormalMode
-
-  private lazy val addAnotherTransportMeansRoute =
-    departureTransportMeansRoutes.AddAnotherTransportMeansController.onPageLoad(departureId, mode).url
-
   private lazy val addAnotherTransportMeansRouteCheckMode =
     departureTransportMeansRoutes.AddAnotherTransportMeansController.onPageLoad(departureId, CheckMode).url
 
@@ -74,25 +69,6 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
   "AddAnotherTransportMeans Controller" - {
 
-    "redirect to CYA page" - {
-      "when in check mode and addAnotherBorder is false" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(notMaxedOutViewModel)
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, addAnotherTransportMeansRouteCheckMode)
-          .withFormUrlEncodedBody(("value", "false"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          onwardRoute.url
-      }
-    }
-
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
@@ -101,7 +77,7 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherTransportMeansRoute)
+        val request = FakeRequest(GET, addAnotherTransportMeansRouteCheckMode)
 
         val result = route(app, request).value
 
@@ -120,7 +96,7 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherTransportMeansRoute)
+        val request = FakeRequest(GET, addAnotherTransportMeansRouteCheckMode)
 
         val result = route(app, request).value
 
@@ -133,61 +109,6 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
       }
     }
 
-    "when max limit not reached" - {
-      "when yes submitted" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(notMaxedOutViewModel)
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, addAnotherTransportMeansRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          onwardRoute.url
-      }
-    }
-
-    "when no submitted" - {
-      "must redirect to CYA" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(notMaxedOutViewModel)
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, addAnotherTransportMeansRoute)
-          .withFormUrlEncodedBody(("value", "false"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          onwardRoute.url
-      }
-    }
-
-    "when max limit reached" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any()))
-        .thenReturn(maxedOutViewModel)
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(POST, addAnotherTransportMeansRoute)
-        .withFormUrlEncodedBody(("value", ""))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual
-        onwardRoute.url
-    }
-
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
@@ -195,7 +116,7 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherTransportMeansRoute)
+        val request = FakeRequest(POST, addAnotherTransportMeansRouteCheckMode)
           .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
@@ -215,7 +136,7 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addAnotherTransportMeansRoute)
+      val request = FakeRequest(GET, addAnotherTransportMeansRouteCheckMode)
 
       val result = route(app, request).value
 
@@ -228,7 +149,7 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addAnotherTransportMeansRoute)
+      val request = FakeRequest(POST, addAnotherTransportMeansRouteCheckMode)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

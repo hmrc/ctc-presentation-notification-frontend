@@ -18,7 +18,7 @@ package viewModels.transport.departureTransportMeans
 
 import config.Constants.Mail
 import config.FrontendAppConfig
-import models.{Index, Mode, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
@@ -66,7 +66,7 @@ object AddAnotherTransportMeansViewModel {
                 ListItem(
                   name = name,
                   changeUrl =
-                    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, index).url,
+                    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, index).url,
                   removeUrl = Some(
                     controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, index).url
                   )

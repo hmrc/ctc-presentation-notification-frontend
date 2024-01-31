@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, NormalMode}
 import navigation.DepartureTransportMeansNavigator
 import pages.transport.departureTransportMeans.AddAnotherTransportMeansPage
 import play.api.data.Form
@@ -55,7 +55,7 @@ class AddAnotherTransportMeansController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       viewModel.count match {
-        case 0 => Redirect(routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)))
+        case 0 => Redirect(routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, Index(0)))
         case _ => Ok(view(form(viewModel), departureId, viewModel))
       }
   }

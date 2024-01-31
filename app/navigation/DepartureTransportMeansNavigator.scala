@@ -33,7 +33,13 @@ import javax.inject.Inject
 class DepartureTransportMeansNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => None
+    case TransportMeansIdentificationPage(transportIndex) =>
+      _ => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode, transportIndex))
+    case TransportMeansIdentificationNumberPage(transportIndex) =>
+      _ => Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
+    case TransportMeansNationalityPage(_) =>
+      _ => Some(controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode))
+    case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, mode, transportIndex)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -41,7 +47,7 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
     case TransportMeansIdentificationPage(transportIndex)       => ua => transportMeansIdentificationNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansIdentificationNumberPage(transportIndex) => ua => transportMeansNumberNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansNationalityPage(_) =>
-      _ => Some(controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode))
+      _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, mode, transportIndex)
 
   }
@@ -62,7 +68,7 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
   private def addAnotherTransportMeansNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
     ua.get(AddAnotherTransportMeansPage(transportIndex)) match {
       case Some(true) =>
-        Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex))
+        Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex))
       case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
