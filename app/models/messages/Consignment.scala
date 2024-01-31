@@ -32,6 +32,11 @@ case class Consignment(
   HouseConsignment: Seq[HouseConsignment]
 ) {
 
+  def isContainerIndicatorYes: Boolean = containerIndicator.exists {
+    case "1" => true
+    case _   => false
+  }
+
   def isModeOfTransportDefined: Option[Boolean] = Some(modeOfTransportAtTheBorder.isDefined)
   def isInlandModeDefined: Option[Boolean]      = Some(inlandModeOfTransport.isDefined)
 

@@ -420,7 +420,21 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           }
         }
 
-        "to the cya page when user answers no" in {
+        "to the cya page when user answers no and seal yesNo is answered" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
+                  .setValue(AddSealYesNoPage(equipmentIndex), true)
+
+              navigator
+                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
+
+        "to the add seal yes no page when user answers no and addSealYesNo is not answered" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers =
@@ -429,7 +443,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               navigator
                 .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustBe(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
           }
         }
       }
@@ -440,6 +454,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             val updatedAnswers =
               answers
                 .setValue(ContainerIdentificationNumberPage(equipmentIndex), "67YU988")
+                .setValue(AddSealYesNoPage(equipmentIndex), true)
 
             navigator
               .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
@@ -459,12 +474,21 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
       }
 
-      "to to the cya page when user answers no" in {
+      "to to the cya page when user answers no and the items have been answered" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
+          .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
+        navigator
+          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      }
+
+      "to to the item page when user answers no and the items have not been answered" in {
         val userAnswers = emptyUserAnswers
           .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
         navigator
           .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
       }
 
       "must go from the seal identification number page to add another seal page" in {
