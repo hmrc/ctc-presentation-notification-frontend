@@ -48,7 +48,7 @@ class LoadingNavigator extends Navigator {
   private def unLocodeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddExtraInformationYesNoPage) match {
       case None => AddExtraInformationYesNoPage.route(ua, departureId, CheckMode)
-      case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   private def addUnlocodeNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
@@ -76,7 +76,7 @@ class LoadingNavigator extends Navigator {
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
-  private def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
+  private def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddExtraInformationYesNoPage) match {
       case Some(true) =>
         ua.get(CountryPage) match {
@@ -86,7 +86,6 @@ class LoadingNavigator extends Navigator {
         }
       case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-  }
 }
 
 object LoadingNavigator {
