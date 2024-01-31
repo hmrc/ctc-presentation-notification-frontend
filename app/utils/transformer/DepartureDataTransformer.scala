@@ -20,7 +20,12 @@ import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
+import utils.transformer.transport.border.{
+  AddBorderModeOfTransportYesNoTransformer,
+  IdentificationNumberTransformer,
+  IdentificationTransformer,
+  ModeOfTransportAtTheBorderTransformer
+}
 import utils.transformer.transport.equipment.{
   ContainerIdentificationNumberTransformer,
   ContainerIndicatorTransformer,
@@ -46,6 +51,8 @@ class DepartureDataTransformer @Inject() (
   sealTransformer: SealTransformer,
   limitDateTransformer: LimitDateTransformer,
   containerIndicatorTransformer: ContainerIndicatorTransformer,
+  modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
+  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer
   unLocodeTransformer: UnLocodeTransformer,
   addUnLocodeYesNoTransformer: AddUnLocodeYesNoTransformer,
   addExtraInformationYesNoTransformer: AddExtraInformationYesNoTransformer,
@@ -63,6 +70,8 @@ class DepartureDataTransformer @Inject() (
       sealTransformer.transform andThen
       limitDateTransformer.transform andThen
       containerIndicatorTransformer.transform andThen
+      modeOfTransportAtTheBorderTransformer.transform andThen
+      addBorderModeOfTransportYesNoTransformer.transform andThen
       addUnLocodeYesNoTransformer.transform andThen
       unLocodeTransformer.transform andThen
       addExtraInformationYesNoTransformer.transform andThen
