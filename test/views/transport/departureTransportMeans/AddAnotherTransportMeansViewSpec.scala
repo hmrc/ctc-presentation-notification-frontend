@@ -57,5 +57,15 @@ class AddAnotherTransportMeansViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
+  behave like pageWithContent(
+    "p",
+    "You must only add one departure means of transport if you are using maritime, air, fixed transport installations or inland waterways for your inland mode. Your declaration will be rejected if you add more than one."
+  )
+
+  behave like pageWithContent(
+    "p",
+    "If you are using road as your mode, you can add up to 3 departure means of transport. For rail, you can add up to 999 departure means."
+  )
+
   behave like pageWithSubmitButton("Continue")
 }

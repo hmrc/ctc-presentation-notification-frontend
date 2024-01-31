@@ -99,8 +99,8 @@ class DepartureDataTransformerTest extends SpecBase {
         containerIdentificationNumberTransformer,
         sealTransformer,
         limitDateTransformer,
-        transportMeansIdentificationNumberTransformer,
         transportMeansIdentificationTransformer,
+        transportMeansIdentificationNumberTransformer,
         transportMeansNationalityTransformer
       )
 
@@ -114,8 +114,8 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
-          verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
           verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
+          verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
           verify(transportMeansNationalityTransformer, times(1)).transform(hc)
       }
     }

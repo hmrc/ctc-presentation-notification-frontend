@@ -24,7 +24,7 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import navigation.DepartureTransportMeansNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
+import pages.transport.departureTransportMeans._
 
 class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -107,6 +107,25 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         }
       }
+
+      "must go from add another departure transport means page" - {
+        "to TransportMeansIdentificationPage when user answers yes" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAnotherTransportMeansPage(transportIndex), true)
+          navigator
+            .nextPage(AddAnotherTransportMeansPage(transportIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex))
+        }
+
+        "to CYA page when user answers no" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAnotherTransportMeansPage(transportIndex), false)
+          navigator
+            .nextPage(AddAnotherTransportMeansPage(transportIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
     }
   }
 }

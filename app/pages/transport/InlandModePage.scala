@@ -35,13 +35,9 @@ case object InlandModePage extends QuestionPage[InlandMode] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val transportMeansPath: JsPath = JsPath \ "Consignment" \ "DepartureTransportMeans"
-
+  override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(value) if value.code == "5" => userAnswers.remove(TransportMeansListSection, transportMeansPath)
-      case Some(value) if value.code != "5" => userAnswers.remove(TransportMeansListSection)
-      case _                                => super.cleanup(value, userAnswers)
+      case Some(_) => userAnswers.remove(TransportMeansListSection)
+      case _       => super.cleanup(value, userAnswers)
     }
-  }
 }

@@ -16,7 +16,7 @@
 
 package viewModels.transport.departureTransportMeans
 
-import config.Constants.{Mail, Road}
+import config.Constants.Mail
 import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
@@ -30,14 +30,13 @@ import viewModels.{AddAnotherViewModel, ListItem}
 case class AddAnotherTransportMeansViewModel(userAnswers: UserAnswers, listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "consignment.departureTransportMeans.addAnotherTransportMeans"
 
-  val isInlandModeRoad: Boolean = userAnswers.get(InlandModePage).exists(_.code == Road)
-  println("inland mode is" + userAnswers.get(InlandModePage))
-
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxTransportMeans
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
-  def inlandLimitWarningLabel(implicit messages: Messages): String = messages(s"$prefix.road.maxLimit.label")
+  def maxLimitWarningHint1(implicit messages: Messages): String = messages(s"$prefix.maxLimit.hint1")
+
+  def maxLimitWarningHint2(implicit messages: Messages): String = messages(s"$prefix.maxLimit.hint2")
 
 }
 

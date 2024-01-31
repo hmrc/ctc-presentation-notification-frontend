@@ -35,8 +35,8 @@ class DepartureDataTransformer @Inject() (
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
   limitDateTransformer: LimitDateTransformer,
-  transportMeansIdentificationNumberTransformer: TransportMeansIdentificationNumberTransformer,
   transportMeansIdentificationTransformer: TransportMeansIdentificationTransformer,
+  transportMeansIdentificationNumberTransformer: TransportMeansIdentificationNumberTransformer,
   transportMeansNationalityTransformer: TransportMeansNationalityTransformer
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
@@ -51,8 +51,8 @@ class DepartureDataTransformer @Inject() (
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
       limitDateTransformer.transform andThen
-      transportMeansIdentificationNumberTransformer.transform andThen
       transportMeansIdentificationTransformer.transform andThen
+      transportMeansIdentificationNumberTransformer.transform andThen
       transportMeansNationalityTransformer.transform
 
     transformerPipeline(userAnswers)
