@@ -38,8 +38,6 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val identificationType1 = Identification("40", "IATA flight number")
-
   private val prefix = "transport.border.active.identificationNumber"
 
   private val formProvider = new IdentificationNumberFormProvider()

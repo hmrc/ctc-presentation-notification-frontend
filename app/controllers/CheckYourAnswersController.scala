@@ -48,8 +48,10 @@ class CheckYourAnswersController @Inject() (
         }
   }
 
-  def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId) {
-    implicit request => //todo will redirect to Declaration submitted page once implemented
-      ???
-  }
+  def onSubmit(departureId: String): Action[AnyContent] = ???
+  //    actions.requireData(departureId) {
+  //    implicit request => //todo will redirect to Declaration submitted page once implemented
+  //      ???
+  //  }
+  //}
 }

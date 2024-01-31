@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.transport.DateFormProvider
 import models.Mode
-import navigation.{LocationOfGoodsNavigator, Navigator}
+import navigation.LocationOfGoodsNavigator
 import pages.transport.LimitDatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

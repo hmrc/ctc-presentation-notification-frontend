@@ -49,14 +49,7 @@ class AddBorderModeOfTransportYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val borderModeYesNo: Option[Boolean] =
-        request.userAnswers
-          .get(AddBorderModeOfTransportYesNoPage)
-          .orElse {
-            logger.info(s"Retrieved BorderMode answer from IE015 journey")
-            Some(request.userAnswers.departureData.Consignment.modeOfTransportAtTheBorder.isDefined)
-          }
-      val preparedForm = borderModeYesNo match {
+      val preparedForm = request.userAnswers.get(AddBorderModeOfTransportYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
