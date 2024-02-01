@@ -24,7 +24,7 @@
 )
 
 @for(section <- sections) {
-    @if(section.rows.nonEmpty) {
+    @if(section.rows.nonEmpty || section.addAnotherLink.nonEmpty) {
         @section.sectionTitle.map { title =>
             <h2 class="govuk-heading-m">@title</h2>
         }

@@ -45,8 +45,18 @@ trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Gene
         })
       }
 
-      "must not render section titles when rows are empty" - {
-        val emptySections = sections.map(_.copy(rows = Nil))
+      "must render section titles when rows are empty and link are provided" - {
+        val emptySectionsWithLink = sections.map(_.copy(rows = Nil))
+        val view                  = viewWithSections(emptySectionsWithLink)
+        val doc                   = parseView(view)
+        emptySectionsWithLink.foreach(_.sectionTitle.map {
+          sectionTitle =>
+            behave like pageWithContent(doc, "h2", sectionTitle)
+        })
+      }
+
+      "must not render section titles when rows are empty and link are not provided" - {
+        val emptySections = sections.map(_.copy(rows = Nil, addAnotherLink = None))
         val view          = viewWithSections(emptySections)
         val doc           = parseView(view)
         emptySections.foreach(_.sectionTitle.map {
