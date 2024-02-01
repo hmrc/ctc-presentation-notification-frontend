@@ -21,8 +21,18 @@ import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.representative._
 import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.border.{
+  AddBorderModeOfTransportYesNoTransformer,
+  IdentificationNumberTransformer,
+  IdentificationTransformer,
+  ModeOfTransportAtTheBorderTransformer
+}
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,6 +53,9 @@ class DepartureDataTransformerTest extends SpecBase {
       val addRepresentativeContactDetailsYesNoTransformer = mock[AddRepresentativeContactDetailsYesNoTransformer]
       val representativeNameTransformer                   = mock[RepresentativeNameTransformer]
       val representativePhoneNumberTransformer            = mock[RepresentativePhoneNumberTransformer]
+      val containerIndicatorTransformer                   = mock[ContainerIndicatorTransformer]
+      val modeOfTransportAtTheBorderTransformer           = mock[ModeOfTransportAtTheBorderTransformer]
+      val addBorderModeOfTransportYesNoTransformer        = mock[AddBorderModeOfTransportYesNoTransformer]
       val userAnswers                                     = mock[UserAnswers]
       val userAnswersWithEquipment                        = mock[UserAnswers]
 
@@ -67,6 +80,18 @@ class DepartureDataTransformerTest extends SpecBase {
       when(sealTransformer.transform(hc)).thenReturn(verifyTransportEquipmentTransformersOrder)
 
       when(limitDateTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(containerIndicatorTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(modeOfTransportAtTheBorderTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addBorderModeOfTransportYesNoTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
       )
 
@@ -101,7 +126,10 @@ class DepartureDataTransformerTest extends SpecBase {
         representativeEoriTransformer,
         addRepresentativeContactDetailsYesNoTransformer,
         representativeNameTransformer,
-        representativePhoneNumberTransformer
+        representativePhoneNumberTransformer,
+        containerIndicatorTransformer,
+        modeOfTransportAtTheBorderTransformer,
+        addBorderModeOfTransportYesNoTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -117,6 +145,9 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(addRepresentativeContactDetailsYesNoTransformer, times(1)).transform(hc)
           verify(representativeNameTransformer, times(1)).transform(hc)
           verify(representativePhoneNumberTransformer, times(1)).transform(hc)
+          verify(containerIndicatorTransformer, times(1)).transform(hc)
+          verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
+          verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)
       }
     }
   }

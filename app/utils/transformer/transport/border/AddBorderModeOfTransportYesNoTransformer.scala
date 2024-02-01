@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package utils.transformer
+package utils.transformer.transport.border
 
 import models.UserAnswers
-import models.messages.Representative
-import pages.ActingAsRepresentativePage
+import models.messages.Consignment
+import pages.transport.border.AddBorderModeOfTransportYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class ActingAsRepresentativeTransformer extends PageTransformer {
+class AddBorderModeOfTransportYesNoTransformer extends PageTransformer {
 
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = Option[Representative]
+  override type ExtractedTypeInDepartureData = Consignment
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = x => Seq(x.departureData.Representative),
+      extractDataFromDepartureData = x => Seq(x.departureData.Consignment),
       generateCapturedAnswers = value => {
         value
           .map {
-            representative =>
-              (ActingAsRepresentativePage, representative.isDefined)
+            consignment =>
+              (AddBorderModeOfTransportYesNoPage, consignment.modeOfTransportAtTheBorder.nonEmpty)
           }
       }
     )

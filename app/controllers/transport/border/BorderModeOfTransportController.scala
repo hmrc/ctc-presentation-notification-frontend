@@ -54,28 +54,11 @@ class BorderModeOfTransportController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val borderModeCode =
-        request.userAnswers
-          .get(BorderModeOfTransportPage)
-          .map(_.code)
-          .orElse {
-            logger.info(s"Retrieved BorderMode answer from IE015 journey")
-            request.userAnswers.departureData.Consignment.modeOfTransportAtTheBorder
-          }
-
       service.getBorderModes().map {
         borderModeCodes =>
-          val preparedForm = borderModeCode match {
-            case None => form(borderModeCodes)
-            case Some(code) =>
-              val getBorderMode = borderModeCodes.find(_.code == code)
-              getBorderMode match {
-                case Some(bm) => form(borderModeCodes).fill(bm)
-                case None =>
-                  logger.warn(s"BorderMode code: '$code' was not found from available border modes: ${borderModeCodes.mkString(", ")}")
-                  form(borderModeCodes)
-              }
-
+          val preparedForm = request.userAnswers.get(BorderModeOfTransportPage) match {
+            case None        => form(borderModeCodes)
+            case Some(value) => form(borderModeCodes).fill(value)
           }
 
           Ok(view(preparedForm, departureId, borderModeCodes, mode))

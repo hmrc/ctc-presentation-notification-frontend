@@ -14,35 +14,34 @@
  * limitations under the License.
  */
 
-package utils.transformer
+package utils.transformer.transport.equipment
 
 import base.SpecBase
-import models.UserAnswers
-import pages.ActingAsRepresentativePage
+import base.TestMessageData.consignment
+import pages.transport.ContainerIndicatorPage
 
-class ActingAsRepresentativeTransformerSpec extends SpecBase {
+class ContainerIndicatorTransformerTest extends SpecBase {
+  val transformer = new ContainerIndicatorTransformer()
 
-  val transformer = new ActingAsRepresentativeTransformer()
-
-  "ActingAsRepresentativeTransformer" - {
-    "when representative details is present must return updated answers with ActingAsRepresentative page as true" in {
+  "ContainerIndicatorPageTransformer" - {
+    "must return updated answers with ContainerIndicatorPage" in {
       val userAnswers = emptyUserAnswers
-      userAnswers.get(ActingAsRepresentativePage) mustBe None
+      userAnswers.get(ContainerIndicatorPage) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(ActingAsRepresentativePage) mustBe Some(true)
+          updatedUserAnswers.get(ContainerIndicatorPage) mustBe Some(true)
       }
     }
 
-    "when representative details not present must return updated answers with ActingAsRepresentative page as false" in {
-      val userAnswers = UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers)
-
-      userAnswers.get(ActingAsRepresentativePage) mustBe None
+    "must not update if ContainerIndicatorPage is None" in {
+      val userAnswers =
+        emptyUserAnswers.copy(departureData = emptyUserAnswers.departureData.copy(Consignment = consignment.copy(containerIndicator = None)))
+      userAnswers.get(ContainerIndicatorPage) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(ActingAsRepresentativePage) mustBe Some(false)
+          updatedUserAnswers.get(ContainerIndicatorPage) mustBe None
       }
     }
   }

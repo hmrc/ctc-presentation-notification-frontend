@@ -21,8 +21,18 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.transformer.representative._
 import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.border.{IdentificationNumberTransformer, IdentificationTransformer}
-import utils.transformer.transport.equipment.{ContainerIdentificationNumberTransformer, SealTransformer, TransportEquipmentTransformer}
+import utils.transformer.transport.border.{
+  AddBorderModeOfTransportYesNoTransformer,
+  IdentificationNumberTransformer,
+  IdentificationTransformer,
+  ModeOfTransportAtTheBorderTransformer
+}
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +48,10 @@ class DepartureDataTransformer @Inject() (
   representativeEoriTransformer: RepresentativeEoriTransformer,
   addRepresentativeContactDetailsYesNoTransformer: AddRepresentativeContactDetailsYesNoTransformer,
   representativeNameTransformer: RepresentativeNameTransformer,
-  representativePhoneNumberTransformer: RepresentativePhoneNumberTransformer
+  representativePhoneNumberTransformer: RepresentativePhoneNumberTransformer,
+  containerIndicatorTransformer: ContainerIndicatorTransformer,
+  modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
+  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
@@ -54,7 +67,10 @@ class DepartureDataTransformer @Inject() (
       actingAsRepresentativeTransformer.transform andThen
       representativeEoriTransformer.transform andThen
       representativeNameTransformer.transform andThen
-      representativePhoneNumberTransformer.transform
+      representativePhoneNumberTransformer.transform andThen
+      containerIndicatorTransformer.transform andThen
+      modeOfTransportAtTheBorderTransformer.transform andThen
+      addBorderModeOfTransportYesNoTransformer.transform
 
     transformerPipeline(userAnswers)
   }
