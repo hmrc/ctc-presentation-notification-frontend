@@ -63,6 +63,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                       .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
                       .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
                       .setValue(AddContainerIdentificationNumberYesNoPage(Index(1)), true)
+
                     val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
                     result.listItems.length mustBe 2
