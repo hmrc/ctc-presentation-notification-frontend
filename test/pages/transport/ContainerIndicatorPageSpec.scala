@@ -34,23 +34,29 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove all transport equipments" in {
+        "must remove all transport equipments and addTransportEquipmentYesNo" in {
 
-          val userAnswers: UserAnswers = emptyUserAnswers.setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            .setValue(AddTransportEquipmentYesNoPage, true)
 
           val result = userAnswers.setValue(ContainerIndicatorPage, false)
 
           result.get(EquipmentsSection) must not be defined
+          result.get(AddTransportEquipmentYesNoPage) must not be defined
         }
       }
       "when yes selected" - {
-        "must remove all transport equipments" in {
+        "must remove all transport equipments and addTransportEquipmentYesNo" in {
 
-          val userAnswers: UserAnswers = emptyUserAnswers.setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            .setValue(AddTransportEquipmentYesNoPage, false)
 
           val result = userAnswers.setValue(ContainerIndicatorPage, true)
 
           result.get(EquipmentsSection) must not be defined
+          result.get(AddTransportEquipmentYesNoPage) must not be defined
         }
       }
     }

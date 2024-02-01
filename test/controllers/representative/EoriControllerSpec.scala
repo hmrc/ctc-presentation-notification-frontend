@@ -20,9 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.representative.{routes => representativeRoutes}
 import controllers.routes
 import forms.EoriNumberFormProvider
-import models.NormalMode
-import models.messages.Representative
 import models.{NormalMode, UserAnswers}
+import models.messages.Representative
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

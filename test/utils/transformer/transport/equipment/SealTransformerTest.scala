@@ -19,7 +19,6 @@ package utils.transformer.transport.equipment
 import base.SpecBase
 import models.messages.{Seal, TransportEquipment}
 import models.{Index, UserAnswers}
-import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
