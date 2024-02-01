@@ -153,7 +153,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val ie015WithNoLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
               val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mockReferenceDataService, mode)
-              val result = helper.countryTypeRow(countryType.description)
+              val result = helper.countryTypeRow
               result mustBe None
           }
         }
@@ -166,7 +166,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val answers = emptyUserAnswers
                 .setValue(CountryPage, country)
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
-              val result = helper.countryTypeRow(country.description).get
+              val result = helper.countryTypeRow.get
 
               result.key.value mustBe s"Country"
               result.value.value mustBe country.description
