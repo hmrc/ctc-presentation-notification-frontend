@@ -37,8 +37,7 @@ case object ContainerIndicatorPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(EquipmentsSection)
-      case Some(true)  => userAnswers.remove(EquipmentsSection)
+      case Some(_) => userAnswers.remove(EquipmentsSection)
       case _           => super.cleanup(value, userAnswers)
     }
 }
