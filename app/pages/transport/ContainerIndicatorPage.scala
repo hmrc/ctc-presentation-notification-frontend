@@ -21,6 +21,7 @@ import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.containers.ContainerSection
 import pages.sections.transport.equipment.EquipmentsSection
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -37,7 +38,7 @@ case object ContainerIndicatorPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(EquipmentsSection)
-      case _           => super.cleanup(value, userAnswers)
+      case Some(_) => userAnswers.remove(EquipmentsSection).flatMap(_.remove(AddTransportEquipmentYesNoPage))
+      case _       => super.cleanup(value, userAnswers)
     }
 }

@@ -22,13 +22,12 @@ import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTr
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
 
 import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PresentationNotificationAnswersHelper(
   userAnswers: UserAnswers,

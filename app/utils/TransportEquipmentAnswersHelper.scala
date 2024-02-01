@@ -43,7 +43,7 @@ class TransportEquipmentAnswersHelper(
       .getOrElse(0)
   )
 
-  def addAnyTransportEquipmentYesNo(): Option[SummaryListRow] = if (userAnswers.departureData.Consignment.isContainerIndicatorYes) {
+  def addAnyTransportEquipmentYesNo(): Option[SummaryListRow] =
     buildRowWithAnswer[Boolean](
       page = AddTransportEquipmentYesNoPage,
       optionalAnswer = userAnswers.get(AddTransportEquipmentYesNoPage),
@@ -51,9 +51,6 @@ class TransportEquipmentAnswersHelper(
       prefix = "transport.equipment.addTransportEquipment",
       id = Some("change-add-transport-equipment")
     )
-  } else {
-    None
-  }
 
   def addContainerIdentificationNumberYesNo(): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddContainerIdentificationNumberYesNoPage(equipmentIndex),

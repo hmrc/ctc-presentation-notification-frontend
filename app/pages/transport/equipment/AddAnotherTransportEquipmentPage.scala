@@ -19,7 +19,6 @@ package pages.transport.equipment
 import models.Index
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
-import pages.sections.transport.equipment.EquipmentSection
 import play.api.libs.json.JsPath
 
 case class AddAnotherTransportEquipmentPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
