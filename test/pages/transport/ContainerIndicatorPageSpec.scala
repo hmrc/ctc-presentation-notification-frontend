@@ -16,7 +16,11 @@
 
 package pages.transport
 
+import models.UserAnswers
 import pages.behaviours.PageBehaviours
+import pages.sections.transport.equipment.EquipmentsSection
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import play.api.libs.json.{JsArray, Json}
 
 class ContainerIndicatorPageSpec extends PageBehaviours {
 
@@ -29,15 +33,14 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
     beRemovable[Boolean](ContainerIndicatorPage)
 
     "cleanup" - {
-      "when NO selected" - {
-        "must clean up ContainerSection" ignore {
-          ??? // TODO: will be implemented after next page
-        }
-      }
+      "when no selected" - {
+        "must remove all transport equipments" in {
 
-      "when YES selected" - {
-        "must do nothing" ignore {
-          ??? // TODO: will be implemented after next page
+          val userAnswers: UserAnswers = emptyUserAnswers.setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(ContainerIndicatorPage, false)
+
+          result.get(EquipmentsSection) must not be defined
         }
       }
     }

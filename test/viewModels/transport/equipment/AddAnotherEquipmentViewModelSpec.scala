@@ -57,8 +57,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 forAll(arbitrary[Mode], nonEmptyString) {
                   (mode, containerId) =>
                     val userAnswers = emptyUserAnswers
-                      .setValue(AddTransportEquipmentYesNoPage, false)
                       .setValue(ContainerIndicatorPage, true)
+                      .setValue(AddTransportEquipmentYesNoPage, false)
                       .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                       .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
                       .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
@@ -93,8 +93,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               forAll(arbitrary[Mode], nonEmptyString) {
                 (mode, containerId) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(AddTransportEquipmentYesNoPage, true)
                     .setValue(ContainerIndicatorPage, false)
+                    .setValue(AddTransportEquipmentYesNoPage, true)
                     .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                     .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
                     .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
@@ -130,8 +130,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               forAll(arbitrary[Mode], nonEmptyString) {
                 (mode, containerId) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(AddTransportEquipmentYesNoPage, false)
                     .setValue(ContainerIndicatorPage, true)
+                    .setValue(AddTransportEquipmentYesNoPage, false)
                     .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                     .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
 
@@ -160,10 +160,10 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
             forAll(arbitrary[Mode], nonEmptyString) {
               (mode, containerId) =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(ContainerIndicatorPage, true)
                   .setValue(AddTransportEquipmentYesNoPage, false)
                   .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                   .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
-                  .setValue(ContainerIndicatorPage, true)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
                 result.listItems.length mustBe 1
@@ -188,8 +188,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
             forAll(arbitrary[Mode], nonEmptyString) {
               (mode, containerId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                   .setValue(ContainerIndicatorPage, true)
+                  .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
                 result.listItems.length mustBe 1
@@ -218,9 +218,9 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
             forAll(arbitrary[Mode], nonEmptyString) {
               (mode, containerId) =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(ContainerIndicatorPage, true)
                   .setValue(AddTransportEquipmentYesNoPage, true)
                   .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
-                  .setValue(ContainerIndicatorPage, true)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
                 result.listItems.length mustBe 1
@@ -245,8 +245,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
             forAll(arbitrary[Mode], nonEmptyString) {
               (mode, containerId) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                   .setValue(ContainerIndicatorPage, true)
+                  .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
                 result.listItems.length mustBe 1
@@ -305,10 +305,10 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
           forAll(arbitrary[Mode], nonEmptyString, arbitrary[Item]) {
             (mode, containerId, item) =>
               val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, true)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
-                .setValue(ContainerIndicatorPage, true)
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
@@ -340,10 +340,10 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
           forAll(arbitrary[Mode], nonEmptyString, arbitrary[Item]) {
             (mode, containerId, item) =>
               val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, false)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
-                .setValue(ContainerIndicatorPage, false)
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
@@ -380,10 +380,10 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
           forAll(arbitrary[Mode], nonEmptyString, arbitrary[Item]) {
             (mode, containerId, item) =>
               val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, false)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
-                .setValue(ContainerIndicatorPage, false)
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
@@ -449,8 +449,8 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
           forAll(arbitrary[Mode], arbitrary[Item]) {
             (mode, item) =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(ContainerIndicatorPage, false)
+                .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddSealYesNoPage(Index(0)), false)
                 .setValue(AddTransportEquipmentYesNoPage, true)
                 .setValue(ItemPage(Index(0), Index(0)), item)
