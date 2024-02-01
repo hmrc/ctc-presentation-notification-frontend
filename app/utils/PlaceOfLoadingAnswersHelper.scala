@@ -35,7 +35,7 @@ class PlaceOfLoadingAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
-  def countryTypeRow(answer: String): Option[SummaryListRow] = buildRowWithAnswer[Country](
+  def countryTypeRow: Option[SummaryListRow] = buildRowWithAnswer[Country](
     page = CountryPage,
     optionalAnswer = userAnswers.get(CountryPage),
     formatAnswer = formatAsCountry,
@@ -81,34 +81,20 @@ class PlaceOfLoadingAnswersHelper(
   def placeOfLoadingSection: Future[Section] = {
     implicit val ua: UserAnswers = userAnswers
 
-    val rows = for {
+    val rows = Seq(
+      addUnlocodeYesNo,
+      unlocode,
+      if (unlocode.isDefined) addExtraInformationYesNo else None,
+      countryTypeRow,
+      location
+    ).flatten
 
-      country <- fetchValue[Country](
-        CountryPage,
-        checkYourAnswersReferenceDataService.getCountry,
-        userAnswers.departureData.Consignment.PlaceOfLoading.flatMap(_.country)
+    Future.successful(
+      Section(
+        sectionTitle = messages("checkYourAnswers.placeOfLoading"),
+        rows
       )
-      countryRow = country.flatMap(
-        x => countryTypeRow(x.description)
-      )
-
-      rowAcc = Seq(
-        addUnlocodeYesNo,
-        unlocode,
-        if (unlocode.isDefined) addExtraInformationYesNo else None,
-        countryRow,
-        location
-      ).flatten
-
-    } yield rowAcc
-
-    rows.map {
-      convertedRows =>
-        Section(
-          sectionTitle = messages("checkYourAnswers.placeOfLoading"),
-          convertedRows
-        )
-    }
+    )
 
   }
 
