@@ -52,7 +52,7 @@ class DepartureDataTransformer @Inject() (
   limitDateTransformer: LimitDateTransformer,
   containerIndicatorTransformer: ContainerIndicatorTransformer,
   modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
-  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer
+  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer,
   unLocodeTransformer: UnLocodeTransformer,
   addUnLocodeYesNoTransformer: AddUnLocodeYesNoTransformer,
   addExtraInformationYesNoTransformer: AddExtraInformationYesNoTransformer,
