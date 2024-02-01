@@ -17,9 +17,11 @@
 package pages.transport.border
 
 import models.reference.TransportMode.BorderMode
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
+import pages.transport.border.active.{IdentificationNumberPage, NationalityPage}
+import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansNationalityPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -35,6 +37,15 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
     Some(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
 
   override def cleanup(value: Option[BorderMode], userAnswers: UserAnswers): Try[UserAnswers] =
-    super.cleanup(value, userAnswers)
+    value match {
+      case Some(_) =>
+        userAnswers
+          .remove(AddBorderMeansOfTransportYesNoPage)
+          .flatMap(
+            _.remove(IdentificationNumberPage(Index(0)))
+              .flatMap(_.remove(NationalityPage(Index(0))))
+          )
 
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

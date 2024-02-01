@@ -230,7 +230,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"${identification.asString} - $identificationNumber",
+                  name = s"${identification.asString}",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url,
                   removeUrl = None
                 )
