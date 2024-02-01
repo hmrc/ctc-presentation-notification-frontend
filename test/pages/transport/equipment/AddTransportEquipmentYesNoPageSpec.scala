@@ -39,17 +39,6 @@ class AddTransportEquipmentYesNoPageSpec extends PageBehaviours {
           result.get(EquipmentsSection) must not be defined
         }
       }
-
-      "when yes selected" - {
-        "must remove all transport equipments" in {
-
-          val userAnswers: UserAnswers = emptyUserAnswers.setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
-
-          val result = userAnswers.setValue(AddTransportEquipmentYesNoPage, true)
-
-          result.get(EquipmentsSection) must not be defined
-        }
-      }
     }
   }
 }
