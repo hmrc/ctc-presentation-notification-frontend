@@ -19,6 +19,7 @@ package utils
 import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Mode, UserAnswers}
+import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans._
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
@@ -81,9 +82,13 @@ class DepartureTransportMeansAnswersHelper(
 
   def buildDepartureTransportMeansSection: Future[Option[Section]] = {
 
-    val predicate: Boolean = userAnswers.departureData.Consignment.inlandModeOfTransport match {
-      case Some(value) => value != "5"
-      case None        => true
+    val inlandModeIE15: Option[String]  = userAnswers.departureData.Consignment.inlandModeOfTransport
+    val inlandModeIE170: Option[String] = userAnswers.get(InlandModePage).map(_.code)
+
+    val predicate: Boolean = (inlandModeIE15, inlandModeIE170) match {
+      case (_, Some(inlandModeIE170)) => inlandModeIE170 != "5"
+      case (Some(inlandModeIE15), _)  => inlandModeIE15 != "5"
+      case (None, None)               => true
     }
 
     if (predicate) {
