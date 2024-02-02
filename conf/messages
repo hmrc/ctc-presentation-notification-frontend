@@ -631,7 +631,14 @@ consignment.departureTransportMeans.addAnotherTransportMeans.label = Do you want
 consignment.departureTransportMeans.addAnotherTransportMeans.maxLimit.label = You cannot add any more departure means of transport. To add another, you need to remove one first.
 consignment.departureTransportMeans.addAnotherTransportMeans.maxLimit.hint1 = You must only add one departure means of transport if you are using maritime, air, fixed transport installations or inland waterways for your inland mode. Your declaration will be rejected if you add more than one.
 consignment.departureTransportMeans.addAnotherTransportMeans.maxLimit.hint2 = If you are using road as your mode, you can add up to 3 departure means of transport. For rail, you can add up to 999 departure means.
-
 consignment.departureTransportMeans.addAnotherTransportMeans.error.required = Select yes if you want to add another departure means of transport
 
-
+information.sent.title = Information sent
+information.sent.heading = Information sent
+information.sent.panel = for Local Reference Number (LRN)
+information.sent.h2 = What happens next
+information.sent.departures = Check the status of departure declarations
+information.sent.paragraph1 = to find out when goods have been released.
+information.sent.paragraph2.withTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
+information.sent.paragraph2.withoutTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0}.
+information.sent.newDeparture = Make another departure declaration

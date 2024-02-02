@@ -61,7 +61,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       contentAsString(result) mustEqual view(lrn.value, departureId, sampleSections)(request, messages).toString
     }
 
-    "redirect successfully when calling onSubmit" ignore { //todo not implemented yet - will be confirmation page
+    "redirect successfully when calling onSubmit" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -70,7 +70,11 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       val result = route(app, request).value
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustEqual onwardRoute.url
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.InformationSubmittedController.onPageLoad(departureId).url
+
     }
   }
 }

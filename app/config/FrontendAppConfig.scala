@@ -57,6 +57,9 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
 
   val signOutUrl: String = config.get[String]("urls.logoutContinue") + config.get[String]("urls.feedback")
 
-  val encryptionKey: String      = config.get[String]("encryption.key")
-  val encryptionEnabled: Boolean = config.get[Boolean]("encryption.enabled")
+  val encryptionKey: String                                       = config.get[String]("encryption.key")
+  val encryptionEnabled: Boolean                                  = config.get[Boolean]("encryption.enabled")
+  lazy val manageTransitMovementsDeclareNewDeclarationUrl: String = config.get[String]("urls.manageTransitMovementsDepartureDeclaration")
+  private lazy val manageTransitMovementsUrl: String              = config.get[String]("urls.manageTransitMovementsFrontend")
+  lazy val manageTransitMovementsViewDeparturesUrl: String        = s"$manageTransitMovementsUrl/view-departure-declarations"
 }

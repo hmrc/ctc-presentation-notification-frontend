@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions._
+import logging.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -33,7 +34,8 @@ class CheckYourAnswersController @Inject() (
   view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
@@ -46,10 +48,8 @@ class CheckYourAnswersController @Inject() (
         }
   }
 
-  def onSubmit(departureId: String): Action[AnyContent] = ???
-  //    actions.requireData(departureId) {
-  //    implicit request => //todo will redirect to Declaration submitted page once implemented
-  //      ???
-  //  }
-  //}
+  def onSubmit(departureId: String): Action[AnyContent] = actions
+    .requireData(departureId) {
+      Redirect(controllers.routes.InformationSubmittedController.onPageLoad(departureId))
+    }
 }
