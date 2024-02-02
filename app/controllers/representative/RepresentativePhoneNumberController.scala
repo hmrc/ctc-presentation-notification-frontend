@@ -49,10 +49,7 @@ class RepresentativePhoneNumberController @Inject() (
     .requireData(departureId) {
       implicit request =>
         val preparedForm = request.userAnswers
-          .get(RepresentativePhoneNumberPage)
-          .orElse {
-            request.userAnswers.departureData.Representative.flatMap(_.ContactPerson.map(_.phoneNumber))
-          } match {
+          .get(RepresentativePhoneNumberPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }

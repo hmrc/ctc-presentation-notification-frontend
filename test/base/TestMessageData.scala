@@ -47,9 +47,15 @@ object TestMessageData {
 
   val postcodeAddress: PostcodeAddress = PostcodeAddress(Some("House number 1"), "NE52ZL", "GB")
 
-  val contactPerson: ContactPerson = ContactPerson("Paul Sully", "07508994566", Some("sullivan@epic.com"))
+  val contactName        = "Paul Sully"
+  val contactPhoneNumber = "07508994566"
+  val contactEmail       = "sullivan@epic.com"
 
-  val representative: Representative = Representative("IdNumber", "2", Some(contactPerson))
+  val contactPerson: ContactPerson = ContactPerson(contactName, contactPhoneNumber, Some(contactEmail))
+
+  val representativeEori = "IdNumber"
+
+  val representative: Representative = Representative(representativeEori, "2", Some(contactPerson))
 
   val locationOfGoods: LocationOfGoods = LocationOfGoods(
     "A",

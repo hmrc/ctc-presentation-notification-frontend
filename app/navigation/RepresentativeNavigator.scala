@@ -38,7 +38,7 @@ class RepresentativeNavigator @Inject() () extends Navigator {
   }
 
   private def actingAsRepresentativeCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    val isEoriDefined = ua.departureData.Representative.map(_.identificationNumber).exists(_.nonEmpty) || ua.get(EoriPage).exists(_.nonEmpty)
+    val isEoriDefined = ua.get(EoriPage).exists(_.nonEmpty)
 
     (ua.get(ActingAsRepresentativePage), isEoriDefined) match {
       case (Some(true), false) => EoriPage.route(ua, departureId, CheckMode)
@@ -47,18 +47,18 @@ class RepresentativeNavigator @Inject() () extends Navigator {
   }
 
   private def addRepresentativeContactDetailsCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    val isContactDetailsDefined = ua.departureData.Representative.exists(_.ContactPerson.isDefined) || ua.get(NamePage).exists(_.nonEmpty)
+    val isContactNameDefined = ua.get(NamePage).exists(_.nonEmpty)
 
-    (ua.get(AddRepresentativeContactDetailsYesNoPage), isContactDetailsDefined) match {
+    (ua.get(AddRepresentativeContactDetailsYesNoPage), isContactNameDefined) match {
       case (Some(true), false) => NamePage.route(ua, departureId, CheckMode)
       case _                   => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
   }
 
   private def namePageCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    val isContactDetailsDefined = ua.departureData.Representative.exists(_.ContactPerson.isDefined) || ua.get(RepresentativePhoneNumberPage).exists(_.nonEmpty)
+    val isRepPhoneNumberDefined = ua.get(RepresentativePhoneNumberPage).exists(_.nonEmpty)
 
-    if (isContactDetailsDefined) {
+    if (isRepPhoneNumberDefined) {
       Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     } else {
       RepresentativePhoneNumberPage.route(ua, departureId, CheckMode)

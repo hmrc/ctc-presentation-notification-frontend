@@ -48,10 +48,7 @@ class AddRepresentativeContactDetailsYesNoController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers
-        .get(AddRepresentativeContactDetailsYesNoPage)
-        .orElse {
-          request.userAnswers.departureData.Representative.map(_.isContactPersonDefined)
-        } match {
+        .get(AddRepresentativeContactDetailsYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
