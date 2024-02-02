@@ -31,7 +31,7 @@ class AddRepresentativeContactDetailsYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when NO selected" - {
-        "must clean up name and telephone pages in 15/13/170" in {
+        "must clean up name and telephone pages" in {
           forAll(arbitrary[String], arbitrary[String]) {
             (name, telephone) =>
               val preChange = emptyUserAnswers
@@ -42,7 +42,6 @@ class AddRepresentativeContactDetailsYesNoPageSpec extends PageBehaviours {
 
               postChange.get(NamePage) mustNot be(defined)
               postChange.get(RepresentativePhoneNumberPage) mustNot be(defined)
-              postChange.departureData.Representative.flatMap(_.ContactPerson) mustNot be(defined)
           }
         }
       }
@@ -58,7 +57,6 @@ class AddRepresentativeContactDetailsYesNoPageSpec extends PageBehaviours {
 
               postChange.get(NamePage) must be(defined)
               postChange.get(RepresentativePhoneNumberPage) must be(defined)
-              postChange.departureData.Representative.flatMap(_.ContactPerson) must be(defined)
           }
         }
       }

@@ -19,6 +19,8 @@ package utils.transformer
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
+import utils.transformer.representative._
+import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport._
 import utils.transformer.transport.border.{
   AddBorderModeOfTransportYesNoTransformer,
@@ -57,6 +59,22 @@ class DepartureDataTransformerTest extends SpecBase {
       val containerIndicatorTransformer                 = mock[ContainerIndicatorTransformer]
       val modeOfTransportAtTheBorderTransformer         = mock[ModeOfTransportAtTheBorderTransformer]
       val addBorderModeOfTransportYesNoTransformer      = mock[AddBorderModeOfTransportYesNoTransformer]
+      val identificationTransformer                       = mock[IdentificationTransformer]
+      val identificationNumberTransformer                 = mock[IdentificationNumberTransformer]
+      val transportEquipmentTransformer                   = mock[TransportEquipmentTransformer]
+      val containerIdentificationNumberTransformer        = mock[ContainerIdentificationNumberTransformer]
+      val sealTransformer                                 = mock[SealTransformer]
+      val limitDateTransformer                            = mock[LimitDateTransformer]
+      val actingAsRepresentativeTransformer               = mock[ActingAsRepresentativeTransformer]
+      val representativeEoriTransformer                   = mock[RepresentativeEoriTransformer]
+      val addRepresentativeContactDetailsYesNoTransformer = mock[AddRepresentativeContactDetailsYesNoTransformer]
+      val representativeNameTransformer                   = mock[RepresentativeNameTransformer]
+      val representativePhoneNumberTransformer            = mock[RepresentativePhoneNumberTransformer]
+      val containerIndicatorTransformer                   = mock[ContainerIndicatorTransformer]
+      val modeOfTransportAtTheBorderTransformer           = mock[ModeOfTransportAtTheBorderTransformer]
+      val addBorderModeOfTransportYesNoTransformer        = mock[AddBorderModeOfTransportYesNoTransformer]
+      val userAnswers                                     = mock[UserAnswers]
+      val userAnswersWithEquipment                        = mock[UserAnswers]
 
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
         input =>
@@ -115,6 +133,26 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(actingAsRepresentativeTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(representativeEoriTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addRepresentativeContactDetailsYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(representativeNameTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(representativePhoneNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         identificationTransformer,
         identificationNumberTransformer,
@@ -124,6 +162,11 @@ class DepartureDataTransformerTest extends SpecBase {
         containerIdentificationNumberTransformer,
         sealTransformer,
         limitDateTransformer,
+        actingAsRepresentativeTransformer,
+        representativeEoriTransformer,
+        addRepresentativeContactDetailsYesNoTransformer,
+        representativeNameTransformer,
+        representativePhoneNumberTransformer,
         containerIndicatorTransformer,
         modeOfTransportAtTheBorderTransformer,
         addBorderModeOfTransportYesNoTransformer,
@@ -145,6 +188,11 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
           verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
           verify(transportMeansNationalityTransformer, times(1)).transform(hc)
+          verify(actingAsRepresentativeTransformer, times(1)).transform(hc)
+          verify(representativeEoriTransformer, times(1)).transform(hc)
+          verify(addRepresentativeContactDetailsYesNoTransformer, times(1)).transform(hc)
+          verify(representativeNameTransformer, times(1)).transform(hc)
+          verify(representativePhoneNumberTransformer, times(1)).transform(hc)
           verify(containerIndicatorTransformer, times(1)).transform(hc)
           verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
           verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)

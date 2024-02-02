@@ -29,16 +29,13 @@ case object ActingAsRepresentativePage extends QuestionPage[Boolean] {
 
   override def toString: String = "actingAsRepresentative"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val Ie015RepPath: JsPath = JsPath \ "Representative"
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(RepresentativeSection, Ie015RepPath)
+      case Some(false) => userAnswers.remove(RepresentativeSection)
       case _           => super.cleanup(value, userAnswers)
     }
-  }
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = Some(
     controllers.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode)
   )
-
 }

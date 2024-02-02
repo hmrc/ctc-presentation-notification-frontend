@@ -19,6 +19,8 @@ package utils.transformer
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
+import utils.transformer.representative._
+import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport._
 import utils.transformer.transport.border.{
   AddBorderModeOfTransportYesNoTransformer,
@@ -45,6 +47,11 @@ class DepartureDataTransformer @Inject() (
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
   limitDateTransformer: LimitDateTransformer,
+  actingAsRepresentativeTransformer: ActingAsRepresentativeTransformer,
+  representativeEoriTransformer: RepresentativeEoriTransformer,
+  addRepresentativeContactDetailsYesNoTransformer: AddRepresentativeContactDetailsYesNoTransformer,
+  representativeNameTransformer: RepresentativeNameTransformer,
+  representativePhoneNumberTransformer: RepresentativePhoneNumberTransformer,
   containerIndicatorTransformer: ContainerIndicatorTransformer,
   modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
   addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer,
@@ -64,6 +71,11 @@ class DepartureDataTransformer @Inject() (
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
       limitDateTransformer.transform andThen
+      addRepresentativeContactDetailsYesNoTransformer.transform andThen
+      actingAsRepresentativeTransformer.transform andThen
+      representativeEoriTransformer.transform andThen
+      representativeNameTransformer.transform andThen
+      representativePhoneNumberTransformer.transform andThen
       containerIndicatorTransformer.transform andThen
       modeOfTransportAtTheBorderTransformer.transform andThen
       addBorderModeOfTransportYesNoTransformer.transform andThen

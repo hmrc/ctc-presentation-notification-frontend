@@ -20,9 +20,9 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.representative.{routes => representativeRoutes}
 import controllers.routes
 import forms.EoriNumberFormProvider
-import models.messages.Representative
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
+import pages.representative.EoriPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -48,7 +48,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
     "must return OK and the correct view for a GET when Representative Section is unanswered in IE015/013" in {
 
-      setExistingUserAnswers(UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, representativeEoriRoute)
       val result  = route(app, request).value
@@ -63,15 +63,16 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
     }
 
     "must populate the view correctly on a GET when the question has previously been answered IE015/013" in {
-      val uaIE015 = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative("IdNumber", "2", None)))(emptyUserAnswers)
-
-      setExistingUserAnswers(uaIE015)
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(EoriPage, validAnswer)
+      )
 
       val request = FakeRequest(GET, representativeEoriRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "IdNumber"))
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       val view = injector.instanceOf[EoriView]
 
