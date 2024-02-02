@@ -18,8 +18,6 @@ package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.requests.SpecificDataRequestProvider2
 import models.{Index, Mode}
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
@@ -45,12 +43,6 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider2[TransportMeansIdentification, String]#SpecificDataRequest[_]
-
-  private def departureMeansOfTransport(implicit request: Request): TransportMeansIdentification = request.arg._1
-
-  private def departureMeansOfTransportNumber(implicit request: Request): String = request.arg._2
-
   private val form: Form[Boolean] =
     formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans")
 
@@ -62,24 +54,26 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, TransportMeansSection(transportIndex), addAnother(departureId, mode))
-    .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportIndex)))
-    .andThen(getMandatoryPage.getSecond(TransportMeansIdentificationNumberPage(transportIndex))) {
+    .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportIndex))) {
       implicit request =>
-        Ok(view(form, departureId, mode, transportIndex, departureMeansOfTransport, departureMeansOfTransportNumber))
+        val identificationType   = request.arg
+        val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
+        Ok(view(form, departureId, mode, transportIndex, identificationType, identificationNumber))
     }
 
   def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, TransportMeansSection(transportIndex), addAnother(departureId, mode))
     .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportIndex)))
-    .andThen(getMandatoryPage.getSecond(TransportMeansIdentificationNumberPage(transportIndex)))
     .async {
       implicit request =>
+        val identificationType   = request.arg
+        val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, departureId, mode, transportIndex, departureMeansOfTransport, departureMeansOfTransportNumber))),
+                .successful(BadRequest(view(formWithErrors, departureId, mode, transportIndex, identificationType, identificationNumber))),
             value =>
               for {
                 updatedAnswers <-

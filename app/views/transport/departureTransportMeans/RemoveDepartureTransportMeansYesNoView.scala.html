@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, transportIndex: Index, departureMeansOfTransport: TransportMeansIdentification, departureMeansOfTransportNumber: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode, transportIndex: Index, departureMeansOfTransport: TransportMeansIdentification, departureMeansOfTransportNumber: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.title"),
@@ -44,9 +44,15 @@
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.heading"),
                 caption = Some(messages("departureTransportMeans.subheading")),
-                additionalHtml = inset(messages("consignment.departureTransportMeans.removeDepartureTransportMeans.inset", departureMeansOfTransport.asString, departureMeansOfTransportNumber))
+                additionalHtml = if(departureMeansOfTransportNumber.isDefined) {
+                        inset(messages("consignment.departureTransportMeans.removeDepartureTransportMeans.withIdentificationNumber.inset", departureMeansOfTransport.asString, departureMeansOfTransportNumber.get))
+                    } else {
+                        inset(messages("consignment.departureTransportMeans.removeDepartureTransportMeans.withoutIdentificationNumber.inset", departureMeansOfTransport.asString))
+                    }
             )
         )
+
+
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
     }
