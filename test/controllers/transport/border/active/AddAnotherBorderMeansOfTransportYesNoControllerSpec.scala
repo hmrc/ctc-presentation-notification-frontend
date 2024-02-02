@@ -21,12 +21,13 @@ import controllers.routes
 import controllers.transport.border.active.{routes => borderActiveRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.border.{AddAnotherBorderMeansOfTransportYesNoPage, AddBorderMeansOfTransportYesNoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -36,7 +37,7 @@ import viewModels.transport.border.active.AddAnotherBorderTransportViewModel
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
 import views.html.transport.border.active.AddAnotherBorderTransportView
 
-class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider = new AddAnotherFormProvider()
 
@@ -46,10 +47,10 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
   private val mode = NormalMode
 
   private lazy val addAnotherBorderTransportRoute =
-    borderActiveRoutes.AddAnotherBorderTransportController.onPageLoad(departureId, mode).url
+    borderActiveRoutes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
 
   private lazy val addAnotherBorderTransportRouteCheckMode =
-    borderActiveRoutes.AddAnotherBorderTransportController.onPageLoad(departureId, CheckMode).url
+    borderActiveRoutes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, CheckMode).url
 
   private val mockViewModelProvider = mock[AddAnotherBorderTransportViewModelProvider]
 
@@ -69,17 +70,39 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
   private val viewModel = arbitrary[AddAnotherBorderTransportViewModel].sample.value
 
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = Seq(listItems.head))
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val noItemViewModel      = viewModel.copy(listItems = Seq())
 
   "AddAnotherBorderTransport Controller" - {
+
+    "redirect to Add Border Means of Transport yes/no page" - {
+      "when there are 0 border means" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(noItemViewModel)
+
+        val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, addAnotherBorderTransportRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
+      }
+    }
 
     "redirect to CYA page" - {
       "when in check mode and addAnotherBorder is false" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(notMaxedOutViewModel)
+          .thenReturn(noItemViewModel)
 
-        setExistingUserAnswers(emptyUserAnswers)
+        val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+        setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, addAnotherBorderTransportRouteCheckMode)
           .withFormUrlEncodedBody(("value", "false"))
@@ -135,57 +158,56 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
     "when max limit not reached" - {
       "when yes submitted" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(notMaxedOutViewModel)
+        when(mockViewModelProvider.apply(any(), any(), any())(any())).thenReturn(notMaxedOutViewModel)
 
-        setExistingUserAnswers(emptyUserAnswers)
+        val userAnswers = emptyUserAnswers
+          .setValue(AddBorderMeansOfTransportYesNoPage, true)
+          .setValue(AddAnotherBorderMeansOfTransportYesNoPage(index), true)
+        setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, addAnotherBorderTransportRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          onwardRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
     "when no submitted" - {
       "must redirect to CYA" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(notMaxedOutViewModel)
+        when(mockViewModelProvider.apply(any(), any(), any())(any())).thenReturn(notMaxedOutViewModel)
 
-        setExistingUserAnswers(emptyUserAnswers)
+        val userAnswers = emptyUserAnswers
+          .setValue(AddBorderMeansOfTransportYesNoPage, true)
+          .setValue(AddAnotherBorderMeansOfTransportYesNoPage(index), false)
+        setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-          .withFormUrlEncodedBody(("value", "false"))
+        val request = FakeRequest(POST, addAnotherBorderTransportRoute).withFormUrlEncodedBody(("value", "false"))
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          onwardRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
     "when max limit reached" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any()))
-        .thenReturn(maxedOutViewModel)
+      when(mockViewModelProvider.apply(any(), any(), any())(any())).thenReturn(maxedOutViewModel)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddBorderMeansOfTransportYesNoPage, true)
+        .setValue(AddAnotherBorderMeansOfTransportYesNoPage(Index(0)), true) // add the pages same amount of max in maxedOutViewModel
+        .setValue(AddAnotherBorderMeansOfTransportYesNoPage(Index(1)), true)
+        .setValue(AddAnotherBorderMeansOfTransportYesNoPage(Index(2)), true)
+      setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(POST, addAnotherBorderTransportRoute)
-        .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, addAnotherBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual
-        onwardRoute.url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors" - {

@@ -16,28 +16,28 @@
 
 package utils.transformer.transport.border
 
+import models.messages.ActiveBorderTransportMeans
 import models.{Index, UserAnswers}
-import pages.transport.border.active.IdentificationNumberPage
+import pages.transport.border.active.AddConveyanceReferenceYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class IdentificationNumberTransformer extends PageTransformer {
-
-  override type DomainModelType              = String
-  override type ExtractedTypeInDepartureData = String
+class AddConveyanceReferenceYesNoTransformer extends PageTransformer {
+  override type DomainModelType              = Boolean
+  override type ExtractedTypeInDepartureData = ActiveBorderTransportMeans
   override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.identificationNumber),
-      generateCapturedAnswers = identificationNumbers =>
-        identificationNumbers.zipWithIndex.map {
-          case (identificationNumber, i) =>
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten,
+      generateCapturedAnswers = activeBorderTransportMeans =>
+        activeBorderTransportMeans.zipWithIndex.map {
+          case (activeBorderTransportMean, i) =>
             val index = Index(i)
-            (IdentificationNumberPage(index), identificationNumber)
+            (AddConveyanceReferenceYesNoPage(index), activeBorderTransportMean.conveyanceReferenceNumber.isDefined)
         }
     )
 }

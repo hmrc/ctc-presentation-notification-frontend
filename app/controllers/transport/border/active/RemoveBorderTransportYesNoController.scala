@@ -45,7 +45,7 @@ class RemoveBorderTransportYesNoController @Inject() (
     formProvider("transport.border.active.removeBorderTransport", activeIndex.display)
 
   private def addAnother(departureId: String, mode: Mode): Call =
-    controllers.transport.border.active.routes.AddAnotherBorderTransportController.onPageLoad(departureId, mode)
+    controllers.transport.border.active.routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode)
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, BorderActiveSection(activeIndex), addAnother(departureId, mode)) {

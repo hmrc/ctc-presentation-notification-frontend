@@ -21,6 +21,7 @@ import pages.QuestionPage
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -30,29 +31,36 @@ trait PageTransformer {
   type ExtractedTypeInDepartureData
   type CapturedAnswer = (QuestionPage[DomainModelType], DomainModelType)
 
+  def shouldTransform: UserAnswers => Boolean = _ => true
+
   def transformFromDeparture(
     userAnswers: UserAnswers,
     extractDataFromDepartureData: UserAnswers => Seq[ExtractedTypeInDepartureData],
     generateCapturedAnswers: Seq[ExtractedTypeInDepartureData] => Seq[CapturedAnswer]
-  )(implicit writes: Writes[DomainModelType], reads: Reads[DomainModelType]): Future[UserAnswers] = {
-    val dataFromDepartureData = extractDataFromDepartureData(userAnswers)
-    val capturedAnswers       = generateCapturedAnswers(dataFromDepartureData)
+  )(implicit writes: Writes[DomainModelType], reads: Reads[DomainModelType]): Future[UserAnswers] = Option
+    .when(shouldTransform(userAnswers)) {
+      val dataFromDepartureData = extractDataFromDepartureData(userAnswers)
+      val capturedAnswers       = generateCapturedAnswers(dataFromDepartureData)
 
-    collectAllCapturedAnswers(userAnswers, capturedAnswers).asFuture
-  }
+      collectAllCapturedAnswers(userAnswers, capturedAnswers).asFuture
+    }
+    .getOrElse(successful(userAnswers))
 
   def transformFromDepartureWithRefData(
     userAnswers: UserAnswers,
     fetchReferenceData: () => Future[Seq[DomainModelType]],
     extractDataFromDepartureData: UserAnswers => Seq[ExtractedTypeInDepartureData],
     generateCapturedAnswers: (Seq[ExtractedTypeInDepartureData], Seq[DomainModelType]) => Seq[CapturedAnswer]
-  )(implicit ec: ExecutionContext, writes: Writes[DomainModelType], reads: Reads[DomainModelType]): Future[UserAnswers] =
-    fetchReferenceData().flatMap {
-      dataFromRefDB: Seq[DomainModelType] =>
-        val dataFromDepartureData = extractDataFromDepartureData(userAnswers)
-        val capturedAnswers       = generateCapturedAnswers(dataFromDepartureData, dataFromRefDB)
-        Future.fromTry(collectAllCapturedAnswers(userAnswers, capturedAnswers))
+  )(implicit ec: ExecutionContext, writes: Writes[DomainModelType], reads: Reads[DomainModelType]): Future[UserAnswers] = Option
+    .when(shouldTransform(userAnswers)) {
+      fetchReferenceData().flatMap {
+        dataFromRefDB: Seq[DomainModelType] =>
+          val dataFromDepartureData = extractDataFromDepartureData(userAnswers)
+          val capturedAnswers       = generateCapturedAnswers(dataFromDepartureData, dataFromRefDB)
+          Future.fromTry(collectAllCapturedAnswers(userAnswers, capturedAnswers))
+      }
     }
+    .getOrElse(successful(userAnswers))
 
   private def collectAllCapturedAnswers(userAnswers: UserAnswers, capturedAnswers: Seq[CapturedAnswer])(implicit
     writes: Writes[DomainModelType],

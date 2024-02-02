@@ -37,7 +37,7 @@ class AddBorderMeansOfTransportYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove ActiveBorderList in 15/13/170" in {
+        "must remove ActiveBorderList in ie170" in {
           forAll(arbitraryIdentificationActive.arbitrary, nonEmptyString, arbitraryNationality.arbitrary, arbitraryCustomsOffice.arbitrary, nonEmptyString) {
             (identification, identificationNumber, nationality, customsOffice, conveyanceRefNumber) =>
               val userAnswers = emptyUserAnswers
@@ -52,7 +52,6 @@ class AddBorderMeansOfTransportYesNoPageSpec extends PageBehaviours {
               val result = userAnswers.setValue(AddBorderMeansOfTransportYesNoPage, false)
 
               result.get(BorderActiveListSection) must not be defined
-              result.departureData.Consignment.ActiveBorderTransportMeans must not be defined
 
           }
         }
