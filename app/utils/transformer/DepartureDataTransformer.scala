@@ -65,8 +65,9 @@ class DepartureDataTransformer @Inject() (
 
     val transformerPipeline = identificationTransformer.transform andThen
       identificationNoTransformer.transform andThen
-      inlandModeTransformer.transform andThen
       addInlandModeYesNoTransformer.transform andThen
+      inlandModeTransformer.transform andThen
+      containerIndicatorTransformer.transform andThen
       transportEquipmentTransformer.transform andThen
       containerIdTransformer.transform andThen
       sealTransformer.transform andThen
@@ -76,7 +77,6 @@ class DepartureDataTransformer @Inject() (
       representativeEoriTransformer.transform andThen
       representativeNameTransformer.transform andThen
       representativePhoneNumberTransformer.transform andThen
-      containerIndicatorTransformer.transform andThen
       modeOfTransportAtTheBorderTransformer.transform andThen
       addBorderModeOfTransportYesNoTransformer.transform andThen
       transportMeansIdentificationTransformer.transform andThen
