@@ -47,17 +47,17 @@ class DepartureDataTransformer @Inject() (
 
     val transformerPipeline = identificationTransformer.transform andThen
       identificationNoTransformer.transform andThen
-      transportEquipmentTransformer.transform andThen
+      containerIndicatorTransformer.transform andThen
       transportEquipmentYesNoTransformer.transform andThen
-      containerIdTransformer.transform andThen
+      transportEquipmentTransformer.transform andThen
       containerIdentificationNumberYesNoTransformer.transform andThen
-      sealTransformer.transform andThen
+      containerIdTransformer.transform andThen
       addSealYesNoTransformer.transform andThen
+      sealTransformer.transform andThen
       limitDateTransformer.transform andThen
       itemTransformer.transform andThen
-      containerIndicatorTransformer.transform andThen
-      modeOfTransportAtTheBorderTransformer.transform andThen
-      addBorderModeOfTransportYesNoTransformer.transform
+      addBorderModeOfTransportYesNoTransformer.transform andThen
+      modeOfTransportAtTheBorderTransformer.transform
     transformerPipeline(userAnswers)
   }
 

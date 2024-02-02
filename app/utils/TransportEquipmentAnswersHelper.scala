@@ -164,6 +164,8 @@ object TransportEquipmentAnswersHelper {
 
     val pre: Section = transportEquipmentHelper(0).preSection
 
+    println("equipment section is" + userAnswers.get(EquipmentsSection))
+
     userAnswers
       .get(EquipmentsSection) match {
       case Some(jsArray) =>
