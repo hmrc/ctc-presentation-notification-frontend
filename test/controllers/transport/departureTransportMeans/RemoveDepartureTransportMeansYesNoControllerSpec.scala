@@ -71,7 +71,7 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, departureId, mode, transportIndex, identifier, identificationNumber)(request, messages).toString
+            view(form, departureId, mode, transportIndex, identifier, Some(identificationNumber))(request, messages).toString
       }
     }
 
@@ -162,7 +162,7 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
           val view = injector.instanceOf[RemoveDepartureTransportMeansYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, departureId, mode, transportIndex, identifier, identificationNumber)(request, messages).toString
+            view(filledForm, departureId, mode, transportIndex, identifier, Some(identificationNumber))(request, messages).toString
       }
     }
 
