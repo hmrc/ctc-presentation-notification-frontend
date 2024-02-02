@@ -618,3 +618,12 @@ consignment.departureTransportMeans.identificationNumber.error.required = Enter 
 consignment.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 consignment.departureTransportMeans.identificationNumber.change.hidden = the identification number for the departure means of transport
 
+information.sent.title = Information sent
+information.sent.heading = Information sent
+information.sent.panel = for Local Reference Number (LRN)
+information.sent.h2 = What happens next
+information.sent.departures = Check the status of departure declarations
+information.sent.paragraph1 = to find out when goods have been released.
+information.sent.paragraph2.withTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
+information.sent.paragraph2.withoutTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0}.
+information.sent.newDeparture = Make another departure declaration
