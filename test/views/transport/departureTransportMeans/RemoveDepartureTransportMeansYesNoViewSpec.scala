@@ -29,10 +29,12 @@ class RemoveDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
 
   val identificationNumber: Option[String] = Some("1234")
 
+  val withIdentificationNumberKey = "withIdentificationNumber"
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveDepartureTransportMeansYesNoView]
-      .apply(form, departureId, NormalMode, transportIndex, identificationType, identificationNumber)(fakeRequest, messages)
+      .apply(form, departureId, NormalMode, transportIndex, identificationType, identificationNumber, withIdentificationNumberKey)(fakeRequest, messages)
 
   override val prefix: String = "consignment.departureTransportMeans.removeDepartureTransportMeans"
 

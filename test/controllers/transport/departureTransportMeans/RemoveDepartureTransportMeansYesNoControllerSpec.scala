@@ -39,9 +39,10 @@ import scala.concurrent.Future
 
 class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans")
-  private val mode         = NormalMode
+  private val formProvider                = new YesNoFormProvider()
+  private val form                        = formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans")
+  private val mode                        = NormalMode
+  private val withIdentificationNumberKey = "withIdentificationNumber"
 
   private lazy val removeDepartureTransportMeansRoute =
     controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, transportIndex).url
@@ -71,7 +72,7 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, departureId, mode, transportIndex, identifier, Some(identificationNumber))(request, messages).toString
+            view(form, departureId, mode, transportIndex, identifier, Some(identificationNumber), withIdentificationNumberKey)(request, messages).toString
       }
     }
 
@@ -162,7 +163,7 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
           val view = injector.instanceOf[RemoveDepartureTransportMeansYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, departureId, mode, transportIndex, identifier, Some(identificationNumber))(request, messages).toString
+            view(filledForm, departureId, mode, transportIndex, identifier, Some(identificationNumber), withIdentificationNumberKey)(request, messages).toString
       }
     }
 
