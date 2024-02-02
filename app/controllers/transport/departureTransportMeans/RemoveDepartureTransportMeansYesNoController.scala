@@ -58,7 +58,8 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
       implicit request =>
         val identificationType   = request.arg
         val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
-        Ok(view(form, departureId, mode, transportIndex, identificationType, identificationNumber))
+        val messageKey           = if (identificationNumber.isDefined) "withIdentificationNumber" else "withoutIdentificationNumber"
+        Ok(view(form, departureId, mode, transportIndex, identificationType, identificationNumber, messageKey))
     }
 
   def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions
@@ -68,12 +69,13 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
       implicit request =>
         val identificationType   = request.arg
         val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
+        val messageKey           = if (identificationNumber.isDefined) "withIdentificationNumber" else "withoutIdentificationNumber"
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, departureId, mode, transportIndex, identificationType, identificationNumber))),
+                .successful(BadRequest(view(formWithErrors, departureId, mode, transportIndex, identificationType, identificationNumber, messageKey))),
             value =>
               for {
                 updatedAnswers <-
