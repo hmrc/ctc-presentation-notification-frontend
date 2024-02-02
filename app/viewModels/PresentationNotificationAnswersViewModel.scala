@@ -55,7 +55,7 @@ object PresentationNotificationAnswersViewModel {
       val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val inlandModeAnswersHelper     = new InlandModeAnswersHelper(userAnswers, departureId, mode)
       val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val activeBorderHelper                   = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0))
+      val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0))
 
       val representativeHelper = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 

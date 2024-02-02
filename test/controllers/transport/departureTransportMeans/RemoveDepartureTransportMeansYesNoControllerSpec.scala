@@ -90,9 +90,9 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderTransportController
+        redirectLocation(result).value mustEqual controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController
           .onPageLoad(departureId, mode)
-          .url // TODO redirect to addAnother departureTransportMeans controller
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -113,9 +113,9 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderTransportController
+        redirectLocation(result).value mustEqual controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController
           .onPageLoad(departureId, mode)
-          .url // TODO redirect to addAnother departureTransportMeans controller
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -136,9 +136,9 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.transport.border.active.routes.AddAnotherBorderTransportController
+      redirectLocation(result).value mustEqual controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController
         .onPageLoad(departureId, mode)
-        .url // TODO redirect to addAnother departureTransportMeans controller
+        .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

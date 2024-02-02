@@ -16,14 +16,13 @@
 
 package controllers.transport.border.active
 
-import base.TestMessageData.activeBorderTransportMeans
 import base.TestMessageData.messageData.customsOffices
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared}
 import models.reference.CustomsOffice
-import models.{NormalMode, SelectableList, UserAnswers}
+import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
