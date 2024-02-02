@@ -24,8 +24,10 @@ import utils.transformer.PageTransformer
 import scala.concurrent.Future
 
 class IdentificationNumberTransformer extends PageTransformer {
+
   override type DomainModelType              = String
   override type ExtractedTypeInDepartureData = String
+  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(

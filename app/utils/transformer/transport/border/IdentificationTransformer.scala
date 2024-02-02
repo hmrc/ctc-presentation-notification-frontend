@@ -32,19 +32,7 @@ class IdentificationTransformer @Inject() (identificationService: MeansOfTranspo
 
   override type DomainModelType              = Identification
   override type ExtractedTypeInDepartureData = String
-
-  private def generateCapturedAnswers(departureDataIdentificationCodes: Seq[String],
-                                      identificationList: Seq[Identification]
-  ): Seq[(IdentificationPage, Identification)] =
-    departureDataIdentificationCodes.zipWithIndex.flatMap {
-      case (code, i) =>
-        val index = Index(i)
-        identificationList
-          .find(_.code == code)
-          .map(
-            identification => (IdentificationPage(index), identification)
-          )
-    }
+  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
 
   def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
@@ -53,4 +41,13 @@ class IdentificationTransformer @Inject() (identificationService: MeansOfTranspo
       extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
       generateCapturedAnswers = generateCapturedAnswers
     )
+
+  private def generateCapturedAnswers(departureDataIdentificationCodes: Seq[String], identificationList: Seq[Identification]): Seq[CapturedAnswer] =
+    departureDataIdentificationCodes.zipWithIndex.flatMap {
+      case (code, i) =>
+        val index = Index(i)
+        identificationList
+          .find(_.code == code)
+          .map((IdentificationPage(index), _))
+    }
 }

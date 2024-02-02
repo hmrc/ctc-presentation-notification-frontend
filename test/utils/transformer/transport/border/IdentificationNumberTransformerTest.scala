@@ -18,7 +18,9 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
-import models.Index
+import models.{Index, UserAnswers}
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.transport.border.active.IdentificationNumberPage
 
 class IdentificationNumberTransformerTest extends SpecBase {
@@ -26,6 +28,18 @@ class IdentificationNumberTransformerTest extends SpecBase {
   val transformer                  = new IdentificationNumberTransformer()
 
   "IdentificationNumberTransformer" - {
+
+    "must skip transforming if there is no border means" in {
+      forAll(Gen.oneOf(Option(List()), None)) {
+        borderMeans =>
+          val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
+          whenReady(transformer.transform(hc)(userAnswers)) {
+            updatedUserAnswers =>
+              updatedUserAnswers mustBe userAnswers
+          }
+      }
+    }
+
     "must return updated answers with IdentificationNumberPage" in {
       val userAnswers = emptyUserAnswers
       val index       = Index(0)

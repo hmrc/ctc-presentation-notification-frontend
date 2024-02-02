@@ -38,7 +38,8 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         "when 'Are you acting as a representative?' = Yes + 'Do you want to add your details?' = Yes" - {
           "must go from ActingAsRepresentativePage to CYA page" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ActingAsRepresentativePage, arbitrary[Boolean].sample.value)
+              .setValue(ActingAsRepresentativePage, true)
+              .setValue(EoriPage, nonEmptyString.sample.value)
             navigator
               .nextPage(ActingAsRepresentativePage, userAnswers, departureId, mode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
@@ -47,6 +48,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           "must go from AddRepresentativeContactDetailsYesNoPage to CYA page" in {
             val userAnswers = emptyUserAnswers
               .setValue(AddRepresentativeContactDetailsYesNoPage, arbitrary[Boolean].sample.value)
+              .setValue(NamePage, nonEmptyString.sample.value)
             navigator
               .nextPage(AddRepresentativeContactDetailsYesNoPage, userAnswers, departureId, mode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
@@ -55,6 +57,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           "must go from Representative NamePage to CYA page" in {
             val userAnswers = emptyUserAnswers
               .setValue(NamePage, nonEmptyString.sample.value)
+              .setValue(RepresentativePhoneNumberPage, nonEmptyString.sample.value)
             navigator
               .nextPage(NamePage, userAnswers, departureId, mode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
