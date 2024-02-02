@@ -192,11 +192,16 @@ object BorderNavigator {
   }
 
   private[navigation] def containerIndicatorRouting(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(ContainerIndicatorPage) match {
-      case Some(true) =>
-        ContainerIdentificationNumberPage(Index(0))
-          .route(userAnswers, departureId, mode)
-      case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
-      case None        => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    if (userAnswers.departureData.Consignment.containerIndicator.isDefined) {
+      Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    } else {
+      userAnswers.get(ContainerIndicatorPage) match {
+        case Some(true) =>
+          ContainerIdentificationNumberPage(Index(0))
+            .route(userAnswers, departureId, mode)
+        case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
+        case None        => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      }
     }
+
 }

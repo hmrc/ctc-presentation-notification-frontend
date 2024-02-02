@@ -69,7 +69,8 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 .setValue(ContainerIndicatorPage, true)
                 .copy(departureData =
                   TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
                   )
                 )
               navigator
@@ -89,7 +90,8 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 .setValue(ContainerIndicatorPage, false)
                 .copy(departureData =
                   TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
                   )
                 )
               navigator
