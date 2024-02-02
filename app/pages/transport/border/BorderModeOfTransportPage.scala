@@ -21,7 +21,6 @@ import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
 import pages.transport.border.active.{IdentificationNumberPage, NationalityPage}
-import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansNationalityPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
