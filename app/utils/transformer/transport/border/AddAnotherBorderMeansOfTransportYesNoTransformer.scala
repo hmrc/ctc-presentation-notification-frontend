@@ -16,28 +16,31 @@
 
 package utils.transformer.transport.border
 
+import models.messages.ActiveBorderTransportMeans
 import models.{Index, UserAnswers}
-import pages.transport.border.active.IdentificationNumberPage
+import pages.transport.border.AddAnotherBorderMeansOfTransportYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class IdentificationNumberTransformer extends PageTransformer {
+class AddAnotherBorderMeansOfTransportYesNoTransformer extends PageTransformer {
 
-  override type DomainModelType              = String
-  override type ExtractedTypeInDepartureData = String
+  override type DomainModelType              = Boolean
+  override type ExtractedTypeInDepartureData = ActiveBorderTransportMeans
   override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.identificationNumber),
-      generateCapturedAnswers = identificationNumbers =>
-        identificationNumbers.zipWithIndex.map {
-          case (identificationNumber, i) =>
-            val index = Index(i)
-            (IdentificationNumberPage(index), identificationNumber)
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten,
+      generateCapturedAnswers = activeBorderTransportMeans => {
+        val borderMeansWithIndex = activeBorderTransportMeans.zipWithIndex
+        borderMeansWithIndex.init.map {
+          case (_, i) => (AddAnotherBorderMeansOfTransportYesNoPage(Index(i)), true)
+        } ++ borderMeansWithIndex.lastOption.toList.map {
+          case (_, i) => (AddAnotherBorderMeansOfTransportYesNoPage(Index(i)), false)
         }
+      }
     )
 }

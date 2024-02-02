@@ -35,13 +35,11 @@ case object AddBorderMeansOfTransportYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val Ie015ActiveBorderMeansListPath: JsPath = JsPath \ "Consignment" \ "ActiveBorderTransportMeans"
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) =>
         userAnswers
-          .remove(BorderActiveListSection, Ie015ActiveBorderMeansListPath)
+          .remove(BorderActiveListSection)
       case _ => super.cleanup(value, userAnswers)
     }
-  }
 }

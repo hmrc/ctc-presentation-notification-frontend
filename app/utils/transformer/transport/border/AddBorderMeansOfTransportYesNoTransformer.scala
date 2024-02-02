@@ -16,28 +16,22 @@
 
 package utils.transformer.transport.border
 
-import models.{Index, UserAnswers}
-import pages.transport.border.active.IdentificationNumberPage
+import models.UserAnswers
+import models.messages.ActiveBorderTransportMeans
+import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class IdentificationNumberTransformer extends PageTransformer {
-
-  override type DomainModelType              = String
-  override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
+class AddBorderMeansOfTransportYesNoTransformer extends PageTransformer {
+  override type DomainModelType              = Boolean
+  override type ExtractedTypeInDepartureData = ActiveBorderTransportMeans
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.identificationNumber),
-      generateCapturedAnswers = identificationNumbers =>
-        identificationNumbers.zipWithIndex.map {
-          case (identificationNumber, i) =>
-            val index = Index(i)
-            (IdentificationNumberPage(index), identificationNumber)
-        }
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten,
+      generateCapturedAnswers = activeBorderTransportMeans => Seq((AddBorderMeansOfTransportYesNoPage, activeBorderTransportMeans.nonEmpty))
     )
 }

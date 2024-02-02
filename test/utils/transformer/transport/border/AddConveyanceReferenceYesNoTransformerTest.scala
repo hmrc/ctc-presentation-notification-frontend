@@ -17,17 +17,16 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
+import base.TestMessageData.borderTransportMeans
 import models.{Index, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
-import pages.transport.border.active.IdentificationNumberPage
+import pages.transport.border.active.AddConveyanceReferenceYesNoPage
 
-class IdentificationNumberTransformerTest extends SpecBase {
-  val identificationNumber: String = activeBorderTransportMeansIdentificationNumber
-  val transformer                  = new IdentificationNumberTransformer()
+class AddConveyanceReferenceYesNoTransformerTest extends SpecBase {
+  val transformer = new AddConveyanceReferenceYesNoTransformer()
 
-  "IdentificationNumberTransformer" - {
+  "AddConveyanceReferenceYesNoTransformer" - {
 
     "must skip transforming if there is no border means" in {
       forAll(Gen.oneOf(Option(List()), None)) {
@@ -40,14 +39,12 @@ class IdentificationNumberTransformerTest extends SpecBase {
       }
     }
 
-    "must return updated answers with IdentificationNumberPage" in {
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(IdentificationNumberPage(index)) mustBe None
-
+    "must return AddConveyanceReferenceYesNoPage Yes (true) when there is conveyance reference" in {
+      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(List(borderTransportMeans, borderTransportMeans)))(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
-          updatedUserAnswers.get(IdentificationNumberPage(index)) mustBe Some(identificationNumber)
+          updatedUserAnswers.get(AddConveyanceReferenceYesNoPage(Index(0))).get mustBe true
+          updatedUserAnswers.get(AddConveyanceReferenceYesNoPage(Index(1))).get mustBe true
       }
     }
   }

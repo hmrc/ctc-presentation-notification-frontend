@@ -16,38 +16,39 @@
 
 package utils.transformer.transport.border
 
-import models.reference.transport.border.active.Identification
+import models.reference.Nationality
 import models.{Index, UserAnswers}
-import pages.transport.border.active.IdentificationPage
-import services.MeansOfTransportIdentificationTypesActiveService
+import pages.transport.border.active.NationalityPage
+import services.NationalitiesService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentificationTransformer @Inject() (identificationService: MeansOfTransportIdentificationTypesActiveService)(implicit
+class NationalityTransformer @Inject() (service: NationalitiesService)(implicit
   ec: ExecutionContext
 ) extends PageTransformer {
 
-  override type DomainModelType              = Identification
+  override type DomainModelType              = Nationality
   override type ExtractedTypeInDepartureData = String
   override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
 
-  def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
-      fetchReferenceData = () => identificationService.getMeansOfTransportIdentificationTypesActive(),
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.nationality),
+      fetchReferenceData = () => service.getNationalities().map(_.values),
       generateCapturedAnswers = generateCapturedAnswers
     )
 
-  private def generateCapturedAnswers(departureDataIdentificationCodes: Seq[String], identificationList: Seq[Identification]): Seq[CapturedAnswer] =
-    departureDataIdentificationCodes.zipWithIndex.flatMap {
+  private def generateCapturedAnswers(departureDataNationalityCodes: Seq[String], nationalities: Seq[Nationality]): Seq[CapturedAnswer] =
+    departureDataNationalityCodes.zipWithIndex.flatMap {
       case (code, i) =>
         val index = Index(i)
-        identificationList
+        nationalities
           .find(_.code == code)
-          .map((IdentificationPage(index), _))
+          .map((NationalityPage(index), _))
     }
+
 }

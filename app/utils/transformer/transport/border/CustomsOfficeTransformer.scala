@@ -16,38 +16,41 @@
 
 package utils.transformer.transport.border
 
-import models.reference.transport.border.active.Identification
+import models.reference.CustomsOffice
 import models.{Index, UserAnswers}
-import pages.transport.border.active.IdentificationPage
-import services.MeansOfTransportIdentificationTypesActiveService
+import pages.transport.border.active.CustomsOfficeActiveBorderPage
+import services.CustomsOfficesService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentificationTransformer @Inject() (identificationService: MeansOfTransportIdentificationTypesActiveService)(implicit
+class CustomsOfficeTransformer @Inject() (service: CustomsOfficesService)(implicit
   ec: ExecutionContext
 ) extends PageTransformer {
 
-  override type DomainModelType              = Identification
+  override type DomainModelType              = CustomsOffice
   override type ExtractedTypeInDepartureData = String
   override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
 
-  def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
-      fetchReferenceData = () => identificationService.getMeansOfTransportIdentificationTypesActive(),
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
+      extractDataFromDepartureData = extractDataFromDepartureData,
+      fetchReferenceData = () => service.getCustomsOfficesByMultipleIds(extractDataFromDepartureData(userAnswers)),
       generateCapturedAnswers = generateCapturedAnswers
     )
 
-  private def generateCapturedAnswers(departureDataIdentificationCodes: Seq[String], identificationList: Seq[Identification]): Seq[CapturedAnswer] =
-    departureDataIdentificationCodes.zipWithIndex.flatMap {
-      case (code, i) =>
+  private def generateCapturedAnswers(departureDataCustomsOfficeRefs: Seq[String], customsOffices: Seq[CustomsOffice]): Seq[CapturedAnswer] =
+    departureDataCustomsOfficeRefs.zipWithIndex.flatMap {
+      case (ref, i) =>
         val index = Index(i)
-        identificationList
-          .find(_.code == code)
-          .map((IdentificationPage(index), _))
+        customsOffices
+          .find(_.id == ref)
+          .map((CustomsOfficeActiveBorderPage(index), _))
     }
+
+  private def extractDataFromDepartureData: UserAnswers => Seq[ExtractedTypeInDepartureData] =
+    _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.customsOfficeAtBorderReferenceNumber)
 }

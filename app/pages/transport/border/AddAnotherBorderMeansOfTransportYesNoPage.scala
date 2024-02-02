@@ -18,10 +18,10 @@ package pages.transport.border
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.transport.TransportSection
+import pages.sections.transport.border.BorderActiveSection
 import play.api.libs.json.JsPath
 
-case class AddAnotherBorderModeOfTransportPage(activeIndex: Index) extends QuestionPage[Boolean] {
-  override def toString: String = "addAnotherBorderModeOfTransport"
-  override def path: JsPath     = TransportSection.path \ toString
+case class AddAnotherBorderMeansOfTransportYesNoPage(activeIndex: Index) extends QuestionPage[Boolean] {
+  override def toString: String = "addAnotherBorderMeansOfTransport"
+  override def path: JsPath     = BorderActiveSection(activeIndex).path \ toString
 }

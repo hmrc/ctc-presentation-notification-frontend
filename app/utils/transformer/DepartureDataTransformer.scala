@@ -28,6 +28,7 @@ import utils.transformer.transport.border.{
   IdentificationTransformer,
   ModeOfTransportAtTheBorderTransformer
 }
+import utils.transformer.transport.border._
 import utils.transformer.transport.equipment.{
   ContainerIdentificationNumberTransformer,
   ContainerIndicatorTransformer,
@@ -39,10 +40,16 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureDataTransformer @Inject() (
+  addAnotherBorderMeansOfTransportYesNoTransformer: AddAnotherBorderMeansOfTransportYesNoTransformer,
+  addBorderMeansOfTransportYesNoTransformer: AddBorderMeansOfTransportYesNoTransformer,
+  addConveyanceReferenceYesNoTransformer: AddConveyanceReferenceYesNoTransformer,
+  conveyanceReferenceTransformer: ConveyanceReferenceTransformer,
+  customsOfficeTransformer: CustomsOfficeTransformer,
   identificationTransformer: IdentificationTransformer,
   identificationNoTransformer: IdentificationNumberTransformer,
   inlandModeTransformer: InlandModeTransformer,
   addInlandModeYesNoTransformer: AddInlandModeYesNoTransformer,
+  nationalityTransformer: NationalityTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   sealTransformer: SealTransformer,
@@ -63,25 +70,49 @@ class DepartureDataTransformer @Inject() (
 
   def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
 
-    val transformerPipeline = identificationTransformer.transform andThen
-      identificationNoTransformer.transform andThen
-      addInlandModeYesNoTransformer.transform andThen
-      inlandModeTransformer.transform andThen
-      containerIndicatorTransformer.transform andThen
+    val transportEquipmentPipeline = {
       transportEquipmentTransformer.transform andThen
-      containerIdTransformer.transform andThen
-      sealTransformer.transform andThen
-      limitDateTransformer.transform andThen
+        containerIdTransformer.transform andThen
+        sealTransformer.transform
+    }
+
+    val borderMeansPipeline =
+      addAnotherBorderMeansOfTransportYesNoTransformer.transform andThen
+        addBorderMeansOfTransportYesNoTransformer.transform andThen
+        addConveyanceReferenceYesNoTransformer.transform andThen
+        conveyanceReferenceTransformer.transform andThen
+        customsOfficeTransformer.transform andThen
+        identificationTransformer.transform andThen
+        identificationNoTransformer.transform andThen
+        nationalityTransformer.transform
+
+    val borderModePipeline =
+      containerIndicatorTransformer.transform andThen
+        addBorderModeOfTransportYesNoTransformer.transform andThen
+        modeOfTransportAtTheBorderTransformer.transform
+
+    val representativePipeline =
       addRepresentativeContactDetailsYesNoTransformer.transform andThen
-      actingAsRepresentativeTransformer.transform andThen
-      representativeEoriTransformer.transform andThen
-      representativeNameTransformer.transform andThen
-      representativePhoneNumberTransformer.transform andThen
-      modeOfTransportAtTheBorderTransformer.transform andThen
-      addBorderModeOfTransportYesNoTransformer.transform andThen
-      transportMeansIdentificationTransformer.transform andThen
-      transportMeansIdentificationNumberTransformer.transform andThen
-      transportMeansNationalityTransformer.transform
+        actingAsRepresentativeTransformer.transform andThen
+        representativeEoriTransformer.transform andThen
+        representativeNameTransformer.transform andThen
+        representativePhoneNumberTransformer.transform
+
+    val departureTransportMeansPipeline =
+        addInlandModeYesNoTransformer.transform andThen
+        inlandModeTransformer.transform andThen
+        transportMeansIdentificationTransformer.transform andThen
+        transportMeansIdentificationNumberTransformer.transform andThen
+        transportMeansNationalityTransformer.transform
+
+
+    val transformerPipeline =
+        borderMeansPipeline andThen
+        departureTransportMeansPipeline andThen
+        transportEquipmentPipeline andThen
+        limitDateTransformer.transform andThen
+        representativePipeline andThen
+        borderModePipeline
 
     transformerPipeline(userAnswers)
   }

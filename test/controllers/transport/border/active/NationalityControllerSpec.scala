@@ -90,28 +90,6 @@ class NationalityControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         view(filledForm, departureId, nationalityList.values, mode, index)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Option(Seq(activeBorderTransportMeans.head.copy(nationality = Some(nationality1.code))))
-      )(emptyUserAnswers)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, nationalityRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> nationality1.code))
-
-      val view = injector.instanceOf[NationalityView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, nationalityList.values, mode, index)(request, messages).toString
-    }
-
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
