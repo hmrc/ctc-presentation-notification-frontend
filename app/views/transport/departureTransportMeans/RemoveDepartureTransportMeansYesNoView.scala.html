@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, transportIndex: Index, departureMeansOfTransport: TransportMeansIdentification, departureMeansOfTransportNumber: Option[String], messageKey: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode, transportIndex: Index, departureMeansOfTransport: TransportMeansIdentification, departureMeansOfTransportNumber: Option[String], insetText: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.title"),
@@ -44,7 +44,7 @@
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.heading"),
                 caption = Some(messages("departureTransportMeans.subheading")),
-                additionalHtml = inset(messages(s"consignment.departureTransportMeans.removeDepartureTransportMeans.$messageKey.inset", departureMeansOfTransport.asString, departureMeansOfTransportNumber.getOrElse("")))
+                additionalHtml = inset(insetText)
             )
         )
 

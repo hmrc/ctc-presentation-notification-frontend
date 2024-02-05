@@ -16,7 +16,7 @@
 
 package views.transport.departureTransportMeans
 
-import models.NormalMode
+import models.{NormalMode, TransportMeans}
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -29,12 +29,12 @@ class RemoveDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
 
   val identificationNumber: Option[String] = Some("1234")
 
-  val withIdentificationNumberKey = "withIdentificationNumber"
+  val insetText: String = TransportMeans(identificationType, identificationNumber).toString
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveDepartureTransportMeansYesNoView]
-      .apply(form, departureId, NormalMode, transportIndex, identificationType, identificationNumber, withIdentificationNumberKey)(fakeRequest, messages)
+      .apply(form, departureId, NormalMode, transportIndex, identificationType, identificationNumber, insetText)(fakeRequest, messages)
 
   override val prefix: String = "consignment.departureTransportMeans.removeDepartureTransportMeans"
 

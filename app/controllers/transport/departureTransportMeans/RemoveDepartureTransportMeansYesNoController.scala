@@ -18,7 +18,7 @@ package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{Index, Mode}
+import models.{Index, Mode, TransportMeans}
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.data.Form
@@ -58,8 +58,8 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
       implicit request =>
         val identificationType   = request.arg
         val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
-        val messageKey           = if (identificationNumber.isDefined) "withIdentificationNumber" else "withoutIdentificationNumber"
-        Ok(view(form, departureId, mode, transportIndex, identificationType, identificationNumber, messageKey))
+        val insetText            = TransportMeans(identificationType, identificationNumber).toString
+        Ok(view(form, departureId, mode, transportIndex, identificationType, identificationNumber, insetText))
     }
 
   def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions
@@ -69,13 +69,13 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
       implicit request =>
         val identificationType   = request.arg
         val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
-        val messageKey           = if (identificationNumber.isDefined) "withIdentificationNumber" else "withoutIdentificationNumber"
+        val insetText            = TransportMeans(identificationType, identificationNumber).toString
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, departureId, mode, transportIndex, identificationType, identificationNumber, messageKey))),
+                .successful(BadRequest(view(formWithErrors, departureId, mode, transportIndex, identificationType, identificationNumber, insetText))),
             value =>
               for {
                 updatedAnswers <-
