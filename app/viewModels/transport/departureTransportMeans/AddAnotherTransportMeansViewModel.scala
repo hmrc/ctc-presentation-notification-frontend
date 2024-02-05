@@ -18,7 +18,7 @@ package viewModels.transport.departureTransportMeans
 
 import config.Constants.Mail
 import config.FrontendAppConfig
-import models.{Index, Mode, NormalMode, UserAnswers}
+import models.{Index, Mode, NormalMode, TransportMeans, UserAnswers}
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
@@ -56,22 +56,24 @@ object AddAnotherTransportMeansViewModel {
         .flatMap {
           case (_, i) =>
             val index = Index(i)
-            ((userAnswers.get(TransportMeansIdentificationPage(index)), userAnswers.get(TransportMeansIdentificationNumberPage(index))) match {
-              case (Some(identification), Some(identificationNumber)) => Some(s"${identification.asString} - $identificationNumber")
-              case (Some(identification), None)                       => Some(identification.asString)
-              case (None, Some(identificationNumber))                 => Some(identificationNumber)
-              case _                                                  => None
-            }).map {
-              name =>
-                ListItem(
-                  name = name,
-                  changeUrl =
-                    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, index).url,
-                  removeUrl = Some(
-                    controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, index).url
+            userAnswers
+              .get(TransportMeansIdentificationPage(index))
+              .map {
+                transportMeansIdentification =>
+                  TransportMeans(transportMeansIdentification, userAnswers.get(TransportMeansIdentificationNumberPage(index))).asString
+              }
+              .map {
+                name =>
+                  ListItem(
+                    name = name,
+                    changeUrl = controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController
+                      .onPageLoad(departureId, NormalMode, index)
+                      .url,
+                    removeUrl = Some(
+                      controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, index).url
+                    )
                   )
-                )
-            }
+              }
         }
         .toSeq
         .checkRemoveLinks(isSectionMandatory)
