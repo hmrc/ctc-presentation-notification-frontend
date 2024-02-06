@@ -89,11 +89,11 @@ class DepartureDataTransformer @Inject() (
         representativePhoneNumberTransformer.transform
 
     val transformerPipeline =
-      borderMeansPipeline andThen
+      borderModePipeline andThen
+        borderMeansPipeline andThen
         transportEquipmentPipeline andThen
         limitDateTransformer.transform andThen
-        representativePipeline andThen
-        borderModePipeline
+        representativePipeline
 
     transformerPipeline(userAnswers)
   }
