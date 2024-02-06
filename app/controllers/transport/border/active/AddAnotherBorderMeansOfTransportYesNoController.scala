@@ -22,7 +22,7 @@ import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.BorderNavigator
-import pages.transport.border.AddAnotherBorderModeOfTransportPage
+import pages.transport.border.AddAnotherBorderMeansOfTransportYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -35,7 +35,7 @@ import views.html.transport.border.active.AddAnotherBorderTransportView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAnotherBorderTransportController @Inject() (
+class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
@@ -54,8 +54,11 @@ class AddAnotherBorderTransportController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
-      Ok(view(form(viewModel), departureId, viewModel))
-  } //todo will have to refactor when 3901 built for the case when last one is removed
+      viewModel.count match {
+        case 0 => Redirect(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+        case _ => Ok(view(form(viewModel), departureId, viewModel))
+      }
+  }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
@@ -75,8 +78,8 @@ class AddAnotherBorderTransportController @Inject() (
     activeIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherBorderModeOfTransportPage(activeIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddAnotherBorderModeOfTransportPage(activeIndex), updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), updatedAnswers, departureId, mode))
 
 }

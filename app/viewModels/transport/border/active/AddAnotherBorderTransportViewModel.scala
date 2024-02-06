@@ -73,7 +73,7 @@ object AddAnotherBorderTransportViewModel {
 
       new AddAnotherBorderTransportViewModel(
         listItems,
-        onSubmitCall = controllers.transport.border.active.routes.AddAnotherBorderTransportController.onSubmit(departureId, mode)
+        onSubmitCall = controllers.transport.border.active.routes.AddAnotherBorderMeansOfTransportYesNoController.onSubmit(departureId, mode)
       )
     }
   }

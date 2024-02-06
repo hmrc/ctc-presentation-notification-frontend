@@ -52,17 +52,8 @@ class CustomsOfficeActiveBorderController @Inject() (
       val offices = request.userAnswers.departureData.customsOffices
       customsOfficesService.getCustomsOfficesByMultipleIds(offices).map {
         customsOfficesList =>
-          def customsOfficeFromDepartureData = {
-            val customsOfficeId = request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
-              list => list.lift(activeIndex.position).flatMap(_.customsOfficeAtBorderReferenceNumber)
-            )
-            customsOfficeId.flatMap(
-              id => customsOfficesList.find(_.id == id)
-            )
-          }
-
           val form: Form[CustomsOffice] = formProvider("transport.border.active.customsOfficeActiveBorder", SelectableList(customsOfficesList))
-          val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)).orElse(customsOfficeFromDepartureData) match {
+          val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }

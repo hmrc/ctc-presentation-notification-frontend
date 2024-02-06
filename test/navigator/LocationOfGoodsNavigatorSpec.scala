@@ -223,7 +223,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from Add AddContactYesNo page to ContainerIdentificationNumberPage page when user selcts no, Security is NoSecurityDetails, Add contcact if false, Container Indicator is true" in {
+      "must go from Add AddContactYesNo page to ContainerIdentificationNumberPage page when user selects no, Security is NoSecurityDetails, Add contact if false, Container Indicator is true" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
@@ -232,7 +232,8 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .setValue(LimitDatePage, LocalDate.now())
               .copy(departureData =
                 TestMessageData.messageData.copy(
-                  TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                  TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                  Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods), containerIndicator = None)
                 )
               )
 
@@ -351,19 +352,52 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
-      "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present" in {
+      "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present in prelodge journey" in {
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+        val userAnswersUpdated = userAnswers
+          .copy(
+            departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = None))
+          )
+          .setValue(LimitDatePage, LocalDate.now())
+          .setValue(ContainerIndicatorPage, true)
+
+        navigator
+          .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
+          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
+      }
+
+      "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present in departure data" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers
           .copy(
             departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = Some("indicator")))
           )
           .setValue(LimitDatePage, LocalDate.now())
-          .setValue(ContainerIndicatorPage, false)
+          .setValue(ContainerIndicatorPage, true)
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
           .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
+
+      "must go from LimitDatePage to Check Your Answers when " +
+        "container indicator is present in departure data and " +
+        "security is 0" in {
+          val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+          val userAnswersUpdated = userAnswers
+            .copy(
+              departureData = messageData.copy(TransitOperation = transitOperation.copy(limitDate = None, security = NoSecurityDetails),
+                                               Consignment = consignment.copy(containerIndicator = Some("indicator"))
+              )
+            )
+            .setValue(LimitDatePage, LocalDate.now())
+            .setValue(ContainerIndicatorPage, true)
+
+          navigator
+            .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
       "must go from Add PhoneNumberPage page to ContainerIdentificationNumberPage page " +
         "when user selects No and POL & limit date exists and Container Indicator exists" +
         "and security is '0'" +
@@ -377,7 +411,8 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(containerIndicator = None)
                   )
                 )
               navigator
@@ -385,7 +420,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(answers, departureId, mode).value)
           }
         }
-      "must go from Add PhoneNumberPage page to AddTransportEquipmentYesNoPage" +
+      "must go from Add PhoneNumberPage page to AddTransportEquipmentYesNoPage " +
         "when user selects No" +
         "and POL & limit date exists" +
         "and security is '0'" +
@@ -400,7 +435,8 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = answers.departureData.Consignment.copy(containerIndicator = None)
                   )
                 )
               navigator
@@ -422,7 +458,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .copy(departureData =
                   TestMessageData.messageData.copy(
                     TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods), containerIndicator = None)
                   )
                 )
 
@@ -432,7 +468,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           }
         }
 
-      "must go from MoreInformationPage to Check Your Answers when: " +
+      "must go from CustomsOfficeIdentifierPage to Check Your Answers when: " +
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is NOT C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 5" in {
 
@@ -455,7 +491,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           }
         }
 
-      "must go from MoreInformationPage to Check Your Answers when: " +
+      "must go from CustomsOfficeIdentifierPage to Check Your Answers when: " +
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is NOT C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4 AND transport means is present" in {
 
@@ -478,7 +514,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           }
         }
 
-      "must go from MoreInformationPage to Check Your Answers when: " +
+      "must go from CustomsOfficeIdentifierPage to Check Your Answers when: " +
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C521 AND limit date exists AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 5" in {
 
@@ -502,7 +538,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           }
         }
 
-      "must go from MoreInformationPage to Check Your Answers when: " +
+      "must go from CustomsOfficeIdentifierPage to Check Your Answers when: " +
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4" in {
 
@@ -526,7 +562,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           }
         }
 
-      "must go from MoreInformationPage to Check Your Answers when: " +
+      "must go from CustomsOfficeIdentifierPage to Check Your Answers when: " +
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C523 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4" in {
 
@@ -677,7 +713,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .copy(departureData =
                   TestMessageData.messageData.copy(
                     TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods))
+                    Consignment = answers.departureData.Consignment.copy(LocationOfGoods = Some(locationOfGoods), containerIndicator = None)
                   )
                 )
                 .setValue(LimitDatePage, LocalDate.now())

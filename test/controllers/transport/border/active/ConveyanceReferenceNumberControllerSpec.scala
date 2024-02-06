@@ -85,30 +85,6 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
         view(filledForm, departureId, mode, index)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
-        Option(
-          Seq(
-            activeBorderTransportMeans.head.copy(conveyanceReferenceNumber = Some("reference"))
-          )
-        )
-      )(emptyUserAnswers)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, conveyanceReferenceNumberRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "reference"))
-
-      val view = injector.instanceOf[ConveyanceReferenceNumberView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode, index)(request, messages).toString
-    }
-
     "must redirect to the next page when valid data is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers)

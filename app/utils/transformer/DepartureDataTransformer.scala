@@ -19,7 +19,15 @@ package utils.transformer
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
+import utils.transformer.representative._
 import utils.transformer.transport.LimitDateTransformer
+import utils.transformer.transport.border._
+import utils.transformer.transport.equipment.{
+  ContainerIdentificationNumberTransformer,
+  ContainerIndicatorTransformer,
+  SealTransformer,
+  TransportEquipmentTransformer
+}
 import utils.transformer.transport.border._
 import utils.transformer.transport.equipment._
 
@@ -27,8 +35,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureDataTransformer @Inject() (
+  addAnotherBorderMeansOfTransportYesNoTransformer: AddAnotherBorderMeansOfTransportYesNoTransformer,
+  addBorderMeansOfTransportYesNoTransformer: AddBorderMeansOfTransportYesNoTransformer,
+  addConveyanceReferenceYesNoTransformer: AddConveyanceReferenceYesNoTransformer,
+  conveyanceReferenceTransformer: ConveyanceReferenceTransformer,
+  customsOfficeTransformer: CustomsOfficeTransformer,
   identificationTransformer: IdentificationTransformer,
   identificationNoTransformer: IdentificationNumberTransformer,
+  nationalityTransformer: NationalityTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
   transportEquipmentYesNoTransformer: TransportEquipmentYesNoTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
@@ -37,6 +51,11 @@ class DepartureDataTransformer @Inject() (
   addSealYesNoTransformer: AddSealYesNoTransformer,
   limitDateTransformer: LimitDateTransformer,
   itemTransformer: ItemTransformer,
+  actingAsRepresentativeTransformer: ActingAsRepresentativeTransformer,
+  representativeEoriTransformer: RepresentativeEoriTransformer,
+  addRepresentativeContactDetailsYesNoTransformer: AddRepresentativeContactDetailsYesNoTransformer,
+  representativeNameTransformer: RepresentativeNameTransformer,
+  representativePhoneNumberTransformer: RepresentativePhoneNumberTransformer,
   containerIndicatorTransformer: ContainerIndicatorTransformer,
   modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
   addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer
@@ -45,19 +64,44 @@ class DepartureDataTransformer @Inject() (
 
   def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
 
-    val transformerPipeline = identificationTransformer.transform andThen
-      identificationNoTransformer.transform andThen
-      containerIndicatorTransformer.transform andThen
+    val transportEquipmentPipeline =
+      containerIdentificationNumberYesNoTransformer.transform andThen
       transportEquipmentYesNoTransformer.transform andThen
       transportEquipmentTransformer.transform andThen
-      containerIdentificationNumberYesNoTransformer.transform andThen
-      containerIdTransformer.transform andThen
-      addSealYesNoTransformer.transform andThen
-      sealTransformer.transform andThen
-      limitDateTransformer.transform andThen
-      itemTransformer.transform andThen
-      addBorderModeOfTransportYesNoTransformer.transform andThen
-      modeOfTransportAtTheBorderTransformer.transform
+        containerIdTransformer.transform andThen
+        addSealYesNoTransformer.transform andThen
+        sealTransformer.transform andThen
+        itemTransformer.transform
+
+    val borderMeansPipeline =
+      addAnotherBorderMeansOfTransportYesNoTransformer.transform andThen
+        addBorderMeansOfTransportYesNoTransformer.transform andThen
+        addConveyanceReferenceYesNoTransformer.transform andThen
+        conveyanceReferenceTransformer.transform andThen
+        customsOfficeTransformer.transform andThen
+        identificationTransformer.transform andThen
+        identificationNoTransformer.transform andThen
+        nationalityTransformer.transform
+
+    val borderModePipeline =
+      containerIndicatorTransformer.transform andThen
+        modeOfTransportAtTheBorderTransformer.transform andThen
+        addBorderModeOfTransportYesNoTransformer.transform
+
+    val representativePipeline =
+      addRepresentativeContactDetailsYesNoTransformer.transform andThen
+        actingAsRepresentativeTransformer.transform andThen
+        representativeEoriTransformer.transform andThen
+        representativeNameTransformer.transform andThen
+        representativePhoneNumberTransformer.transform
+
+    val transformerPipeline =
+      borderMeansPipeline andThen
+        transportEquipmentPipeline andThen
+        limitDateTransformer.transform andThen
+        representativePipeline andThen
+        borderModePipeline
+
     transformerPipeline(userAnswers)
   }
 

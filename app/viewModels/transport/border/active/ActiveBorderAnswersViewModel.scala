@@ -24,7 +24,7 @@ import utils.ActiveBorderTransportMeansAnswersHelper
 import viewModels.Section
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 case class ActiveBorderAnswersViewModel(section: Section)
 
@@ -32,15 +32,12 @@ object ActiveBorderAnswersViewModel {
 
   class ActiveBorderAnswersViewModelProvider @Inject() (implicit executionContext: ExecutionContext) {
 
-    def apply(userAnswers: UserAnswers, departureId: String, cyaRefDataService: CheckYourAnswersReferenceDataService, mode: Mode, index: Index)(implicit
+    def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, index: Index)(implicit
       messages: Messages,
       hc: HeaderCarrier
-    ): Future[ActiveBorderAnswersViewModel] = {
-      val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, index)
-      helper
-        .getSection()
-        .map(new ActiveBorderAnswersViewModel(_))
-
+    ): ActiveBorderAnswersViewModel = {
+      val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, index)
+      new ActiveBorderAnswersViewModel(helper.getSection())
     }
   }
 }

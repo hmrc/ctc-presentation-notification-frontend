@@ -52,7 +52,7 @@ object PresentationNotificationAnswersViewModel {
       val locationOfGoodsHelper                = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val inlandModeAnswersHelper              = new InlandModeAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
       val transitHolderAnswerHelper            = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val activeBorderHelper                   = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode, Index(0))
+      val activeBorderHelper                   = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0))
       val departureTransportMeansAnswersHelper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
 
       val representativeHelper = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
@@ -78,7 +78,7 @@ object PresentationNotificationAnswersViewModel {
                 .value
                 .zipWithIndex
                 .map {
-                  case (_, i) => activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, cyaRefDataService, mode, Index(i)).map(_.section)
+                  case (_, i) => Future.successful(activeBorderAnswersViewModelProvider.apply(userAnswers, departureId, mode, Index(i)).section)
                 }
                 .toSeq
             )

@@ -81,6 +81,26 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   )
             }
           }
+      "to ContainerIdentificationNumber page" +
+        "when security is '0'" +
+        "and containerIndicator has been answered as true in IE170" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, true)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
+                  )
+                )
+              navigator
+                .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                )
+          }
+        }
 
         "to AddTransportEquipmentYesNo page" +
           "when security is '0'" +
@@ -101,6 +121,26 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   )
             }
           }
+      "to AddTransportEquipmentYesNo page" +
+        "when security is '0'" +
+        "and containerIndicator has been answered as false in IE170" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(ContainerIndicatorPage, false)
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                    Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
+                  )
+                )
+              navigator
+                .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode)
+                )
+          }
+        }
 
         "to CYA Page" +
           "when security is '0'" +
