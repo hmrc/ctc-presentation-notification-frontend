@@ -52,7 +52,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(AddBorderMeansOfTransportYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.border.addBorderMeansOfTransportYesNo",
-    id = Some("change-add-identification-for-the-border-means-of-transport")
+    id = Some(s"change-add-identification-for-the-border-means-of-transport")
   )
 
   def identificationType: Option[SummaryListRow] = buildRowWithAnswer[Identification](
@@ -60,7 +60,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(IdentificationPage(activeIndex)),
     formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transport.border.active.identification",
-    id = Some("change-identification")
+    id = Some(s"change-identification-${activeIndex.display}")
   )
 
   def identificationNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
@@ -68,7 +68,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(IdentificationNumberPage(activeIndex)),
     formatAnswer = formatAsText,
     prefix = "transport.border.active.identificationNumber",
-    id = Some("change-identification-number")
+    id = Some(s"change-identification-number-${activeIndex.display}")
   )
 
   def nationality: Option[SummaryListRow] = buildRowWithAnswer[Nationality](
@@ -76,7 +76,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(NationalityPage(activeIndex)),
     formatAnswer = _.description.toText,
     prefix = "transport.border.active.nationality",
-    id = Some("change-nationality")
+    id = Some(s"change-nationality-${activeIndex.display}")
   )
 
   def customsOffice: Option[SummaryListRow] = buildRowWithAnswer[CustomsOffice](
@@ -84,7 +84,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)),
     formatAnswer = formatAsText(_),
     prefix = "transport.border.active.customsOfficeActiveBorder",
-    id = Some("change-customs-office")
+    id = Some(s"change-customs-office-${activeIndex.display}")
   )
 
   def conveyanceReferenceNumberYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
@@ -92,7 +92,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(AddConveyanceReferenceYesNoPage(activeIndex)),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.border.active.addConveyanceReference",
-    id = Some("change-add-conveyance-reference-number")
+    id = Some(s"change-add-conveyance-reference-number-${activeIndex.display}")
   )
 
   def conveyanceReferenceNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
@@ -100,7 +100,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(ConveyanceReferenceNumberPage(activeIndex)),
     formatAnswer = formatAsText,
     prefix = "transport.border.active.conveyanceReferenceNumber",
-    id = Some("change-conveyance-reference-number")
+    id = Some(s"change-conveyance-reference-number-${activeIndex.display}")
   )
 
   def addOrRemoveActiveBorderTransportsMeans(): Option[Link] =

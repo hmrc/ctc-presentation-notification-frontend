@@ -17,8 +17,7 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
-import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
 import models.messages.MessageData
 import models.reference.CustomsOffice
@@ -27,7 +26,6 @@ import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}

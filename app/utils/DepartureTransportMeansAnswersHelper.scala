@@ -104,7 +104,7 @@ class DepartureTransportMeansAnswersHelper(
           Section(
             sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
             rows = rows,
-            addAnotherLink = addOrRemoveDepartureTransportsMeans
+            addAnotherLink = addOrRemoveDepartureTransportsMeans()
           )
         )
       }
