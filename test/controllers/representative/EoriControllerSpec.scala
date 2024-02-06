@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.representative.{routes => representativeRoutes}
 import controllers.routes
 import forms.EoriNumberFormProvider
-import models.{NormalMode, UserAnswers}
-import models.messages.Representative
 import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
 import pages.representative.EoriPage

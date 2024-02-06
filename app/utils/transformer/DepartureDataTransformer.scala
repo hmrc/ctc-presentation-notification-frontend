@@ -22,13 +22,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import utils.transformer.representative._
 import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport.border._
-import utils.transformer.transport.equipment.{
-  ContainerIdentificationNumberTransformer,
-  ContainerIndicatorTransformer,
-  SealTransformer,
-  TransportEquipmentTransformer
-}
-import utils.transformer.transport.border._
 import utils.transformer.transport.equipment._
 
 import javax.inject.Inject
@@ -66,8 +59,8 @@ class DepartureDataTransformer @Inject() (
 
     val transportEquipmentPipeline =
       containerIdentificationNumberYesNoTransformer.transform andThen
-      transportEquipmentYesNoTransformer.transform andThen
-      transportEquipmentTransformer.transform andThen
+        transportEquipmentYesNoTransformer.transform andThen
+        transportEquipmentTransformer.transform andThen
         containerIdTransformer.transform andThen
         addSealYesNoTransformer.transform andThen
         sealTransformer.transform andThen

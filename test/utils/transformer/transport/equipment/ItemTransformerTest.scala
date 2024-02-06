@@ -17,11 +17,10 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import models.messages.{GoodsReference, Seal, TransportEquipment}
+import models.messages.{GoodsReference, TransportEquipment}
 import models.reference.Item
 import models.{Index, UserAnswers}
 import pages.transport.equipment.{AddAnotherTransportEquipmentPage, ItemPage}
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
 class ItemTransformerTest extends SpecBase {
 
