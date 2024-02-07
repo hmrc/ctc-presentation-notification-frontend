@@ -111,7 +111,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                   action.content.value mustBe "Change"
                   action.href mustBe controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
                   action.visuallyHiddenText.get mustBe "identification type for the border means of transport"
-                  action.id mustBe "change-identification"
+                  action.id mustBe "change-identification-1"
               }
           }
         }
@@ -150,7 +150,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.border.active.routes.IdentificationNumberController.onPageLoad(departureId, mode, activeIndex).url
               action.visuallyHiddenText.get mustBe "identification number for the border means of transport"
-              action.id mustBe "change-identification-number"
+              action.id mustBe "change-identification-number-1"
           }
         }
       }
@@ -188,7 +188,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, activeIndex).url
               action.visuallyHiddenText.get mustBe "registered country for the border means of transport"
-              action.id mustBe "change-nationality"
+              action.id mustBe "change-nationality-1"
           }
         }
       }
@@ -228,7 +228,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                 .onPageLoad(departureId, mode, activeIndex)
                 .url
               action.visuallyHiddenText.get mustBe "customs office for the border means of transport"
-              action.id mustBe "change-customs-office"
+              action.id mustBe "change-customs-office-1"
           }
         }
       }
@@ -269,7 +269,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
                   .onPageLoad(departureId, mode, activeIndex)
                   .url
                 action.visuallyHiddenText.get mustBe "if you want to add a conveyance reference number"
-                action.id mustBe "change-add-conveyance-reference-number"
+                action.id mustBe "change-add-conveyance-reference-number-1"
             }
           }
         }
@@ -308,7 +308,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.border.active.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex).url
               action.visuallyHiddenText.get mustBe "conveyance reference number for the border means of transport"
-              action.id mustBe "change-conveyance-reference-number"
+              action.id mustBe "change-conveyance-reference-number-1"
           }
         }
       }
