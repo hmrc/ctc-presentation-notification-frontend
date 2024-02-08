@@ -20,21 +20,8 @@ import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.representative._
-import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport.border._
 import utils.transformer.transport._
-import utils.transformer.transport.border.{
-  AddBorderModeOfTransportYesNoTransformer,
-  IdentificationNumberTransformer,
-  IdentificationTransformer,
-  ModeOfTransportAtTheBorderTransformer
-}
-import utils.transformer.transport.equipment.{
-  ContainerIdentificationNumberTransformer,
-  ContainerIndicatorTransformer,
-  SealTransformer,
-  TransportEquipmentTransformer
-}
+import utils.transformer.transport.border._
 import utils.transformer.transport.equipment._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -63,8 +50,6 @@ class DepartureDataTransformerTest extends SpecBase {
       val addConveyanceReferenceYesNoTransformer           = mock[AddConveyanceReferenceYesNoTransformer]
       val conveyanceReferenceTransformer                   = mock[ConveyanceReferenceTransformer]
       val customsOfficeTransformer                         = mock[CustomsOfficeTransformer]
-      val addBorderModeOfTransportYesNoTransformer         = mock[AddBorderModeOfTransportYesNoTransformer]
-      val identificationTransformer                        = mock[IdentificationTransformer]
       val nationalityTransformer                           = mock[NationalityTransformer]
       val limitDateTransformer                             = mock[LimitDateTransformer]
       val actingAsRepresentativeTransformer                = mock[ActingAsRepresentativeTransformer]
@@ -73,15 +58,11 @@ class DepartureDataTransformerTest extends SpecBase {
       val representativeNameTransformer                    = mock[RepresentativeNameTransformer]
       val representativePhoneNumberTransformer             = mock[RepresentativePhoneNumberTransformer]
       val containerIndicatorTransformer                    = mock[ContainerIndicatorTransformer]
-      val modeOfTransportAtTheBorderTransformer            = mock[ModeOfTransportAtTheBorderTransformer]
-      val userAnswers                                      = mock[UserAnswers]
-      val userAnswersWithEquipment                         = mock[UserAnswers]
       val transportMeansIdentificationNumberTransformer    = mock[TransportMeansIdentificationNumberTransformer]
       val transportMeansIdentificationTransformer          = mock[TransportMeansIdentificationTransformer]
       val transportMeansNationalityTransformer             = mock[TransportMeansNationalityTransformer]
       val inlandModeTransformer                            = mock[InlandModeTransformer]
       val addInlandModeYesNoTransformer                    = mock[AddInlandModeYesNoTransformer]
-      val containerIndicatorTransformer                    = mock[ContainerIndicatorTransformer]
 
       val updateAnswersFn: UserAnswers => Future[UserAnswers] = _ => successful(userAnswers)
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {

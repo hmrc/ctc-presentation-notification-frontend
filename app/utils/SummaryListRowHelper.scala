@@ -17,7 +17,7 @@
 package utils
 
 import models.{DynamicAddress, PostalCodeAddress, Radioable}
-import models.reference.{Country, Nationality, Item}
+import models.reference.{Country, Item, Nationality}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
