@@ -26,6 +26,7 @@ class HolderOfTheTransitProcedureSpec extends AnyFreeSpec with Matchers {
   val holderOfTransitProcedure = HolderOfTheTransitProcedure(
     identificationNumber = Some("identificationNumber"),
     TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
+    name = None,
     ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
     Address = Some(Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB"))
   )

@@ -18,7 +18,12 @@ package services.submission
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
+import generators.Generators
+import models.messages.{Address, HolderOfTheTransitProcedure}
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.LimitDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -27,7 +32,7 @@ import services.DateTimeService
 
 import java.time.{LocalDate, LocalDateTime}
 
-class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
+class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val service = app.injector.instanceOf[SubmissionService]
 
@@ -115,6 +120,137 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
           LRN = userAnswers.lrn,
           limitDate = None
         )
+      }
+    }
+  }
+
+  "holderOfTransit" - {
+    "must create holder of transit" - {
+      "when Address defined" in {
+        forAll(
+          Gen.option(Gen.alphaNumStr),
+          Gen.option(Gen.alphaNumStr),
+          Gen.option(Gen.alphaNumStr),
+          arbitrary[Address]
+        ) {
+          (identificationNumber, tirHolderIdentificationNumber, name, address) =>
+            val holderOfTransit = HolderOfTheTransitProcedure(
+              identificationNumber = identificationNumber,
+              TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
+              name = name,
+              ContactPerson = None,
+              Address = Some(address)
+            )
+
+            val result = service.holderOfTransit(holderOfTransit)
+
+            result mustBe HolderOfTheTransitProcedureType19(
+              identificationNumber = identificationNumber,
+              TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
+              name = name,
+              Address = Some(
+                AddressType17(
+                  streetAndNumber = address.streetAndNumber,
+                  postcode = address.postcode,
+                  city = address.city,
+                  country = address.country
+                )
+              )
+            )
+        }
+      }
+
+      "when Address undefined" in {
+        forAll(
+          Gen.option(Gen.alphaNumStr),
+          Gen.option(Gen.alphaNumStr),
+          Gen.option(Gen.alphaNumStr)
+        ) {
+          (identificationNumber, tirHolderIdentificationNumber, name) =>
+            val holderOfTransit = HolderOfTheTransitProcedure(
+              identificationNumber = identificationNumber,
+              TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
+              name = name,
+              ContactPerson = None,
+              Address = None
+            )
+
+            val result = service.holderOfTransit(holderOfTransit)
+
+            result mustBe HolderOfTheTransitProcedureType19(
+              identificationNumber = identificationNumber,
+              TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
+              name = name,
+              Address = None
+            )
+        }
+      }
+    }
+  }
+
+  "representative" - {
+    import pages.representative._
+
+    "when representative not present in user answers" - {
+      "must not create representative" in {
+        val userAnswers = emptyUserAnswers
+
+        val reads  = service.representative()
+        val result = userAnswers.data.as[Option[RepresentativeType05]](reads)
+
+        result mustBe None
+      }
+    }
+
+    "when representative present in user answers" - {
+      "must create representative" - {
+        "when contact person also present" in {
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+            (eori, name, phoneNumber) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(EoriPage, eori)
+                .setValue(AddRepresentativeContactDetailsYesNoPage, true)
+                .setValue(NamePage, name)
+                .setValue(RepresentativePhoneNumberPage, phoneNumber)
+
+              val reads  = service.representative()
+              val result = userAnswers.data.as[Option[RepresentativeType05]](reads)
+
+              result mustBe Some(
+                RepresentativeType05(
+                  identificationNumber = eori,
+                  status = "2",
+                  ContactPerson = Some(
+                    ContactPersonType05(
+                      name = name,
+                      phoneNumber = phoneNumber,
+                      eMailAddress = None
+                    )
+                  )
+                )
+              )
+          }
+        }
+
+        "when contact person not present" in {
+          forAll(Gen.alphaNumStr) {
+            eori =>
+              val userAnswers = emptyUserAnswers
+                .setValue(EoriPage, eori)
+                .setValue(AddRepresentativeContactDetailsYesNoPage, false)
+
+              val reads  = service.representative()
+              val result = userAnswers.data.as[Option[RepresentativeType05]](reads)
+
+              result mustBe Some(
+                RepresentativeType05(
+                  identificationNumber = eori,
+                  status = "2",
+                  ContactPerson = None
+                )
+              )
+          }
+        }
       }
     }
   }

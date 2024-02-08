@@ -17,8 +17,10 @@
 package services.submission
 
 import generated._
+import models.messages.HolderOfTheTransitProcedure
 import models.{EoriNumber, UserAnswers}
 import pages.transport.LimitDatePage
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads
 import scalaxb.DataRecord
 import services.DateTimeService
@@ -32,14 +34,18 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
 
   def transform(userAnswers: UserAnswers): CC170CType = {
+    val officeOfDeparture = userAnswers.departureData.CustomsOfficeOfDeparture
     implicit val reads: Reads[CC170CType] = for {
       transitOperation <- transitOperation(userAnswers)
+      representative   <- representative()
     } yield CC170CType(
-      messageSequence1 = messageSequence(userAnswers.eoriNumber, userAnswers.departureData.CustomsOfficeOfDeparture),
+      messageSequence1 = messageSequence(userAnswers.eoriNumber, officeOfDeparture),
       TransitOperation = transitOperation,
-      CustomsOfficeOfDeparture = ???,
-      HolderOfTheTransitProcedure = ???,
-      Representative = ???,
+      CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+        referenceNumber = officeOfDeparture
+      ),
+      HolderOfTheTransitProcedure = holderOfTransit(userAnswers.departureData.HolderOfTheTransitProcedure),
+      Representative = representative,
       Consignment = ???,
       attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
     )
@@ -70,4 +76,45 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       limitData => TransitOperationType24(userAnswers.lrn, limitData)
     }
 
+  def holderOfTransit(holderOfTransit: HolderOfTheTransitProcedure): HolderOfTheTransitProcedureType19 =
+    HolderOfTheTransitProcedureType19(
+      identificationNumber = holderOfTransit.identificationNumber,
+      TIRHolderIdentificationNumber = holderOfTransit.TIRHolderIdentificationNumber,
+      name = holderOfTransit.name,
+      Address = holderOfTransit.Address.map {
+        address =>
+          AddressType17(
+            streetAndNumber = address.streetAndNumber,
+            postcode = address.postcode,
+            city = address.city,
+            country = address.country
+          )
+      }
+    )
+
+  def representative(): Reads[Option[RepresentativeType05]] = {
+    import pages.representative._
+    EoriPage.path.readNullable[String].flatMap {
+      case Some(identificationNumber) =>
+        (
+          NamePage.path.readNullable[String] and
+            RepresentativePhoneNumberPage.path.readNullable[String]
+        ).tupled
+          .map {
+            case (Some(name), Some(phoneNumber)) => Some(ContactPersonType05(name, phoneNumber, None))
+            case _                               => None
+          }
+          .map {
+            contactPerson =>
+              Some(
+                RepresentativeType05(
+                  identificationNumber = identificationNumber,
+                  status = "2",
+                  ContactPerson = contactPerson
+                )
+              )
+          }
+      case _ => None
+    }
+  }
 }
