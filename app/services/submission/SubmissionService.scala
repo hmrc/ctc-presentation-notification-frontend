@@ -202,4 +202,14 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       ContactPerson = contactPerson
     )
   }
+
+  def placeOfLoading: Reads[Option[PlaceOfLoadingType03]] = {
+    import pages.loading._
+    val value = UnLocodePage.path.readNullable[String] and CountryPage.path.readNullable[Country] and LocationPage.path.readNullable[String]
+    value.tupled
+      .map {
+        case (None, None, None)            => None
+        case (unLocode, country, location) => Some(PlaceOfLoadingType03(UNLocode = unLocode, country = country.map(_.code.code), location = location))
+      }
+  }
 }

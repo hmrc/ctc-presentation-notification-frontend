@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
 import models.messages.{Address, HolderOfTheTransitProcedure}
-import models.reference.{Country, CustomsOffice}
+import models.reference.{Country, CountryCode, CustomsOffice}
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, PostalCodeAddress}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -123,6 +123,38 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           LRN = userAnswers.lrn,
           limitDate = None
         )
+      }
+    }
+  }
+
+  "Consignment" - {
+    "placeOfLoading" - {
+      import pages.loading._
+      "must create PlaceOfLoading when user answers exist" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(UnLocodePage, "unLocode")
+          .setValue(CountryPage, Country(CountryCode("IT"), "Italy"))
+          .setValue(LocationPage, "location")
+
+        val reads  = service.placeOfLoading
+        val result = userAnswers.data.as[Option[PlaceOfLoadingType03]](reads)
+
+        result mustBe Some(
+          PlaceOfLoadingType03(
+            UNLocode = Some("unLocode"),
+            country = Some("IT"),
+            location = Some("location")
+          )
+        )
+      }
+
+      "must not create PlaceOfLoading when user answers don't exist" in {
+        val userAnswers = emptyUserAnswers
+        val reads       = service.placeOfLoading
+
+        val result = userAnswers.data.as[Option[PlaceOfLoadingType03]](reads)
+
+        result mustBe None
       }
     }
   }
