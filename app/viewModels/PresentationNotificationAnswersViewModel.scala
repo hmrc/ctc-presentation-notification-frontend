@@ -117,8 +117,9 @@ object PresentationNotificationAnswersViewModel {
         locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
+        transportEquipmentSection = TransportEquipmentAnswersHelper.sections(userAnswers, departureId, mode)
         sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandModeSection.toSeq ++ departureTransportMeansSections ++ borderSection.toSeq ++ activeBorderTransportMeansSection
+          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandModeSection.toSeq ++ departureTransportMeansSections ++ borderSection.toSeq ++ activeBorderTransportMeansSection ++ transportEquipmentSection
       } yield new PresentationNotificationAnswersViewModel(sections)
 
     }

@@ -31,8 +31,13 @@ case class Consignment(
   HouseConsignment: Seq[HouseConsignment]
 ) {
 
-  def isTransportDefined: Option[Boolean]  = Some(modeOfTransportAtTheBorder.isDefined)
-  def isInlandModeDefined: Option[Boolean] = Some(inlandModeOfTransport.isDefined)
+  def isContainerIndicatorYes: Boolean = containerIndicator.exists {
+    case "1" => true
+    case _   => false
+  }
+
+  def isModeOfTransportDefined: Option[Boolean] = Some(modeOfTransportAtTheBorder.isDefined)
+  def isInlandModeDefined: Option[Boolean]      = Some(inlandModeOfTransport.isDefined)
 
   def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
   val isPlaceOfLoadingPresent: Boolean                      = PlaceOfLoading.isDefined

@@ -74,6 +74,10 @@ checkYourAnswers.transportMeans.active.change.hidden = border means of transport
 checkYourAnswers.departureTransportMeans = Departure means of transport {0}
 checkYourAnswers.departureTransportMeans.addOrRemove = Add or remove departure means of transport
 
+checkYourAnswers.transport.equipment.active.withoutIndex = Transport Equipment
+checkYourAnswers.transport.equipment.active.withIndex = Transport Equipment {0}
+checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipment
+checkYourAnswers.transportEquipment.item.subHeading = Which items does this transport equipment apply to?
 checkYourAnswers.locationOfGoods = Location of goods
 
 moreInformation.title = More information needed to complete declaration
@@ -423,10 +427,22 @@ transport.equipment.index.seals.sealIdentificationNumber.error.invalid = The ide
 transport.equipment.index.seals.sealIdentificationNumber.hint = This can be up to 20 characters long and include both letters and numbers.
 transport.equipment.index.seals.sealIdentificationNumber.error.duplicate = This identification number has already been submitted. Enter a unique seal identification number
 
+
+transport.equipment.index.checkYourAnswers.seal.checkYourAnswersLabel = Seal {0}
+transport.equipment.index.checkYourAnswers.seal.change.hidden = seal {0}
+
+transport.equipment.index.checkYourAnswers.item.checkYourAnswersLabel = Item {0}
+transport.equipment.index.checkYourAnswers.item.change.hidden = item {0}
+transport.equipment.index.checkYourAnswers.items.addOrRemove = Add or remove items
+
+transport.equipment.index.checkYourAnswers.seals.addOrRemove = Add or remove seals
+
 transport.equipment.index.addSealYesNo.title = Do you want to add a seal?
+transport.equipment.index.addSealYesNo.checkYourAnswersLabel = Do you want to add a seal?
 transport.equipment.index.addSealYesNo.heading = Do you want to add a seal?
 transport.equipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transport.equipment.index.addSealYesNo.error.required = Select yes if you want to add a seal
+transport.equipment.index.addSealYesNo.change.hidden = if you want to add a seal
 
 transport.equipment.index.addAnotherSeal.singular.title = You have added 1 seal
 transport.equipment.index.addAnotherSeal.plural.title = You have added {0} seals

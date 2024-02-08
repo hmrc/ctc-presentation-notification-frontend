@@ -29,12 +29,7 @@ import utils.transformer.transport.border.{
   ModeOfTransportAtTheBorderTransformer
 }
 import utils.transformer.transport.border._
-import utils.transformer.transport.equipment.{
-  ContainerIdentificationNumberTransformer,
-  ContainerIndicatorTransformer,
-  SealTransformer,
-  TransportEquipmentTransformer
-}
+import utils.transformer.transport.equipment._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,9 +46,13 @@ class DepartureDataTransformer @Inject() (
   addInlandModeYesNoTransformer: AddInlandModeYesNoTransformer,
   nationalityTransformer: NationalityTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
+  transportEquipmentYesNoTransformer: TransportEquipmentYesNoTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
+  containerIdentificationNumberYesNoTransformer: ContainerIdentificationNumberYesNoTransformer,
   sealTransformer: SealTransformer,
+  addSealYesNoTransformer: AddSealYesNoTransformer,
   limitDateTransformer: LimitDateTransformer,
+  itemTransformer: ItemTransformer,
   actingAsRepresentativeTransformer: ActingAsRepresentativeTransformer,
   representativeEoriTransformer: RepresentativeEoriTransformer,
   addRepresentativeContactDetailsYesNoTransformer: AddRepresentativeContactDetailsYesNoTransformer,
@@ -70,11 +69,14 @@ class DepartureDataTransformer @Inject() (
 
   def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
 
-    val transportEquipmentPipeline = {
-      transportEquipmentTransformer.transform andThen
+    val transportEquipmentPipeline =
+      containerIdentificationNumberYesNoTransformer.transform andThen
+        transportEquipmentYesNoTransformer.transform andThen
+        transportEquipmentTransformer.transform andThen
         containerIdTransformer.transform andThen
-        sealTransformer.transform
-    }
+        addSealYesNoTransformer.transform andThen
+        sealTransformer.transform andThen
+        itemTransformer.transform
 
     val borderMeansPipeline =
       addAnotherBorderMeansOfTransportYesNoTransformer.transform andThen
@@ -106,12 +108,12 @@ class DepartureDataTransformer @Inject() (
         transportMeansNationalityTransformer.transform
 
     val transformerPipeline =
-      borderMeansPipeline andThen
+      borderModePipeline andThen
+        borderMeansPipeline andThen
         departureTransportMeansPipeline andThen
         transportEquipmentPipeline andThen
         limitDateTransformer.transform andThen
-        representativePipeline andThen
-        borderModePipeline
+        representativePipeline
 
     transformerPipeline(userAnswers)
   }
