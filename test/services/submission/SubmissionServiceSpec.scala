@@ -22,6 +22,8 @@ import generators.Generators
 import models.messages.{Address, HolderOfTheTransitProcedure}
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference._
+import models.reference.transport.border.active.{Identification => ABTMIdentification}
+import models.reference.transport.transportMeans.{TransportMeansIdentification => DTMIdentification}
 import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -267,10 +269,14 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   "Consignment" - {
 
     "consignmentReads" - {
+      import pages.houseConsignment.index.{departureTransportMeans => hcdtm}
       import pages.locationOfGoods._
+      import pages.transport.border.{active => abtm}
       import pages.transport.equipment._
       import pages.transport.equipment.index._
       import pages.transport.equipment.index.seals._
+      import pages.transport.{departureTransportMeans => dtm}
+      import pages.{loading => pol}
 
       "must return list of transport equipments" in {
         val userAnswers = emptyUserAnswers
@@ -289,6 +295,32 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           .setValue(SealIdentificationNumberPage(Index(1), Index(1)), "sin22")
           .setValue(ItemPage(Index(1), Index(0)), Item(21, "id21"))
           .setValue(ItemPage(Index(1), Index(1)), Item(22, "id22"))
+          .setValue(dtm.TransportMeansIdentificationPage, DTMIdentification("dtmtoi1", ""))
+          .setValue(dtm.TransportMeansIdentificationNumberPage, "dtmin1")
+          .setValue(dtm.TransportMeansNationalityPage, Nationality("dtmn1", ""))
+          .setValue(abtm.CustomsOfficeActiveBorderPage(Index(0)), CustomsOffice("abtmcoabrn1", "", None))
+          .setValue(abtm.IdentificationPage(Index(0)), ABTMIdentification("abtmtoi1", ""))
+          .setValue(abtm.IdentificationNumberPage(Index(0)), "abtmin1")
+          .setValue(abtm.NationalityPage(Index(0)), Nationality("abtmn1", ""))
+          .setValue(abtm.ConveyanceReferenceNumberPage(Index(0)), "abtmcrn1")
+          .setValue(abtm.CustomsOfficeActiveBorderPage(Index(1)), CustomsOffice("abtmcoabrn2", "", None))
+          .setValue(abtm.IdentificationPage(Index(1)), ABTMIdentification("abtmtoi2", ""))
+          .setValue(abtm.IdentificationNumberPage(Index(1)), "abtmin2")
+          .setValue(abtm.NationalityPage(Index(1)), Nationality("abtmn2", ""))
+          .setValue(abtm.ConveyanceReferenceNumberPage(Index(1)), "abtmcrn2")
+          .setValue(pol.UnLocodePage, "polunl")
+          .setValue(hcdtm.IdentificationPage(Index(0), Index(0)), DTMIdentification("dtmtoi11", ""))
+          .setValue(hcdtm.IdentificationNumberPage(Index(0), Index(0)), "dtmin11")
+          .setValue(hcdtm.CountryPage(Index(0), Index(0)), Nationality("dtmn11", ""))
+          .setValue(hcdtm.IdentificationPage(Index(0), Index(1)), DTMIdentification("dtmtoi12", ""))
+          .setValue(hcdtm.IdentificationNumberPage(Index(0), Index(1)), "dtmin12")
+          .setValue(hcdtm.CountryPage(Index(0), Index(1)), Nationality("dtmn12", ""))
+          .setValue(hcdtm.IdentificationPage(Index(1), Index(0)), DTMIdentification("dtmtoi21", ""))
+          .setValue(hcdtm.IdentificationNumberPage(Index(1), Index(0)), "dtmin21")
+          .setValue(hcdtm.CountryPage(Index(1), Index(0)), Nationality("dtmn21", ""))
+          .setValue(hcdtm.IdentificationPage(Index(1), Index(1)), DTMIdentification("dtmtoi22", ""))
+          .setValue(hcdtm.IdentificationNumberPage(Index(1), Index(1)), "dtmin22")
+          .setValue(hcdtm.CountryPage(Index(1), Index(1)), Nationality("dtmn22", ""))
 
         val reads  = service.consignmentReads
         val result = userAnswers.data.as[ConsignmentType08](reads)
@@ -298,10 +330,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         result.inlandModeOfTransport.value mustBe "im"
 
         result.modeOfTransportAtTheBorder.value mustBe "bm"
-
-        result.LocationOfGoods.typeOfLocation mustBe "tol"
-
-        result.LocationOfGoods.qualifierOfIdentification mustBe "qoi"
 
         result.TransportEquipment mustBe Seq(
           TransportEquipmentType06(
@@ -328,6 +356,83 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             GoodsReference = Seq(
               GoodsReferenceType02("1", 21),
               GoodsReferenceType02("2", 22)
+            )
+          )
+        )
+
+        result.LocationOfGoods.typeOfLocation mustBe "tol"
+
+        result.LocationOfGoods.qualifierOfIdentification mustBe "qoi"
+
+        result.DepartureTransportMeans mustBe Seq(
+          DepartureTransportMeansType05(
+            sequenceNumber = "1",
+            typeOfIdentification = "dtmtoi1",
+            identificationNumber = "dtmin1",
+            nationality = "dtmn1"
+          )
+        )
+
+        result.ActiveBorderTransportMeans mustBe Seq(
+          ActiveBorderTransportMeansType03(
+            sequenceNumber = "1",
+            customsOfficeAtBorderReferenceNumber = "abtmcoabrn1",
+            typeOfIdentification = "abtmtoi1",
+            identificationNumber = "abtmin1",
+            nationality = "abtmn1",
+            conveyanceReferenceNumber = Some("abtmcrn1")
+          ),
+          ActiveBorderTransportMeansType03(
+            sequenceNumber = "2",
+            customsOfficeAtBorderReferenceNumber = "abtmcoabrn2",
+            typeOfIdentification = "abtmtoi2",
+            identificationNumber = "abtmin2",
+            nationality = "abtmn2",
+            conveyanceReferenceNumber = Some("abtmcrn2")
+          )
+        )
+
+        result.PlaceOfLoading mustBe Some(
+          PlaceOfLoadingType03(
+            UNLocode = Some("polunl"),
+            country = None,
+            location = None
+          )
+        )
+
+        result.HouseConsignment mustBe Seq(
+          HouseConsignmentType06(
+            sequenceNumber = "1",
+            DepartureTransportMeans = Seq(
+              DepartureTransportMeansType05(
+                sequenceNumber = "1",
+                typeOfIdentification = "dtmtoi11",
+                identificationNumber = "dtmin11",
+                nationality = "dtmn11"
+              ),
+              DepartureTransportMeansType05(
+                sequenceNumber = "2",
+                typeOfIdentification = "dtmtoi12",
+                identificationNumber = "dtmin12",
+                nationality = "dtmn12"
+              )
+            )
+          ),
+          HouseConsignmentType06(
+            sequenceNumber = "2",
+            DepartureTransportMeans = Seq(
+              DepartureTransportMeansType05(
+                sequenceNumber = "1",
+                typeOfIdentification = "dtmtoi21",
+                identificationNumber = "dtmin21",
+                nationality = "dtmn21"
+              ),
+              DepartureTransportMeansType05(
+                sequenceNumber = "2",
+                typeOfIdentification = "dtmtoi22",
+                identificationNumber = "dtmin22",
+                nationality = "dtmn22"
+              )
             )
           )
         )
@@ -521,13 +626,14 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.transport.border.active._
 
       "must create an active border transport means" in {
-        forAll(arbitrary[CustomsOffice], arbitrary[Identification], Gen.alphaNumStr, arbitrary[Nationality]) {
-          (customsOffice, typeOfIdentification, identificationNumber, nationality) =>
+        forAll(arbitrary[CustomsOffice], arbitrary[Identification], Gen.alphaNumStr, arbitrary[Nationality], Gen.option(Gen.alphaNumStr)) {
+          (customsOffice, typeOfIdentification, identificationNumber, nationality, conveyanceReferenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(CustomsOfficeActiveBorderPage(activeIndex), customsOffice)
               .setValue(IdentificationPage(activeIndex), typeOfIdentification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(NationalityPage(activeIndex), nationality)
+              .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceReferenceNumber)
 
             val reads  = service.activeBorderTransportMeansReads(activeIndex)
             val result = userAnswers.getValue(BorderActiveSection(activeIndex)).as[ActiveBorderTransportMeansType03](reads)
@@ -537,7 +643,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               customsOfficeAtBorderReferenceNumber = customsOffice.id,
               typeOfIdentification = typeOfIdentification.code,
               identificationNumber = identificationNumber,
-              nationality = nationality.code
+              nationality = nationality.code,
+              conveyanceReferenceNumber = conveyanceReferenceNumber
             )
         }
       }

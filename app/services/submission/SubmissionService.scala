@@ -235,12 +235,14 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       typeOfIdentification                 <- (__ \ IdentificationPage(index).toString).read[Identification]
       identificationNumber                 <- (__ \ IdentificationNumberPage(index).toString).read[String]
       nationality                          <- (__ \ NationalityPage(index).toString).read[Nationality]
+      conveyanceReferenceNumber            <- (__ \ ConveyanceReferenceNumberPage(index).toString).readNullable[String]
     } yield ActiveBorderTransportMeansType03(
       sequenceNumber = index.sequenceNumber,
       customsOfficeAtBorderReferenceNumber = customsOfficeAtBorderReferenceNumber.id,
       typeOfIdentification = typeOfIdentification.code,
       identificationNumber = identificationNumber,
-      nationality = nationality.code
+      nationality = nationality.code,
+      conveyanceReferenceNumber = conveyanceReferenceNumber
     )
   }
 
