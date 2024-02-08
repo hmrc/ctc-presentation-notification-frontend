@@ -37,6 +37,14 @@ class PresentationNotificationAnswersHelper(
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
+  def customsOfficeDeparture: Option[SummaryListRow] =
+    Option(
+      buildRowWithNoChangeLink(
+        prefix = "customsOfficeOfDeparture",
+        answer = formatAsText(userAnswers.departureData.CustomsOfficeOfDeparture)
+      )
+    )
+
   def limitDate: Option[SummaryListRow] = buildRowWithAnswer[LocalDate](
     page = LimitDatePage,
     optionalAnswer = userAnswers.get(LimitDatePage),

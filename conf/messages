@@ -73,8 +73,9 @@ checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of tran
 checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
 checkYourAnswers.departureTransportMeans = Departure means of transport
 checkYourAnswers.departureTransportMeans.addOrRemove = Add or remove departure means of transport
-
 checkYourAnswers.locationOfGoods = Location of goods
+
+customsOfficeOfDeparture.checkYourAnswersLabel = Office of departure
 
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
@@ -627,3 +628,4 @@ information.sent.paragraph1 = to find out when goods have been released.
 information.sent.paragraph2.withTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
 information.sent.paragraph2.withoutTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0}.
 information.sent.newDeparture = Make another departure declaration
+
