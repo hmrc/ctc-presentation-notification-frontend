@@ -22,12 +22,12 @@ import generators.Generators
 import models.messages.{Address, HolderOfTheTransitProcedure}
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference._
-import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.sections.transport.border.BorderActiveSection
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.sections.transport.equipment.EquipmentSection
 import pages.transport.border.BorderModeOfTransportPage
@@ -360,6 +360,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "departureTransportMeansReads" - {
+      import models.reference.transport.transportMeans.TransportMeansIdentification
       import pages.transport.departureTransportMeans._
 
       "must create a departure transport means" in {
@@ -375,6 +376,33 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe DepartureTransportMeansType05(
               sequenceNumber = "1",
+              typeOfIdentification = typeOfIdentification.code,
+              identificationNumber = identificationNumber,
+              nationality = nationality.code
+            )
+        }
+      }
+    }
+
+    "activeBorderTransportMeansReads" - {
+      import models.reference.transport.border.active.Identification
+      import pages.transport.border.active._
+
+      "must create an active border transport means" in {
+        forAll(arbitrary[CustomsOffice], arbitrary[Identification], Gen.alphaNumStr, arbitrary[Nationality]) {
+          (customsOffice, typeOfIdentification, identificationNumber, nationality) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(CustomsOfficeActiveBorderPage(activeIndex), customsOffice)
+              .setValue(IdentificationPage(activeIndex), typeOfIdentification)
+              .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
+              .setValue(NationalityPage(activeIndex), nationality)
+
+            val reads  = service.activeBorderTransportMeansReads(activeIndex)
+            val result = userAnswers.getValue(BorderActiveSection(activeIndex)).as[ActiveBorderTransportMeansType03](reads)
+
+            result mustBe ActiveBorderTransportMeansType03(
+              sequenceNumber = "1",
+              customsOfficeAtBorderReferenceNumber = customsOffice.id,
               typeOfIdentification = typeOfIdentification.code,
               identificationNumber = identificationNumber,
               nationality = nationality.code

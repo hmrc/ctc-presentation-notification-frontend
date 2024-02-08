@@ -19,9 +19,9 @@ package services.submission
 import generated._
 import models.messages.HolderOfTheTransitProcedure
 import models.reference.TransportMode.{BorderMode, InlandMode}
-import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.reference.{Country, CustomsOffice, Item, Nationality}
 import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress, UserAnswers}
+import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.border.BorderModeOfTransportPage
@@ -123,6 +123,7 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       transportEquipment         <- EquipmentsSection.path.readArray[TransportEquipmentType06](transportEquipmentReads)
       locationOfGoods            <- __.read[LocationOfGoodsType03]
       departureTransportMeans    <- TransportMeansSection.path.readObjectAsArray[DepartureTransportMeansType05](departureTransportMeansReads)
+      activeBorderTransportMeans <- BorderActiveListSection.path.readArray[ActiveBorderTransportMeansType03](activeBorderTransportMeansReads)
       placeOfLoading             <- __.readNullableSafe[PlaceOfLoadingType03]
     } yield ConsignmentType08(
       containerIndicator = containerIndicator,
@@ -210,6 +211,7 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
   }
 
   def departureTransportMeansReads(index: Index): Reads[DepartureTransportMeansType05] = {
+    import models.reference.transport.transportMeans.TransportMeansIdentification
     import pages.transport.departureTransportMeans._
     for {
       typeOfIdentification <- (__ \ TransportMeansIdentificationPage.toString).read[TransportMeansIdentification]
@@ -217,6 +219,23 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       nationality          <- (__ \ TransportMeansNationalityPage.toString).read[Nationality]
     } yield DepartureTransportMeansType05(
       sequenceNumber = index.sequenceNumber,
+      typeOfIdentification = typeOfIdentification.code,
+      identificationNumber = identificationNumber,
+      nationality = nationality.code
+    )
+  }
+
+  def activeBorderTransportMeansReads(index: Index): Reads[ActiveBorderTransportMeansType03] = {
+    import models.reference.transport.border.active.Identification
+    import pages.transport.border.active._
+    for {
+      customsOfficeAtBorderReferenceNumber <- (__ \ CustomsOfficeActiveBorderPage(index).toString).read[CustomsOffice]
+      typeOfIdentification                 <- (__ \ IdentificationPage(index).toString).read[Identification]
+      identificationNumber                 <- (__ \ IdentificationNumberPage(index).toString).read[String]
+      nationality                          <- (__ \ NationalityPage(index).toString).read[Nationality]
+    } yield ActiveBorderTransportMeansType03(
+      sequenceNumber = index.sequenceNumber,
+      customsOfficeAtBorderReferenceNumber = customsOfficeAtBorderReferenceNumber.id,
       typeOfIdentification = typeOfIdentification.code,
       identificationNumber = identificationNumber,
       nationality = nationality.code
