@@ -53,6 +53,6 @@ package object submission {
   implicit class RichJsPath(value: JsPath) {
 
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
-      value.read[T].map(Option(_)) orElse None
+      value.readNullable[T] orElse None
   }
 }

@@ -122,12 +122,12 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       containerIndicator = containerIndicator,
       inlandModeOfTransport = inlandModeOfTransport,
       modeOfTransportAtTheBorder = modeOfTransportAtTheBorder,
-      TransportEquipment = Nil,
+      TransportEquipment = Nil, // TODO
       LocationOfGoods = locationOfGoods,
-      DepartureTransportMeans = Nil,
-      ActiveBorderTransportMeans = Nil,
-      PlaceOfLoading = None,
-      HouseConsignment = Nil
+      DepartureTransportMeans = Nil, // TODO
+      ActiveBorderTransportMeans = Nil, // TODO
+      PlaceOfLoading = None, // TODO
+      HouseConsignment = Nil // TODO
     )
 
   implicit val locationOfGoodsReads: Reads[LocationOfGoodsType03] = {
