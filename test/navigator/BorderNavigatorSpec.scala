@@ -71,7 +71,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   .setValue(ContainerIndicatorPage, true)
                   .copy(departureData =
                     TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
                       TransitOperation = transitOperation.copy(security = securityType)
                     )
                   )
@@ -89,7 +89,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   .setValue(ContainerIndicatorPage, false)
                   .copy(departureData =
                     TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
                       TransitOperation = transitOperation.copy(security = securityType)
                     )
                   )
@@ -106,7 +106,24 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 val userAnswers = emptyUserAnswers
                   .copy(departureData =
                     TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
+                      TransitOperation = transitOperation.copy(security = securityType)
+                    )
+                  )
+                navigator
+                  .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            }
+          }
+
+          "and container indicator is captured in IE013/15 navigate to check your answers page " in {
+
+            forAll(arbitraryActiveBorderTransportMeans.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+              (activeBorderTransportMeans, securityType) =>
+                val userAnswers = emptyUserAnswers
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = Some("1")),
                       TransitOperation = transitOperation.copy(security = securityType)
                     )
                   )
@@ -126,7 +143,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   .setValue(ContainerIndicatorPage, true)
                   .copy(departureData =
                     TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
                       TransitOperation = transitOperation.copy(security = NoSecurityDetails)
                     )
                   )
@@ -146,7 +163,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   .setValue(ContainerIndicatorPage, false)
                   .copy(departureData =
                     TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
+                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
                       TransitOperation = transitOperation.copy(security = NoSecurityDetails)
                     )
                   )
@@ -185,7 +202,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               .setValue(ContainerIndicatorPage, true)
               .copy(departureData =
                 TestMessageData.messageData.copy(
-                  Consignment = consignment.copy(ActiveBorderTransportMeans = None),
+                  Consignment = consignment.copy(ActiveBorderTransportMeans = None, containerIndicator = None),
                   TransitOperation = transitOperation.copy(security = NoSecurityDetails)
                 )
               )
@@ -200,7 +217,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               .setValue(ContainerIndicatorPage, false)
               .copy(departureData =
                 TestMessageData.messageData.copy(
-                  Consignment = consignment.copy(ActiveBorderTransportMeans = None),
+                  Consignment = consignment.copy(ActiveBorderTransportMeans = None, containerIndicator = None),
                   TransitOperation = transitOperation.copy(security = NoSecurityDetails)
                 )
               )
