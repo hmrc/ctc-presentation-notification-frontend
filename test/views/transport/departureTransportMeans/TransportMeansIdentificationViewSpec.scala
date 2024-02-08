@@ -50,6 +50,11 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
 
   behave like pageWithHeading(index.display)
 
+  behave like pageWithContent(
+    "p",
+    "If you are using road as your inland mode and this is your first departure means of transport, you must add the registration number of the road vehicle. From your second departure means onwards, you must add the registration number of the road trailer."
+  )
+
   behave like pageWithRadioItems(args = Seq(index.display))
 
   behave like pageWithSubmitButton("Continue")
