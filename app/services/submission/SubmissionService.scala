@@ -21,6 +21,7 @@ import models.messages.HolderOfTheTransitProcedure
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.{Country, CustomsOffice, Item, Nationality}
 import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress, UserAnswers}
+import pages.sections.houseConsignment.HouseConsignmentListSection
 import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.sections.transport.equipment.EquipmentsSection
@@ -42,7 +43,7 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
   def transform(userAnswers: UserAnswers): CC170CType = {
     val officeOfDeparture = userAnswers.departureData.CustomsOfficeOfDeparture
     implicit val reads: Reads[CC170CType] = for {
-      transitOperation <- transitOperationReads(userAnswers)
+      transitOperation <- __.read[TransitOperationType24](transitOperationReads(userAnswers))
       representative   <- __.readNullableSafe[RepresentativeType05]
       consignment      <- __.read[ConsignmentType08]
     } yield CC170CType(
@@ -125,6 +126,7 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       departureTransportMeans    <- TransportMeansSection.path.readObjectAsArray[DepartureTransportMeansType05](departureTransportMeansReads)
       activeBorderTransportMeans <- BorderActiveListSection.path.readArray[ActiveBorderTransportMeansType03](activeBorderTransportMeansReads)
       placeOfLoading             <- __.readNullableSafe[PlaceOfLoadingType03]
+      houseConsignments          <- HouseConsignmentListSection.path.readArray[HouseConsignmentType06](houseConsignmentReads)
     } yield ConsignmentType08(
       containerIndicator = containerIndicator,
       inlandModeOfTransport = inlandModeOfTransport,
@@ -132,9 +134,9 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       TransportEquipment = transportEquipment,
       LocationOfGoods = locationOfGoods,
       DepartureTransportMeans = departureTransportMeans,
-      ActiveBorderTransportMeans = Nil, // TODO
+      ActiveBorderTransportMeans = activeBorderTransportMeans,
       PlaceOfLoading = placeOfLoading,
-      HouseConsignment = Nil // TODO
+      HouseConsignment = houseConsignments
     )
 
   implicit val locationOfGoodsReads: Reads[LocationOfGoodsType03] = {
@@ -242,15 +244,6 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
     )
   }
 
-  implicit val placeOfLoadingReads: Reads[PlaceOfLoadingType03] = {
-    import pages.loading._
-    (
-      UnLocodePage.path.readNullable[String] and
-        CountryPage.path.readNullable[Country].map(_.map(_.code.code)) and
-        LocationPage.path.readNullable[String]
-    )(PlaceOfLoadingType03.apply _)
-  }
-
   def transportEquipmentReads(equipmentIndex: Index): Reads[TransportEquipmentType06] = {
     import pages.sections.transport.equipment._
     import pages.transport.equipment.index._
@@ -263,9 +256,8 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
 
     def goodsReferenceReads(itemIndex: Index): Reads[GoodsReferenceType02] =
       __.read[Item]
-        .map {
-          item => GoodsReferenceType02(itemIndex.sequenceNumber, item.goodsItemNumber)
-        }
+        .map(_.goodsItemNumber)
+        .map(GoodsReferenceType02(itemIndex.sequenceNumber, _))
 
     for {
       containerIdNo   <- (__ \ ContainerIdentificationNumberPage(equipmentIndex).toString).readNullable[String]
@@ -274,4 +266,40 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
     } yield TransportEquipmentType06(equipmentIndex.sequenceNumber, containerIdNo, seals.length, seals, goodsReferences)
   }
 
+  implicit val placeOfLoadingReads: Reads[PlaceOfLoadingType03] = {
+    import pages.loading._
+    (
+      UnLocodePage.path.readNullable[String] and
+        CountryPage.path.readNullable[Country].map(_.map(_.code.code)) and
+        LocationPage.path.readNullable[String]
+    )(PlaceOfLoadingType03.apply _)
+  }
+
+  def houseConsignmentReads(hcIndex: Index): Reads[HouseConsignmentType06] = {
+    import pages.sections.houseConsignment.departureTransportMeans._
+
+    def departureTransportMeansReads(dtmIndex: Index): Reads[DepartureTransportMeansType05] = {
+      import models.reference.transport.transportMeans.TransportMeansIdentification
+      import pages.houseConsignment.index.departureTransportMeans._
+
+      for {
+        typeOfIdentification <- (__ \ IdentificationPage(hcIndex, dtmIndex).toString).read[TransportMeansIdentification]
+        identificationNumber <- (__ \ IdentificationNumberPage(hcIndex, dtmIndex).toString).read[String]
+        nationality          <- (__ \ CountryPage(hcIndex, dtmIndex).toString).read[Nationality]
+      } yield DepartureTransportMeansType05(
+        sequenceNumber = dtmIndex.sequenceNumber,
+        typeOfIdentification = typeOfIdentification.code,
+        identificationNumber = identificationNumber,
+        nationality = nationality.code
+      )
+    }
+
+    (__ \ DepartureTransportMeansListSection(hcIndex).toString).readArray[DepartureTransportMeansType05](departureTransportMeansReads).map {
+      departureTransportMeans =>
+        HouseConsignmentType06(
+          sequenceNumber = hcIndex.sequenceNumber,
+          DepartureTransportMeans = departureTransportMeans
+        )
+    }
+  }
 }
