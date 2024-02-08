@@ -22,12 +22,7 @@ import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.representative._
 import utils.transformer.transport.LimitDateTransformer
 import utils.transformer.transport.border._
-import utils.transformer.transport.equipment.{
-  ContainerIdentificationNumberTransformer,
-  ContainerIndicatorTransformer,
-  SealTransformer,
-  TransportEquipmentTransformer
-}
+import utils.transformer.transport.equipment._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -37,30 +32,32 @@ class DepartureDataTransformerTest extends SpecBase {
 
   "DepartureDataTransformer" - {
     "should call all transformers" in {
+      val identificationTransformer                        = mock[IdentificationTransformer]
+      val identificationNumberTransformer                  = mock[IdentificationNumberTransformer]
+      val transportEquipmentTransformer                    = mock[TransportEquipmentTransformer]
+      val transportEquipmentYesNoTransformer               = mock[TransportEquipmentYesNoTransformer]
+      val containerIdentificationNumberTransformer         = mock[ContainerIdentificationNumberTransformer]
+      val containerIdentificationNumberYesNoTransformer    = mock[ContainerIdentificationNumberYesNoTransformer]
+      val sealTransformer                                  = mock[SealTransformer]
+      val sealYesNoTransformer                             = mock[AddSealYesNoTransformer]
+      val itemTransformer                                  = mock[ItemTransformer]
+      val modeOfTransportAtTheBorderTransformer            = mock[ModeOfTransportAtTheBorderTransformer]
+      val addBorderModeOfTransportYesNoTransformer         = mock[AddBorderModeOfTransportYesNoTransformer]
+      val userAnswers                                      = mock[UserAnswers]
+      val userAnswersWithEquipment                         = mock[UserAnswers]
       val addAnotherBorderMeansOfTransportYesNoTransformer = mock[AddAnotherBorderMeansOfTransportYesNoTransformer]
       val addBorderMeansOfTransportYesNoTransformer        = mock[AddBorderMeansOfTransportYesNoTransformer]
       val addConveyanceReferenceYesNoTransformer           = mock[AddConveyanceReferenceYesNoTransformer]
       val conveyanceReferenceTransformer                   = mock[ConveyanceReferenceTransformer]
       val customsOfficeTransformer                         = mock[CustomsOfficeTransformer]
-      val identificationTransformer                        = mock[IdentificationTransformer]
       val nationalityTransformer                           = mock[NationalityTransformer]
-      val identificationNumberTransformer                  = mock[IdentificationNumberTransformer]
-      val transportEquipmentTransformer                    = mock[TransportEquipmentTransformer]
-      val containerIdentificationNumberTransformer         = mock[ContainerIdentificationNumberTransformer]
-      val sealTransformer                                  = mock[SealTransformer]
       val limitDateTransformer                             = mock[LimitDateTransformer]
       val actingAsRepresentativeTransformer                = mock[ActingAsRepresentativeTransformer]
       val representativeEoriTransformer                    = mock[RepresentativeEoriTransformer]
       val addRepresentativeContactDetailsYesNoTransformer  = mock[AddRepresentativeContactDetailsYesNoTransformer]
       val representativeNameTransformer                    = mock[RepresentativeNameTransformer]
       val representativePhoneNumberTransformer             = mock[RepresentativePhoneNumberTransformer]
-
-      val containerIndicatorTransformer            = mock[ContainerIndicatorTransformer]
-      val modeOfTransportAtTheBorderTransformer    = mock[ModeOfTransportAtTheBorderTransformer]
-      val addBorderModeOfTransportYesNoTransformer = mock[AddBorderModeOfTransportYesNoTransformer]
-
-      val userAnswers              = mock[UserAnswers]
-      val userAnswersWithEquipment = mock[UserAnswers]
+      val containerIndicatorTransformer                    = mock[ContainerIndicatorTransformer]
 
       val updateAnswersFn: UserAnswers => Future[UserAnswers] = _ => successful(userAnswers)
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
@@ -68,6 +65,17 @@ class DepartureDataTransformerTest extends SpecBase {
           if (input != userAnswersWithEquipment) fail("This transformer must be called after transportEquipmentTransformer")
           else successful(input)
       }
+
+      when(identificationTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+      when(identificationNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(transportEquipmentYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
 
       when(addAnotherBorderMeansOfTransportYesNoTransformer.transform(hc)).thenReturn(updateAnswersFn)
       when(addBorderMeansOfTransportYesNoTransformer.transform(hc)).thenReturn(updateAnswersFn)
@@ -85,7 +93,22 @@ class DepartureDataTransformerTest extends SpecBase {
       when(containerIdentificationNumberTransformer.transform(hc)).thenReturn(verifyTransportEquipmentTransformersOrder)
       when(sealTransformer.transform(hc)).thenReturn(verifyTransportEquipmentTransformersOrder)
 
+      when(containerIdentificationNumberYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+
+      when(limitDateTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
       when(limitDateTransformer.transform(hc)).thenReturn(updateAnswersFn)
+
+      when(sealYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
+
+      when(itemTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswersWithEquipment)
+      )
 
       when(containerIndicatorTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswers)
@@ -129,9 +152,13 @@ class DepartureDataTransformerTest extends SpecBase {
         identificationNumberTransformer,
         nationalityTransformer,
         transportEquipmentTransformer,
+        transportEquipmentYesNoTransformer,
         containerIdentificationNumberTransformer,
+        containerIdentificationNumberYesNoTransformer,
         sealTransformer,
+        sealYesNoTransformer,
         limitDateTransformer,
+        itemTransformer,
         actingAsRepresentativeTransformer,
         representativeEoriTransformer,
         addRepresentativeContactDetailsYesNoTransformer,
@@ -153,14 +180,18 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(identificationNumberTransformer, times(1)).transform(hc)
           verify(nationalityTransformer, times(1)).transform(hc)
           verify(transportEquipmentTransformer, times(1)).transform(hc)
+          verify(transportEquipmentYesNoTransformer, times(1)).transform(hc)
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
+          verify(containerIdentificationNumberYesNoTransformer, times(1)).transform(hc)
           verify(sealTransformer, times(1)).transform(hc)
+          verify(sealYesNoTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
           verify(actingAsRepresentativeTransformer, times(1)).transform(hc)
           verify(representativeEoriTransformer, times(1)).transform(hc)
           verify(addRepresentativeContactDetailsYesNoTransformer, times(1)).transform(hc)
           verify(representativeNameTransformer, times(1)).transform(hc)
           verify(representativePhoneNumberTransformer, times(1)).transform(hc)
+          verify(itemTransformer, times(1)).transform(hc)
           verify(containerIndicatorTransformer, times(1)).transform(hc)
           verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
           verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)
