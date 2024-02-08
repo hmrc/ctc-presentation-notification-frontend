@@ -20,17 +20,18 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
 import models.messages.{Address, HolderOfTheTransitProcedure}
-import models.reference.{Country, CountryCode, CustomsOffice, Item}
+import models.reference.TransportMode.{BorderMode, InlandMode}
+import models.reference._
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.sections.transport.equipment.EquipmentSection
-import pages.transport.LimitDatePage
-import pages.transport.equipment.ItemPage
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.{ContainerIndicatorPage, InlandModePage, LimitDatePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.__
@@ -133,9 +134,19 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
   "Consignment" - {
 
-    "transportEquipmentsReads" - {
+    "consignmentReads" - {
+      import pages.locationOfGoods._
+      import pages.transport.equipment._
+      import pages.transport.equipment.index._
+      import pages.transport.equipment.index.seals._
+
       "must return list of transport equipments" in {
         val userAnswers = emptyUserAnswers
+          .setValue(ContainerIndicatorPage, true)
+          .setValue(InlandModePage, InlandMode("im", ""))
+          .setValue(BorderModeOfTransportPage, BorderMode("bm", ""))
+          .setValue(LocationTypePage, LocationType("tol", ""))
+          .setValue(LocationOfGoodsPage, LocationOfGoodsIdentification("qoi", ""))
           .setValue(ContainerIdentificationNumberPage(Index(0)), "cin1")
           .setValue(SealIdentificationNumberPage(Index(0), Index(0)), "sin11")
           .setValue(SealIdentificationNumberPage(Index(0), Index(1)), "sin12")
@@ -147,10 +158,20 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           .setValue(ItemPage(Index(1), Index(0)), Item(21, "id21"))
           .setValue(ItemPage(Index(1), Index(1)), Item(22, "id22"))
 
-        val reads  = service.transportEquipmentsReads
-        val result = userAnswers.data.as[Seq[TransportEquipmentType06]](reads)
+        val reads  = service.consignmentReads
+        val result = userAnswers.data.as[ConsignmentType08](reads)
 
-        result mustBe Seq(
+        result.containerIndicator.value mustBe Number1
+
+        result.inlandModeOfTransport.value mustBe "im"
+
+        result.modeOfTransportAtTheBorder.value mustBe "bm"
+
+        result.LocationOfGoods.typeOfLocation mustBe "tol"
+
+        result.LocationOfGoods.qualifierOfIdentification mustBe "qoi"
+
+        result.TransportEquipment mustBe Seq(
           TransportEquipmentType06(
             sequenceNumber = "1",
             containerIdentificationNumber = Some("cin1"),
@@ -182,6 +203,10 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "transportEquipmentReads" - {
+      import pages.transport.equipment._
+      import pages.transport.equipment.index._
+      import pages.transport.equipment.index.seals._
+
       "must return TransportEquipment when user answers exist" in {
         val userAnswers = emptyUserAnswers
           .setValue(ContainerIdentificationNumberPage(equipmentIndex), "containerIdentification")
@@ -330,6 +355,30 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             PostcodeAddress = None,
             ContactPerson = None
           )
+        }
+      }
+    }
+
+    "departureTransportMeansReads" - {
+      import pages.transport.departureTransportMeans._
+
+      "must create a departure transport means" in {
+        forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Nationality]) {
+          (typeOfIdentification, identificationNumber, nationality) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(TransportMeansIdentificationPage, typeOfIdentification)
+              .setValue(TransportMeansIdentificationNumberPage, identificationNumber)
+              .setValue(TransportMeansNationalityPage, nationality)
+
+            val reads  = service.departureTransportMeansReads(Index(0))
+            val result = userAnswers.getValue(TransportMeansSection).as[DepartureTransportMeansType05](reads)
+
+            result mustBe DepartureTransportMeansType05(
+              sequenceNumber = "1",
+              typeOfIdentification = typeOfIdentification.code,
+              identificationNumber = identificationNumber,
+              nationality = nationality.code
+            )
         }
       }
     }
