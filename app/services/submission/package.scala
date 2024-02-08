@@ -17,7 +17,8 @@
 package services
 
 import generated.{Flag, Number0, Number1}
-import play.api.libs.json.{JsPath, JsSuccess, Reads}
+import models.Index
+import play.api.libs.json.{JsArray, JsPath, JsSuccess, Reads}
 import scalaxb.XMLCalendar
 
 import java.time.format.DateTimeFormatter
@@ -25,6 +26,21 @@ import java.time.{LocalDate, LocalDateTime}
 import javax.xml.datatype.XMLGregorianCalendar
 
 package object submission {
+
+  implicit class RichJsPath(value: JsPath) {
+
+    def readArray[T](implicit reads: Index => Reads[T]): Reads[Seq[T]] =
+      value
+        .readWithDefault(JsArray())
+        .map {
+          _.value.zipWithIndex.flatMap {
+            case (jsValue, index) => jsValue.validate[T](reads(Index(index))).asOpt
+          }.toSeq
+        }
+
+    def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
+      value.readNullable[T] orElse None
+  }
 
   implicit def boolToFlag(x: Boolean): Flag =
     if (x) Number1 else Number0
@@ -48,11 +64,5 @@ package object submission {
 
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
-  }
-
-  implicit class RichJsPath(value: JsPath) {
-
-    def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
-      value.readNullable[T] orElse None
   }
 }
