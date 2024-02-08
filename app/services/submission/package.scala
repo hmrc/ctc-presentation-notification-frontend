@@ -17,7 +17,7 @@
 package services
 
 import generated.{Flag, Number0, Number1}
-import play.api.libs.json.{JsSuccess, Reads}
+import play.api.libs.json.{JsPath, JsSuccess, Reads}
 import scalaxb.XMLCalendar
 
 import java.time.format.DateTimeFormatter
@@ -48,5 +48,11 @@ package object submission {
 
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
+  }
+
+  implicit class RichJsPath(value: JsPath) {
+
+    def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
+      value.read[T].map(Option(_)) orElse None
   }
 }

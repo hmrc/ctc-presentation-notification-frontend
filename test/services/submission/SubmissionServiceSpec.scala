@@ -20,6 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
 import models.messages.{Address, HolderOfTheTransitProcedure}
+import models.reference.{Country, CustomsOffice}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, PostalCodeAddress}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -27,6 +29,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.LimitDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.__
 import scalaxb.XMLCalendar
 import services.DateTimeService
 
@@ -95,13 +98,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
   }
 
-  "transitOperation" - {
+  "transitOperationReads" - {
     "must create transit operation" - {
       "when limit date defined" in {
         val userAnswers = emptyUserAnswers
           .setValue(LimitDatePage, LocalDate.of(2020, 1, 1))
 
-        val reads  = service.transitOperation(userAnswers)
+        val reads  = service.transitOperationReads(userAnswers)
         val result = userAnswers.data.as[TransitOperationType24](reads)
 
         result mustBe TransitOperationType24(
@@ -113,7 +116,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       "when limit date undefined" in {
         val userAnswers = emptyUserAnswers
 
-        val reads  = service.transitOperation(userAnswers)
+        val reads  = service.transitOperationReads(userAnswers)
         val result = userAnswers.data.as[TransitOperationType24](reads)
 
         result mustBe TransitOperationType24(
@@ -188,14 +191,14 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
   }
 
-  "representative" - {
+  "representativeReads" - {
     import pages.representative._
 
     "when representative not present in user answers" - {
       "must not create representative" in {
         val userAnswers = emptyUserAnswers
 
-        val reads  = service.representative()
+        val reads  = __.readNullableSafe[RepresentativeType05](service.representativeReads)
         val result = userAnswers.data.as[Option[RepresentativeType05]](reads)
 
         result mustBe None
@@ -213,7 +216,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(NamePage, name)
                 .setValue(RepresentativePhoneNumberPage, phoneNumber)
 
-              val reads  = service.representative()
+              val reads  = __.readNullableSafe[RepresentativeType05](service.representativeReads)
               val result = userAnswers.data.as[Option[RepresentativeType05]](reads)
 
               result mustBe Some(
@@ -239,7 +242,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(EoriPage, eori)
                 .setValue(AddRepresentativeContactDetailsYesNoPage, false)
 
-              val reads  = service.representative()
+              val reads  = __.readNullableSafe[RepresentativeType05](service.representativeReads)
               val result = userAnswers.data.as[Option[RepresentativeType05]](reads)
 
               result mustBe Some(
@@ -251,6 +254,139 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
           }
         }
+      }
+    }
+  }
+
+  "locationOfGoodsReads" - {
+    import pages.locationOfGoods._
+
+    "must create location of goods" - {
+
+      val locationType              = arbitrary[LocationType].sample.value
+      val qualifierOfIdentification = arbitrary[LocationOfGoodsIdentification].sample.value
+      val authorisationNumber       = Gen.option(Gen.alphaNumStr).sample.value
+      val additionalIdentifier      = Gen.option(Gen.alphaNumStr).sample.value
+      val unLocode                  = Gen.option(Gen.alphaNumStr).sample.value
+      val customsOffice             = arbitrary[CustomsOffice].sample.value
+      val coordinates               = arbitrary[Coordinates].sample.value
+      val eori                      = Gen.alphaNumStr.sample.value
+      val country                   = arbitrary[Country].sample.value
+      val address                   = arbitrary[DynamicAddress].sample.value
+      val postcodeAddress           = arbitrary[PostalCodeAddress].sample.value
+      val name                      = Gen.alphaNumStr.sample.value
+      val phoneNumber               = Gen.alphaNumStr.sample.value
+
+      "when all options defined" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(LocationTypePage, locationType)
+          .setValue(LocationOfGoodsPage, qualifierOfIdentification)
+          .setValue(AuthorisationNumberPage, authorisationNumber)
+          .setValue(AdditionalIdentifierPage, additionalIdentifier)
+          .setValue(UnLocodePage, unLocode)
+          .setValue(CustomsOfficeIdentifierPage, customsOffice)
+          .setValue(CoordinatesPage, coordinates)
+          .setValue(EoriPage, eori)
+          .setValue(CountryPage, country)
+          .setValue(AddressPage, address)
+          .setValue(PostalCodePage, postcodeAddress)
+          .setValue(contact.NamePage, name)
+          .setValue(contact.PhoneNumberPage, phoneNumber)
+
+        val reads  = service.locationOfGoodsReads
+        val result = userAnswers.data.as[LocationOfGoodsType03](reads)
+
+        result mustBe LocationOfGoodsType03(
+          typeOfLocation = locationType.code,
+          qualifierOfIdentification = qualifierOfIdentification.qualifier,
+          authorisationNumber = authorisationNumber,
+          additionalIdentifier = additionalIdentifier,
+          UNLocode = unLocode,
+          CustomsOffice = Some(
+            CustomsOfficeType02(
+              referenceNumber = customsOffice.id
+            )
+          ),
+          GNSS = Some(
+            GNSSType(
+              latitude = coordinates.latitude,
+              longitude = coordinates.longitude
+            )
+          ),
+          EconomicOperator = Some(
+            EconomicOperatorType03(
+              identificationNumber = eori
+            )
+          ),
+          Address = Some(
+            AddressType14(
+              streetAndNumber = address.numberAndStreet,
+              postcode = address.postalCode,
+              city = address.city,
+              country = country.code.code
+            )
+          ),
+          PostcodeAddress = Some(
+            PostcodeAddressType02(
+              houseNumber = Some(postcodeAddress.streetNumber),
+              postcode = postcodeAddress.postalCode,
+              country = postcodeAddress.country.code.code
+            )
+          ),
+          ContactPerson = Some(
+            ContactPersonType06(
+              name = name,
+              phoneNumber = phoneNumber,
+              eMailAddress = None
+            )
+          )
+        )
+      }
+
+      "when type of location not inferred" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(LocationTypePage, locationType)
+          .setValue(LocationOfGoodsPage, qualifierOfIdentification)
+
+        val reads  = service.locationOfGoodsReads
+        val result = userAnswers.data.as[LocationOfGoodsType03](reads)
+
+        result mustBe LocationOfGoodsType03(
+          typeOfLocation = locationType.code,
+          qualifierOfIdentification = qualifierOfIdentification.qualifier,
+          authorisationNumber = None,
+          additionalIdentifier = None,
+          UNLocode = None,
+          CustomsOffice = None,
+          GNSS = None,
+          EconomicOperator = None,
+          Address = None,
+          PostcodeAddress = None,
+          ContactPerson = None
+        )
+      }
+
+      "when type of location inferred" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(InferredLocationTypePage, locationType)
+          .setValue(LocationOfGoodsPage, qualifierOfIdentification)
+
+        val reads  = service.locationOfGoodsReads
+        val result = userAnswers.data.as[LocationOfGoodsType03](reads)
+
+        result mustBe LocationOfGoodsType03(
+          typeOfLocation = locationType.code,
+          qualifierOfIdentification = qualifierOfIdentification.qualifier,
+          authorisationNumber = None,
+          additionalIdentifier = None,
+          UNLocode = None,
+          CustomsOffice = None,
+          GNSS = None,
+          EconomicOperator = None,
+          Address = None,
+          PostcodeAddress = None,
+          ContactPerson = None
+        )
       }
     }
   }
