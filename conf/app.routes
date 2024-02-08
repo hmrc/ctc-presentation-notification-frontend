@@ -11,11 +11,11 @@
 ->         /hmrc-frontend                                                     hmrcfrontend.Routes
 GET        /assets/*file                                                      controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /complete-declaration/more-information/:departureId                controllers.MoreInformationController.onPageLoad(departureId: String)
-POST       /complete-declaration/more-information/:departureId                controllers.MoreInformationController.onSubmit(departureId: String)
+GET        /complete-prelodged-declaration/more-information/:departureId      controllers.MoreInformationController.onPageLoad(departureId: String)
+POST       /complete-prelodged-declaration/more-information/:departureId      controllers.MoreInformationController.onSubmit(departureId: String)
 
-GET        /complete-declaration/check-information/:departureId               controllers.CheckInformationController.onPageLoad(departureId: String)
-POST       /complete-declaration/check-information/:departureId               controllers.CheckInformationController.onSubmit(departureId: String)
+GET        /complete-prelodged-declaration/check-information/:departureId     controllers.CheckInformationController.onPageLoad(departureId: String)
+POST       /complete-prelodged-declaration/check-information/:departureId     controllers.CheckInformationController.onSubmit(departureId: String)
 
 GET        /keep-alive                                                        controllers.KeepAliveController.keepAlive(departureId: Option[String] = None)
 GET        /:departureId/keep-alive                                           controllers.KeepAliveController.keepAlive(departureId: Option[String])

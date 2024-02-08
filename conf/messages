@@ -76,13 +76,13 @@ checkYourAnswers.departureTransportMeans.addOrRemove = Add or remove departure m
 
 checkYourAnswers.locationOfGoods = Location of goods
 
-moreInformation.title = More information needed to complete declaration
-moreInformation.heading = More information needed to complete declaration
+moreInformation.title = More information needed to complete pre-lodged declaration
+moreInformation.heading = More information needed to complete pre-lodged declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.
 moreInformation.paragraph2 = Answer the following questions to complete the declaration.
 
-checkInformation.title = Confirmation needed to complete declaration
-checkInformation.heading = Confirmation needed to complete declaration
+checkInformation.title = Confirmation needed to complete pre-lodged declaration
+checkInformation.heading = Confirmation needed to complete pre-lodged declaration
 checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
 checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
 
