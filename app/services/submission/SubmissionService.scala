@@ -19,12 +19,15 @@ package services.submission
 import generated._
 import models.messages.HolderOfTheTransitProcedure
 import models.reference.TransportMode.{BorderMode, InlandMode}
-import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, EoriNumber, LocationOfGoodsIdentification, LocationType, PostalCodeAddress, UserAnswers}
+import models.reference.{Country, CustomsOffice, Item}
+import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress, UserAnswers}
+import pages.sections.transport.equipment.{ItemsSection, SealsSection}
 import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.{ContainerIndicatorPage, InlandModePage, LimitDatePage}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json.{__, JsArray, Reads}
 import scalaxb.DataRecord
 import services.DateTimeService
 
@@ -202,4 +205,52 @@ class SubmissionService @Inject() (dateTimeService: DateTimeService) {
       ContactPerson = contactPerson
     )
   }
+
+  def placeOfLoading: Reads[Option[PlaceOfLoadingType03]] = {
+    import pages.loading._
+    val value = UnLocodePage.path.readNullable[String] and CountryPage.path.readNullable[Country] and LocationPage.path.readNullable[String]
+    value.tupled
+      .map {
+        case (None, None, None)            => None
+        case (unLocode, country, location) => Some(PlaceOfLoadingType03(UNLocode = unLocode, country = country.map(_.code.code), location = location))
+      }
+  }
+
+  def transportEquipmentReads(equipmentIndex: Index): Reads[TransportEquipmentType06] = {
+    def sealReads(sealIndex: Index): Reads[SealType05] =
+      (__ \ SealIdentificationNumberPage(equipmentIndex, sealIndex).toString)
+        .read[String]
+        .map(
+          id => SealType05(sealIndex.sequenceNumber, id)
+        )
+    def goodsReferenceReads(itemIndex: Index): Reads[GoodsReferenceType02] =
+      __
+        .read[Item]
+        .map(
+          item => GoodsReferenceType02(itemIndex.sequenceNumber, item.goodsItemNumber)
+        )
+
+    val sealsRead = SealsSection(equipmentIndex).path
+      .readWithDefault[JsArray](JsArray())
+      .map {
+        _.value.zipWithIndex.flatMap {
+          case (sealJsValue, sealIndex) =>
+            sealJsValue.validate[SealType05](sealReads(Index(sealIndex))).asOpt
+        }.toSeq
+      }
+
+    val goodsReferencesRead = ItemsSection(equipmentIndex).path
+      .readWithDefault(JsArray())
+      .map(_.value.zipWithIndex.flatMap {
+        case (itemJsValue, itemIndex) =>
+          itemJsValue.validate[GoodsReferenceType02](goodsReferenceReads(Index(itemIndex))).asOpt
+      }.toSeq)
+
+    for {
+      containerIdNo   <- ContainerIdentificationNumberPage(equipmentIndex).path.readNullable[String]
+      seals           <- sealsRead
+      goodsReferences <- goodsReferencesRead
+    } yield TransportEquipmentType06(equipmentIndex.sequenceNumber, containerIdNo, seals.length, seals, goodsReferences)
+  }
+
 }
