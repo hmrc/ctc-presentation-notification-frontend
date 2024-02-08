@@ -30,17 +30,21 @@ import pages.transport.{ContainerIndicatorPage, InlandModePage, LimitDatePage}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
+import scalaxb.`package`.toXML
 import services.DateTimeService
 
 import java.time.LocalDate
 import javax.inject.Inject
-import scala.xml.NamespaceBinding
+import scala.xml.{NamespaceBinding, NodeSeq}
 
 class SubmissionService @Inject() (dateTimeService: DateTimeService) {
 
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
 
-  def transform(userAnswers: UserAnswers): CC170CType = {
+  def buildXml(userAnswers: UserAnswers): NodeSeq =
+    toXML(transform(userAnswers), s"ncts:${CC170C.toString}", scope)
+
+  private def transform(userAnswers: UserAnswers): CC170CType = {
     val officeOfDeparture = userAnswers.departureData.CustomsOfficeOfDeparture
     implicit val reads: Reads[CC170CType] = for {
       transitOperation <- __.read[TransitOperationType24](transitOperationReads(userAnswers))
