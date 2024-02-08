@@ -20,8 +20,7 @@ import base.SpecBase
 import models.messages.TransportEquipment
 import models.{Index, UserAnswers}
 import pages.transport.border.active.IdentificationNumberPage
-import pages.transport.equipment.AddAnotherTransportEquipmentPage
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.equipment.index.{AddSealYesNoPage, ContainerIdentificationNumberPage}
 
 class ContainerIdentificationNumberTransformerTest extends SpecBase {
 
@@ -39,11 +38,11 @@ class ContainerIdentificationNumberTransformerTest extends SpecBase {
             )
           )
         )(emptyUserAnswers)
-        .set(AddAnotherTransportEquipmentPage(Index(0)), true)
+        .set(AddSealYesNoPage(Index(0)), true)
         .get
-        .set(AddAnotherTransportEquipmentPage(Index(1)), true)
+        .set(AddSealYesNoPage(Index(1)), true)
         .get
-        .set(AddAnotherTransportEquipmentPage(Index(2)), true)
+        .set(AddSealYesNoPage(Index(2)), true)
         .get
 
       userAnswersWithEquipments.get(IdentificationNumberPage(Index(0))) mustBe None

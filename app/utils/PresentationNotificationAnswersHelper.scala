@@ -65,7 +65,7 @@ class PresentationNotificationAnswersHelper(
     page = AddBorderModeOfTransportYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.border.addBorderModeOfTransport",
-    findValueInDepartureData = _.Consignment.isTransportDefined,
+    findValueInDepartureData = _.Consignment.isModeOfTransportDefined,
     id = Some("change-add-border-mode")
   )
 
