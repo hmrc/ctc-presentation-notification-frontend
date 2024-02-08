@@ -20,13 +20,16 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
 import models.messages.{Address, HolderOfTheTransitProcedure}
-import models.reference.{Country, CountryCode, CustomsOffice}
+import models.reference.{Country, CountryCode, CustomsOffice, Item}
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, PostalCodeAddress}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.LimitDatePage
+import pages.transport.equipment.ItemPage
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.__
@@ -128,6 +131,27 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "Consignment" - {
+
+    "transportEquipment" - {
+      "must return TransportEquipment when user answers exist" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(ContainerIdentificationNumberPage(equipmentIndex), "containerIdentification")
+          .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "sealIdentification")
+          .setValue(ItemPage(equipmentIndex, itemIndex), Item(5, "itemDescription"))
+
+        val reads  = service.transportEquipmentReads(equipmentIndex)
+        val result = userAnswers.data.as[TransportEquipmentType06](reads)
+
+        result mustBe TransportEquipmentType06(
+          sequenceNumber = equipmentIndex.sequenceNumber,
+          containerIdentificationNumber = Some("containerIdentification"),
+          numberOfSeals = 1,
+          Seal = Seq(SealType05(sealIndex.sequenceNumber, "sealIdentification")),
+          GoodsReference = Seq(GoodsReferenceType02(itemIndex.sequenceNumber, 5))
+        )
+      }
+    }
+
     "placeOfLoading" - {
       import pages.loading._
       "must create PlaceOfLoading when user answers exist" in {
