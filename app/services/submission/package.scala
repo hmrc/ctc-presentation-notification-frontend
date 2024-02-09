@@ -33,11 +33,6 @@ package object submission {
 
   implicit class RichJsPath(value: JsPath) {
 
-    def readObjectAsArray[T](implicit reads: Index => Reads[T]): Reads[Seq[T]] =
-      value
-        .readNullableSafe[T](reads(Index(0)))
-        .flatMap(_.toSeq)
-
     def readArray[T](implicit reads: Index => Reads[T]): Reads[Seq[T]] =
       value
         .readWithDefault(JsArray())

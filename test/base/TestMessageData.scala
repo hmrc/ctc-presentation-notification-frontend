@@ -83,8 +83,19 @@ object TestMessageData {
     Some("REF2")
   )
 
+  val departureTransportMeansIdentification = "10"
+  val departureTransportMeansNationality    = "FR"
+  val transportMeansIdentificationNumber    = "BX857GGE"
+
   val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
-    borderTransportMeans
+    ActiveBorderTransportMeans(
+      "11",
+      Some("GB000028"),
+      Some(activeBorderTransportMeansIdentification),
+      Some(activeBorderTransportMeansIdentificationNumber),
+      Some("FR"),
+      Some("REF2")
+    )
   )
 
   val departureTransportMeans: DepartureTransportMeans =
@@ -96,13 +107,15 @@ object TestMessageData {
 
   val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
 
+  val inlandModeOfTransport = "3"
+
   val consignment: Consignment = Consignment(
     containerIndicator = Some("1"),
-    inlandModeOfTransport = Some("3"),
+    inlandModeOfTransport = Some(inlandModeOfTransport),
     modeOfTransportAtTheBorder = Some("2"),
     TransportEquipment = Some(transportEquipment),
     LocationOfGoods = Some(locationOfGoods),
-    DepartureTransportMeans = Some(departureTransportMeans),
+    DepartureTransportMeans = Some(Seq(departureTransportMeans)),
     ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
     PlaceOfLoading = Some(placeOfLoading),
     HouseConsignment = Seq(
@@ -131,8 +144,8 @@ object TestMessageData {
 
   val holderOfTheTransitProcedure: HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
     identificationNumber = Some("identificationNumber"),
+    name = Some("trader1"),
     TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
-    name = None,
     ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
     Address = Some(Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB"))
   )
@@ -181,6 +194,7 @@ object TestMessageData {
        |    ],
        |    "HolderOfTheTransitProcedure": {
        |        "identificationNumber": "identificationNumber",
+       |        "name": "trader1",
        |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
        |        "ContactPerson": {
        |            "name": "name",
@@ -334,6 +348,7 @@ object TestMessageData {
        |    ],
        |    "HolderOfTheTransitProcedure": {
        |        "identificationNumber": "identificationNumber",
+       |        "name": "trader1",
        |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
        |        "ContactPerson": {
        |            "name": "name",

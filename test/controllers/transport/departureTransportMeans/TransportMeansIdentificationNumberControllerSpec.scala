@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.border.IdentificationNumberFormProvider
 import generators.Generators
-import models.messages.DepartureTransportMeans
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -39,8 +38,6 @@ import scala.concurrent.Future
 
 class TransportMeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val identificationType1 = TransportMeansIdentification("40", "IATA flight number")
-
   private val prefix = "consignment.departureTransportMeans.identificationNumber"
 
   private val formProvider = new IdentificationNumberFormProvider()
@@ -51,7 +48,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
     mock[MeansOfTransportIdentificationTypesService]
 
   private lazy val identificationNumberRoute =
-    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode).url
+    controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController.onPageLoad(departureId, mode, transportIndex).url
 
   private val validAnswer = "testString"
 
@@ -69,7 +66,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
             None
           )(
             emptyUserAnswers
-              .setValue(TransportMeansIdentificationPage, identifier)
+              .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
           )
 
           setExistingUserAnswers(userAnswers)
@@ -82,47 +79,16 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, departureId, mode, identifier.asString)(request, messages).toString
+            view(form, departureId, mode, identifier.asString, transportIndex)(request, messages).toString
       }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the 15" in {
-
-      when(mockMeansOfTransportIdentificationTypesService.getBorderMeansIdentification(any())(any()))
-        .thenReturn(Future.successful(identificationType1))
-
-      val userAnswers = UserAnswers.setDepartureTransportMeansAnswersLens.set(
-        Some(
-          DepartureTransportMeans(
-            typeOfIdentification = Some(identificationType1.code),
-            identificationNumber = Some(validAnswer),
-            nationality = None
-          )
-        )
-      )(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers)
-
-      val request    = FakeRequest(GET, identificationNumberRoute)
-      val filledForm = form.bind(Map("value" -> validAnswer))
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[TransportMeansIdentificationNumberView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode, identificationType1.asString)(request, messages).toString
-
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       forAll(arbitrary[TransportMeansIdentification]) {
         identifier =>
           val userAnswers = emptyUserAnswers
-            .setValue(TransportMeansIdentificationPage, identifier)
-            .setValue(TransportMeansIdentificationNumberPage, "testString")
+            .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
+            .setValue(TransportMeansIdentificationNumberPage(transportIndex), "testString")
 
           setExistingUserAnswers(userAnswers)
 
@@ -136,7 +102,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, departureId, mode, identifier.asString)(request, messages).toString
+            view(filledForm, departureId, mode, identifier.asString, transportIndex)(request, messages).toString
       }
     }
 
@@ -144,7 +110,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
       forAll(arbitrary[TransportMeansIdentification]) {
         identifier =>
           val userAnswers = emptyUserAnswers
-            .setValue(TransportMeansIdentificationPage, identifier)
+            .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
 
           setExistingUserAnswers(userAnswers)
 
@@ -166,7 +132,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
         forAll(arbitrary[TransportMeansIdentification]) {
           identifier =>
             val userAnswers = emptyUserAnswers
-              .setValue(TransportMeansIdentificationPage, identifier)
+              .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
             setExistingUserAnswers(userAnswers)
 
             val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
@@ -179,7 +145,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
             val view = injector.instanceOf[TransportMeansIdentificationNumberView]
 
             contentAsString(result) mustEqual
-              view(filledForm, departureId, mode, identifier.asString)(request, messages).toString
+              view(filledForm, departureId, mode, identifier.asString, transportIndex)(request, messages).toString
         }
       }
 

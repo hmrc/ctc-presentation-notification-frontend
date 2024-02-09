@@ -30,7 +30,7 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
   override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
-    injector.instanceOf[TransportMeansIdentificationView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[TransportMeansIdentificationView].apply(form, departureId, values, NormalMode, transportIndex)(fakeRequest, messages)
 
   override val prefix: String = "consignment.departureTransportMeans.identification"
 
@@ -49,6 +49,11 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
   behave like pageWithSectionCaption("Departure means of transport")
 
   behave like pageWithHeading(index.display)
+
+  behave like pageWithContent(
+    "p",
+    "If you are using road as your inland mode and this is your first departure means of transport, you must add the registration number of the road vehicle. From your second departure means onwards, you must add the registration number of the road trailer."
+  )
 
   behave like pageWithRadioItems(args = Seq(index.display))
 

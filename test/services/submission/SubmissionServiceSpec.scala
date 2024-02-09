@@ -296,9 +296,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             .setValue(SealIdentificationNumberPage(Index(1), Index(1)), "sin22")
             .setValue(ItemPage(Index(1), Index(0)), Item(21, "id21"))
             .setValue(ItemPage(Index(1), Index(1)), Item(22, "id22"))
-            .setValue(dtm.TransportMeansIdentificationPage, DTMIdentification("dtmtoi1", ""))
-            .setValue(dtm.TransportMeansIdentificationNumberPage, "dtmin1")
-            .setValue(dtm.TransportMeansNationalityPage, Nationality("dtmn1", ""))
+            .setValue(dtm.TransportMeansIdentificationPage(Index(0)), DTMIdentification("dtmtoi1", ""))
+            .setValue(dtm.TransportMeansIdentificationNumberPage(Index(0)), "dtmin1")
+            .setValue(dtm.TransportMeansNationalityPage(Index(0)), Nationality("dtmn1", ""))
+            .setValue(dtm.TransportMeansIdentificationPage(Index(1)), DTMIdentification("dtmtoi2", ""))
+            .setValue(dtm.TransportMeansIdentificationNumberPage(Index(1)), "dtmin2")
+            .setValue(dtm.TransportMeansNationalityPage(Index(1)), Nationality("dtmn2", ""))
             .setValue(abtm.CustomsOfficeActiveBorderPage(Index(0)), CustomsOffice("abtmcoabrn1", "", None))
             .setValue(abtm.IdentificationPage(Index(0)), ABTMIdentification("abtmtoi1", ""))
             .setValue(abtm.IdentificationNumberPage(Index(0)), "abtmin1")
@@ -371,6 +374,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               typeOfIdentification = "dtmtoi1",
               identificationNumber = "dtmin1",
               nationality = "dtmn1"
+            ),
+            DepartureTransportMeansType05(
+              sequenceNumber = "2",
+              typeOfIdentification = "dtmtoi2",
+              identificationNumber = "dtmin2",
+              nationality = "dtmn2"
             )
           )
 
@@ -628,12 +637,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Nationality]) {
           (typeOfIdentification, identificationNumber, nationality) =>
             val userAnswers = emptyUserAnswers
-              .setValue(TransportMeansIdentificationPage, typeOfIdentification)
-              .setValue(TransportMeansIdentificationNumberPage, identificationNumber)
-              .setValue(TransportMeansNationalityPage, nationality)
+              .setValue(TransportMeansIdentificationPage(transportIndex), typeOfIdentification)
+              .setValue(TransportMeansIdentificationNumberPage(transportIndex), identificationNumber)
+              .setValue(TransportMeansNationalityPage(transportIndex), nationality)
 
-            val reads  = service.departureTransportMeansReads(Index(0))
-            val result = userAnswers.getValue(TransportMeansSection).as[DepartureTransportMeansType05](reads)
+            val reads  = service.departureTransportMeansReads(transportIndex)
+            val result = userAnswers.getValue(TransportMeansSection(transportIndex)).as[DepartureTransportMeansType05](reads)
 
             result mustBe DepartureTransportMeansType05(
               sequenceNumber = "1",

@@ -19,7 +19,7 @@ package utils.transformer.transport.equipment
 import base.SpecBase
 import models.messages.{Seal, TransportEquipment}
 import models.{Index, UserAnswers}
-import pages.transport.equipment.AddAnotherTransportEquipmentPage
+import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
 class SealTransformerTest extends SpecBase {
@@ -38,11 +38,11 @@ class SealTransformerTest extends SpecBase {
             )
           )
         )(emptyUserAnswers)
-        .set(AddAnotherTransportEquipmentPage(Index(0)), true)
+        .set(AddSealYesNoPage(Index(0)), true)
         .get
-        .set(AddAnotherTransportEquipmentPage(Index(1)), true)
+        .set(AddSealYesNoPage(Index(1)), true)
         .get
-        .set(AddAnotherTransportEquipmentPage(Index(2)), true)
+        .set(AddSealYesNoPage(Index(2)), true)
         .get
 
       userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(0), Index(0))) mustBe None

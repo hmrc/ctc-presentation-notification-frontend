@@ -117,10 +117,12 @@ class ConsignmentSpec extends SpecBase {
             TransportEquipment = None,
             LocationOfGoods = None,
             DepartureTransportMeans = Some(
-              DepartureTransportMeans(
-                typeOfIdentification = Some("1"),
-                identificationNumber = None,
-                nationality = None
+              Seq(
+                DepartureTransportMeans(
+                  typeOfIdentification = Some("1"),
+                  identificationNumber = None,
+                  nationality = None
+                )
               )
             ),
             ActiveBorderTransportMeans = None,
@@ -195,10 +197,12 @@ class ConsignmentSpec extends SpecBase {
             TransportEquipment = None,
             LocationOfGoods = None,
             DepartureTransportMeans = Some(
-              DepartureTransportMeans(
-                typeOfIdentification = Some("1"),
-                identificationNumber = None,
-                nationality = None
+              Seq(
+                DepartureTransportMeans(
+                  typeOfIdentification = Some("1"),
+                  identificationNumber = None,
+                  nationality = None
+                )
               )
             ),
             ActiveBorderTransportMeans = None,

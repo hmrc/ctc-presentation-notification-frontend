@@ -24,7 +24,7 @@ import models.reference.{Country, CustomsOffice, Item, Nationality}
 import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress, UserAnswers}
 import pages.sections.houseConsignment.HouseConsignmentListSection
 import pages.sections.transport.border.BorderActiveListSection
-import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, InlandModePage, LimitDatePage}
@@ -136,7 +136,7 @@ class SubmissionService @Inject() (
       modeOfTransportAtTheBorder <- BorderModeOfTransportPage.path.readNullable[BorderMode].map(_.map(_.code))
       transportEquipment         <- EquipmentsSection.path.readArray[TransportEquipmentType06](transportEquipmentReads)
       locationOfGoods            <- __.read[LocationOfGoodsType03]
-      departureTransportMeans    <- TransportMeansSection.path.readObjectAsArray[DepartureTransportMeansType05](departureTransportMeansReads)
+      departureTransportMeans    <- TransportMeansListSection.path.readArray[DepartureTransportMeansType05](departureTransportMeansReads)
       activeBorderTransportMeans <- BorderActiveListSection.path.readArray[ActiveBorderTransportMeansType03](activeBorderTransportMeansReads)
       placeOfLoading             <- __.readNullableSafe[PlaceOfLoadingType03]
       houseConsignments          <- HouseConsignmentListSection.path.readArray[HouseConsignmentType06](houseConsignmentReads)
@@ -235,9 +235,9 @@ class SubmissionService @Inject() (
     import models.reference.transport.transportMeans.TransportMeansIdentification
     import pages.transport.departureTransportMeans._
     for {
-      typeOfIdentification <- (__ \ TransportMeansIdentificationPage.toString).read[TransportMeansIdentification]
-      identificationNumber <- (__ \ TransportMeansIdentificationNumberPage.toString).read[String]
-      nationality          <- (__ \ TransportMeansNationalityPage.toString).read[Nationality]
+      typeOfIdentification <- (__ \ TransportMeansIdentificationPage(index).toString).read[TransportMeansIdentification]
+      identificationNumber <- (__ \ TransportMeansIdentificationNumberPage(index).toString).read[String]
+      nationality          <- (__ \ TransportMeansNationalityPage(index).toString).read[Nationality]
     } yield DepartureTransportMeansType05(
       sequenceNumber = index.sequenceNumber,
       typeOfIdentification = typeOfIdentification.code,

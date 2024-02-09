@@ -19,6 +19,7 @@ package utils
 import base.SpecBase
 import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
+import models.UserAnswers.setCustomsOfficeDepartureReferenceLens
 import models.messages.MessageData
 import models.reference.CustomsOffice
 import models.reference.TransportMode.BorderMode
@@ -42,6 +43,23 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
     val mockReferenceDataService: CheckYourAnswersReferenceDataService   = mock[CheckYourAnswersReferenceDataService]
     val mockTransportModeReferenceDataService: TransportModeCodesService = mock[TransportModeCodesService]
+
+    "customs office departure reference" - {
+
+      "must return Some(Row)" in {
+        forAll(arbitrary[Mode], nonEmptyString) {
+          (mode, departureCustomsOfficeRefNumber) =>
+            val userAnswers = setCustomsOfficeDepartureReferenceLens.set(departureCustomsOfficeRefNumber)(emptyUserAnswers)
+            val helper      = new PresentationNotificationAnswersHelper(userAnswers, departureId, mockReferenceDataService, mode)
+            val result      = helper.customsOfficeDeparture.get
+
+            result.key.value mustBe s"Office of departure"
+            result.value.value mustBe departureCustomsOfficeRefNumber
+            val actions = result.actions
+            actions.size mustBe 0
+        }
+      }
+    }
 
     "limitDate" - {
       "must return None when no limit date in ie15/170" - {

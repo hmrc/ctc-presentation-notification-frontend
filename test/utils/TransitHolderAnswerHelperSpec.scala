@@ -18,7 +18,7 @@ package utils
 
 import base.SpecBase
 import generators.Generators
-import models.messages.{Address, ContactPerson}
+import models.messages.Address
 import models.reference.{Country, CountryCode}
 import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -126,7 +126,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     "return name row" in {
       forAll(arbitrary[Mode], arbitrary[String]) {
         (mode, name) =>
-          val answers = UserAnswers.setTransitHolderContactPersonLens.set(ContactPerson(name, "phone", None))(emptyUserAnswers)
+          val answers = UserAnswers.setTransitHolderNameLens.set(Some(name))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.nameRow
 

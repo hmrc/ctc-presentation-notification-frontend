@@ -33,7 +33,9 @@ class TransportMeansIdentificationNumberViewSpec extends InputTextViewBehaviours
   val identificationType: TransportMeansIdentification = TransportMeansIdentification("80", "European vessel identification number (ENI Code)")
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[TransportMeansIdentificationNumberView].apply(form, departureId, NormalMode, identificationType.asString)(fakeRequest, messages)
+    injector
+      .instanceOf[TransportMeansIdentificationNumberView]
+      .apply(form, departureId, NormalMode, identificationType.asString, transportIndex)(fakeRequest, messages)
 
   override val prefix: String = "consignment.departureTransportMeans.identificationNumber"
 

@@ -20,8 +20,8 @@ import play.api.libs.json.{Json, OFormat}
 
 case class HolderOfTheTransitProcedure(
   identificationNumber: Option[String],
-  TIRHolderIdentificationNumber: Option[String],
   name: Option[String],
+  TIRHolderIdentificationNumber: Option[String],
   ContactPerson: Option[ContactPerson],
   Address: Option[Address]
 )
