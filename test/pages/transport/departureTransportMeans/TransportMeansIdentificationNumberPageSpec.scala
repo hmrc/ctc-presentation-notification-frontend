@@ -22,10 +22,10 @@ class TransportMeansIdentificationNumberPageSpec extends PageBehaviours {
 
   "IdentificationNumberPage" - {
 
-    beRetrievable[String](TransportMeansIdentificationNumberPage)
+    beRetrievable[String](TransportMeansIdentificationNumberPage(transportIndex))
 
-    beSettable[String](TransportMeansIdentificationNumberPage)
+    beSettable[String](TransportMeansIdentificationNumberPage(transportIndex))
 
-    beRemovable[String](TransportMeansIdentificationNumberPage)
+    beRemovable[String](TransportMeansIdentificationNumberPage(transportIndex))
   }
 }

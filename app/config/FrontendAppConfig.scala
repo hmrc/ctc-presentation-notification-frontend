@@ -31,6 +31,7 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
 
   lazy val maxActiveBorderTransports: Int = config.get[Int]("limits.maxActiveBorderTransports")
   lazy val maxSeals: Int                  = config.get[Int]("limits.maxSeals")
+  lazy val maxTransportMeans: Int         = config.get[Int]("limits.maxTransportMeans")
   lazy val maxEquipmentNumbers: Int       = config.get[Int]("limits.maxEquipmentNumbers")
   lazy val maxItems: Int                  = config.get[Int]("limits.maxItems")
 

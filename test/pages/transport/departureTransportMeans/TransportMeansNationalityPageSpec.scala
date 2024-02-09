@@ -23,11 +23,11 @@ class TransportMeansNationalityPageSpec extends PageBehaviours {
 
   "IdentificationPage" - {
 
-    beRetrievable[Nationality](TransportMeansNationalityPage)
+    beRetrievable[Nationality](TransportMeansNationalityPage(transportIndex))
 
-    beSettable[Nationality](TransportMeansNationalityPage)
+    beSettable[Nationality](TransportMeansNationalityPage(transportIndex))
 
-    beRemovable[Nationality](TransportMeansNationalityPage)
+    beRemovable[Nationality](TransportMeansNationalityPage(transportIndex))
 
     "cleanup" - {
       // TODO Add clean-up test

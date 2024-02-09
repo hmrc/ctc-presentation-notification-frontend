@@ -21,6 +21,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.transformer.representative._
 import utils.transformer.transport.LimitDateTransformer
+import utils.transformer.transport._
+import utils.transformer.transport.border.{
+  AddBorderModeOfTransportYesNoTransformer,
+  IdentificationNumberTransformer,
+  IdentificationTransformer,
+  ModeOfTransportAtTheBorderTransformer
+}
 import utils.transformer.transport.border._
 import utils.transformer.transport.equipment._
 
@@ -35,6 +42,8 @@ class DepartureDataTransformer @Inject() (
   customsOfficeTransformer: CustomsOfficeTransformer,
   identificationTransformer: IdentificationTransformer,
   identificationNoTransformer: IdentificationNumberTransformer,
+  inlandModeTransformer: InlandModeTransformer,
+  addInlandModeYesNoTransformer: AddInlandModeYesNoTransformer,
   nationalityTransformer: NationalityTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
   transportEquipmentYesNoTransformer: TransportEquipmentYesNoTransformer,
@@ -51,7 +60,10 @@ class DepartureDataTransformer @Inject() (
   representativePhoneNumberTransformer: RepresentativePhoneNumberTransformer,
   containerIndicatorTransformer: ContainerIndicatorTransformer,
   modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
-  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer
+  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer,
+  transportMeansIdentificationTransformer: TransportMeansIdentificationTransformer,
+  transportMeansIdentificationNumberTransformer: TransportMeansIdentificationNumberTransformer,
+  transportMeansNationalityTransformer: TransportMeansNationalityTransformer
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
@@ -78,8 +90,8 @@ class DepartureDataTransformer @Inject() (
 
     val borderModePipeline =
       containerIndicatorTransformer.transform andThen
-        modeOfTransportAtTheBorderTransformer.transform andThen
-        addBorderModeOfTransportYesNoTransformer.transform
+        addBorderModeOfTransportYesNoTransformer.transform andThen
+        modeOfTransportAtTheBorderTransformer.transform
 
     val representativePipeline =
       addRepresentativeContactDetailsYesNoTransformer.transform andThen
@@ -88,9 +100,17 @@ class DepartureDataTransformer @Inject() (
         representativeNameTransformer.transform andThen
         representativePhoneNumberTransformer.transform
 
+    val departureTransportMeansPipeline =
+      addInlandModeYesNoTransformer.transform andThen
+        inlandModeTransformer.transform andThen
+        transportMeansIdentificationTransformer.transform andThen
+        transportMeansIdentificationNumberTransformer.transform andThen
+        transportMeansNationalityTransformer.transform
+
     val transformerPipeline =
       borderModePipeline andThen
         borderMeansPipeline andThen
+        departureTransportMeansPipeline andThen
         transportEquipmentPipeline andThen
         limitDateTransformer.transform andThen
         representativePipeline

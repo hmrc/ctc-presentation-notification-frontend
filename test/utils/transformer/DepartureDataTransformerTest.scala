@@ -20,7 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.representative._
-import utils.transformer.transport.LimitDateTransformer
+import utils.transformer.transport._
 import utils.transformer.transport.border._
 import utils.transformer.transport.equipment._
 
@@ -58,6 +58,11 @@ class DepartureDataTransformerTest extends SpecBase {
       val representativeNameTransformer                    = mock[RepresentativeNameTransformer]
       val representativePhoneNumberTransformer             = mock[RepresentativePhoneNumberTransformer]
       val containerIndicatorTransformer                    = mock[ContainerIndicatorTransformer]
+      val transportMeansIdentificationNumberTransformer    = mock[TransportMeansIdentificationNumberTransformer]
+      val transportMeansIdentificationTransformer          = mock[TransportMeansIdentificationTransformer]
+      val transportMeansNationalityTransformer             = mock[TransportMeansNationalityTransformer]
+      val inlandModeTransformer                            = mock[InlandModeTransformer]
+      val addInlandModeYesNoTransformer                    = mock[AddInlandModeYesNoTransformer]
 
       val updateAnswersFn: UserAnswers => Future[UserAnswers] = _ => successful(userAnswers)
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
@@ -86,6 +91,21 @@ class DepartureDataTransformerTest extends SpecBase {
       when(identificationNumberTransformer.transform(hc)).thenReturn(updateAnswersFn)
       when(nationalityTransformer.transform(hc)).thenReturn(updateAnswersFn)
 
+      when(identificationTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+      when(identificationNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(inlandModeTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addInlandModeYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       when(transportEquipmentTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswersWithEquipment)
       )
@@ -101,6 +121,18 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
       when(limitDateTransformer.transform(hc)).thenReturn(updateAnswersFn)
+
+      when(transportMeansIdentificationNumberTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(transportMeansIdentificationTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(transportMeansNationalityTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
 
       when(sealYesNoTransformer.transform(hc)).thenReturn(
         _ => successful(userAnswersWithEquipment)
@@ -150,6 +182,8 @@ class DepartureDataTransformerTest extends SpecBase {
         customsOfficeTransformer,
         identificationTransformer,
         identificationNumberTransformer,
+        inlandModeTransformer,
+        addInlandModeYesNoTransformer,
         nationalityTransformer,
         transportEquipmentTransformer,
         transportEquipmentYesNoTransformer,
@@ -166,7 +200,10 @@ class DepartureDataTransformerTest extends SpecBase {
         representativePhoneNumberTransformer,
         containerIndicatorTransformer,
         modeOfTransportAtTheBorderTransformer,
-        addBorderModeOfTransportYesNoTransformer
+        addBorderModeOfTransportYesNoTransformer,
+        transportMeansIdentificationTransformer,
+        transportMeansIdentificationNumberTransformer,
+        transportMeansNationalityTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -179,6 +216,8 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(identificationTransformer, times(1)).transform(hc)
           verify(identificationNumberTransformer, times(1)).transform(hc)
           verify(nationalityTransformer, times(1)).transform(hc)
+          verify(inlandModeTransformer, times(1)).transform(hc)
+          verify(addInlandModeYesNoTransformer, times(1)).transform(hc)
           verify(transportEquipmentTransformer, times(1)).transform(hc)
           verify(transportEquipmentYesNoTransformer, times(1)).transform(hc)
           verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
@@ -186,6 +225,9 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(sealTransformer, times(1)).transform(hc)
           verify(sealYesNoTransformer, times(1)).transform(hc)
           verify(limitDateTransformer, times(1)).transform(hc)
+          verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
+          verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
+          verify(transportMeansNationalityTransformer, times(1)).transform(hc)
           verify(actingAsRepresentativeTransformer, times(1)).transform(hc)
           verify(representativeEoriTransformer, times(1)).transform(hc)
           verify(addRepresentativeContactDetailsYesNoTransformer, times(1)).transform(hc)

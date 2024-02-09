@@ -71,7 +71,7 @@ checkYourAnswers.transportMeans.active.withIndex = Border means of transport {0}
 checkYourAnswers.transportMeans.active.withoutIndex = Border means of transport
 checkYourAnswers.transportMeans.addOrRemove = Add or remove border means of transport
 checkYourAnswers.transportMeans.active.change.hidden = border means of transport {0}
-checkYourAnswers.departureTransportMeans = Departure means of transport
+checkYourAnswers.departureTransportMeans = Departure means of transport {0}
 checkYourAnswers.departureTransportMeans.addOrRemove = Add or remove departure means of transport
 
 checkYourAnswers.transport.equipment.active.withoutIndex = Transport Equipment
@@ -636,6 +636,20 @@ consignment.departureTransportMeans.identificationNumber.error.length = The iden
 consignment.departureTransportMeans.identificationNumber.error.required = Enter the identification number for the departure means of transport
 consignment.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 consignment.departureTransportMeans.identificationNumber.change.hidden = the identification number for the departure means of transport
+
+consignment.departureTransportMeans.removeDepartureTransportMeans.title = Are you sure you want to remove this departure means of transport?
+consignment.departureTransportMeans.removeDepartureTransportMeans.heading = Are you sure you want to remove this departure means of transport?
+consignment.departureTransportMeans.removeDepartureTransportMeans.error.required = Select yes if you want to remove this departure means of transport
+
+consignment.departureTransportMeans.addAnotherTransportMeans.singular.title = You have added 1 departure means of transport
+consignment.departureTransportMeans.addAnotherTransportMeans.plural.title = You have added {0} departure means of transport
+consignment.departureTransportMeans.addAnotherTransportMeans.singular.heading = You have added 1 departure means of transport
+consignment.departureTransportMeans.addAnotherTransportMeans.plural.heading = You have added {0} departure means of transport
+consignment.departureTransportMeans.addAnotherTransportMeans.label = Do you want to add another departure means of transport?
+consignment.departureTransportMeans.addAnotherTransportMeans.maxLimit.label = You cannot add any more departure means of transport. To add another, you need to remove one first.
+consignment.departureTransportMeans.addAnotherTransportMeans.maxLimit.hint1 = You must only add one departure means of transport if you are using maritime, air, fixed transport installations or inland waterways for your inland mode. Your declaration will be rejected if you add more than one.
+consignment.departureTransportMeans.addAnotherTransportMeans.maxLimit.hint2 = If you are using road as your mode, you can add up to 3 departure means of transport. For rail, you can add up to 999 departure means.
+consignment.departureTransportMeans.addAnotherTransportMeans.error.required = Select yes if you want to add another departure means of transport
 
 information.sent.title = Information sent
 information.sent.heading = Information sent
