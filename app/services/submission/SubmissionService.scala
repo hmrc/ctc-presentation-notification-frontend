@@ -29,7 +29,7 @@ import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, InlandModePage, LimitDatePage}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json.{Reads, __}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
 import services.DateTimeService
@@ -47,11 +47,8 @@ class SubmissionService @Inject() (
 
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
 
-  def submit(userAnswers: UserAnswers, departureId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    println("***")
-    println(buildXml(userAnswers))
+  def submit(userAnswers: UserAnswers, departureId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     connector.submit(buildXml(userAnswers), departureId)
-  }
 
   def buildXml(userAnswers: UserAnswers): NodeSeq =
     toXML(transform(userAnswers), s"ncts:${CC170C.toString}", scope)
