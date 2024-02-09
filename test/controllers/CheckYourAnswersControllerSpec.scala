@@ -18,14 +18,16 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import matchers.JsonMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.submission.SubmissionService
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import viewModels.{PresentationNotificationAnswersViewModel, Section}
 import views.html.CheckYourAnswersView
@@ -35,12 +37,23 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with PageBehaviours {
 
   private lazy val mockViewModelProvider = mock[PresentationNotificationAnswersViewModelProvider]
-  val sampleSections: Seq[Section]       = arbitrary[List[Section]].sample.value
+  private lazy val mockSubmissionService = mock[SubmissionService]
+
+  val sampleSections: Seq[Section] = arbitrary[List[Section]].sample.value
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[PresentationNotificationAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind[PresentationNotificationAnswersViewModelProvider].toInstance(mockViewModelProvider),
+        bind[SubmissionService].toInstance(mockSubmissionService)
+      )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+    reset(mockSubmissionService)
+  }
 
   "CheckYourAnswersController" - {
     "return OK and the correct view for a GET" in {
@@ -61,9 +74,12 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       contentAsString(result) mustEqual view(lrn.value, departureId, sampleSections)(request, messages).toString
     }
 
-    "redirect successfully when calling onSubmit" in {
+    "redirect to confirmation page when submission successful" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockSubmissionService.submit(any(), any())(any())).thenReturn(response(OK))
+
+      val userAnswers = emptyUserAnswers
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(departureId).url)
 
@@ -71,10 +87,32 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustBe SEE_OTHER
 
-      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustEqual routes.InformationSubmittedController.onPageLoad(departureId).url
 
-      redirectLocation(result).value mustEqual controllers.routes.InformationSubmittedController.onPageLoad(departureId).url
+      verify(mockSubmissionService).submit(eqTo(userAnswers), eqTo(departureId))(any())
+    }
 
+    "redirect to technical difficulties page when submission unsuccessful" in {
+
+      forAll(Gen.choose(400, 599)) {
+        errorCode =>
+          beforeEach()
+
+          when(mockSubmissionService.submit(any(), any())(any())).thenReturn(response(errorCode))
+
+          val userAnswers = emptyUserAnswers
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(departureId).url)
+
+          val result = route(app, request).value
+
+          status(result) mustBe SEE_OTHER
+
+          redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+
+          verify(mockSubmissionService).submit(eqTo(userAnswers), eqTo(departureId))(any())
+      }
     }
   }
 }

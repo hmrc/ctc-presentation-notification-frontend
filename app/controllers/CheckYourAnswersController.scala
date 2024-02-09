@@ -20,6 +20,8 @@ import controllers.actions._
 import logging.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.submission.SubmissionService
+import uk.gov.hmrc.http.HttpReads.is2xx
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import views.html.CheckYourAnswersView
@@ -27,10 +29,12 @@ import views.html.CheckYourAnswersView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckYourAnswersController @Inject() (actions: Actions,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            viewModelProvider: PresentationNotificationAnswersViewModelProvider,
-                                            view: CheckYourAnswersView
+class CheckYourAnswersController @Inject() (
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  viewModelProvider: PresentationNotificationAnswersViewModelProvider,
+  view: CheckYourAnswersView,
+  submissionService: SubmissionService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -47,8 +51,17 @@ class CheckYourAnswersController @Inject() (actions: Actions,
         }
   }
 
-  def onSubmit(departureId: String): Action[AnyContent] = actions
-    .requireData(departureId) {
-      Redirect(controllers.routes.InformationSubmittedController.onPageLoad(departureId))
-    }
+  def onSubmit(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
+    implicit request =>
+      submissionService.submit(request.userAnswers, departureId).map {
+        response =>
+          response.status match {
+            case x if is2xx(x) =>
+              Redirect(routes.InformationSubmittedController.onPageLoad(departureId))
+            case x =>
+              logger.error(s"Error submitting IE170: $x")
+              Redirect(routes.ErrorController.technicalDifficulties())
+          }
+      }
+  }
 }

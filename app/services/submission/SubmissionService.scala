@@ -16,6 +16,7 @@
 
 package services.submission
 
+import connectors.DepartureMovementConnector
 import generated._
 import models.messages.HolderOfTheTransitProcedure
 import models.reference.TransportMode.{BorderMode, InlandMode}
@@ -32,14 +33,22 @@ import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
 import services.DateTimeService
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.LocalDate
 import javax.inject.Inject
+import scala.concurrent.Future
 import scala.xml.{NamespaceBinding, NodeSeq}
 
-class SubmissionService @Inject() (dateTimeService: DateTimeService) {
+class SubmissionService @Inject() (
+  dateTimeService: DateTimeService,
+  connector: DepartureMovementConnector
+) {
 
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
+
+  def submit(userAnswers: UserAnswers, departureId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+    connector.submit(buildXml(userAnswers), departureId)
 
   def buildXml(userAnswers: UserAnswers): NodeSeq =
     toXML(transform(userAnswers), s"ncts:${CC170C.toString}", scope)
