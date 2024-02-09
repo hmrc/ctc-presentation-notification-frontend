@@ -60,8 +60,6 @@ class CheckYourAnswersController @Inject() (
               auditService.audit(PresentationNotification, request.userAnswers)
               Redirect(routes.InformationSubmittedController.onPageLoad(departureId))
             case x =>
-              println("***")
-              println(response.body)
               logger.error(s"Error submitting IE170: $x")
               Redirect(routes.ErrorController.technicalDifficulties())
           }
