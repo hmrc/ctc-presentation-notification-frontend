@@ -615,6 +615,7 @@ houseConsignment.index.departureTransportMeans.country.placeholder = Select a co
 
 consignment.departureTransportMeans.identification.heading = Which identification do you want to use for the departure means of transport?
 consignment.departureTransportMeans.identification.title = Which identification do you want to use for the departure means of transport?
+consignment.departureTransportMeans.identification.paragraph = If you are using road as your inland mode and this is your first departure means of transport, you must add the registration number of the road vehicle. From your second departure means onwards, you must add the registration number of the road trailer.
 consignment.departureTransportMeans.identification.error.required = Select which identification you want to use for the departure means of transport
 consignment.departureTransportMeans.identification.change.hidden = identification type for the departure means of transport
 consignment.departureTransportMeans.identification.checkYourAnswersLabel = Identification type
