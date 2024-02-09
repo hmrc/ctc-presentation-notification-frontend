@@ -47,8 +47,11 @@ class SubmissionService @Inject() (
 
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
 
-  def submit(userAnswers: UserAnswers, departureId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  def submit(userAnswers: UserAnswers, departureId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    println("***")
+    println(buildXml(userAnswers))
     connector.submit(buildXml(userAnswers), departureId)
+  }
 
   def buildXml(userAnswers: UserAnswers): NodeSeq =
     toXML(transform(userAnswers), s"ncts:${CC170C.toString}", scope)
@@ -148,8 +151,14 @@ class SubmissionService @Inject() (
       LocationOfGoods = locationOfGoods,
       DepartureTransportMeans = departureTransportMeans,
       ActiveBorderTransportMeans = activeBorderTransportMeans,
-      PlaceOfLoading = placeOfLoading,
-      HouseConsignment = houseConsignments
+      PlaceOfLoading = placeOfLoading match {
+        case Some(PlaceOfLoadingType03(None, None, None)) => None
+        case _                                            => placeOfLoading
+      },
+      HouseConsignment = houseConsignments match {
+        case Nil => Seq(HouseConsignmentType06("1", Nil))
+        case _   => houseConsignments
+      }
     )
 
   implicit val locationOfGoodsReads: Reads[LocationOfGoodsType03] = {
