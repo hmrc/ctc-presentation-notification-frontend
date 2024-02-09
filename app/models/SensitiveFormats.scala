@@ -32,7 +32,7 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter wi
     if (encryptionEnabled) {
       JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap(_.encrypt)
     } else {
-      implicitly[Writes[JsObject]]
+      SensitiveFormats.nonSensitiveJsObjectWrites
     }
 
   val messageDataReads: Reads[MessageData] =
@@ -42,6 +42,27 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter wi
     if (encryptionEnabled) {
       JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap(_.encrypt)
     } else {
-      implicitly[Writes[MessageData]]
+      SensitiveFormats.nonSensitiveMessageDataWrites
     }
+}
+
+object SensitiveFormats {
+
+  case class SensitiveWrites(
+    jsObjectWrites: Writes[JsObject],
+    messageDataWrites: Writes[MessageData]
+  )
+
+  object SensitiveWrites {
+
+    def apply(): SensitiveWrites =
+      new SensitiveWrites(nonSensitiveJsObjectWrites, nonSensitiveMessageDataWrites)
+
+    def apply(sensitiveFormats: SensitiveFormats) =
+      new SensitiveWrites(sensitiveFormats.jsObjectWrites, sensitiveFormats.messageDataWrites)
+  }
+
+  val nonSensitiveJsObjectWrites: Writes[JsObject] = implicitly[Writes[JsObject]]
+
+  val nonSensitiveMessageDataWrites: Writes[MessageData] = implicitly[Writes[MessageData]]
 }

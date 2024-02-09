@@ -18,8 +18,9 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
 import matchers.JsonMatchers
+import models.AuditType.PresentationNotification
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
@@ -27,7 +28,7 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.submission.SubmissionService
+import services.submission.{AuditService, SubmissionService}
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import viewModels.{PresentationNotificationAnswersViewModel, Section}
 import views.html.CheckYourAnswersView
@@ -38,6 +39,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   private lazy val mockViewModelProvider = mock[PresentationNotificationAnswersViewModelProvider]
   private lazy val mockSubmissionService = mock[SubmissionService]
+  private lazy val mockAuditService      = mock[AuditService]
 
   val sampleSections: Seq[Section] = arbitrary[List[Section]].sample.value
 
@@ -46,13 +48,15 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       .guiceApplicationBuilder()
       .overrides(
         bind[PresentationNotificationAnswersViewModelProvider].toInstance(mockViewModelProvider),
-        bind[SubmissionService].toInstance(mockSubmissionService)
+        bind[SubmissionService].toInstance(mockSubmissionService),
+        bind[AuditService].toInstance(mockAuditService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
     reset(mockSubmissionService)
+    reset(mockAuditService)
   }
 
   "CheckYourAnswersController" - {
@@ -90,6 +94,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       redirectLocation(result).value mustEqual routes.InformationSubmittedController.onPageLoad(departureId).url
 
       verify(mockSubmissionService).submit(eqTo(userAnswers), eqTo(departureId))(any())
+      verify(mockAuditService).audit(eqTo(PresentationNotification), eqTo(userAnswers))(any())
     }
 
     "redirect to technical difficulties page when submission unsuccessful" in {
@@ -112,6 +117,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
           redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
 
           verify(mockSubmissionService).submit(eqTo(userAnswers), eqTo(departureId))(any())
+          verifyNoInteractions(mockAuditService)
       }
     }
   }

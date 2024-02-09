@@ -18,9 +18,10 @@ package controllers
 
 import controllers.actions._
 import logging.Logging
+import models.AuditType.PresentationNotification
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.submission.SubmissionService
+import services.submission.{AuditService, SubmissionService}
 import uk.gov.hmrc.http.HttpReads.is2xx
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
@@ -34,7 +35,8 @@ class CheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: PresentationNotificationAnswersViewModelProvider,
   view: CheckYourAnswersView,
-  submissionService: SubmissionService
+  submissionService: SubmissionService,
+  auditService: AuditService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -42,9 +44,7 @@ class CheckYourAnswersController @Inject() (
 
   def onPageLoad(departureId: String): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      val presentationNotificationAnswersViewModel = viewModelProvider(request.userAnswers, departureId)
-
-      presentationNotificationAnswersViewModel
+      viewModelProvider(request.userAnswers, departureId)
         .map {
           viewModel =>
             Ok(view(request.userAnswers.lrn, departureId, viewModel.sections))
@@ -57,6 +57,7 @@ class CheckYourAnswersController @Inject() (
         response =>
           response.status match {
             case x if is2xx(x) =>
+              auditService.audit(PresentationNotification, request.userAnswers)
               Redirect(routes.InformationSubmittedController.onPageLoad(departureId))
             case x =>
               logger.error(s"Error submitting IE170: $x")
