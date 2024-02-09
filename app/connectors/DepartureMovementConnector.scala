@@ -17,19 +17,28 @@
 package connectors
 
 import config.FrontendAppConfig
+import logging.Logging
 import models.LocalReferenceNumber
 import models.departureP5._
 import models.messages.Data
+import play.api.http.HeaderNames
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.xml.NodeSeq
 
-class DepartureMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {
+class DepartureMovementConnector @Inject() (
+  config: FrontendAppConfig,
+  http: HttpClient
+)(implicit ec: ExecutionContext)
+    extends HttpReadsTry
+    with Logging {
 
-  private def headers(implicit hc: HeaderCarrier): HeaderCarrier = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
+  private def headers(implicit hc: HeaderCarrier): HeaderCarrier =
+    hc.withExtraHeaders(HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json")
 
   def getData(location: String, messageType: DepartureMessageType)(implicit hc: HeaderCarrier): Future[Data] = {
     implicit val dataReads: Reads[Data] = Data.reads(messageType)
@@ -45,5 +54,10 @@ class DepartureMovementConnector @Inject() (config: FrontendAppConfig, http: Htt
   def getLRN(departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] = {
     val url = s"${config.commonTransitConventionTradersUrl}movements/departures/$departureId"
     http.GET[LocalReferenceNumber](url)(HttpReads[LocalReferenceNumber], headers, ec)
+  }
+
+  def submit(xml: NodeSeq, departureId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    val url = s"${config.commonTransitConventionTradersUrl}movements/departures/$departureId/messages"
+    http.POSTString[HttpResponse](url, xml.toString())(implicitly, headers.withExtraHeaders(HeaderNames.CONTENT_TYPE -> "application/xml"), ec)
   }
 }
