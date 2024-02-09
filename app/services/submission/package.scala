@@ -18,6 +18,7 @@ package services
 
 import generated.{Flag, Number0, Number1}
 import models.Index
+import pages.QuestionPage
 import play.api.libs.json.{JsArray, JsPath, JsSuccess, Reads}
 import scalaxb.XMLCalendar
 
@@ -26,6 +27,9 @@ import java.time.{LocalDate, LocalDateTime}
 import javax.xml.datatype.XMLGregorianCalendar
 
 package object submission {
+
+  def readInferred[T](page: QuestionPage[T], inferredPage: QuestionPage[T])(implicit reads: Reads[T]): Reads[T] =
+    page.path.read[T] orElse inferredPage.path.read[T]
 
   implicit class RichJsPath(value: JsPath) {
 

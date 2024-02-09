@@ -29,7 +29,7 @@ import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, InlandModePage, LimitDatePage}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json.{Reads, __}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
 import services.DateTimeService
@@ -199,8 +199,8 @@ class SubmissionService @Inject() (
     }
 
     for {
-      typeOfLocation            <- LocationTypePage.path.read[LocationType] orElse InferredLocationTypePage.path.read[LocationType]
-      qualifierOfIdentification <- LocationOfGoodsPage.path.read[LocationOfGoodsIdentification].map(_.qualifier)
+      typeOfLocation            <- readInferred[LocationType](LocationTypePage, InferredLocationTypePage)
+      qualifierOfIdentification <- readInferred[LocationOfGoodsIdentification](IdentificationPage, InferredIdentificationPage)
       authorisationNumber       <- AuthorisationNumberPage.path.readNullable[String]
       additionalIdentifier      <- AdditionalIdentifierPage.path.readNullable[String]
       unLocode                  <- UnLocodePage.path.readNullable[String]
@@ -212,7 +212,7 @@ class SubmissionService @Inject() (
       contactPerson             <- __.readNullableSafe[ContactPersonType06]
     } yield LocationOfGoodsType03(
       typeOfLocation = typeOfLocation.code,
-      qualifierOfIdentification = qualifierOfIdentification,
+      qualifierOfIdentification = qualifierOfIdentification.qualifier,
       authorisationNumber = authorisationNumber,
       additionalIdentifier = additionalIdentifier,
       UNLocode = unLocode,

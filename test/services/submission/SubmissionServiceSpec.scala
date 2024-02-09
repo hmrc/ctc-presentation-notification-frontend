@@ -278,13 +278,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.transport.{departureTransportMeans => dtm}
       import pages.{loading => pol}
 
-      "must return list of transport equipments" in {
+      "must return consignment" in {
         val userAnswers = emptyUserAnswers
           .setValue(ContainerIndicatorPage, true)
           .setValue(InlandModePage, InlandMode("im", ""))
           .setValue(BorderModeOfTransportPage, BorderMode("bm", ""))
           .setValue(LocationTypePage, LocationType("tol", ""))
-          .setValue(LocationOfGoodsPage, LocationOfGoodsIdentification("qoi", ""))
+          .setValue(IdentificationPage, LocationOfGoodsIdentification("qoi", ""))
           .setValue(ContainerIdentificationNumberPage(Index(0)), "cin1")
           .setValue(SealIdentificationNumberPage(Index(0), Index(0)), "sin11")
           .setValue(SealIdentificationNumberPage(Index(0), Index(1)), "sin12")
@@ -485,7 +485,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         "when all options defined" in {
           val userAnswers = emptyUserAnswers
             .setValue(LocationTypePage, locationType)
-            .setValue(LocationOfGoodsPage, qualifierOfIdentification)
+            .setValue(IdentificationPage, qualifierOfIdentification)
             .setValue(AuthorisationNumberPage, authorisationNumber)
             .setValue(AdditionalIdentifierPage, additionalIdentifier)
             .setValue(UnLocodePage, unLocode)
@@ -548,10 +548,10 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           )
         }
 
-        "when type of location not inferred" in {
+        "when answers not inferred" in {
           val userAnswers = emptyUserAnswers
             .setValue(LocationTypePage, locationType)
-            .setValue(LocationOfGoodsPage, qualifierOfIdentification)
+            .setValue(IdentificationPage, qualifierOfIdentification)
 
           val reads  = service.locationOfGoodsReads
           val result = userAnswers.data.as[LocationOfGoodsType03](reads)
@@ -571,10 +571,10 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           )
         }
 
-        "when type of location inferred" in {
+        "when answers inferred" in {
           val userAnswers = emptyUserAnswers
             .setValue(InferredLocationTypePage, locationType)
-            .setValue(LocationOfGoodsPage, qualifierOfIdentification)
+            .setValue(InferredIdentificationPage, qualifierOfIdentification)
 
           val reads  = service.locationOfGoodsReads
           val result = userAnswers.data.as[LocationOfGoodsType03](reads)
