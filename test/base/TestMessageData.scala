@@ -131,6 +131,7 @@ object TestMessageData {
 
   val holderOfTheTransitProcedure: HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
     identificationNumber = Some("identificationNumber"),
+    name = Some("trader1"),
     TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
     ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
     Address = Some(Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB"))
@@ -180,6 +181,7 @@ object TestMessageData {
        |    ],
        |    "HolderOfTheTransitProcedure": {
        |        "identificationNumber": "identificationNumber",
+       |        "name": "trader1",
        |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
        |        "ContactPerson": {
        |            "name": "name",
@@ -333,6 +335,7 @@ object TestMessageData {
        |    ],
        |    "HolderOfTheTransitProcedure": {
        |        "identificationNumber": "identificationNumber",
+       |        "name": "trader1",
        |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
        |        "ContactPerson": {
        |            "name": "name",

@@ -80,6 +80,8 @@ checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipm
 checkYourAnswers.transportEquipment.item.subHeading = Which items does this transport equipment apply to?
 checkYourAnswers.locationOfGoods = Location of goods
 
+customsOfficeOfDeparture.checkYourAnswersLabel = Office of departure
+
 moreInformation.title = More information needed to complete declaration
 moreInformation.heading = More information needed to complete declaration
 moreInformation.paragraph1 = When you pre-lodged this declaration, you left out some key information about the movement. Customs now need this information before they can release the goods for transit.

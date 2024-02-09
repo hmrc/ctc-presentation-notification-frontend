@@ -126,6 +126,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
         Some("identificationNumber"),
         None,
         None,
+        None,
         None
       ),
       Representative = None,
