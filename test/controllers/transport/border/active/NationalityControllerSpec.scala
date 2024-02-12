@@ -16,12 +16,11 @@
 
 package controllers.transport.border.active
 
-import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList, UserAnswers}
+import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transport.border.active.NationalityPage

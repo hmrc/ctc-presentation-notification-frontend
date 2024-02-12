@@ -29,22 +29,23 @@
     button: Button
 )
 
-@(form: Form[TransportMeansIdentification], departureId: String, identifiers: Seq[TransportMeansIdentification], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[TransportMeansIdentification], departureId: String, identifiers: Seq[TransportMeansIdentification], mode: Mode, transportIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("consignment.departureTransportMeans.identification.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TransportMeansIdentificationController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TransportMeansIdentificationController.onSubmit(departureId, mode, transportIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputRadio(
             field = form("value"),
-            radioType = Radio(
+            radioType = RadioWithAdditionalHtml(
                 caption = Some(messages("departureTransportMeans.subheading")),
-                heading = messages("consignment.departureTransportMeans.identification.heading")
+                heading = messages("consignment.departureTransportMeans.identification.heading"),
+                additionalHtml = messages("consignment.departureTransportMeans.identification.paragraph").toParagraph
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )

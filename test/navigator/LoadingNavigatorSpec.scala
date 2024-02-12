@@ -18,6 +18,7 @@ package navigator
 
 import base.SpecBase
 import base.TestMessageData.{allOptionsNoneJsonValue, consignment, messageData, transitOperation}
+import config.Constants.NoSecurityDetails
 import generators.Generators
 import models._
 import models.messages.AuthorisationType.C521
@@ -191,7 +192,26 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
+      "must go from LocationPage to CheckYourAnswers page when " +
+        "it is NOT simplified and " +
+        "container indicator is present in Departure Data and " +
+        "limit date is not present" +
+        "and security is 0" in {
+          val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
+          val userAnswersUpdated = userAnswers.copy(
+            departureData = messageData.copy(
+              Consignment = consignment.copy(containerIndicator = Some("indicator")),
+              TransitOperation = transitOperation.copy(limitDate = None, security = NoSecurityDetails),
+              Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+            )
+          )
+
+          navigator
+            .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
     }
+
     "in Check mode" - {
       val mode = CheckMode
       "must go from AddUnLocodeYesNoPage" - {

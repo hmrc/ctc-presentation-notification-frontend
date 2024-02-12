@@ -18,7 +18,6 @@ package viewModels.transport.border.active
 
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.ActiveBorderTransportMeansAnswersHelper
 import viewModels.Section

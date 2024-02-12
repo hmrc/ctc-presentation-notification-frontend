@@ -77,7 +77,7 @@ class BorderNavigator extends Navigator {
   private def inlandModeCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.get(InlandModePage).map(_.code) match {
       case Some("5") => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case _         => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
+      case _         => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)))
     }
 
   private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
@@ -192,11 +192,16 @@ object BorderNavigator {
   }
 
   private[navigation] def containerIndicatorRouting(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(ContainerIndicatorPage) match {
-      case Some(true) =>
-        ContainerIdentificationNumberPage(Index(0))
-          .route(userAnswers, departureId, mode)
-      case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
-      case None        => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    if (userAnswers.departureData.Consignment.containerIndicator.isDefined) {
+      Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    } else {
+      userAnswers.get(ContainerIndicatorPage) match {
+        case Some(true) =>
+          ContainerIdentificationNumberPage(Index(0))
+            .route(userAnswers, departureId, mode)
+        case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
+        case None        => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      }
     }
+
 }

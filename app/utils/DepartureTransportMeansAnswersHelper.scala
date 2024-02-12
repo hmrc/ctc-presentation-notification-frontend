@@ -18,107 +18,74 @@ package utils
 
 import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.{Mode, UserAnswers}
-import pages.transport.InlandModePage
+import models.{Index, Mode, UserAnswers}
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.departureTransportMeans._
 import play.api.i18n.Messages
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.{Link, Section}
 
-import scala.concurrent.Future.successful
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
-  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
-  mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+  mode: Mode,
+  transportIndex: Index
+)(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers
 
-  def identificationType: Future[Option[SummaryListRow]] =
-    fetchValue[TransportMeansIdentification](
-      page = TransportMeansIdentificationPage,
-      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
-      refDataLookup = checkYourAnswersReferenceDataService.getMeansOfTransportIdentificationType
-    ).map {
-      identificationType =>
-        buildRowWithAnswer[TransportMeansIdentification](
-          page = TransportMeansIdentificationPage,
-          optionalAnswer = identificationType,
-          formatAnswer = formatDynamicEnumAsText(_),
-          prefix = "consignment.departureTransportMeans.identification",
-          id = Some("change-transport-means-identification")
-        )
-    }
+  private val lastIndex = Index(
+    userAnswers
+      .get(TransportMeansListSection)
+      .map(_.value.length - 1)
+      .getOrElse(0)
+  )
 
-  def identificationNumberRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = TransportMeansIdentificationNumberPage,
+  def identificationType: Option[SummaryListRow] =
+    buildRowWithAnswer[TransportMeansIdentification](
+      page = TransportMeansIdentificationPage(transportIndex),
+      optionalAnswer = userAnswers.get(TransportMeansIdentificationPage(transportIndex)),
+      formatAnswer = formatDynamicEnumAsText(_),
+      prefix = "consignment.departureTransportMeans.identification",
+      id = Some("change-transport-means-identification")
+    )
+
+  def identificationNumberRow: Option[SummaryListRow] = buildRowWithAnswer[String](
+    page = TransportMeansIdentificationNumberPage(transportIndex),
+    optionalAnswer = userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex)),
     formatAnswer = formatAsText,
     prefix = "consignment.departureTransportMeans.identificationNumber",
-    findValueInDepartureData = _.Consignment.DepartureTransportMeans.flatMap(_.identificationNumber),
     id = Some("change-departure-transport-means-identification-number")
   )
 
-  def nationality: Future[Option[SummaryListRow]] =
-    fetchValue[Nationality](
-      page = TransportMeansNationalityPage,
-      valueFromDepartureData = userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality),
-      refDataLookup = checkYourAnswersReferenceDataService.getNationality
-    ).map {
-      nationality =>
-        buildRowWithAnswer[Nationality](
-          page = TransportMeansNationalityPage,
-          optionalAnswer = nationality,
-          formatAnswer = formatAsText,
-          prefix = "consignment.departureTransportMeans.nationality",
-          id = Some("change-departure-transport-means-nationality")
-        )
-    }
-
-  def buildDepartureTransportMeansSection: Future[Option[Section]] = {
-
-    val inlandModeIE15: Option[String]  = userAnswers.departureData.Consignment.inlandModeOfTransport
-    val inlandModeIE170: Option[String] = userAnswers.get(InlandModePage).map(_.code)
-
-    val predicate: Boolean = (inlandModeIE15, inlandModeIE170) match {
-      case (_, Some(inlandModeIE170)) => inlandModeIE170 != "5"
-      case (Some(inlandModeIE15), _)  => inlandModeIE15 != "5"
-      case (None, None)               => true
-    }
-
-    if (predicate) {
-
-      for {
-        identificationTypeRow   <- identificationType
-        identificationNumberRow <- successful(identificationNumberRow)
-        nationalityRow          <- nationality
-      } yield {
-        val rows = Seq(identificationTypeRow, identificationNumberRow, nationalityRow).flatten
-
-        Some(
-          Section(
-            sectionTitle = messages("checkYourAnswers.departureTransportMeans"),
-            rows = rows,
-            addAnotherLink = addOrRemoveDepartureTransportsMeans
-          )
-        )
-      }
-    } else {
-      successful(None)
-    }
-  }
+  def nationality: Option[SummaryListRow] =
+    buildRowWithAnswer[Nationality](
+      page = TransportMeansNationalityPage(transportIndex),
+      optionalAnswer = userAnswers.get(TransportMeansNationalityPage(transportIndex)),
+      formatAnswer = formatAsNationality,
+      prefix = "consignment.departureTransportMeans.nationality",
+      id = Some("change-departure-transport-means-nationality")
+    )
 
   private def addOrRemoveDepartureTransportsMeans(): Option[Link] =
     Some(
       Link(
         id = "add-or-remove-departure-transport-means",
         text = messages("checkYourAnswers.departureTransportMeans.addOrRemove"),
-        href = ""
+        href = controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode).url
       )
     )
+
+  def buildDepartureTransportMeansSection: Section = {
+    val rows = Seq(identificationType, identificationNumberRow, nationality).flatten
+
+    Section(
+      sectionTitle = messages("checkYourAnswers.departureTransportMeans", transportIndex.display),
+      rows = rows,
+      addAnotherLink = if (lastIndex == transportIndex) addOrRemoveDepartureTransportsMeans() else None
+    )
+  }
 }

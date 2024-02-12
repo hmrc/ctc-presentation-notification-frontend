@@ -17,7 +17,6 @@
 package controllers.transport.border
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.Constants.Maritime
 import controllers.routes
 import controllers.transport.border.{routes => borderRoutes}
 import forms.YesNoFormProvider

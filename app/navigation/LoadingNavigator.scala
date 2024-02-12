@@ -18,8 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
-import navigation.LoadingNavigator._
 import navigation.BorderNavigator._
+import navigation.LoadingNavigator._
 import pages.Page
 import pages.loading._
 import pages.transport.border.BorderModeOfTransportPage
@@ -94,18 +94,20 @@ object LoadingNavigator {
     if (ua.departureData.isSimplified) {
       ua.get(LimitDatePage) match {
         case Some(_) =>
-          if (ua.departureData.Consignment.containerIndicator.isEmpty) {
+          if (isContainerIndicatorMissing(ua)) {
             ContainerIndicatorPage.route(ua, departureId, mode)
           } else containerIndicatorPageNavigation(departureId, mode, ua)
         case None => LimitDatePage.route(ua, departureId, mode)
       }
-    } else if (ua.departureData.Consignment.containerIndicator.isEmpty) {
+    } else if (isContainerIndicatorMissing(ua)) {
       ContainerIndicatorPage.route(ua, departureId, mode)
     } else containerIndicatorPageNavigation(departureId, mode, ua)
+
+  private def isContainerIndicatorMissing(ua: UserAnswers) = ua.departureData.Consignment.containerIndicator.isEmpty && ua.get(ContainerIndicatorPage).isEmpty
 
   private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
     if (ua.departureData.TransitOperation.isSecurityTypeInSet)
       BorderModeOfTransportPage.route(ua, departureId, mode)
-    else borderModeOfTransportPageNavigation(ua, departureId, mode)
+    else containerIndicatorRouting(ua, departureId, mode)
 
 }

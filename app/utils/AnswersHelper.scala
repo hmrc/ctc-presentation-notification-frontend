@@ -18,7 +18,7 @@ package utils
 
 import cats.implicits._
 import models.messages.MessageData
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
 import pages.sections.Section
 import play.api.i18n.Messages
@@ -36,6 +36,13 @@ class AnswersHelper(
     extends SummaryListRowHelper {
 
   protected def lrn: String = userAnswers.lrn
+
+  def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
+    userAnswers
+      .get(section)
+      .mapWithIndex {
+        (_, index) => f(index)
+      }
 
   protected def getAnswerAndBuildRow[T](
     page: QuestionPage[T],

@@ -18,7 +18,6 @@ package models.messages
 
 import models.reference.Item
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 case class Consignment(
   containerIndicator: Option[String],
@@ -26,14 +25,19 @@ case class Consignment(
   modeOfTransportAtTheBorder: Option[String],
   TransportEquipment: Option[List[TransportEquipment]],
   LocationOfGoods: Option[LocationOfGoods],
-  DepartureTransportMeans: Option[DepartureTransportMeans],
+  DepartureTransportMeans: Option[Seq[DepartureTransportMeans]],
   ActiveBorderTransportMeans: Option[Seq[ActiveBorderTransportMeans]],
   PlaceOfLoading: Option[PlaceOfLoading],
   HouseConsignment: Seq[HouseConsignment]
 ) {
 
-  def isTransportDefined: Option[Boolean]  = Some(modeOfTransportAtTheBorder.isDefined)
-  def isInlandModeDefined: Option[Boolean] = Some(inlandModeOfTransport.isDefined)
+  def isContainerIndicatorYes: Boolean = containerIndicator.exists {
+    case "1" => true
+    case _   => false
+  }
+
+  def isModeOfTransportDefined: Option[Boolean] = Some(modeOfTransportAtTheBorder.isDefined)
+  def isInlandModeDefined: Option[Boolean]      = Some(inlandModeOfTransport.isDefined)
 
   def isConsignmentActiveBorderTransportMeansEmpty: Boolean = ActiveBorderTransportMeans.toList.flatten.isEmpty
   val isPlaceOfLoadingPresent: Boolean                      = PlaceOfLoading.isDefined
@@ -50,28 +54,5 @@ case class Consignment(
 }
 
 object Consignment {
-
-  implicit val reads: Reads[Consignment] = (
-    (__ \ "containerIndicator").readNullable[String] and
-      (__ \ "inlandModeOfTransport").readNullable[String] and
-      (__ \ "modeOfTransportAtTheBorder").readNullable[String] and
-      (__ \ "TransportEquipment").readNullable[List[TransportEquipment]] and
-      (__ \ "LocationOfGoods").readNullable[LocationOfGoods] and
-      (__ \ "DepartureTransportMeans").readWithDefault[List[DepartureTransportMeans]](Nil).map(_.headOption) and
-      (__ \ "ActiveBorderTransportMeans").readNullable[Seq[ActiveBorderTransportMeans]] and
-      (__ \ "PlaceOfLoading").readNullable[PlaceOfLoading] and
-      (__ \ "HouseConsignment").read[Seq[HouseConsignment]]
-  )(Consignment.apply _)
-
-  implicit val writes: Writes[Consignment] = (
-    (__ \ "containerIndicator").writeNullable[String] and
-      (__ \ "inlandModeOfTransport").writeNullable[String] and
-      (__ \ "modeOfTransportAtTheBorder").writeNullable[String] and
-      (__ \ "TransportEquipment").writeNullable[List[TransportEquipment]] and
-      (__ \ "LocationOfGoods").writeNullable[LocationOfGoods] and
-      (__ \ "DepartureTransportMeans").writeNullable[Seq[DepartureTransportMeans]].contramap[Option[DepartureTransportMeans]](_.map(Seq(_))) and
-      (__ \ "ActiveBorderTransportMeans").writeNullable[Seq[ActiveBorderTransportMeans]] and
-      (__ \ "PlaceOfLoading").writeNullable[PlaceOfLoading] and
-      (__ \ "HouseConsignment").write[Seq[HouseConsignment]]
-  )(unlift(Consignment.unapply))
+  implicit val format: Format[Consignment] = Json.format[Consignment]
 }

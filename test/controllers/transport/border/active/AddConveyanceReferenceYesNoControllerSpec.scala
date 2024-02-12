@@ -16,11 +16,10 @@
 
 package controllers.transport.border.active
 
-import base.TestMessageData.borderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transport.border.active.AddConveyanceReferenceYesNoPage

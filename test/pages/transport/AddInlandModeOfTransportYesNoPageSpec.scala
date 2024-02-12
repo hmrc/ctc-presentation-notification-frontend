@@ -50,9 +50,9 @@ class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
               val userAnswers = emptyUserAnswers
                 .setValue(AddInlandModeOfTransportYesNoPage, true)
                 .setValue(InlandModePage, inlandMode)
-                .setValue(TransportMeansIdentificationPage, identification)
-                .setValue(TransportMeansIdentificationNumberPage, "1234")
-                .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
+                .setValue(TransportMeansIdentificationPage(transportIndex), identification)
+                .setValue(TransportMeansIdentificationNumberPage(transportIndex), "1234")
+                .setValue(TransportMeansNationalityPage(transportIndex), Nationality("FR", "France"))
 
               val result = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, false)
 

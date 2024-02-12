@@ -58,9 +58,6 @@ class InlandModeController @Inject() (
             request.userAnswers
               .get(InlandModePage)
               .map(_.code)
-              .orElse {
-                request.userAnswers.departureData.Consignment.inlandModeOfTransport
-              }
 
           val preparedForm = inlandMode match {
             case None => form(inlandModeCodes)

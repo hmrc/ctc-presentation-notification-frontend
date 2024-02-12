@@ -41,8 +41,15 @@ class ContainerNavigator @Inject() () extends Navigator {
     ua.departureData.TransitOperation.isSecurityTypeInSet
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ContainerIndicatorPage => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case ContainerIndicatorPage => ua => containerIndicatorCheckRoute(ua, departureId, mode)
   }
+
+  private def containerIndicatorCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    ua.get(ContainerIndicatorPage) match {
+      case Some(true)  => Some(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(0)))
+      case Some(false) => Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
+      case None        => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
 

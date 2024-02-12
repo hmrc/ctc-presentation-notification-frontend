@@ -22,13 +22,12 @@ import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTr
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
 
 import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PresentationNotificationAnswersHelper(
   userAnswers: UserAnswers,
@@ -37,6 +36,14 @@ class PresentationNotificationAnswersHelper(
   mode: Mode
 )(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
     extends AnswersHelper(userAnswers, departureId, mode) {
+
+  def customsOfficeDeparture: Option[SummaryListRow] =
+    Option(
+      buildRowWithNoChangeLink(
+        prefix = "customsOfficeOfDeparture",
+        answer = formatAsText(userAnswers.departureData.CustomsOfficeOfDeparture)
+      )
+    )
 
   def limitDate: Option[SummaryListRow] = buildRowWithAnswer[LocalDate](
     page = LimitDatePage,
@@ -58,7 +65,7 @@ class PresentationNotificationAnswersHelper(
     page = AddBorderModeOfTransportYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.border.addBorderModeOfTransport",
-    findValueInDepartureData = _.Consignment.isTransportDefined,
+    findValueInDepartureData = _.Consignment.isModeOfTransportDefined,
     id = Some("change-add-border-mode")
   )
 
