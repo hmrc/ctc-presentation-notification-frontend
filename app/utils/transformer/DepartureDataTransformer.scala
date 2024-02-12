@@ -70,8 +70,7 @@ class DepartureDataTransformer @Inject() (
   addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer,
   transportMeansIdentificationTransformer: TransportMeansIdentificationTransformer,
   transportMeansIdentificationNumberTransformer: TransportMeansIdentificationNumberTransformer,
-  transportMeansNationalityTransformer: TransportMeansNationalityTransformer
-  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer,
+  transportMeansNationalityTransformer: TransportMeansNationalityTransformer,
   unLocodeTransformer: UnLocodeTransformer,
   addUnLocodeYesNoTransformer: AddUnLocodeYesNoTransformer,
   addExtraInformationYesNoTransformer: AddExtraInformationYesNoTransformer,

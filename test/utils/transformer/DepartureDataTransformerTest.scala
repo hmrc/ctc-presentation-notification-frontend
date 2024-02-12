@@ -70,7 +70,7 @@ class DepartureDataTransformerTest extends SpecBase {
       val transportMeansNationalityTransformer             = mock[TransportMeansNationalityTransformer]
       val inlandModeTransformer                            = mock[InlandModeTransformer]
       val addInlandModeYesNoTransformer                    = mock[AddInlandModeYesNoTransformer]
-    val unLocodeTransformer                                = mock[UnLocodeTransformer]
+      val unLocodeTransformer                              = mock[UnLocodeTransformer]
       val addUnLocodeYesNoTransformer                      = mock[AddUnLocodeYesNoTransformer]
       val addExtraInformationYesNoTransformer              = mock[AddExtraInformationYesNoTransformer]
       val locationTransformer                              = mock[LocationTransformer]
