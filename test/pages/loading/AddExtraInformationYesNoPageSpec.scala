@@ -42,8 +42,6 @@ class AddExtraInformationYesNoPageSpec extends PageBehaviours {
 
               result.get(CountryPage) must not be defined
               result.get(LocationPage) must not be defined
-              result.departureData.Consignment.PlaceOfLoading.flatMap(_.country) must not be defined
-              result.departureData.Consignment.PlaceOfLoading.flatMap(_.location) must not be defined
 
           }
         }
@@ -60,8 +58,6 @@ class AddExtraInformationYesNoPageSpec extends PageBehaviours {
 
               result.get(CountryPage) must not be defined
               result.get(LocationPage) must not be defined
-              result.departureData.Consignment.PlaceOfLoading.flatMap(_.country) must not be defined
-              result.departureData.Consignment.PlaceOfLoading.flatMap(_.location) must not be defined
 
           }
         }

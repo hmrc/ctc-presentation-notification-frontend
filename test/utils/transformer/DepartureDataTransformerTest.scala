@@ -23,6 +23,13 @@ import utils.transformer.representative._
 import utils.transformer.transport._
 import utils.transformer.transport.border._
 import utils.transformer.transport.equipment._
+import utils.transformer.transport.placeOfLoading.{
+  AddExtraInformationYesNoTransformer,
+  AddUnLocodeYesNoTransformer,
+  CountryTransformer,
+  LocationTransformer,
+  UnLocodeTransformer
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -63,6 +70,11 @@ class DepartureDataTransformerTest extends SpecBase {
       val transportMeansNationalityTransformer             = mock[TransportMeansNationalityTransformer]
       val inlandModeTransformer                            = mock[InlandModeTransformer]
       val addInlandModeYesNoTransformer                    = mock[AddInlandModeYesNoTransformer]
+      val unLocodeTransformer                              = mock[UnLocodeTransformer]
+      val addUnLocodeYesNoTransformer                      = mock[AddUnLocodeYesNoTransformer]
+      val addExtraInformationYesNoTransformer              = mock[AddExtraInformationYesNoTransformer]
+      val locationTransformer                              = mock[LocationTransformer]
+      val countryTransformer                               = mock[CountryTransformer]
 
       val updateAnswersFn: UserAnswers => Future[UserAnswers] = _ => successful(userAnswers)
       val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
@@ -174,6 +186,26 @@ class DepartureDataTransformerTest extends SpecBase {
         _ => successful(userAnswers)
       )
 
+      when(unLocodeTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addUnLocodeYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(addExtraInformationYesNoTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(locationTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
+      when(countryTransformer.transform(hc)).thenReturn(
+        _ => successful(userAnswers)
+      )
+
       val departureDataTransformer = new DepartureDataTransformer(
         addAnotherBorderMeansOfTransportYesNoTransformer,
         addBorderMeansOfTransportYesNoTransformer,
@@ -203,7 +235,12 @@ class DepartureDataTransformerTest extends SpecBase {
         addBorderModeOfTransportYesNoTransformer,
         transportMeansIdentificationTransformer,
         transportMeansIdentificationNumberTransformer,
-        transportMeansNationalityTransformer
+        transportMeansNationalityTransformer,
+        unLocodeTransformer,
+        addUnLocodeYesNoTransformer,
+        addExtraInformationYesNoTransformer,
+        locationTransformer,
+        countryTransformer
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
@@ -237,6 +274,11 @@ class DepartureDataTransformerTest extends SpecBase {
           verify(containerIndicatorTransformer, times(1)).transform(hc)
           verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
           verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)
+          verify(unLocodeTransformer, times(1)).transform(hc)
+          verify(addUnLocodeYesNoTransformer, times(1)).transform(hc)
+          verify(addExtraInformationYesNoTransformer, times(1)).transform(hc)
+          verify(locationTransformer, times(1)).transform(hc)
+          verify(countryTransformer, times(1)).transform(hc)
       }
     }
   }

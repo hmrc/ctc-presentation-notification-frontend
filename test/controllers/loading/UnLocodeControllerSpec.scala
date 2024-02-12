@@ -93,27 +93,6 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         view(filledForm, departureId, mode)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-
-      val userAnswers15 =
-        UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(Some(PlaceOfLoading(Some("DEAAL"), Some("GB"), Some("London"))))(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers15)
-
-      val request = FakeRequest(GET, unLocodeRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "DEAAL"))
-
-      val view = injector.instanceOf[UnLocodeView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
-    }
-
     "must redirect to the next page when valid data is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers)
