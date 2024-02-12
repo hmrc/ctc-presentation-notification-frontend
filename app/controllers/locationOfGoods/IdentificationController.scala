@@ -47,20 +47,11 @@ class IdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(locationOfGoodsIdentification: Seq[LocationOfGoodsIdentification]): Form[LocationOfGoodsIdentification] =
-    formProvider("locationOfGoods.identification", locationOfGoodsIdentification)
-
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
         val ie170Identification = request.userAnswers.get(IdentificationPage)
-        def ie15Identification  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification)
-
-        def findInIe15(identifiers: Seq[LocationOfGoodsIdentification]) =
-          identifiers.find(
-            identification => ie15Identification.contains(identification.code)
-          )
 
         getLocationType match {
           case Some(location) =>
@@ -68,7 +59,7 @@ class IdentificationController @Inject() (
               case identifier :: Nil =>
                 redirect(mode, InferredIdentificationPage, identifier, departureId)
               case identifiers =>
-                val preparedForm = ie170Identification.orElse(findInIe15(identifiers)) match {
+                val preparedForm = ie170Identification match {
                   case None        => form(identifiers)
                   case Some(value) => form(identifiers).fill(value)
                 }
@@ -79,25 +70,8 @@ class IdentificationController @Inject() (
         }
     }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId)
-    .async {
-      implicit request =>
-        getLocationType match {
-          case Some(location) =>
-            locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(location).flatMap {
-              locationOfGoodsIdentificationTypes =>
-                form(locationOfGoodsIdentificationTypes)
-                  .bindFromRequest()
-                  .fold(
-                    formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, locationOfGoodsIdentificationTypes, mode))),
-                    value => redirect(mode, IdentificationPage, value, departureId)
-                  )
-            }
-          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-        }
-
-    }
+  private def form(locationOfGoodsIdentification: Seq[LocationOfGoodsIdentification]): Form[LocationOfGoodsIdentification] =
+    formProvider("locationOfGoods.identification", locationOfGoodsIdentification)
 
   private def redirect(
     mode: Mode,
@@ -119,10 +93,25 @@ class IdentificationController @Inject() (
           .get(InferredLocationTypePage)
           .map(_.`type`)
       )
-      .orElse(
-        request.userAnswers.departureData.Consignment.LocationOfGoods.map(
-          _.typeOfLocation
-        )
-      )
+
+  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
+    .requireData(departureId)
+    .async {
+      implicit request =>
+        getLocationType match {
+          case Some(location) =>
+            locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(location).flatMap {
+              locationOfGoodsIdentificationTypes =>
+                form(locationOfGoodsIdentificationTypes)
+                  .bindFromRequest()
+                  .fold(
+                    formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, locationOfGoodsIdentificationTypes, mode))),
+                    value => redirect(mode, IdentificationPage, value, departureId)
+                  )
+            }
+          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        }
+
+    }
 
 }

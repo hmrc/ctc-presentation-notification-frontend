@@ -19,121 +19,34 @@ package utils.transformer
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import utils.transformer.representative._
-import utils.transformer.transport.LimitDateTransformer
-import utils.transformer.transport._
-import utils.transformer.transport.border.{
-  AddBorderModeOfTransportYesNoTransformer,
-  IdentificationNumberTransformer,
-  IdentificationTransformer,
-  ModeOfTransportAtTheBorderTransformer
-}
-import utils.transformer.transport.border._
-import utils.transformer.transport.equipment._
-import utils.transformer.transport.placeOfLoading.{
-  AddExtraInformationYesNoTransformer,
-  AddUnLocodeYesNoTransformer,
-  CountryTransformer,
-  LocationTransformer,
-  UnLocodeTransformer
-}
+import utils.transformer.pipeline._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureDataTransformer @Inject() (
-  addAnotherBorderMeansOfTransportYesNoTransformer: AddAnotherBorderMeansOfTransportYesNoTransformer,
-  addBorderMeansOfTransportYesNoTransformer: AddBorderMeansOfTransportYesNoTransformer,
-  addConveyanceReferenceYesNoTransformer: AddConveyanceReferenceYesNoTransformer,
-  conveyanceReferenceTransformer: ConveyanceReferenceTransformer,
-  customsOfficeTransformer: CustomsOfficeTransformer,
-  identificationTransformer: IdentificationTransformer,
-  identificationNoTransformer: IdentificationNumberTransformer,
-  inlandModeTransformer: InlandModeTransformer,
-  addInlandModeYesNoTransformer: AddInlandModeYesNoTransformer,
-  nationalityTransformer: NationalityTransformer,
-  transportEquipmentTransformer: TransportEquipmentTransformer,
-  transportEquipmentYesNoTransformer: TransportEquipmentYesNoTransformer,
-  containerIdTransformer: ContainerIdentificationNumberTransformer,
-  containerIdentificationNumberYesNoTransformer: ContainerIdentificationNumberYesNoTransformer,
-  sealTransformer: SealTransformer,
-  addSealYesNoTransformer: AddSealYesNoTransformer,
-  limitDateTransformer: LimitDateTransformer,
-  itemTransformer: ItemTransformer,
-  actingAsRepresentativeTransformer: ActingAsRepresentativeTransformer,
-  representativeEoriTransformer: RepresentativeEoriTransformer,
-  addRepresentativeContactDetailsYesNoTransformer: AddRepresentativeContactDetailsYesNoTransformer,
-  representativeNameTransformer: RepresentativeNameTransformer,
-  representativePhoneNumberTransformer: RepresentativePhoneNumberTransformer,
-  containerIndicatorTransformer: ContainerIndicatorTransformer,
-  modeOfTransportAtTheBorderTransformer: ModeOfTransportAtTheBorderTransformer,
-  addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer,
-  transportMeansIdentificationTransformer: TransportMeansIdentificationTransformer,
-  transportMeansIdentificationNumberTransformer: TransportMeansIdentificationNumberTransformer,
-  transportMeansNationalityTransformer: TransportMeansNationalityTransformer,
-  unLocodeTransformer: UnLocodeTransformer,
-  addUnLocodeYesNoTransformer: AddUnLocodeYesNoTransformer,
-  addExtraInformationYesNoTransformer: AddExtraInformationYesNoTransformer,
-  locationTransformer: LocationTransformer,
-  countryTransformer: CountryTransformer
+  borderMeansPipeline: BorderMeansPipeline,
+  borderModePipeline: BorderModePipeline,
+  departureTransportMeansPipeline: DepartureTransportMeansPipeline,
+  locationOfGoodsPipeline: LocationOfGoodsPipeline,
+  placeOfLoadingPipeline: PlaceOfLoadingPipeline,
+  representativePipeline: RepresentativePipeline,
+  transportPipeline: TransportPipeline,
+  transportEquipmentPipeline: TransportEquipmentPipeline
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
   def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
 
-    val transportEquipmentPipeline =
-      containerIdentificationNumberYesNoTransformer.transform andThen
-        transportEquipmentYesNoTransformer.transform andThen
-        transportEquipmentTransformer.transform andThen
-        containerIdTransformer.transform andThen
-        addSealYesNoTransformer.transform andThen
-        sealTransformer.transform andThen
-        itemTransformer.transform
-
-    val borderMeansPipeline =
-      addAnotherBorderMeansOfTransportYesNoTransformer.transform andThen
-        addBorderMeansOfTransportYesNoTransformer.transform andThen
-        addConveyanceReferenceYesNoTransformer.transform andThen
-        conveyanceReferenceTransformer.transform andThen
-        customsOfficeTransformer.transform andThen
-        identificationTransformer.transform andThen
-        identificationNoTransformer.transform andThen
-        nationalityTransformer.transform
-
-    val borderModePipeline =
-      containerIndicatorTransformer.transform andThen
-        addBorderModeOfTransportYesNoTransformer.transform andThen
-        modeOfTransportAtTheBorderTransformer.transform
-
-    val representativePipeline =
-      addRepresentativeContactDetailsYesNoTransformer.transform andThen
-        actingAsRepresentativeTransformer.transform andThen
-        representativeEoriTransformer.transform andThen
-        representativeNameTransformer.transform andThen
-        representativePhoneNumberTransformer.transform
-
-    val departureTransportMeansPipeline =
-      addInlandModeYesNoTransformer.transform andThen
-        inlandModeTransformer.transform andThen
-        transportMeansIdentificationTransformer.transform andThen
-        transportMeansIdentificationNumberTransformer.transform andThen
-        transportMeansNationalityTransformer.transform
-
-    val placeOfLoadingPipeline =
-      addUnLocodeYesNoTransformer.transform andThen
-        unLocodeTransformer.transform andThen
-        addExtraInformationYesNoTransformer.transform andThen
-        countryTransformer.transform andThen
-        locationTransformer.transform
-
     val transformerPipeline =
-      borderModePipeline andThen
-        borderMeansPipeline andThen
-        departureTransportMeansPipeline andThen
-        transportEquipmentPipeline andThen
-        limitDateTransformer.transform andThen
-        representativePipeline andThen
-        placeOfLoadingPipeline
+      transportPipeline.pipeline andThen
+        borderMeansPipeline.pipeline andThen
+        borderModePipeline.pipeline andThen
+        departureTransportMeansPipeline.pipeline andThen
+        locationOfGoodsPipeline.pipeline andThen
+        placeOfLoadingPipeline.pipeline andThen
+        representativePipeline.pipeline andThen
+        transportEquipmentPipeline.pipeline
 
     transformerPipeline(userAnswers)
   }

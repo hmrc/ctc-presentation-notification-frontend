@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.contact.{routes => contactRoutes}
 import controllers.routes
 import forms.TelephoneNumberFormProvider
-import models.messages.ContactPerson
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -34,11 +33,11 @@ import scala.concurrent.Future
 
 class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private lazy val telephoneNumberRoute = contactRoutes.PhoneNumberController.onPageLoad(departureId, mode).url
   private val formProvider              = new TelephoneNumberFormProvider()
   private val contactName               = "Contact"
   private val form                      = formProvider("locationOfGoods.contactPhoneNumber", contactName)
   private val mode                      = NormalMode
-  private lazy val telephoneNumberRoute = contactRoutes.PhoneNumberController.onPageLoad(departureId, mode).url
   private val validAnswer: String       = "+123123"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -68,25 +67,6 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         .setValue(NamePage, contactName)
         .setValue(PhoneNumberPage, validAnswer)
       setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, telephoneNumberRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> validAnswer))
-
-      val view = injector.instanceOf[PhoneNumberView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, contactName, mode)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-
-      val userAnswers15 = UserAnswers.setContactPersonOnUserAnswersLens.set(ContactPerson(contactName, validAnswer, None))(emptyUserAnswers)
-      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, telephoneNumberRoute)
 

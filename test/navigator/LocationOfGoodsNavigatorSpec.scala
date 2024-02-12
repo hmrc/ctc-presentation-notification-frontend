@@ -928,7 +928,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               userAnswersSet.get(CountryPage).mustBe(None)
 
-              userAnswersSet.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson) mustBe None
               (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe false
               (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe false
 

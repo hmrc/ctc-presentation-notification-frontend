@@ -48,7 +48,7 @@ class AdditionalIdentifierController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val identifier: Option[String] =
-        request.userAnswers.get(AdditionalIdentifierPage).orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.additionalIdentifier))
+        request.userAnswers.get(AdditionalIdentifierPage)
       val preparedForm = identifier match {
         case None        => form
         case Some(value) => form.fill(value)

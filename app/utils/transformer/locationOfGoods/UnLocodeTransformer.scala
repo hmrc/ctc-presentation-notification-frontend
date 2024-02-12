@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-package utils.transformer
+package utils.transformer.locationOfGoods
 
 import models.UserAnswers
-import models.messages.Representative
-import pages.ActingAsRepresentativePage
+import pages.locationOfGoods.UnLocodePage
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class ActingAsRepresentativeTransformer extends PageTransformer {
-
-  override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = Option[Representative]
+class UnLocodeTransformer extends PageTransformer {
+  override type DomainModelType              = String
+  override type ExtractedTypeInDepartureData = String
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = x => Seq(x.departureData.Representative),
-      generateCapturedAnswers = value => {
-        value
-          .map {
-            representative =>
-              (ActingAsRepresentativePage, representative.isDefined)
-          }
-      }
+      extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.UNLocode).toSeq,
+      generateCapturedAnswers = _.map((UnLocodePage, _))
     )
 }

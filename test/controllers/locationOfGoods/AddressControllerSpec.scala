@@ -21,7 +21,6 @@ import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.DynamicAddressFormProvider
 import generators.Generators
-import models.messages.Address
 import models.reference.Country
 import models.{DynamicAddress, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -39,19 +38,18 @@ import scala.concurrent.Future
 
 class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val testAddress = arbitrary[DynamicAddress].sample.value
-  private val country     = arbitrary[Country].sample.value
-
-  private val formProvider                        = new DynamicAddressFormProvider()
-  private def form(isPostalCodeRequired: Boolean) = formProvider("locationOfGoods.address", isPostalCodeRequired)
-
-  private val mode              = NormalMode
   private lazy val addressRoute = locationOfGoodsRoutes.AddressController.onPageLoad(departureId, mode).url
+  private val testAddress       = arbitrary[DynamicAddress].sample.value
+  private val country           = arbitrary[Country].sample.value
+  private val formProvider      = new DynamicAddressFormProvider()
+  private val mode              = NormalMode
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
+
+  private def form(isPostalCodeRequired: Boolean) = formProvider("locationOfGoods.address", isPostalCodeRequired)
 
   "Address Controller" - {
 
@@ -147,73 +145,6 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
           .setValue(AddressPage, testAddress)
 
         setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addressRoute)
-
-        val result = route(app, request).value
-
-        val filledForm = form(isPostalCodeRequired).bind(
-          Map(
-            "numberAndStreet" -> testAddress.numberAndStreet,
-            "city"            -> testAddress.city,
-            "postalCode"      -> testAddress.postalCode.getOrElse("")
-          )
-        )
-
-        val view = injector.instanceOf[AddressView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(filledForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the 15" - {
-
-      "when postcode is required" in {
-
-        val isPostalCodeRequired = true
-        val testAddress          = arbitrary[DynamicAddress](arbitraryDynamicAddressWithRequiredPostalCode).sample.value
-
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
-
-        val userAnswers15 =
-          UserAnswers.setAddressOnUserAnswersLens.set(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, ""))(emptyUserAnswers)
-
-        setExistingUserAnswers(userAnswers15)
-
-        val request = FakeRequest(GET, addressRoute)
-
-        val result = route(app, request).value
-
-        val filledForm = form(isPostalCodeRequired).bind(
-          Map(
-            "numberAndStreet" -> testAddress.numberAndStreet,
-            "city"            -> testAddress.city,
-            "postalCode"      -> testAddress.postalCode.get
-          )
-        )
-
-        val view = injector.instanceOf[AddressView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(filledForm, departureId, mode, isPostalCodeRequired)(request, messages).toString
-      }
-
-      "when postcode is optional" in {
-
-        val isPostalCodeRequired = false
-        val testAddress          = arbitrary[DynamicAddress](arbitraryDynamicAddressWithRequiredPostalCode).sample.value
-
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
-
-        val userAnswers15 =
-          UserAnswers.setAddressOnUserAnswersLens.set(Address(testAddress.numberAndStreet, testAddress.postalCode, testAddress.city, ""))(emptyUserAnswers)
-
-        setExistingUserAnswers(userAnswers15)
 
         val request = FakeRequest(GET, addressRoute)
 

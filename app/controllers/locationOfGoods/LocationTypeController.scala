@@ -47,27 +47,18 @@ class LocationTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(locationType: Seq[LocationType]): Form[LocationType] =
-    formProvider("locationOfGoods.locationType", locationType)
-
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
       implicit request =>
         val isSimplified      = request.userAnswers.departureData.isSimplified
         val ie170LocationType = request.userAnswers.get(LocationTypePage)
-        def ie15LocationType  = request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation)
-
-        def findInIe15(refDataLocationTypes: Seq[LocationType]) =
-          refDataLocationTypes.find(
-            lt => ie15LocationType.contains(lt.code)
-          )
 
         locationTypeService.getLocationTypes(isSimplified).flatMap {
           case locationType :: Nil =>
             redirect(mode, InferredLocationTypePage, locationType, departureId)
           case refDataLocationTypes =>
-            val preparedForm = ie170LocationType.orElse(findInIe15(refDataLocationTypes)) match {
+            val preparedForm = ie170LocationType match {
               case None               => form(refDataLocationTypes)
               case Some(locationType) => form(refDataLocationTypes).fill(locationType)
             }
@@ -92,6 +83,9 @@ class LocationTypeController @Inject() (
 
         }
     }
+
+  private def form(locationType: Seq[LocationType]): Form[LocationType] =
+    formProvider("locationOfGoods.locationType", locationType)
 
   private def redirect(
     mode: Mode,

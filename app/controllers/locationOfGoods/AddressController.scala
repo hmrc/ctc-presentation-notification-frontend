@@ -51,9 +51,6 @@ class AddressController @Inject() (
     with I18nSupport
     with Logging {
 
-  private def form(isPostalCodeRequired: Boolean)(implicit request: MandatoryDataRequest[_]): Form[DynamicAddress] =
-    formProvider("locationOfGoods.address", isPostalCodeRequired)(request.request.messages(messagesApi))
-
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
     .async {
@@ -64,10 +61,6 @@ class AddressController @Inject() (
               isPostalCodeRequired =>
                 val getCountry = request.userAnswers
                   .get(AddressPage)
-                  .orElse {
-                    logger.info(s"Retrieved Address answer from IE015 journey")
-                    request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.Address.map(_.toDynamicAddress))
-                  }
                 val preparedForm = getCountry match {
                   case None        => form(isPostalCodeRequired)
                   case Some(value) => form(isPostalCodeRequired).fill(value)
@@ -78,6 +71,9 @@ class AddressController @Inject() (
           case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         }
     }
+
+  private def form(isPostalCodeRequired: Boolean)(implicit request: MandatoryDataRequest[_]): Form[DynamicAddress] =
+    formProvider("locationOfGoods.address", isPostalCodeRequired)(request.request.messages(messagesApi))
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
@@ -117,14 +113,4 @@ object AddressController extends Logging {
     request.userAnswers
       .get(CountryPage)
       .map(_.code)
-      .orElse {
-        logger.info(s"Retrieved Address answer from IE015 journey")
-        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-          _.Address
-            .map(
-              _.country
-            )
-            .map(CountryCode(_))
-        )
-      }
 }
