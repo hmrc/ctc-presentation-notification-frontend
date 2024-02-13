@@ -22,9 +22,8 @@ import controllers.routes
 import forms.Constants.loadingLocationMaxLength
 import forms.loading.LoadingLocationFormProvider
 import generators.Generators
-import models.messages.PlaceOfLoading
-import models.{NormalMode, SelectableList, UserAnswers}
 import models.reference.Country
+import models.{NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

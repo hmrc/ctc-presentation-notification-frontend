@@ -19,7 +19,6 @@ package controllers.loading
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.messages.PlaceOfLoading
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
