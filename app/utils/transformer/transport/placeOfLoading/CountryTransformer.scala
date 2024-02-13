@@ -16,8 +16,8 @@
 
 package utils.transformer.transport.placeOfLoading
 
-import models.{Index, UserAnswers}
-import models.reference.{Country, CountryCode}
+import models.UserAnswers
+import models.reference.Country
 import pages.loading.CountryPage
 import services.CountriesService
 import uk.gov.hmrc.http.HeaderCarrier
