@@ -524,7 +524,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           navigator
             .nextPage(InlandModePage, userAnswers, departureId, mode)
-            .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode))
+            .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex))
         }
 
         "to CheckYourAnswers when Yes and there is an answer to inlandMode in ie170" in {

@@ -18,15 +18,13 @@ package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
-import models.Mode
-import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.requests.{DataRequest, MandatoryDataRequest}
+import models.requests.MandatoryDataRequest
+import models.{Index, Mode}
 import navigation.DepartureTransportMeansNavigator
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.departureTransportMeans.TransportMeansIdentificationNumberView
 
@@ -40,39 +38,33 @@ class TransportMeansIdentificationNumberController @Inject() (
   actions: Actions,
   navigator: DepartureTransportMeansNavigator,
   val controllerComponents: MessagesControllerComponents,
-  view: TransportMeansIdentificationNumberView,
-  service: MeansOfTransportIdentificationTypesService
+  view: TransportMeansIdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val prefix = "consignment.departureTransportMeans.identificationNumber"
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] =
+  def onPageLoad(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] =
     actions
-      .requireData(departureId)
-      .async {
+      .requireData(departureId) {
         implicit request =>
           val form = formProvider(prefix)
 
           val fillForm = request.userAnswers
-            .get(TransportMeansIdentificationNumberPage)
-            .orElse(
-              request.userAnswers.departureData.Consignment.DepartureTransportMeans
-                flatMap (_.identificationNumber)
-            )
+            .get(TransportMeansIdentificationNumberPage(transportIndex))
 
           val preparedForm = fillForm match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-          getIdentification().map {
-            case Some(identificationType) => Ok(view(preparedForm, departureId, mode, identificationType.asString))
+          request.userAnswers.get(TransportMeansIdentificationPage(transportIndex)) match {
+            case Some(identificationType) => Ok(view(preparedForm, departureId, mode, identificationType.asString, transportIndex))
             case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
           }
       }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] =
+  def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
       .async {
@@ -83,48 +75,22 @@ class TransportMeansIdentificationNumberController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                getIdentification().map {
-                  case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString))
+                Future.successful(request.userAnswers.get(TransportMeansIdentificationPage(transportIndex)) match {
+                  case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString, transportIndex))
                   case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
-                },
-              value => redirect(value, departureId, mode)
+                }),
+              value => redirect(value, departureId, mode, transportIndex)
             )
       }
 
   private def redirect(
     value: String,
     departureId: String,
-    mode: Mode
+    mode: Mode,
+    transportIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage(transportIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansIdentificationNumberPage, updatedAnswers, departureId, mode))
-
-  private def identificationPageIe170(implicit request: DataRequest[_]): Option[TransportMeansIdentification] =
-    request.userAnswers.get(TransportMeansIdentificationPage)
-
-  private def identificationPageIe015(implicit request: DataRequest[_]): Option[String] =
-    request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(
-      _.typeOfIdentification
-    )
-
-  private def getReferenceDataFor15(implicit request: DataRequest[_]): Option[Future[TransportMeansIdentification]] =
-    identificationPageIe015.map {
-      str =>
-        service.getBorderMeansIdentification(str)
-    }
-
-  private def getIdentification()(implicit request: DataRequest[_]): Future[Option[TransportMeansIdentification]] = identificationPageIe170 match {
-    case Some(value) => Future.successful(Some(value))
-    case None =>
-      getReferenceDataFor15 match {
-        case Some(identification) =>
-          identification.map(
-            Some(_)
-          )
-        case None => Future.successful(None)
-      }
-  }
-
+    } yield Redirect(navigator.nextPage(TransportMeansIdentificationNumberPage(transportIndex), updatedAnswers, departureId, mode))
 }

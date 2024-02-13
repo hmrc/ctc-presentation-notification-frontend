@@ -50,12 +50,7 @@ class AddExtraInformationYesNoController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers
-        .get(AddExtraInformationYesNoPage)
-        .orElse {
-          request.userAnswers.departureData.Consignment.PlaceOfLoading.map(
-            _.isAdditionalInformationPresent
-          )
-        } match {
+        .get(AddExtraInformationYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

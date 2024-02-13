@@ -27,10 +27,11 @@ import views.html.CheckYourAnswersView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckYourAnswersController @Inject() (actions: Actions,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            viewModelProvider: PresentationNotificationAnswersViewModelProvider,
-                                            view: CheckYourAnswersView
+class CheckYourAnswersController @Inject() (
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  viewModelProvider: PresentationNotificationAnswersViewModelProvider,
+  view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport

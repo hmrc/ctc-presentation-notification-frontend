@@ -21,7 +21,7 @@ import base.{SpecBase, TestMessageData}
 import config.Constants.NoSecurityDetails
 import generators.Generators
 import models.messages.MessageData
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.ContainerNavigator
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
@@ -35,89 +35,111 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
   "ContainerNavigator" - {
 
-    "must go from ContainerIndicatorPage" - {
+    "when in Normal Mode" - {
+      "must go from ContainerIndicatorPage" - {
 
-      "to BorderModeOfTransportPage when security is between 1-3" in {
-        val securityGen = Arbitrary.arbitrary[String](arbitrarySecurityCode)
-        forAll(securityGen) {
-          security =>
-            val messageData: MessageData =
-              MessageData(
-                customsOfficeOfDeparture,
-                customsOfficeOfDestination,
-                transitOperation.copy(security = security),
-                Some(authorisation),
-                holderOfTheTransitProcedure,
-                Some(representative),
-                None,
-                None,
-                consignment
-              )
-            val userAnswers = emptyUserAnswers.copy(departureData = messageData)
-            navigator
-              .nextPage(ContainerIndicatorPage, userAnswers, departureId, NormalMode)
-              .mustBe(BorderModeOfTransportPage.route(userAnswers, departureId, NormalMode).value)
+        "to BorderModeOfTransportPage when security is between 1-3" in {
+          val securityGen = Arbitrary.arbitrary[String](arbitrarySecurityCode)
+          forAll(securityGen) {
+            security =>
+              val messageData: MessageData =
+                MessageData(
+                  customsOfficeOfDeparture,
+                  customsOfficeOfDestination,
+                  transitOperation.copy(security = security),
+                  Some(authorisation),
+                  holderOfTheTransitProcedure,
+                  Some(representative),
+                  None,
+                  None,
+                  consignment
+                )
+              val userAnswers = emptyUserAnswers.copy(departureData = messageData)
+              navigator
+                .nextPage(ContainerIndicatorPage, userAnswers, departureId, NormalMode)
+                .mustBe(BorderModeOfTransportPage.route(userAnswers, departureId, NormalMode).value)
+          }
         }
+
+        "to ContainerIdentificationNumber page" +
+          "when security is '0'" +
+          "and containerIndicator has been answered as true in IE170" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .setValue(ContainerIndicatorPage, true)
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                      Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
+                    )
+                  )
+                navigator
+                  .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
+                  .mustBe(
+                    controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                  )
+            }
+          }
+
+        "to AddTransportEquipmentYesNo page" +
+          "when security is '0'" +
+          "and containerIndicator has been answered as false in IE170" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .setValue(ContainerIndicatorPage, false)
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      TransitOperation = transitOperation.copy(security = NoSecurityDetails),
+                      Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
+                    )
+                  )
+                navigator
+                  .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
+                  .mustBe(
+                    controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode)
+                  )
+            }
+          }
+
+        "to CYA Page" +
+          "when security is '0'" +
+          "and containerIndicator has not been answered in IE170" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .copy(departureData =
+                    TestMessageData.messageData.copy(
+                      TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    )
+                  )
+                navigator
+                  .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            }
+          }
+      }
+    }
+
+    "when in Check Mode" - {
+
+      "to Container indicator page when answer is Yes" in {
+
+        val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorPage, true)
+        navigator
+          .nextPage(ContainerIndicatorPage, userAnswers, departureId, CheckMode)
+          .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, CheckMode, equipmentIndex))
       }
 
-      "to ContainerIdentificationNumber page" +
-        "when security is '0'" +
-        "and containerIndicator has been answered as true in IE170" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(ContainerIndicatorPage, true)
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                    Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
-                  )
-                )
-              navigator
-                .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
-                )
-          }
-        }
+      "to Add Transport Equipment Page when answer is No" in {
 
-      "to AddTransportEquipmentYesNo page" +
-        "when security is '0'" +
-        "and containerIndicator has been answered as false in IE170" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .setValue(ContainerIndicatorPage, false)
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                    Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
-                  )
-                )
-              navigator
-                .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode)
-                )
-          }
-        }
+        val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorPage, false)
+        navigator
+          .nextPage(ContainerIndicatorPage, userAnswers, departureId, CheckMode)
+          .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, CheckMode))
+      }
 
-      "to CYA Page" +
-        "when security is '0'" +
-        "and containerIndicator has not been answered in IE170" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    TransitOperation = transitOperation.copy(security = NoSecurityDetails)
-                  )
-                )
-              navigator
-                .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          }
-        }
     }
 
   }

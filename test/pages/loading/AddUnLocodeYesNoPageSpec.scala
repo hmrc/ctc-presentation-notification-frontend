@@ -46,8 +46,6 @@ class AddUnLocodeYesNoPageSpec extends PageBehaviours {
               result.get(AddExtraInformationYesNoPage) must not be defined
               result.get(CountryPage) must not be defined
               result.get(LocationPage) must not be defined
-              result.departureData.Consignment.PlaceOfLoading must not be defined
-
           }
         }
       }
@@ -67,8 +65,6 @@ class AddUnLocodeYesNoPageSpec extends PageBehaviours {
               result.get(AddExtraInformationYesNoPage) must not be defined
               result.get(CountryPage) must not be defined
               result.get(LocationPage) must not be defined
-              result.departureData.Consignment.PlaceOfLoading must not be defined
-
           }
         }
       }

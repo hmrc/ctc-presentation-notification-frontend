@@ -18,7 +18,7 @@ package controllers.transport.departureTransportMeans
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.Mode
+import models.{Index, Mode}
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import navigation.DepartureTransportMeansNavigator
@@ -46,29 +46,21 @@ class TransportMeansNationalityController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+  def onPageLoad(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
-          def nationalityFromDepartureData = {
-            val nationalityCode = request.userAnswers.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality)
-
-            nationalityCode.flatMap(
-              code => nationalityList.values.find(_.code == code)
-            )
-          }
-
           val form = formProvider("consignment.departureTransportMeans.nationality", nationalityList)
-          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage).orElse(nationalityFromDepartureData) match {
+          val preparedForm = request.userAnswers.get(TransportMeansNationalityPage(transportIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, departureId, nationalityList.values, mode))
+          Ok(view(preparedForm, departureId, nationalityList.values, mode, transportIndex))
       }
   }
 
-  def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
+  def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
@@ -76,8 +68,8 @@ class TransportMeansNationalityController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode))),
-              value => redirect(value, departureId, mode)
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, nationalityList.values, mode, transportIndex))),
+              value => redirect(value, departureId, mode, transportIndex)
             )
       }
   }
@@ -85,10 +77,11 @@ class TransportMeansNationalityController @Inject() (
   private def redirect(
     value: Nationality,
     departureId: String,
-    mode: Mode
+    mode: Mode,
+    transportIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage(transportIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage, updatedAnswers, departureId, mode))
+    } yield Redirect(navigator.nextPage(TransportMeansNationalityPage(transportIndex), updatedAnswers, departureId, mode))
 }

@@ -25,13 +25,14 @@ class HolderOfTheTransitProcedureSpec extends AnyFreeSpec with Matchers {
 
   val holderOfTransitProcedure = HolderOfTheTransitProcedure(
     identificationNumber = Some("identificationNumber"),
+    name = Some("trader 1"),
     TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
     ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
     Address = Some(Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB"))
   )
 
   val jsonObject = Json.parse("""
-      |{"identificationNumber":"identificationNumber","TIRHolderIdentificationNumber":"TIRHolderIdentificationNumber","ContactPerson":{"name":"name","phoneNumber":"phone","eMailAddress":"email"},"Address":{"streetAndNumber":"Address Line 1","postcode":"NE53KL","city":"Newcastle","country":"GB"}}
+      |{"identificationNumber":"identificationNumber","name": "trader 1","TIRHolderIdentificationNumber":"TIRHolderIdentificationNumber","ContactPerson":{"name":"name","phoneNumber":"phone","eMailAddress":"email"},"Address":{"streetAndNumber":"Address Line 1","postcode":"NE53KL","city":"Newcastle","country":"GB"}}
       |""".stripMargin)
 
   "must serialise correctly" in {

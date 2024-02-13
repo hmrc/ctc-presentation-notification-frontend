@@ -29,6 +29,10 @@
             <h2 class="govuk-heading-m">@title</h2>
         }
 
+        @section.optionalInformationHeading.map { heading =>
+            <h3 class="govuk-heading-s">@heading</h3>
+        }
+
         @govukSummaryList(
             SummaryList(
                 rows = section.rows
@@ -37,6 +41,10 @@
 
         @section.addAnotherLink.map { link =>
             <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
+        }
+
+        @section.addSecondLink.map { secondLink =>
+            <p class="govuk-body"><a class="govuk-link" href="@secondLink.href" id="@secondLink.id">@secondLink.text</a></p>
         }
     }
 }

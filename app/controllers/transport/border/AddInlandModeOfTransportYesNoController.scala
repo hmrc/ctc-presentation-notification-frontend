@@ -49,9 +49,6 @@ class AddInlandModeOfTransportYesNoController @Inject() (
     implicit request =>
       val inlandModeYesNoAnswer = request.userAnswers
         .get(AddInlandModeOfTransportYesNoPage)
-        .orElse {
-          Some(request.userAnswers.departureData.Consignment.inlandModeOfTransport.isDefined)
-        }
       val preparedForm = inlandModeYesNoAnswer match {
         case None        => form
         case Some(value) => form.fill(value)

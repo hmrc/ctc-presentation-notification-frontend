@@ -19,7 +19,13 @@ package models
 import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.JavascriptLiteral
 
-sealed trait Mode
+sealed trait Mode {
+
+  def isCheck: Boolean = this match {
+    case NormalMode => false
+    case CheckMode  => true
+  }
+}
 
 case object NormalMode extends Mode {
   override def toString: String = "NormalMode"

@@ -303,7 +303,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
           navigator
             .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustBe(AddExtraInformationYesNoPage.route(withAddExtraInformationUserAnswers, departureId, CheckMode).value)
         }
       }
 

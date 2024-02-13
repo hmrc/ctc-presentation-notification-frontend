@@ -122,7 +122,7 @@ object UserAnswers {
   private val placeOfLoadingConsignmentLens: Lens[Consignment, Option[PlaceOfLoading]] =
     GenLens[Consignment](_.PlaceOfLoading)
 
-  private val departureTransportMeansConsignmentLens: Lens[Consignment, Option[DepartureTransportMeans]] =
+  private val departureTransportMeansConsignmentLens: Lens[Consignment, Option[Seq[DepartureTransportMeans]]] =
     GenLens[Consignment](_.DepartureTransportMeans)
 
   private val borderMeansConsignmentLens: Lens[Consignment, Option[Seq[ActiveBorderTransportMeans]]] =
@@ -173,8 +173,13 @@ object UserAnswers {
   val setAdditionalIdentifierOnUserAnswersLens: Optional[UserAnswers, String] =
     departureDataLens composeLens consignmentLens composeLens locationOfGoodsConsignmentLens composePrism some composeLens lensAdditionalIdentifier composePrism some
 
+  private val customsOfficeReferenceLens: Lens[MessageData, String] = GenLens[MessageData](_.CustomsOfficeOfDeparture)
+
+  val setCustomsOfficeDepartureReferenceLens: Lens[UserAnswers, String] = departureDataLens composeLens customsOfficeReferenceLens
+
   private val transitHolderLens: Lens[MessageData, HolderOfTheTransitProcedure]        = GenLens[MessageData](_.HolderOfTheTransitProcedure)
   private val transitHolderEoriLens: Lens[HolderOfTheTransitProcedure, Option[String]] = GenLens[HolderOfTheTransitProcedure](_.identificationNumber)
+  private val transitHolderNameLens: Lens[HolderOfTheTransitProcedure, Option[String]] = GenLens[HolderOfTheTransitProcedure](_.name)
 
   private val transitHolderTirIdentificationLens: Lens[HolderOfTheTransitProcedure, Option[String]] =
     GenLens[HolderOfTheTransitProcedure](_.TIRHolderIdentificationNumber)
@@ -182,6 +187,9 @@ object UserAnswers {
   private val transitHolderAddressLens: Lens[HolderOfTheTransitProcedure, Option[Address]]             = GenLens[HolderOfTheTransitProcedure](_.Address)
 
   val setTransitHolderEoriLens: Lens[UserAnswers, Option[String]] = departureDataLens composeLens transitHolderLens composeLens transitHolderEoriLens
+
+  val setTransitHolderNameLens: Lens[UserAnswers, Option[String]] =
+    departureDataLens composeLens transitHolderLens composeLens transitHolderNameLens
 
   val setTransitHolderTirIdentificationLens: Lens[UserAnswers, Option[String]] =
     departureDataLens composeLens transitHolderLens composeLens transitHolderTirIdentificationLens
@@ -198,7 +206,7 @@ object UserAnswers {
   val setTransportEquipmentLens: Lens[UserAnswers, Option[List[TransportEquipment]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(transportEquipmentConsignmentLens)
 
-  val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Option[DepartureTransportMeans]] =
+  val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Option[Seq[DepartureTransportMeans]]] =
     departureDataLens.composeLens(consignmentLens).composeLens(departureTransportMeansConsignmentLens)
 
   import play.api.libs.functional.syntax._

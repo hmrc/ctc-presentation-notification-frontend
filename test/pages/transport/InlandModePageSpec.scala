@@ -19,7 +19,7 @@ package pages.transport
 import models.reference.Nationality
 import models.reference.TransportMode.InlandMode
 import pages.behaviours.PageBehaviours
-import pages.sections.transport.departureTransportMeans.TransportMeansSection
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
 
 class InlandModePageSpec extends PageBehaviours {
@@ -41,13 +41,13 @@ class InlandModePageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(AddInlandModeOfTransportYesNoPage, true)
               .setValue(InlandModePage, inlandMode)
-              .setValue(TransportMeansIdentificationPage, identification)
-              .setValue(TransportMeansIdentificationNumberPage, "1234")
-              .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
+              .setValue(TransportMeansIdentificationPage(transportIndex), identification)
+              .setValue(TransportMeansIdentificationNumberPage(transportIndex), "1234")
+              .setValue(TransportMeansNationalityPage(transportIndex), Nationality("FR", "France"))
 
             val result = userAnswers.setValue(InlandModePage, InlandMode("5", "test"))
 
-            result.departureData.Consignment.DepartureTransportMeans must not be defined
+            result.get(TransportMeansListSection) mustNot be(defined)
         }
       }
     }
@@ -59,13 +59,13 @@ class InlandModePageSpec extends PageBehaviours {
             val userAnswers = emptyUserAnswers
               .setValue(AddInlandModeOfTransportYesNoPage, true)
               .setValue(InlandModePage, inlandMode)
-              .setValue(TransportMeansIdentificationPage, identification)
-              .setValue(TransportMeansIdentificationNumberPage, "1234")
-              .setValue(TransportMeansNationalityPage, Nationality("FR", "France"))
+              .setValue(TransportMeansIdentificationPage(transportIndex), identification)
+              .setValue(TransportMeansIdentificationNumberPage(transportIndex), "1234")
+              .setValue(TransportMeansNationalityPage(transportIndex), Nationality("FR", "France"))
 
             val result = userAnswers.setValue(InlandModePage, InlandMode(inlandMode.code, "test"))
 
-            result.get(TransportMeansSection) mustNot be(defined)
+            result.get(TransportMeansListSection) mustNot be(defined)
         }
       }
     }

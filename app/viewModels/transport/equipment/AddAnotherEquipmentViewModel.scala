@@ -50,6 +50,12 @@ object AddAnotherEquipmentViewModel {
       messages: Messages
     ): AddAnotherEquipmentViewModel = {
 
+      val amountOfItems = userAnswers
+        .get(EquipmentsSection)
+        .getOrElse(JsArray())
+        .value
+        .length
+
       val listItems = userAnswers
         .get(EquipmentsSection)
         .getOrElse(JsArray())
@@ -58,6 +64,10 @@ object AddAnotherEquipmentViewModel {
         .flatMap {
           case (_, i) =>
             val equipmentIndex = Index(i)
+
+            val shouldGenerateRemoveUrl = i != 0 || (i == 0 && amountOfItems > 1) || userAnswers.get(ContainerIndicatorPage).contains(false)
+            val removeUrl =
+              if (shouldGenerateRemoveUrl) Some(equipmentRoutes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url) else None
 
             def equipmentPrefix(increment: Int) = messages("transport.prefix", increment)
             def container(id: String)           = messages("transport.value.container", id)
@@ -88,7 +98,7 @@ object AddAnotherEquipmentViewModel {
                 ListItem(
                   name = name,
                   changeUrl = changeRoute,
-                  removeUrl = Some(equipmentRoutes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex).url)
+                  removeUrl = removeUrl
                 )
             }
         }

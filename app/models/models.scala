@@ -54,6 +54,15 @@ package object models {
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {
 
+    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
+      arr
+        .map {
+          _.zipWithIndex.flatMap {
+            case (value, i) => f(value, i)
+          }
+        }
+        .getOrElse(Nil)
+
     def validate[T](implicit rds: Reads[T]): Option[T] =
       arr.flatMap(_.validate[T].asOpt)
 

@@ -30,7 +30,7 @@ class TransportMeansNationalityViewSpec extends InputSelectViewBehaviours[Nation
   override def form: Form[Nationality] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Nationality]): HtmlFormat.Appendable =
-    injector.instanceOf[TransportMeansNationalityView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[TransportMeansNationalityView].apply(form, departureId, values, NormalMode, transportIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[Nationality] = arbitraryNationality
 

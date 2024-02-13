@@ -47,11 +47,11 @@ class TransitHolderAnswerHelper(
       )
   }
 
-  def nameRow: Option[SummaryListRow] = userAnswers.departureData.HolderOfTheTransitProcedure.ContactPerson.map {
-    person =>
+  def nameRow: Option[SummaryListRow] = userAnswers.departureData.HolderOfTheTransitProcedure.name.map {
+    name =>
       buildRowWithNoChangeLink(
         prefix = "transitHolder.name",
-        answer = formatAsText(person.name)
+        answer = formatAsText(name)
       )
   }
 
