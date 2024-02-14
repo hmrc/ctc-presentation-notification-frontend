@@ -44,7 +44,7 @@ class EquipmentNavigator extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) =>
-      ua => addContainerIdentificationNumberYesNoCheckRoute(ua, equipmentIndex, departureId, mode)
+      ua => addContainerIdentificationNumberYesNoCheckRoute(ua, equipmentIndex, departureId, NormalMode)
     case ContainerIdentificationNumberPage(equipmentIndex) => ua => containerIdentificationNumberRoute(ua, departureId, mode, equipmentIndex)
     case AddTransportEquipmentYesNoPage                    => ua => addTransportEquipmentYesNoNormalRoute(ua, departureId, mode)
 
