@@ -93,7 +93,7 @@ class SubmissionService @Inject() (
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType24] =
     LimitDatePage.path.readNullable[LocalDate].map {
-      limitData => TransitOperationType24(userAnswers.lrn, limitData)
+      limitDate => TransitOperationType24(userAnswers.lrn, limitDate)
     }
 
   def holderOfTransit(holderOfTransit: HolderOfTheTransitProcedure): HolderOfTheTransitProcedureType19 =
