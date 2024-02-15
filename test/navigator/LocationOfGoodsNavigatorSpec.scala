@@ -80,25 +80,81 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from IdentificationPage to next page" - {
-        Seq[String](
-          CustomsOfficeIdentifier,
-          EoriNumberIdentifier,
-          AuthorisationNumberIdentifier,
-          UnlocodeIdentifier,
-          CoordinatesIdentifier,
-          AddressIdentifier,
-          PostalCodeIdentifier
-        ) foreach (
-          identifier =>
-            s"when value is $identifier" in {
-              val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(identifier, "identifier")
+        "when AuthorisationNumberIdentifier" - {
+          val identifier = AuthorisationNumberIdentifier
 
-              val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
-              navigator
-                .nextPage(IdentificationPage, userAnswers, departureId, mode)
-                .mustBe(navigator.routeIdentificationPageNavigation(userAnswers, departureId, mode).value)
-            }
-        )
+          "and it is inferred" in {
+            val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(identifier, "identifier")
+
+            val userAnswers = emptyUserAnswers.setValue(InferredIdentificationPage, value)
+            navigator
+              .nextPage(InferredIdentificationPage, userAnswers, departureId, mode)
+              .mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+          }
+
+          "and it is not inferred" in {
+            val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(identifier, "identifier")
+
+            val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+            navigator
+              .nextPage(IdentificationPage, userAnswers, departureId, mode)
+              .mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+          }
+        }
+
+        "when CustomsOfficeIdentifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(CustomsOfficeIdentifier, "identifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode))
+        }
+
+        "when EoriNumberIdentifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(EoriNumberIdentifier, "identifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
+        }
+
+        "when UnlocodeIdentifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnlocodeIdentifier, "identifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode))
+        }
+
+        "when CoordinatesIdentifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(CoordinatesIdentifier, "identifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode))
+        }
+
+        "when AddressIdentifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(AddressIdentifier, "identifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode))
+        }
+
+        "when PostalCodeIdentifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(PostalCodeIdentifier, "identifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode))
+        }
       }
 
       "redirect to LocationTypeController when locationOfGoods is None and not simplified" in {
@@ -112,7 +168,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         result.mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       }
 
-      "redirect to AuthorisationNumberController when locationOfGoods is None and is simplified" in {
+      "redirect to LocationTypeController when locationOfGoods is None and is simplified" in {
 
         val userAnswers                = arbitraryUserData.arbitrary.sample.value
         val consignment                = userAnswers.departureData.Consignment.copy(LocationOfGoods = None)
@@ -120,7 +176,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         val simplifiedUserAnswers      = userAnswers.copy(departureData = departureData)
 
         val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
-        result.mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+        result.mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       }
 
       "must go from EORI Page to Add Additional Identifier Yes No page" in {
