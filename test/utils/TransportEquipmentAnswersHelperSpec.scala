@@ -341,7 +341,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val result  = helper.addOrRemoveItems().get
 
               result.id mustBe "add-or-remove-items"
-              result.text mustBe "Add or remove items"
+              result.text mustBe "Add or remove items from this transport equipment"
               result.href mustBe controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
           }
         }

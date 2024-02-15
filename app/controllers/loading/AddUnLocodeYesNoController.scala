@@ -50,12 +50,7 @@ class AddUnLocodeYesNoController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers
-        .get(AddUnLocodeYesNoPage)
-        .orElse {
-          request.userAnswers.departureData.Consignment.PlaceOfLoading.map(
-            _.isUnlocodePresent
-          )
-        } match {
+        .get(AddUnLocodeYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

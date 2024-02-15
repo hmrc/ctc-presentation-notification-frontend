@@ -30,6 +30,13 @@ import utils.transformer.transport.border.{
 }
 import utils.transformer.transport.border._
 import utils.transformer.transport.equipment._
+import utils.transformer.transport.placeOfLoading.{
+  AddExtraInformationYesNoTransformer,
+  AddUnLocodeYesNoTransformer,
+  CountryTransformer,
+  LocationTransformer,
+  UnLocodeTransformer
+}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -63,7 +70,12 @@ class DepartureDataTransformer @Inject() (
   addBorderModeOfTransportYesNoTransformer: AddBorderModeOfTransportYesNoTransformer,
   transportMeansIdentificationTransformer: TransportMeansIdentificationTransformer,
   transportMeansIdentificationNumberTransformer: TransportMeansIdentificationNumberTransformer,
-  transportMeansNationalityTransformer: TransportMeansNationalityTransformer
+  transportMeansNationalityTransformer: TransportMeansNationalityTransformer,
+  unLocodeTransformer: UnLocodeTransformer,
+  addUnLocodeYesNoTransformer: AddUnLocodeYesNoTransformer,
+  addExtraInformationYesNoTransformer: AddExtraInformationYesNoTransformer,
+  locationTransformer: LocationTransformer,
+  countryTransformer: CountryTransformer
 )(implicit ec: ExecutionContext)
     extends FrontendHeaderCarrierProvider {
 
@@ -107,13 +119,21 @@ class DepartureDataTransformer @Inject() (
         transportMeansIdentificationNumberTransformer.transform andThen
         transportMeansNationalityTransformer.transform
 
+    val placeOfLoadingPipeline =
+      addUnLocodeYesNoTransformer.transform andThen
+        unLocodeTransformer.transform andThen
+        addExtraInformationYesNoTransformer.transform andThen
+        countryTransformer.transform andThen
+        locationTransformer.transform
+
     val transformerPipeline =
       borderModePipeline andThen
         borderMeansPipeline andThen
         departureTransportMeansPipeline andThen
         transportEquipmentPipeline andThen
         limitDateTransformer.transform andThen
-        representativePipeline
+        representativePipeline andThen
+        placeOfLoadingPipeline
 
     transformerPipeline(userAnswers)
   }

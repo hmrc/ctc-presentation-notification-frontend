@@ -34,17 +34,14 @@ case object AddUnLocodeYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.AddUnLocodeYesNoController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val Ie015PlaceOfLoadingPath: JsPath = JsPath \ "Consignment" \ "PlaceOfLoading"
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>
         userAnswers
-          .remove(UnLocodePage, Ie015PlaceOfLoadingPath)
+          .remove(UnLocodePage)
           .flatMap(_.remove(AddExtraInformationYesNoPage))
           .flatMap(_.remove(CountryPage))
           .flatMap(_.remove(LocationPage))
       case _ => super.cleanup(value, userAnswers)
     }
-  }
-
 }

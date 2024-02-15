@@ -90,28 +90,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         view(filledForm, departureId, countryList.values, mode)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      val userAnswers15 =
-        UserAnswers.setPlaceOfLoadingOnUserAnswersLens
-          .set(Some(PlaceOfLoading(Some("unlocode1"), Some(country1.code.code), Some("London"))))(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers15)
-
-      val request = FakeRequest(GET, countryRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> country1.code.code))
-
-      val view = injector.instanceOf[CountryView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, countryList.values, mode)(request, messages).toString
-    }
-
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
