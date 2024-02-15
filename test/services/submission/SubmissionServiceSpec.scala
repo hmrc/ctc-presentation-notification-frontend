@@ -47,21 +47,27 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
   private val service = app.injector.instanceOf[SubmissionService]
 
-  private lazy val mockDateTimeService = mock[DateTimeService]
+  private lazy val mockDateTimeService              = mock[DateTimeService]
+  private lazy val mockMessageIdentificationService = mock[MessageIdentificationService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[DateTimeService].toInstance(mockDateTimeService)
+        bind[DateTimeService].toInstance(mockDateTimeService),
+        bind[MessageIdentificationService].toInstance(mockMessageIdentificationService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockDateTimeService)
+    reset(mockMessageIdentificationService)
 
     when(mockDateTimeService.now)
       .thenReturn(LocalDateTime.of(2020, 1, 1, 9, 30, 0))
+
+    when(mockMessageIdentificationService.randomIdentifier)
+      .thenReturn("foo")
   }
 
   "messageSequence" - {
@@ -74,7 +80,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           messagE_1Sequence2 = MESSAGE_1Sequence(
             messageRecipient = "NTA.GB",
             preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-            messageIdentification = "CC170C"
+            messageIdentification = "foo"
           ),
           messagE_TYPESequence3 = MESSAGE_TYPESequence(
             messageType = CC170C
@@ -93,7 +99,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           messagE_1Sequence2 = MESSAGE_1Sequence(
             messageRecipient = "NTA.XI",
             preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-            messageIdentification = "CC170C"
+            messageIdentification = "foo"
           ),
           messagE_TYPESequence3 = MESSAGE_TYPESequence(
             messageType = CC170C

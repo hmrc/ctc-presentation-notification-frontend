@@ -42,6 +42,7 @@ import scala.xml.{NamespaceBinding, NodeSeq}
 
 class SubmissionService @Inject() (
   dateTimeService: DateTimeService,
+  messageIdentificationService: MessageIdentificationService,
   connector: DepartureMovementConnector
 ) {
 
@@ -74,23 +75,21 @@ class SubmissionService @Inject() (
     userAnswers.data.as[CC170CType]
   }
 
-  def messageSequence(eoriNumber: EoriNumber, officeOfDeparture: String): MESSAGESequence = {
-    val messageType = CC170C
+  def messageSequence(eoriNumber: EoriNumber, officeOfDeparture: String): MESSAGESequence =
     MESSAGESequence(
       messageSender = eoriNumber.value,
       messagE_1Sequence2 = MESSAGE_1Sequence(
         messageRecipient = s"NTA.${officeOfDeparture.take(2)}",
         preparationDateAndTime = dateTimeService.now,
-        messageIdentification = messageType.toString
+        messageIdentification = messageIdentificationService.randomIdentifier
       ),
       messagE_TYPESequence3 = MESSAGE_TYPESequence(
-        messageType = messageType
+        messageType = CC170C
       ),
       correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
         correlationIdentifier = None
       )
     )
-  }
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType24] =
     LimitDatePage.path.readNullable[LocalDate].map {
