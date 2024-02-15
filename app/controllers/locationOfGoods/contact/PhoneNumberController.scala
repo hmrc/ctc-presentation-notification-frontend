@@ -23,6 +23,7 @@ import models.Mode
 import models.requests.{DataRequest, MandatoryDataRequest}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -31,7 +32,6 @@ import views.html.locationOfGoods.contact.PhoneNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.Logging
 
 class PhoneNumberController @Inject() (
   override val messagesApi: MessagesApi,
@@ -93,23 +93,7 @@ class PhoneNumberController @Inject() (
 
 object PhoneNumberController extends Logging {
 
-  private[contact] def getName(implicit request: DataRequest[AnyContent]): Option[String] =
-    request.userAnswers
-      .get(NamePage)
-      .orElse {
-        logger.info(s"Retrieved Name answer from IE015 journey")
-        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(
-          _.ContactPerson.map(
-            _.name
-          )
-        )
-      }
+  private[contact] def getName(implicit request: DataRequest[AnyContent]): Option[String] = request.userAnswers.get(NamePage)
 
-  private[contact] def getNumber(implicit request: DataRequest[AnyContent]): Option[String] =
-    request.userAnswers
-      .get(PhoneNumberPage)
-      .orElse {
-        logger.info(s"Retrieved Number answer from IE015 journey")
-        request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson.map(_.phoneNumber))
-      }
+  private[contact] def getNumber(implicit request: DataRequest[AnyContent]): Option[String] = request.userAnswers.get(PhoneNumberPage)
 }

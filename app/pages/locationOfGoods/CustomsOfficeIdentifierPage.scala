@@ -35,16 +35,11 @@ case object CustomsOfficeIdentifierPage extends QuestionPage[CustomsOffice] {
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode))
 
-  override def cleanup(value: Option[CustomsOffice], userAnswers: UserAnswers): Try[UserAnswers] = {
-    val path =
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "ContactPerson"
-
+  override def cleanup(value: Option[CustomsOffice], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>
-        userAnswers
-          .remove(LocationOfGoodsContactSection, path)
+        userAnswers.remove(LocationOfGoodsContactSection)
       case None => super.cleanup(value, userAnswers)
     }
-  }
 
 }

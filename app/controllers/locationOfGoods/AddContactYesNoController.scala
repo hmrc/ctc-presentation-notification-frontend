@@ -49,14 +49,7 @@ class AddContactYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val getContactYesNo = request.userAnswers
-        .get(AddContactYesNoPage)
-        .orElse {
-          logger.info(s"Retrieved AddContactYesNo answer from IE015 journey")
-          request.userAnswers.departureData.Consignment.LocationOfGoods.map(
-            _.ContactPerson.isDefined
-          )
-        }
+      val getContactYesNo = request.userAnswers.get(AddContactYesNoPage)
 
       val preparedForm = getContactYesNo match {
         case None        => form

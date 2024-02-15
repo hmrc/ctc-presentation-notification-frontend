@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package utils.transformer
+package utils.transformer.locationOfGoods
 
+import config.Constants.{AuthorisationNumberIdentifier, EoriNumberIdentifier}
 import models.UserAnswers
-import models.messages.Representative
-import pages.ActingAsRepresentativePage
+import pages.locationOfGoods.{AddIdentifierYesNoPage, IdentificationPage}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class ActingAsRepresentativeTransformer extends PageTransformer {
-
+class AddIdentifierYesNoTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = Option[Representative]
+  override type ExtractedTypeInDepartureData = String
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = x => Seq(x.departureData.Representative),
-      generateCapturedAnswers = value => {
-        value
-          .map {
-            representative =>
-              (ActingAsRepresentativePage, representative.isDefined)
-          }
+      extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.additionalIdentifier).toSeq,
+      generateCapturedAnswers = additionalIdentifier => {
+        val identifier = userAnswers.get(IdentificationPage).map(_.code)
+        if (identifier.contains(EoriNumberIdentifier) || identifier.contains(AuthorisationNumberIdentifier))
+          Seq((AddIdentifierYesNoPage, additionalIdentifier.nonEmpty))
+        else Seq()
       }
     )
 }

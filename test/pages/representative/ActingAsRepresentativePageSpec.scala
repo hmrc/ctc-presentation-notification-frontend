@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.representative
 
 import org.scalacheck.Arbitrary.arbitrary
+import pages.ActingAsRepresentativePage
 import pages.behaviours.PageBehaviours
-import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
 
 class ActingAsRepresentativePageSpec extends PageBehaviours {
 

@@ -35,39 +35,20 @@ trait BaseIdentificationPage extends QuestionPage[LocationOfGoodsIdentification]
 
   def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
 
-  override def cleanup(value: Option[LocationOfGoodsIdentification], userAnswers: UserAnswers): Try[UserAnswers] = {
-
-    val qualifierOfIdentificationDetailsSectionPaths = Set(
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "authorisationNumber",
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "additionalIdentifier",
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "UNLocode",
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "CustomsOffice",
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "GNSS",
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "EconomicOperator",
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "Address",
-      JsPath \ "Consignment" \ "LocationOfGoods" \ "PostcodeAddress"
-    )
-
-    val IE15AddAdditionalIdentifierPath = JsPath \ "Consignment" \ "LocationOfGoods" \ "addAdditionalIdentifier"
-    val IE15AdditionalIdentifierPath    = JsPath \ "Consignment" \ "LocationOfGoods" \ "additionalIdentifier"
-    val IE15AddContactPath              = JsPath \ "Consignment" \ "LocationOfGoods" \ "addContact"
-    val IE15ContactPersonPath           = JsPath \ "Consignment" \ "LocationOfGoods" \ "ContactPerson"
-    val IE15TelephoneNumberPath         = JsPath \ "Consignment" \ "LocationOfGoods" \ "telephoneNumber"
-
+  override def cleanup(value: Option[LocationOfGoodsIdentification], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>
         userAnswers
-          .remove(AdditionalIdentifierPage, IE15AddAdditionalIdentifierPath)
-          .flatMap(_.remove(AddIdentifierYesNoPage, IE15AdditionalIdentifierPath))
-          .flatMap(_.remove(AddContactYesNoPage, IE15AddContactPath))
-          .flatMap(_.remove(NamePage, IE15ContactPersonPath))
-          .flatMap(_.remove(PhoneNumberPage, IE15TelephoneNumberPath))
-          .flatMap(_.remove(QualifierOfIdentificationDetailsSection, qualifierOfIdentificationDetailsSectionPaths))
+          .remove(AdditionalIdentifierPage)
+          .flatMap(_.remove(AddIdentifierYesNoPage))
+          .flatMap(_.remove(AddContactYesNoPage))
+          .flatMap(_.remove(NamePage))
+          .flatMap(_.remove(PhoneNumberPage))
+          .flatMap(_.remove(QualifierOfIdentificationDetailsSection))
           .flatMap(cleanup)
 
       case None => super.cleanup(value, userAnswers)
     }
-  }
 }
 
 case object IdentificationPage extends BaseIdentificationPage {

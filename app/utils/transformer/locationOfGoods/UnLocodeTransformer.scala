@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package utils.transformer.transport.equipment
+package utils.transformer.locationOfGoods
 
 import models.UserAnswers
-import pages.transport.ContainerIndicatorPage
+import pages.locationOfGoods.UnLocodePage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
-import utils.EnrichedString
+
 import scala.concurrent.Future
 
-class ContainerIndicatorTransformer extends PageTransformer {
-
-  override type DomainModelType              = Boolean
+class UnLocodeTransformer extends PageTransformer {
+  override type DomainModelType              = String
   override type ExtractedTypeInDepartureData = String
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.containerIndicator.toSeq,
-      generateCapturedAnswers = containerIndicators =>
-        containerIndicators.map(
-          containerIndicator => (ContainerIndicatorPage, containerIndicator.asBoolean)
-        )
+      extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.UNLocode).toSeq,
+      generateCapturedAnswers = _.map((UnLocodePage, _))
     )
 }

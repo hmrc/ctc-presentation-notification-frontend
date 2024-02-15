@@ -17,268 +17,55 @@
 package utils.transformer
 
 import base.SpecBase
-import models.UserAnswers
 import org.mockito.Mockito.{times, verify, when}
-import utils.transformer.representative._
-import utils.transformer.transport._
-import utils.transformer.transport.border._
-import utils.transformer.transport.equipment._
-import utils.transformer.transport.placeOfLoading.{
-  AddExtraInformationYesNoTransformer,
-  AddUnLocodeYesNoTransformer,
-  CountryTransformer,
-  LocationTransformer,
-  UnLocodeTransformer
-}
+import utils.transformer.Helper.{defaultTransformFunction, userAnswers}
+import utils.transformer.pipeline._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.concurrent.Future.successful
 
 class DepartureDataTransformerTest extends SpecBase {
 
   "DepartureDataTransformer" - {
     "should call all transformers" in {
-      val identificationTransformer                        = mock[IdentificationTransformer]
-      val identificationNumberTransformer                  = mock[IdentificationNumberTransformer]
-      val transportEquipmentTransformer                    = mock[TransportEquipmentTransformer]
-      val transportEquipmentYesNoTransformer               = mock[TransportEquipmentYesNoTransformer]
-      val containerIdentificationNumberTransformer         = mock[ContainerIdentificationNumberTransformer]
-      val containerIdentificationNumberYesNoTransformer    = mock[ContainerIdentificationNumberYesNoTransformer]
-      val sealTransformer                                  = mock[SealTransformer]
-      val sealYesNoTransformer                             = mock[AddSealYesNoTransformer]
-      val itemTransformer                                  = mock[ItemTransformer]
-      val modeOfTransportAtTheBorderTransformer            = mock[ModeOfTransportAtTheBorderTransformer]
-      val addBorderModeOfTransportYesNoTransformer         = mock[AddBorderModeOfTransportYesNoTransformer]
-      val userAnswers                                      = mock[UserAnswers]
-      val userAnswersWithEquipment                         = mock[UserAnswers]
-      val addAnotherBorderMeansOfTransportYesNoTransformer = mock[AddAnotherBorderMeansOfTransportYesNoTransformer]
-      val addBorderMeansOfTransportYesNoTransformer        = mock[AddBorderMeansOfTransportYesNoTransformer]
-      val addConveyanceReferenceYesNoTransformer           = mock[AddConveyanceReferenceYesNoTransformer]
-      val conveyanceReferenceTransformer                   = mock[ConveyanceReferenceTransformer]
-      val customsOfficeTransformer                         = mock[CustomsOfficeTransformer]
-      val nationalityTransformer                           = mock[NationalityTransformer]
-      val limitDateTransformer                             = mock[LimitDateTransformer]
-      val actingAsRepresentativeTransformer                = mock[ActingAsRepresentativeTransformer]
-      val representativeEoriTransformer                    = mock[RepresentativeEoriTransformer]
-      val addRepresentativeContactDetailsYesNoTransformer  = mock[AddRepresentativeContactDetailsYesNoTransformer]
-      val representativeNameTransformer                    = mock[RepresentativeNameTransformer]
-      val representativePhoneNumberTransformer             = mock[RepresentativePhoneNumberTransformer]
-      val containerIndicatorTransformer                    = mock[ContainerIndicatorTransformer]
-      val transportMeansIdentificationNumberTransformer    = mock[TransportMeansIdentificationNumberTransformer]
-      val transportMeansIdentificationTransformer          = mock[TransportMeansIdentificationTransformer]
-      val transportMeansNationalityTransformer             = mock[TransportMeansNationalityTransformer]
-      val inlandModeTransformer                            = mock[InlandModeTransformer]
-      val addInlandModeYesNoTransformer                    = mock[AddInlandModeYesNoTransformer]
-      val unLocodeTransformer                              = mock[UnLocodeTransformer]
-      val addUnLocodeYesNoTransformer                      = mock[AddUnLocodeYesNoTransformer]
-      val addExtraInformationYesNoTransformer              = mock[AddExtraInformationYesNoTransformer]
-      val locationTransformer                              = mock[LocationTransformer]
-      val countryTransformer                               = mock[CountryTransformer]
+      val borderMeansPipeline             = mock[BorderMeansPipeline]
+      val borderModePipeline              = mock[BorderModePipeline]
+      val departureTransportMeansPipeline = mock[DepartureTransportMeansPipeline]
+      val locationOfGoodsPipeline         = mock[LocationOfGoodsPipeline]
+      val placeOfLoadingPipeline          = mock[PlaceOfLoadingPipeline]
+      val representativePipeline          = mock[RepresentativePipeline]
+      val transportPipeline               = mock[TransportPipeline]
+      val transportEquipmentPipeline      = mock[TransportEquipmentPipeline]
 
-      val updateAnswersFn: UserAnswers => Future[UserAnswers] = _ => successful(userAnswers)
-      val verifyTransportEquipmentTransformersOrder: UserAnswers => Future[UserAnswers] = {
-        input =>
-          if (input != userAnswersWithEquipment) fail("This transformer must be called after transportEquipmentTransformer")
-          else successful(input)
-      }
-
-      when(identificationTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-      when(identificationNumberTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(transportEquipmentYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswersWithEquipment)
-      )
-
-      when(addAnotherBorderMeansOfTransportYesNoTransformer.transform(hc)).thenReturn(updateAnswersFn)
-      when(addBorderMeansOfTransportYesNoTransformer.transform(hc)).thenReturn(updateAnswersFn)
-      when(addConveyanceReferenceYesNoTransformer.transform(hc)).thenReturn(updateAnswersFn)
-      when(conveyanceReferenceTransformer.transform(hc)).thenReturn(updateAnswersFn)
-      when(customsOfficeTransformer.transform(hc)).thenReturn(updateAnswersFn)
-      when(identificationTransformer.transform(hc)).thenReturn(updateAnswersFn)
-      when(identificationNumberTransformer.transform(hc)).thenReturn(updateAnswersFn)
-      when(nationalityTransformer.transform(hc)).thenReturn(updateAnswersFn)
-
-      when(identificationTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-      when(identificationNumberTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(inlandModeTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(addInlandModeYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(transportEquipmentTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswersWithEquipment)
-      )
-      // this should be called after transportEquipmentTransformer because of parent-child relation
-      when(containerIdentificationNumberTransformer.transform(hc)).thenReturn(verifyTransportEquipmentTransformersOrder)
-      when(sealTransformer.transform(hc)).thenReturn(verifyTransportEquipmentTransformersOrder)
-
-      when(containerIdentificationNumberYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswersWithEquipment)
-      )
-
-      when(limitDateTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-      when(limitDateTransformer.transform(hc)).thenReturn(updateAnswersFn)
-
-      when(transportMeansIdentificationNumberTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(transportMeansIdentificationTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(transportMeansNationalityTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(sealYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswersWithEquipment)
-      )
-
-      when(itemTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswersWithEquipment)
-      )
-
-      when(containerIndicatorTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(modeOfTransportAtTheBorderTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(addBorderModeOfTransportYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(actingAsRepresentativeTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(representativeEoriTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(addRepresentativeContactDetailsYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(representativeNameTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(representativePhoneNumberTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(unLocodeTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(addUnLocodeYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(addExtraInformationYesNoTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(locationTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
-
-      when(countryTransformer.transform(hc)).thenReturn(
-        _ => successful(userAnswers)
-      )
+      when(borderMeansPipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
+      when(borderModePipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
+      when(departureTransportMeansPipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
+      when(locationOfGoodsPipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
+      when(placeOfLoadingPipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
+      when(representativePipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
+      when(transportPipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
+      when(transportEquipmentPipeline.pipeline(hc)).thenReturn(defaultTransformFunction)
 
       val departureDataTransformer = new DepartureDataTransformer(
-        addAnotherBorderMeansOfTransportYesNoTransformer,
-        addBorderMeansOfTransportYesNoTransformer,
-        addConveyanceReferenceYesNoTransformer,
-        conveyanceReferenceTransformer,
-        customsOfficeTransformer,
-        identificationTransformer,
-        identificationNumberTransformer,
-        inlandModeTransformer,
-        addInlandModeYesNoTransformer,
-        nationalityTransformer,
-        transportEquipmentTransformer,
-        transportEquipmentYesNoTransformer,
-        containerIdentificationNumberTransformer,
-        containerIdentificationNumberYesNoTransformer,
-        sealTransformer,
-        sealYesNoTransformer,
-        limitDateTransformer,
-        itemTransformer,
-        actingAsRepresentativeTransformer,
-        representativeEoriTransformer,
-        addRepresentativeContactDetailsYesNoTransformer,
-        representativeNameTransformer,
-        representativePhoneNumberTransformer,
-        containerIndicatorTransformer,
-        modeOfTransportAtTheBorderTransformer,
-        addBorderModeOfTransportYesNoTransformer,
-        transportMeansIdentificationTransformer,
-        transportMeansIdentificationNumberTransformer,
-        transportMeansNationalityTransformer,
-        unLocodeTransformer,
-        addUnLocodeYesNoTransformer,
-        addExtraInformationYesNoTransformer,
-        locationTransformer,
-        countryTransformer
+        borderMeansPipeline,
+        borderModePipeline,
+        departureTransportMeansPipeline,
+        locationOfGoodsPipeline,
+        placeOfLoadingPipeline,
+        representativePipeline,
+        transportPipeline,
+        transportEquipmentPipeline
       )
 
       whenReady(departureDataTransformer.transform(userAnswers)) {
         _ =>
-          verify(addAnotherBorderMeansOfTransportYesNoTransformer, times(1)).transform(hc)
-          verify(addBorderMeansOfTransportYesNoTransformer, times(1)).transform(hc)
-          verify(addConveyanceReferenceYesNoTransformer, times(1)).transform(hc)
-          verify(conveyanceReferenceTransformer, times(1)).transform(hc)
-          verify(customsOfficeTransformer, times(1)).transform(hc)
-          verify(identificationTransformer, times(1)).transform(hc)
-          verify(identificationNumberTransformer, times(1)).transform(hc)
-          verify(nationalityTransformer, times(1)).transform(hc)
-          verify(inlandModeTransformer, times(1)).transform(hc)
-          verify(addInlandModeYesNoTransformer, times(1)).transform(hc)
-          verify(transportEquipmentTransformer, times(1)).transform(hc)
-          verify(transportEquipmentYesNoTransformer, times(1)).transform(hc)
-          verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
-          verify(containerIdentificationNumberYesNoTransformer, times(1)).transform(hc)
-          verify(sealTransformer, times(1)).transform(hc)
-          verify(sealYesNoTransformer, times(1)).transform(hc)
-          verify(limitDateTransformer, times(1)).transform(hc)
-          verify(transportMeansIdentificationTransformer, times(1)).transform(hc)
-          verify(transportMeansIdentificationNumberTransformer, times(1)).transform(hc)
-          verify(transportMeansNationalityTransformer, times(1)).transform(hc)
-          verify(actingAsRepresentativeTransformer, times(1)).transform(hc)
-          verify(representativeEoriTransformer, times(1)).transform(hc)
-          verify(addRepresentativeContactDetailsYesNoTransformer, times(1)).transform(hc)
-          verify(representativeNameTransformer, times(1)).transform(hc)
-          verify(representativePhoneNumberTransformer, times(1)).transform(hc)
-          verify(itemTransformer, times(1)).transform(hc)
-          verify(containerIndicatorTransformer, times(1)).transform(hc)
-          verify(modeOfTransportAtTheBorderTransformer, times(1)).transform(hc)
-          verify(addBorderModeOfTransportYesNoTransformer, times(1)).transform(hc)
-          verify(unLocodeTransformer, times(1)).transform(hc)
-          verify(addUnLocodeYesNoTransformer, times(1)).transform(hc)
-          verify(addExtraInformationYesNoTransformer, times(1)).transform(hc)
-          verify(locationTransformer, times(1)).transform(hc)
-          verify(countryTransformer, times(1)).transform(hc)
+          verify(borderMeansPipeline, times(1)).pipeline(hc)
+          verify(borderModePipeline, times(1)).pipeline(hc)
+          verify(departureTransportMeansPipeline, times(1)).pipeline(hc)
+          verify(locationOfGoodsPipeline, times(1)).pipeline(hc)
+          verify(placeOfLoadingPipeline, times(1)).pipeline(hc)
+          verify(representativePipeline, times(1)).pipeline(hc)
+          verify(transportPipeline, times(1)).pipeline(hc)
+          verify(transportEquipmentPipeline, times(1)).pipeline(hc)
       }
     }
   }

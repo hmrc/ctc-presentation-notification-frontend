@@ -34,10 +34,10 @@ import scala.concurrent.Future
 
 class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
+  private lazy val addIdentifierYesNoRoute = locationOfGoodsRoutes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
   private val formProvider                 = new YesNoFormProvider()
   private val form                         = formProvider("locationOfGoods.addIdentifierYesNo")
   private val mode                         = NormalMode
-  private lazy val addIdentifierYesNoRoute = locationOfGoodsRoutes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -64,26 +64,6 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
       val userAnswers = emptyUserAnswers.setValue(AddIdentifierYesNoPage, true)
       setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, addIdentifierYesNoRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val view = injector.instanceOf[AddIdentifierYesNoView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-
-      val userAnswers15 = UserAnswers.setAdditionalIdentifierOnUserAnswersLens.set("ab12")(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, addIdentifierYesNoRoute)
 

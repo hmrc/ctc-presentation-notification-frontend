@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.loading
 
+import pages.AddPlaceOfLoadingYesNoPage
 import pages.behaviours.PageBehaviours
 
 class AddPlaceOfLoadingYesNoPageSpec extends PageBehaviours {

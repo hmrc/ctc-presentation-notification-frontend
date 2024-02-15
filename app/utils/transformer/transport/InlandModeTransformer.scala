@@ -31,6 +31,14 @@ class InlandModeTransformer @Inject() (transportModeCodesService: TransportModeC
   override type DomainModelType              = InlandMode
   override type ExtractedTypeInDepartureData = String
 
+  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+    transformFromDepartureWithRefData(
+      userAnswers = userAnswers,
+      fetchReferenceData = () => transportModeCodesService.getInlandModes(),
+      extractDataFromDepartureData = _.departureData.Consignment.inlandModeOfTransport.toSeq,
+      generateCapturedAnswers = generateCapturedAnswers
+    )
+
   private def generateCapturedAnswers(inlandModeCodes: Seq[String], inlandModeList: Seq[InlandMode]): Seq[(InlandModePage.type, InlandMode)] =
     inlandModeCodes.flatMap {
       code =>
@@ -40,13 +48,5 @@ class InlandModeTransformer @Inject() (transportModeCodesService: TransportModeC
             inlandMode => (InlandModePage, inlandMode)
           )
     }
-
-  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    transformFromDepartureWithRefData(
-      userAnswers = userAnswers,
-      fetchReferenceData = () => transportModeCodesService.getInlandModes(),
-      extractDataFromDepartureData = _.departureData.Consignment.inlandModeOfTransport.toSeq,
-      generateCapturedAnswers = generateCapturedAnswers
-    )
 
 }

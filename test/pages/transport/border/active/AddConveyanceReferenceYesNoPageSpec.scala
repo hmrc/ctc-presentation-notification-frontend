@@ -40,9 +40,6 @@ class AddConveyanceReferenceYesNoPageSpec extends PageBehaviours {
               val result = userAnswers.setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
 
               result.get(ConveyanceReferenceNumberPage(activeIndex)) must not be defined
-              result.departureData.Consignment.ActiveBorderTransportMeans
-                .flatMap(_.lift(activeIndex.position).flatMap(_.conveyanceReferenceNumber)) must not be defined
-
           }
         }
       }

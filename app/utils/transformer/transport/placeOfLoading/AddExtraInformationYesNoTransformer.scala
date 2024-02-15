@@ -19,7 +19,6 @@ package utils.transformer.transport.placeOfLoading
 import models.UserAnswers
 import models.messages.PlaceOfLoading
 import pages.loading.AddExtraInformationYesNoPage
-import pages.loading.AddUnLocodeYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 

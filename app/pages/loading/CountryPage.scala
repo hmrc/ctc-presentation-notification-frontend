@@ -17,8 +17,8 @@
 package pages.loading
 
 import controllers.loading.routes
-import models.{Mode, UserAnswers}
 import models.reference.Country
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.loading.LoadingSection
 import play.api.libs.json.JsPath

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.transformer.transport
+package utils.transformer.departureTransportMeans
 
 import models.reference.Nationality
 import models.{Index, UserAnswers}
@@ -33,6 +33,14 @@ class TransportMeansNationalityTransformer @Inject() (nationalitiesService: Nati
   override type DomainModelType              = Nationality
   override type ExtractedTypeInDepartureData = String
 
+  def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+    transformFromDepartureWithRefData(
+      userAnswers = userAnswers,
+      fetchReferenceData = () => nationalitiesService.getNationalities().map(_.values),
+      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toList.flatten.flatMap(_.nationality),
+      generateCapturedAnswers = generateCapturedAnswers
+    )
+
   private def generateCapturedAnswers(
     departureDataNationalityCodes: Seq[String],
     nationalityList: Seq[Nationality]
@@ -47,13 +55,5 @@ class TransportMeansNationalityTransformer @Inject() (nationalitiesService: Nati
             nationality => (TransportMeansNationalityPage(index), nationality)
           )
     }.flatten
-
-  def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    transformFromDepartureWithRefData(
-      userAnswers = userAnswers,
-      fetchReferenceData = () => nationalitiesService.getNationalities().map(_.values),
-      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toList.flatten.flatMap(_.nationality),
-      generateCapturedAnswers = generateCapturedAnswers
-    )
 
 }
