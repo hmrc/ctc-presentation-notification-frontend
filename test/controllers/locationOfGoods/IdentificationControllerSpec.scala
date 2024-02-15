@@ -16,7 +16,6 @@
 
 package controllers.locationOfGoods
 
-import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
@@ -31,27 +30,27 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, InferredLocationTypePage, LocationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.LocationOfGoodsIdentificationTypeService
 import views.html.locationOfGoods.IdentificationView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
+  private lazy val identificationRoute = controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode).url
+
   val ids: Seq[LocationOfGoodsIdentification] =
     Gen.containerOfN[Seq, LocationOfGoodsIdentification](2, arbitrary[LocationOfGoodsIdentification]).sample.value
-
-  private val id1 = ids.head
-
+  private val id1                                                                     = ids.head
   private val formProvider                                                            = new EnumerableFormProvider()
   private val form                                                                    = formProvider[LocationOfGoodsIdentification]("locationOfGoods.identification", ids)
   private val mode                                                                    = NormalMode
-  private lazy val identificationRoute                                                = controllers.locationOfGoods.routes.IdentificationController.onPageLoad(departureId, mode).url
   private val mockLocationIdentifierService: LocationOfGoodsIdentificationTypeService = mock[LocationOfGoodsIdentificationTypeService]
+  private val page                                                                    = Gen.oneOf(LocationTypePage, InferredLocationTypePage).sample.value
+  private val locationType                                                            = arbitrary[LocationType].sample.value
+  private val baseUserAnswers                                                         = emptyUserAnswers.setValue(page, locationType)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -63,10 +62,6 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     reset(mockLocationIdentifierService)
     when(mockLocationIdentifierService.getLocationOfGoodsIdentificationTypes(any())(any())).thenReturn(Future.successful(ids))
   }
-
-  private val page            = Gen.oneOf(LocationTypePage, InferredLocationTypePage).sample.value
-  private val locationType    = arbitrary[LocationType].sample.value
-  private val baseUserAnswers = emptyUserAnswers.setValue(page, locationType)
 
   "LocationOfGoodsIdentification Controller" - {
 
@@ -186,33 +181,6 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must get answer IE015 if not available in IE170" in {
-      when(mockLocationIdentifierService.getLocationOfGoodsIdentificationTypes(any())(any())).thenReturn(Future.successful(ids))
-      val ie015UserAnswers = UserAnswers(
-        departureId,
-        eoriNumber,
-        lrn.value,
-        Json.obj(),
-        Instant.now(),
-        messageData.copy(Consignment =
-          messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(qualifierOfIdentification = id1.code)))
-        )
-      )
-      setExistingUserAnswers(ie015UserAnswers)
-
-      val request = FakeRequest(GET, identificationRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> id1.code))
-
-      val view = injector.instanceOf[IdentificationView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, ids, mode)(request, messages).toString
-    }
   }
 
 }

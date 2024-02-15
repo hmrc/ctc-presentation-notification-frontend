@@ -20,25 +20,23 @@ import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.locationOfGoods.AuthorisationNumberFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.AuthorisationNumberPage
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.AuthorisationNumberView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private lazy val authorisationNumberRoute = controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode).url
   private val formProvider                  = new AuthorisationNumberFormProvider()
   private val form                          = formProvider("locationOfGoods.authorisationNumber")
   private val mode                          = NormalMode
-  private lazy val authorisationNumberRoute = controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -143,34 +141,5 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must get answer IE015 if not available in IE170" in {
-      val ie015UserAnswers = UserAnswers(
-        departureId,
-        eoriNumber,
-        lrn.value,
-        Json.obj(),
-        Instant.now(),
-        messageData.copy(Consignment =
-          messageData.Consignment.copy(LocationOfGoods =
-            Some(messageData.Consignment.LocationOfGoods.get.copy(authorisationNumber = Some("authorisationNumber")))
-          )
-        )
-      )
-
-      setExistingUserAnswers(ie015UserAnswers)
-
-      val request = FakeRequest(GET, authorisationNumberRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "authorisationNumber"))
-
-      val view = injector.instanceOf[AuthorisationNumberView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
-    }
   }
 }

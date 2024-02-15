@@ -21,7 +21,6 @@ import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.messages.Address
 import models.{NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,15 +36,13 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val country1    = arbitraryCountry.arbitrary.sample.value
-  private val country2    = arbitraryCountry.arbitrary.sample.value
-  private val countryList = SelectableList(Seq(country1, country2))
-
-  private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("locationOfGoods.country", countryList)
-  private val mode         = NormalMode
-
   private lazy val countryRoute = locationOfGoodsRoutes.CountryController.onPageLoad(departureId, mode).url
+  private val country1          = arbitraryCountry.arbitrary.sample.value
+  private val country2          = arbitraryCountry.arbitrary.sample.value
+  private val countryList       = SelectableList(Seq(country1, country2))
+  private val formProvider      = new SelectableFormProvider()
+  private val form              = formProvider("locationOfGoods.country", countryList)
+  private val mode              = NormalMode
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -76,27 +73,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country1)
       setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, countryRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> country1.code.code))
-
-      val view = injector.instanceOf[CountryView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, countryList.values, mode)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      val userAnswers15 = UserAnswers.setAddressOnUserAnswersLens.set(Address("street", None, "city", country1.code.code))(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, countryRoute)
 

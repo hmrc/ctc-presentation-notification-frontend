@@ -14,34 +14,23 @@
  * limitations under the License.
  */
 
-package utils.transformer.transport
+package utils.transformer.locationOfGoods
 
-import models.messages.DepartureTransportMeans
-import models.{Index, UserAnswers}
-import pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage
+import models.UserAnswers
+import pages.locationOfGoods.AuthorisationNumberPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
 
-class TransportMeansIdentificationNumberTransformer extends PageTransformer {
-
+class AuthorisationNumberTransformer extends PageTransformer {
   override type DomainModelType              = String
-  override type ExtractedTypeInDepartureData = DepartureTransportMeans
+  override type ExtractedTypeInDepartureData = String
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toSeq.flatten,
-      generateCapturedAnswers = departureMeans => {
-        departureMeans.zipWithIndex.flatMap {
-          case (departureMeans, index) =>
-            val transportIndex = Index(index)
-            departureMeans.identificationNumber.map {
-              identificationNumber =>
-                (TransportMeansIdentificationNumberPage(transportIndex), identificationNumber)
-            }
-        }
-      }
+      extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.authorisationNumber).toSeq,
+      generateCapturedAnswers = _.map((AuthorisationNumberPage, _))
     )
 }

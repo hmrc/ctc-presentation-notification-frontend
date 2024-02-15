@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.transformer.transport
+package utils.transformer.departureTransportMeans
 
 import cats.implicits.toFoldableOps
 import connectors.ReferenceDataConnector
@@ -34,6 +34,14 @@ class TransportMeansIdentificationTransformer @Inject() (referenceDataConnector:
   override type DomainModelType              = TransportMeansIdentification
   override type ExtractedTypeInDepartureData = String
 
+  def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+    transformFromDepartureWithRefData(
+      userAnswers = userAnswers,
+      fetchReferenceData = () => referenceDataConnector.getMeansOfTransportIdentificationTypes().map(_.toList),
+      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
+      generateCapturedAnswers = generateCapturedAnswers
+    )
+
   private def generateCapturedAnswers(
     departureDataIdentificationCodes: Seq[String],
     identificationList: Seq[TransportMeansIdentification]
@@ -47,13 +55,5 @@ class TransportMeansIdentificationTransformer @Inject() (referenceDataConnector:
             identification => (TransportMeansIdentificationPage(index), identification)
           )
     }.flatten
-
-  def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    transformFromDepartureWithRefData(
-      userAnswers = userAnswers,
-      fetchReferenceData = () => referenceDataConnector.getMeansOfTransportIdentificationTypes().map(_.toList),
-      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toList.flatten.flatMap(_.typeOfIdentification),
-      generateCapturedAnswers = generateCapturedAnswers
-    )
 
 }

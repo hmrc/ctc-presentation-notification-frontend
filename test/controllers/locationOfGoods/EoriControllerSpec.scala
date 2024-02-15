@@ -21,33 +21,28 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.EoriNumberFormProvider
-import models.messages.EconomicOperator
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
 import pages.locationOfGoods.EoriPage
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.locationOfGoods.EoriView
 
-import java.time.Instant
-
 class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
+  private lazy val locationOfGoodsEoriRoute = locationOfGoodsRoutes.EoriController.onPageLoad(departureId, mode).url
+  private lazy val validAnswer              = eoriNumber.value
   private val formProvider                  = new EoriNumberFormProvider()
   private val form                          = formProvider("locationOfGoods.eori")
   private val mode                          = NormalMode
-  private lazy val locationOfGoodsEoriRoute = locationOfGoodsRoutes.EoriController.onPageLoad(departureId, mode).url
 
-  private lazy val validAnswer = eoriNumber.value
+  override def beforeEach(): Unit =
+    super.beforeEach()
 
   override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-
-  override def beforeEach(): Unit =
-    super.beforeEach()
 
   "Eori Controller" - {
 
@@ -147,36 +142,6 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
-    }
-
-    "must get answer IE015 if not available in IE170" in {
-      val ie015UserAnswers = UserAnswers(
-        departureId,
-        eoriNumber,
-        lrn.value,
-        Json.obj(),
-        Instant.now(),
-        messageData.copy(Consignment =
-          messageData.Consignment.copy(LocationOfGoods =
-            Some(messageData.Consignment.LocationOfGoods.get.copy(EconomicOperator = Some(EconomicOperator("EconomicOperator"))))
-          )
-        )
-      )
-
-      setExistingUserAnswers(ie015UserAnswers)
-
-      val request = FakeRequest(GET, locationOfGoodsEoriRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "EconomicOperator"))
-
-      val view = injector.instanceOf[EoriView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
     }
   }
 }

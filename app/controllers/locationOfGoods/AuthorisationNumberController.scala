@@ -48,8 +48,7 @@ class AuthorisationNumberController @Inject() (
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val preparedForm = request.userAnswers
-        .get(AuthorisationNumberPage)
-        .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.authorisationNumber)) match {
+        .get(AuthorisationNumberPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

@@ -24,6 +24,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import pages.transport.departureTransportMeans.TransportMeansNationalityPage
 import services.NationalitiesService
+import utils.transformer.departureTransportMeans.TransportMeansNationalityTransformer
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

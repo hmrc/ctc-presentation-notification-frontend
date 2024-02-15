@@ -880,12 +880,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from CustomsOfficeIdentifierPage to AddContactYesNoPage" in {
+      "must go from CustomsOfficeIdentifierPage to LimitDatePage when limit date does not exist" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(CustomsOfficeIdentifierPage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustBe(LimitDatePage.route(answers, departureId, CheckMode).value)
         }
       }
 
@@ -928,7 +928,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               userAnswersSet.get(CountryPage).mustBe(None)
 
-              userAnswersSet.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson) mustBe None
               (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe false
               (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe false
 

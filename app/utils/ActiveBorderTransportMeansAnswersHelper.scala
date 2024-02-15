@@ -25,7 +25,6 @@ import pages.transport.border.active._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.{Link, Section}
 
 import scala.concurrent.ExecutionContext
@@ -35,7 +34,7 @@ class ActiveBorderTransportMeansAnswersHelper(
   departureId: String,
   mode: Mode,
   activeIndex: Index
-)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers

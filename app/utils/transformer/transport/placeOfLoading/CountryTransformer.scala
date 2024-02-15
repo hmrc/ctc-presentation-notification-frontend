@@ -16,8 +16,8 @@
 
 package utils.transformer.transport.placeOfLoading
 
-import models.{Index, UserAnswers}
-import models.reference.{Country, CountryCode}
+import models.UserAnswers
+import models.reference.Country
 import pages.loading.CountryPage
 import services.CountriesService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -32,6 +32,15 @@ class CountryTransformer @Inject() (countriesService: CountriesService)(implicit
   override type DomainModelType              = Country
   override type ExtractedTypeInDepartureData = String
 
+  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      transformFromDepartureWithRefData(
+        userAnswers = userAnswers,
+        fetchReferenceData = () => countriesService.getCountries().map(_.values),
+        extractDataFromDepartureData = _.departureData.Consignment.PlaceOfLoading.flatMap(_.country).toSeq,
+        generateCapturedAnswers = generateCapturedAnswers
+      )
+
   def generateCapturedAnswers(countryCodes: Seq[String], countries: Seq[Country]): Seq[(CountryPage.type, Country)] =
     countryCodes.flatMap {
       case code =>
@@ -41,14 +50,5 @@ class CountryTransformer @Inject() (countriesService: CountriesService)(implicit
             country => (CountryPage, country)
           )
     }
-
-  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      transformFromDepartureWithRefData(
-        userAnswers = userAnswers,
-        fetchReferenceData = () => countriesService.getCountries().map(_.values),
-        extractDataFromDepartureData = _.departureData.Consignment.PlaceOfLoading.flatMap(_.country).toSeq,
-        generateCapturedAnswers = generateCapturedAnswers
-      )
 
 }
