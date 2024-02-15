@@ -17,19 +17,19 @@
 package utils
 
 import base.SpecBase
+import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
+import models.messages.MessageData
+import models.reference.Country
 import models.{Mode, UserAnswers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck.Arbitrary.arbitrary
-import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, CountryPage, LocationPage, UnLocodePage}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.loading._
+import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.json.Json
-import base.TestMessageData.{allOptionsNoneJsonValue, messageData}
-import models.messages.MessageData
-import models.reference.Country
 
 class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   "PlaceOfLoadingAnswersHelper" - {

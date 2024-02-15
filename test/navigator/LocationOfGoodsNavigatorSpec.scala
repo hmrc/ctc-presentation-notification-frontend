@@ -880,12 +880,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from CustomsOfficeIdentifierPage to AddContactYesNoPage" in {
+      "must go from CustomsOfficeIdentifierPage to LimitDatePage when limit date does not exist" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(CustomsOfficeIdentifierPage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustBe(LimitDatePage.route(answers, departureId, CheckMode).value)
         }
       }
 

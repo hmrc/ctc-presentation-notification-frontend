@@ -16,8 +16,9 @@
 
 package utils.transformer.locationOfGoods
 
+import config.Constants.{AuthorisationNumberIdentifier, EoriNumberIdentifier}
 import models.UserAnswers
-import pages.locationOfGoods.AddIdentifierYesNoPage
+import pages.locationOfGoods.{AddIdentifierYesNoPage, IdentificationPage}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
@@ -31,6 +32,11 @@ class AddIdentifierYesNoTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.additionalIdentifier).toSeq,
-      generateCapturedAnswers = additionalIdentifier => Seq((AddIdentifierYesNoPage, additionalIdentifier.nonEmpty))
+      generateCapturedAnswers = additionalIdentifier => {
+        val identifier = userAnswers.get(IdentificationPage).map(_.code)
+        if (identifier.contains(EoriNumberIdentifier) || identifier.contains(AuthorisationNumberIdentifier))
+          Seq((AddIdentifierYesNoPage, additionalIdentifier.nonEmpty))
+        else Seq()
+      }
     )
 }

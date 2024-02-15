@@ -16,9 +16,10 @@
 
 package utils.transformer.locationOfGoods
 
+import config.Constants.CustomsOfficeIdentifier
 import models.UserAnswers
 import models.messages.ContactPerson
-import pages.locationOfGoods.AddContactYesNoPage
+import pages.locationOfGoods.{AddContactYesNoPage, IdentificationPage}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
@@ -32,7 +33,12 @@ class AddContactYesNoTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson).toSeq,
-      generateCapturedAnswers = contactPerson => Seq((AddContactYesNoPage, contactPerson.nonEmpty))
+      generateCapturedAnswers = contactPerson =>
+        if (userAnswers.get(IdentificationPage).map(_.code).contains(CustomsOfficeIdentifier)) {
+          Seq()
+        } else {
+          Seq((AddContactYesNoPage, contactPerson.nonEmpty))
+        }
     )
   }
 }

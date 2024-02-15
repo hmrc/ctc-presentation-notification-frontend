@@ -17,27 +17,53 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
-import models.UserAnswers
-import pages.locationOfGoods.AddContactYesNoPage
+import base.TestMessageData.{contactPerson, locationOfGoods}
+import models.{LocationOfGoodsIdentification, UserAnswers}
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
+import pages.locationOfGoods.{AddContactYesNoPage, IdentificationPage}
 
 class AddContactYesNoTransformerTest extends SpecBase {
   val transformer = new AddContactYesNoTransformer()
 
   "AddContactYesNoTransformer" - {
-    "must return AddContactYesNoPage Yes (true) when there is ContactPerson" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(Option(locationOfGoods))(emptyUserAnswers)
+    "must return AddContactYesNoPage Yes (true) when there is ContactPerson and identification type is not V" in {
+      val userAnswers =
+        UserAnswers.setLocationOfGoodsOnUserAnswersLens
+          .set(Option(locationOfGoods))(emptyUserAnswers)
+          .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "description"))
+
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(AddContactYesNoPage).get mustBe true
       }
     }
 
-    "must return AddContactYesNoPage No (false) when there is no ContactPerson" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(Option(locationOfGoods.copy(ContactPerson = None)))(emptyUserAnswers)
+    "must return AddContactYesNoPage No (false) when there is no ContactPerson and identification is not V" in {
+      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens
+        .set(
+          Option(locationOfGoods.copy(ContactPerson = None))
+        )(emptyUserAnswers)
+        .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "EoriIdentifier"))
+
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(AddContactYesNoPage).get mustBe false
+      }
+    }
+
+    "must return AddContactYesNoPage None when identification is V" in {
+      forAll(Gen.oneOf(None, Some(contactPerson))) {
+        person =>
+          val userAnswers =
+            UserAnswers.setLocationOfGoodsOnUserAnswersLens
+              .set(Option(locationOfGoods.copy(ContactPerson = person)))(emptyUserAnswers)
+              .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "CustomsOfficeIdentifier"))
+
+          whenReady(transformer.transform(hc)(userAnswers)) {
+            updatedUserAnswers =>
+              updatedUserAnswers.get(AddContactYesNoPage) mustBe None
+          }
       }
     }
   }

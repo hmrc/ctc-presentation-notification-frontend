@@ -21,7 +21,6 @@ import controllers.loading.{routes => loadingRoutes}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.messages.PlaceOfLoading
 import models.{NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

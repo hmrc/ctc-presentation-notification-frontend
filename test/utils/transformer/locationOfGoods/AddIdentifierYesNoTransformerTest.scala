@@ -18,26 +18,60 @@ package utils.transformer.locationOfGoods
 
 import base.SpecBase
 import base.TestMessageData.locationOfGoods
-import models.UserAnswers
-import pages.locationOfGoods.AddIdentifierYesNoPage
+import models.{LocationOfGoodsIdentification, UserAnswers}
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
+import pages.locationOfGoods.{AddIdentifierYesNoPage, IdentificationPage}
 
 class AddIdentifierYesNoTransformerTest extends SpecBase {
   val transformer = new AddIdentifierYesNoTransformer()
 
   "AddIdentifierYesNoTransformer" - {
-    "must return AddIdentifierYesNoPage Yes (true) when there is additionalIdentifier" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(Option(locationOfGoods))(emptyUserAnswers)
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddIdentifierYesNoPage).get mustBe true
+    "must return AddIdentifierYesNoPage Yes (true) when there is additionalIdentifier and identification is X or Y" in {
+      forAll(Gen.oneOf("X", "Y")) {
+        identification =>
+          val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods)
+            )(emptyUserAnswers)
+            .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
+
+          whenReady(transformer.transform(hc)(userAnswers)) {
+            updatedUserAnswers =>
+              updatedUserAnswers.get(AddIdentifierYesNoPage).get mustBe true
+          }
       }
     }
 
-    "must return AddIdentifierYesNoPage No (false) when there is no additionalIdentifier" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(Option(locationOfGoods.copy(additionalIdentifier = None)))(emptyUserAnswers)
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddIdentifierYesNoPage).get mustBe false
+    "must return AddIdentifierYesNoPage No (false) when there is no additionalIdentifier and identification is X or Y" in {
+      forAll(Gen.oneOf("X", "Y")) {
+        identification =>
+          val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(additionalIdentifier = None))
+            )(emptyUserAnswers)
+            .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
+
+          whenReady(transformer.transform(hc)(userAnswers)) {
+            updatedUserAnswers =>
+              updatedUserAnswers.get(AddIdentifierYesNoPage).get mustBe false
+          }
+      }
+    }
+
+    "must return AddIdentifierYesNoPage None when identification is not X or Y" in {
+      forAll(Gen.oneOf(None, Some("additionalIdentifier"))) {
+        additionalIdentifier =>
+          val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(additionalIdentifier = additionalIdentifier))
+            )(emptyUserAnswers)
+            .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "description"))
+
+          whenReady(transformer.transform(hc)(userAnswers)) {
+            updatedUserAnswers =>
+              updatedUserAnswers.get(AddIdentifierYesNoPage) mustBe None
+          }
       }
     }
   }
