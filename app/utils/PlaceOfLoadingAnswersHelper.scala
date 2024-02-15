@@ -16,7 +16,7 @@
 
 package utils
 
-import models.reference.{Country, CountryCode}
+import models.reference.Country
 import models.{Mode, UserAnswers}
 import pages.loading._
 import play.api.i18n.Messages

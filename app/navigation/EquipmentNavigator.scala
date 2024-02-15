@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.index._
@@ -44,7 +44,7 @@ class EquipmentNavigator extends Navigator {
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) =>
-      ua => addContainerIdentificationNumberYesNoCheckRoute(ua, equipmentIndex, departureId, mode)
+      ua => addContainerIdentificationNumberYesNoCheckRoute(ua, equipmentIndex, departureId, NormalMode)
     case ContainerIdentificationNumberPage(equipmentIndex) => ua => containerIdentificationNumberRoute(ua, departureId, mode, equipmentIndex)
     case AddTransportEquipmentYesNoPage                    => ua => addTransportEquipmentYesNoNormalRoute(ua, departureId, mode)
 
@@ -61,7 +61,7 @@ class EquipmentNavigator extends Navigator {
   private def containerIdentificationNumberRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =
     ua.get(AddSealYesNoPage(equipmentIndex)) match {
       case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case None    => Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
+      case None    => Some(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, NormalMode, equipmentIndex))
     }
 
   private def applyAnotherItemRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Option[Call] =
