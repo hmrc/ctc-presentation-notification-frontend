@@ -11,3 +11,5 @@
 
 # Add all the application routes to the prod.routes file
 ->         /                          prod.Routes
+
+POST       /manage-transit-movements/presentation-notification/test-only/declaration/submit               controllers.testOnly.TestOnlySubmissionController.submit()

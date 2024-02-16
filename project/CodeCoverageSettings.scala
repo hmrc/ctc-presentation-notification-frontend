@@ -15,12 +15,14 @@ object CodeCoverageSettings {
     "views\\.html\\.components.*",
     "views\\.html\\.resources.*",
     "views\\.html\\.templates.*",
-    "views\\.utils.*"
+    "views\\.utils.*",
+    "scalaxb.*",
+    "generated.*"
   )
 
   val settings: Seq[Setting[_]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 50,
+    ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )

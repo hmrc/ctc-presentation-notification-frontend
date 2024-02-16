@@ -16,9 +16,9 @@
 
 package connectors
 
-import base.TestMessageData.{jsonValue, messageData}
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock.{containing, get, okJson, urlEqualTo}
+import base.TestMessageData.{jsonValue, messageData}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import generators.Generators
 import helper.WireMockServerHandler
 import models.LocalReferenceNumber
@@ -29,10 +29,13 @@ import org.scalatest.EitherValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
+import play.api.test.Helpers.OK
+import uk.gov.hmrc.http.HttpResponse
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.xml.NodeSeq
 
 class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators with EitherValues {
 
@@ -207,6 +210,27 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
           )
 
         result mustBe expectedResult
+      }
+    }
+
+    "submit" - {
+      val body: NodeSeq =
+        <ncts:CC170C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+          <messageSender>token</messageSender>
+        </ncts:CC170C>
+
+      "must return OK for successful response" in {
+        server.stubFor(
+          post(urlEqualTo(s"/movements/departures/$departureId/messages"))
+            .withRequestBody(equalTo(body.toString()))
+            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
+            .withHeader("Content-Type", containing("application/xml"))
+            .willReturn(aResponse().withStatus(OK))
+        )
+
+        val result: HttpResponse = connector.submit(body, departureId).futureValue
+
+        result.status mustBe OK
       }
     }
   }
