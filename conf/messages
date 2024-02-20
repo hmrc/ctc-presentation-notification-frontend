@@ -147,11 +147,6 @@ locationOfGoods.country.error.required = Enter which country the location of goo
 locationOfGoods.country.checkYourAnswersLabel = Country
 locationOfGoods.country.change.hidden = country for the location of goods
 
-checkInformation.title = Confirmation needed to complete declaration
-checkInformation.heading = Confirmation needed to complete declaration
-checkInformation.paragraph1 = Before Customs can release the goods for transit, you need to confirm whether there have been any changes to this declaration since you pre-lodged it.
-checkInformation.paragraph2 = Check your answers and confirm if these details are still correct.
-
 locationOfGoods.unLocode.title = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.heading = What is the UN/LOCODE for the location of goods?
 locationOfGoods.unLocode.checkYourAnswersLabel = UN/LOCODE
