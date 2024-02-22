@@ -20,8 +20,8 @@ import base.TestMessageData.{jsonValue, messageData}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.LocalReferenceNumber
-import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}
-import models.departureP5.{DepartureMessageMetaData, DepartureMessageType, DepartureMessages}
+import models.departureP5.MessageType.{AmendmentSubmitted, DepartureNotification}
+import models.departureP5.{DepartureMessages, MessageMetaData, MessageType}
 import models.messages.Data
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
@@ -82,7 +82,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
     }
 
-    "getMessageMetaData" - {
+    "getMessages" - {
 
       "must return Messages" in {
 
@@ -100,13 +100,13 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
             |    {
             |      "_links": {
             |        "self": {
-            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee/message/634982098f02f00b"
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee/messages/634982098f02f00b"
             |        },
             |        "departure": {
             |          "href": "/customs/transits/movements/departures/6365135ba5e821ee"
             |        }
             |      },
-            |      "id": "634982098f02f00a",
+            |      "id": "634982098f02f00b",
             |      "departureId": "6365135ba5e821ee",
             |      "received": "2022-11-11T15:32:51.459Z",
             |      "type": "IE015",
@@ -115,7 +115,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
             |    {
             |      "_links": {
             |        "self": {
-            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee/message/634982098f02f00a"
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee/messages/634982098f02f00a"
             |        },
             |        "departure": {
             |          "href": "/customs/transits/movements/departures/6365135ba5e821ee"
@@ -133,15 +133,15 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         val expectedResult = DepartureMessages(
           List(
-            DepartureMessageMetaData(
+            MessageMetaData(
               LocalDateTime.parse("2022-11-11T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
-              DepartureMessageType.DepartureNotification,
-              "movements/departures/6365135ba5e821ee/message/634982098f02f00b"
+              MessageType.DepartureNotification,
+              "634982098f02f00b"
             ),
-            DepartureMessageMetaData(
+            MessageMetaData(
               LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
-              DepartureMessageType.AmendmentSubmitted,
-              "movements/departures/6365135ba5e821ee/message/634982098f02f00a"
+              MessageType.AmendmentSubmitted,
+              "634982098f02f00a"
             )
           )
         )
@@ -152,12 +152,14 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
             .willReturn(okJson(responseJson.toString()))
         )
 
-        connector.getMessageMetaData(departureId).futureValue mustBe expectedResult
-
+        connector.getMessages(departureId).futureValue mustBe expectedResult
       }
     }
 
-    "getData" - {
+    "getMessage" - {
+
+      val messageId = "messageId"
+
       "when IE015 messageData" in {
         val jsonIE015 = Json.parse(s"""
              |{
@@ -169,12 +171,14 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
              |""".stripMargin)
 
         server.stubFor(
-          get(urlEqualTo(s"/$departureId"))
+          get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId"))
             .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(jsonIE015.toString()))
         )
 
-        val result: Data = connector.getData(departureId, DepartureNotification).futureValue
+        val messageMetaData = MessageMetaData(LocalDateTime.now(), DepartureNotification, messageId)
+
+        val result: Data = connector.getMessage(departureId, messageMetaData).futureValue
 
         val expectedResult =
           Data(
@@ -195,12 +199,14 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
              |""".stripMargin)
 
         server.stubFor(
-          get(urlEqualTo(s"/$departureId"))
+          get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId"))
             .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(jsonIE013.toString()))
         )
 
-        val result: Data = connector.getData(departureId, AmendmentSubmitted).futureValue
+        val messageMetaData = MessageMetaData(LocalDateTime.now(), AmendmentSubmitted, messageId)
+
+        val result: Data = connector.getMessage(departureId, messageMetaData).futureValue
 
         val expectedResult =
           Data(
