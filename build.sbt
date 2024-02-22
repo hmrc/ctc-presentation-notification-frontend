@@ -1,19 +1,21 @@
 import play.sbt.routes.RoutesKeys
+import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "ctc-presentation-notification-frontend"
 
-lazy val root = Project(appName, file("."))
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalafmtOnCompile := true
+
+lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, ScalaxbPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .configs(A11yTest)
   .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings): _*)
-  .settings(inConfig(Test)(testSettings): _*)
   .settings(headerSettings(A11yTest): _*)
   .settings(automateHeaderSettings(A11yTest))
   .settings(
-    majorVersion := 0,
-    scalaVersion := "2.13.12",
     name := appName,
     RoutesKeys.routesImport ++= Seq("models._", "models.OptionBinder._"),
     TwirlKeys.templateImports ++= Seq(
@@ -45,8 +47,7 @@ lazy val root = Project(appName, file("."))
     uglifyCompressOptions := Seq("unused=false", "dead_code=false", "warnings=false"),
     Assets / pipelineStages := Seq(digest, concat, uglify),
     ThisBuild / useSuperShell := false,
-    uglify / includeFilter := GlobFilter("application.js"),
-    ThisBuild / scalafmtOnCompile := true
+    uglify / includeFilter := GlobFilter("application.js")
   )
   .settings(
     Compile / scalaxb / scalaxbXsdSource := new File("./conf/xsd"),
@@ -56,10 +57,15 @@ lazy val root = Project(appName, file("."))
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings: _*)
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
-  fork := true,
-  unmanagedResourceDirectories += baseDirectory.value / "test" / "resources",
-  javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
+lazy val test = project
+  .settings(
+    fork := true
   )
-)
+
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(
+    libraryDependencies ++= AppDependencies.test,
+    DefaultBuildSettings.itSettings()
+  )

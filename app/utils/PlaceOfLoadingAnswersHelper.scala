@@ -20,9 +20,7 @@ import models.reference.Country
 import models.{Mode, UserAnswers}
 import pages.loading._
 import play.api.i18n.Messages
-import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.Section
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,9 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class PlaceOfLoadingAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
-  checkYourAnswersReferenceDataService: CheckYourAnswersReferenceDataService,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext, hc: HeaderCarrier)
+)(implicit messages: Messages, ec: ExecutionContext)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def countryTypeRow: Option[SummaryListRow] = buildRowWithAnswer[Country](
@@ -79,8 +76,6 @@ class PlaceOfLoadingAnswersHelper(
   )
 
   def placeOfLoadingSection: Future[Section] = {
-    implicit val ua: UserAnswers = userAnswers
-
     val rows = Seq(
       addUnlocodeYesNo,
       unlocode,

@@ -20,20 +20,19 @@ import base.SpecBase
 import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
 import models.messages.MessageData
-import models.reference.Country
 import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading._
 import play.api.libs.json.Json
-import services.CheckYourAnswersReferenceDataService
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
   "PlaceOfLoadingAnswersHelper" - {
-    val mockReferenceDataService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
+
     "addUnlocodeYesNo" - {
       "must return None when no AddUnlocodeYesNo in ie15/170" - {
         s"when $AddUnLocodeYesNoPage undefined" in {
@@ -41,7 +40,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val ie015WithUnlocodeAddYesNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithUnlocodeAddYesNoUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(ie015WithUnlocodeAddYesNoUserAnswers, departureId, mode)
               val result = helper.addUnlocodeYesNo
               result mustBe None
           }
@@ -54,7 +53,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val answers = emptyUserAnswers
                 .setValue(AddUnLocodeYesNoPage, true)
-              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.addUnlocodeYesNo.get
 
               result.key.value mustBe s"Do you want to add a UN/LOCODE for the place of loading?"
@@ -78,7 +77,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val ie015WithLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mode)
               val result = helper.unlocode
               result mustBe None
           }
@@ -91,7 +90,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             (mode, unlocode) =>
               val answers = emptyUserAnswers
                 .setValue(UnLocodePage, unlocode)
-              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.unlocode.get
 
               result.key.value mustBe s"UN/LOCODE"
@@ -115,7 +114,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val ie015WithNoLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
               val result = helper.addExtraInformationYesNo
               result mustBe None
           }
@@ -128,7 +127,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val answers = emptyUserAnswers
                 .setValue(AddExtraInformationYesNoPage, true)
-              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.addExtraInformationYesNo.get
 
               result.key.value mustBe s"Do you want to add extra information for the place of loading?"
@@ -148,11 +147,11 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
     "country" - {
       "must return None when no country in ie15/170" - {
         s"when $CountryPage undefined" in {
-          forAll(arbitrary[Mode], arbitrary[Country]) {
-            (mode, countryType) =>
+          forAll(arbitrary[Mode]) {
+            mode =>
               val ie015WithNoLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
               val result = helper.countryTypeRow
               result mustBe None
           }
@@ -165,7 +164,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             (mode, country) =>
               val answers = emptyUserAnswers
                 .setValue(CountryPage, country)
-              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.countryTypeRow.get
 
               result.key.value mustBe s"Country"
@@ -189,7 +188,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val ie015WithNoLoadingUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
               val result = helper.location
               result mustBe None
           }
@@ -202,7 +201,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             (mode, location) =>
               val answers = emptyUserAnswers
                 .setValue(LocationPage, location)
-              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.location.get
 
               result.key.value mustBe s"Location"

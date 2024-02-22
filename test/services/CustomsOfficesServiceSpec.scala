@@ -61,19 +61,9 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return the head of the customs office list" in {
 
         when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice1)))
+          .thenReturn(Future.successful(gbCustomsOffice1))
 
-        service.getCustomsOfficeById("GB1").futureValue mustBe Some(gbCustomsOffice1)
-
-        verify(mockRefDataConnector).getCustomsOfficeForId(any())(any(), any())
-      }
-
-      "must return None for empty list" in {
-
-        when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
-          .thenReturn(Future.failed(new NoReferenceDataFoundException))
-
-        service.getCustomsOfficeById("GB1").futureValue mustBe None
+        service.getCustomsOfficeById("GB1").futureValue mustBe gbCustomsOffice1
 
         verify(mockRefDataConnector).getCustomsOfficeForId(any())(any(), any())
       }

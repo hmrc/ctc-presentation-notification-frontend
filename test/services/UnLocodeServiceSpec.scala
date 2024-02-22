@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.UnLocode
@@ -43,13 +42,11 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getUnLocodeList" - {
       "must return true when unLocode exists" in {
 
-        val unLocodeItem = UnLocode("DEAAL", "Place D")
-        val unLocodeList = NonEmptySet.of(unLocodeItem)
-
-        val unLocode = "DEAAL"
+        val unLocode     = "DEAAL"
+        val unLocodeItem = UnLocode(unLocode, "Place D")
 
         when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
-          .thenReturn(Future.successful(unLocodeList))
+          .thenReturn(Future.successful(unLocodeItem))
 
         service.doesUnLocodeExist(unLocode).futureValue mustBe true
         verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())

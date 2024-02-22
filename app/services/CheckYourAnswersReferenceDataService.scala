@@ -30,30 +30,30 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getLocationType(code: String)(implicit hc: HeaderCarrier): Future[LocationType] =
-    referenceDataConnector.getTypeOfLocation(code).map(_.head)
+    referenceDataConnector.getTypeOfLocation(code)
 
   def getQualifierOfIdentification(code: String)(implicit hc: HeaderCarrier): Future[LocationOfGoodsIdentification] =
-    referenceDataConnector.getQualifierOfTheIdentification(code).map(_.head)
+    referenceDataConnector.getQualifierOfTheIdentification(code)
 
   def getInlandModeOfTransport(code: String)(implicit hc: HeaderCarrier): Future[InlandMode] =
-    referenceDataConnector.getTransportModeCode[InlandMode](code).map(_.head)
+    referenceDataConnector.getTransportModeCode[InlandMode](code)
 
   def getMeansOfTransportIdentificationType(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
-    referenceDataConnector.getMeansOfTransportIdentificationType(code).map(_.head)
+    referenceDataConnector.getMeansOfTransportIdentificationType(code)
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypeActive(code).map(_.head)
+    referenceDataConnector.getMeansOfTransportIdentificationTypeActive(code)
 
   def getNationality(code: String)(implicit hc: HeaderCarrier): Future[Nationality] =
-    referenceDataConnector.getNationality(code).map(_.head)
+    referenceDataConnector.getNationality(code)
 
   def getCustomsOffice(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
-    referenceDataConnector.getCustomsOffice(id).map(_.head)
+    referenceDataConnector.getCustomsOfficeForId(id)
 
   def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[BorderMode] =
-    referenceDataConnector.getTransportModeCode[BorderMode](code).map(_.head)
+    referenceDataConnector.getTransportModeCode[BorderMode](code)
 
   def getCountry(code: String)(implicit hc: HeaderCarrier): Future[Country] =
-    referenceDataConnector.getCountry("CountryCodesFullList", code).map(_.head)
+    referenceDataConnector.getCountry("CountryCodesFullList", code)
 
 }

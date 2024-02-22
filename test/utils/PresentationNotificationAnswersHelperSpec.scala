@@ -78,7 +78,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         s"when $LimitDatePage defined in the ie170" in {
           forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
             (mode, customsOffice) =>
-              when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
+              when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
               val limitDate = LocalDate.of(2000: Int, 1: Int, 8: Int)
               val answers = emptyUserAnswers
                 .setValue(LimitDatePage, limitDate)

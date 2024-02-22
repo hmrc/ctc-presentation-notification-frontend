@@ -16,11 +16,10 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import helper.WireMockServerHandler
+import itbase.{ItSpecBase, WireMockServerHandler}
 import models.LocationType
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference._
@@ -32,7 +31,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -231,7 +230,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCustomsOfficesOfTransitForCountry" - {
-      def url(countryId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=$countryId&data.roles.role=TRA"
+      def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=TRA"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
         val countryId = "GB"
@@ -261,7 +260,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCustomsOfficeForId" - {
-      def url(officeId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=$officeId"
+      def url(officeId: String) = s"/$baseUrl/lists/CustomsOffices?data.id=$officeId"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
         val id = "GB1"
@@ -271,10 +270,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficesResponseJson))
         )
 
-        val expectedResult = NonEmptySet.of(
-          CustomsOffice("GB1", "testName1", None),
-          CustomsOffice("GB2", "testName2", None)
-        )
+        val expectedResult = CustomsOffice("GB1", "testName1", None)
 
         connector.getCustomsOfficeForId(id).futureValue mustBe expectedResult
       }
@@ -291,7 +287,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCustomsOfficesForIds" - {
-      def url = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=GB1&data.id=GB2"
+      def url = s"/$baseUrl/lists/CustomsOffices?data.id=GB2&data.id=GB1"
       val ids = Seq("GB1", "GB2")
 
       "must return a successful future response with a sequence of CustomsOffices" in {
@@ -319,7 +315,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCustomsOfficesOfDestinationForCountry" - {
-      def url(countryId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=$countryId&data.roles.role=DES"
+      def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=DES"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
         val countryId = "GB"
@@ -511,7 +507,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCustomsOfficesOfExitForCountry" - {
-      def url(countryId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=$countryId&data.roles.role=EXT"
+      def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=EXT"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
         val countryId = "GB"
@@ -541,7 +537,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCustomsOfficesOfDepartureForCountry" - {
-      def url(countryId: String) = s"/$baseUrl/filtered-lists/CustomsOffices?data.countryId=$countryId&data.roles.role=DEP"
+      def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=DEP"
 
       "must return a successful future response with a sequence of CustomsOffices" in {
         val countryId = "GB"

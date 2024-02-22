@@ -28,22 +28,30 @@ import play.api.Logging
 import play.api.http.Status.OK
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
   def getCountries(listName: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/$listName"
-    http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/$listName"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Country]]
   }
 
-  def getCountry(listName: String, code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
-    val serviceUrl                         = s"${config.referenceDataUrl}/filtered-lists/$listName"
-    http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  def getCountry(listName: String, code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] = {
+    val url = url"${config.referenceDataUrl}/lists/$listName"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Country]]
+      .map(_.head)
   }
 
   def getCustomsOfficesOfTransitForCountry(
@@ -66,11 +74,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] =
     getCustomsOfficesForCountryAndRole(countryCode, "DEP")
 
-  def getCustomsOffice(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] = {
-    val queryParams = Seq("data.id" -> id)
-    getCustomsOffices(queryParams)
-  }
-
   def getCustomsSecurityAgreementAreaCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] =
     getCountries("CountryCustomsSecurityAgreementArea")
 
@@ -81,59 +84,93 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getCountries("CountryAddressPostcodeBased")
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CountryCode]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryWithoutZip"
-    http.GET[NonEmptySet[CountryCode]](serviceUrl, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/CountryWithoutZip"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[CountryCode]]
   }
 
   def getUnLocodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[UnLocode]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/UnLocodeExtended"
-    http.GET[NonEmptySet[UnLocode]](serviceUrl, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/UnLocodeExtended"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[UnLocode]]
   }
 
-  def getUnLocode(unLocode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[UnLocode]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.unLocodeExtendedCode" -> unLocode)
-    val serviceUrl: String                 = s"${config.referenceDataUrl}/filtered-lists/UnLocodeExtended"
-    http.GET[NonEmptySet[UnLocode]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  def getUnLocode(unLocode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[UnLocode] = {
+    val url = url"${config.referenceDataUrl}/lists/UnLocodeExtended"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.unLocodeExtendedCode" -> unLocode))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[UnLocode]]
+      .map(_.head)
   }
 
   def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Nationality]] = {
-    val url = s"${config.referenceDataUrl}/lists/Nationality"
-    http.GET[NonEmptySet[Nationality]](url, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/Nationality"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Nationality]]
   }
 
-  def getNationality(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Nationality]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
-    val url                                = s"${config.referenceDataUrl}/filtered-lists/Nationality"
-    http.GET[NonEmptySet[Nationality]](url, headers = version2Header, queryParams = queryParams)
+  def getNationality(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Nationality] = {
+    val url = url"${config.referenceDataUrl}/lists/Nationality"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Nationality]]
+      .map(_.head)
   }
 
   def getSpecificCircumstanceIndicators()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[SpecificCircumstanceIndicator]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/SpecificCircumstanceIndicatorCode"
-    http.GET[NonEmptySet[SpecificCircumstanceIndicator]](serviceUrl, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/SpecificCircumstanceIndicatorCode"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[SpecificCircumstanceIndicator]]
   }
 
   def getTypesOfLocation()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[LocationType]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/TypeOfLocation"
-    http.GET[NonEmptySet[LocationType]](serviceUrl, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/TypeOfLocation"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[LocationType]]
   }
 
-  def getTypeOfLocation(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[LocationType]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.type" -> code)
-    val serviceUrl                         = s"${config.referenceDataUrl}/filtered-lists/TypeOfLocation"
-    http.GET[NonEmptySet[LocationType]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  def getTypeOfLocation(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[LocationType] = {
+    val url = url"${config.referenceDataUrl}/lists/TypeOfLocation"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.type" -> code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[LocationType]]
+      .map(_.head)
   }
 
   def getQualifierOfTheIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[LocationOfGoodsIdentification]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/QualifierOfTheIdentification"
-    http.GET[NonEmptySet[LocationOfGoodsIdentification]](serviceUrl, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/QualifierOfTheIdentification"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[LocationOfGoodsIdentification]]
   }
 
   def getQualifierOfTheIdentification(
     qualifier: String
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[LocationOfGoodsIdentification]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.qualifier" -> qualifier)
-    val serviceUrl                         = s"${config.referenceDataUrl}/filtered-lists/QualifierOfTheIdentification"
-    http.GET[NonEmptySet[LocationOfGoodsIdentification]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[LocationOfGoodsIdentification] = {
+    val url = url"${config.referenceDataUrl}/lists/QualifierOfTheIdentification"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.qualifier" -> qualifier))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[LocationOfGoodsIdentification]]
+      .map(_.head)
   }
 
   def getTransportModeCodes[T <: TransportMode[T]]()(implicit
@@ -142,67 +179,80 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     rds: Reads[T],
     order: Order[T]
   ): Future[NonEmptySet[T]] = {
-    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
-    http.GET[NonEmptySet[T]](url, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[T]]
   }
 
   def getTransportModeCode[T <: TransportMode[T]](
     code: String
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier, rds: Reads[T], order: Order[T]): Future[NonEmptySet[T]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
-    val url                                = s"${config.referenceDataUrl}/filtered-lists/TransportModeCode"
-    http.GET[NonEmptySet[T]](url, headers = version2Header, queryParams = queryParams)
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier, rds: Reads[T], order: Order[T]): Future[T] = {
+    val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[T]]
+      .map(_.head)
   }
 
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Identification]] = {
-    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
-    http.GET[NonEmptySet[Identification]](url, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Identification]]
   }
 
-  def getMeansOfTransportIdentificationTypeActive(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Identification]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
-    val url                                = s"${config.referenceDataUrl}/filtered-lists/TypeOfIdentificationofMeansOfTransportActive"
-    http.GET[NonEmptySet[Identification]](url, headers = version2Header, queryParams = queryParams)
+  def getMeansOfTransportIdentificationTypeActive(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Identification] = {
+    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Identification]]
+      .map(_.head)
   }
 
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {
-    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
-    http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header)
+    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[TransportMeansIdentification]]
   }
 
   def getMeansOfTransportIdentificationType(
     code: String
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {
-    val queryParams: Seq[(String, String)] = Seq("data.type" -> code)
-    val url                                = s"${config.referenceDataUrl}/filtered-lists/TypeOfIdentificationOfMeansOfTransport"
-    http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header, queryParams = queryParams)
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[TransportMeansIdentification] = {
+    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.type" -> code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[TransportMeansIdentification]]
+      .map(_.head)
   }
-
-  private def version2Header: Seq[(String, String)] = Seq(
-    HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
-  )
 
   private def getCustomsOfficesForCountryAndRole(countryCode: String, role: String)(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier
   ): Future[NonEmptySet[CustomsOffice]] = {
-
     val queryParams: Seq[(String, String)] = Seq(
       "data.countryId"  -> countryCode,
       "data.roles.role" -> role.toUpperCase.trim
     )
-
     getCustomsOffices(queryParams)
   }
 
   def getCustomsOfficeForId(id: String)(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier
-  ): Future[NonEmptySet[CustomsOffice]] = {
-
+  ): Future[CustomsOffice] = {
     val queryParams: Seq[(String, String)] = Seq("data.id" -> id)
-
-    getCustomsOffices(queryParams)
+    getCustomsOffices(queryParams).map(_.head)
   }
 
   def getCustomsOfficesForIds(ids: Seq[String])(implicit
@@ -217,9 +267,17 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     ec: ExecutionContext,
     hc: HeaderCarrier
   ): Future[NonEmptySet[CustomsOffice]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
-    http.GET[NonEmptySet[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    val url = url"${config.referenceDataUrl}/lists/CustomsOffices"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters(queryParams: _*))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[CustomsOffice]]
   }
+
+  private def version2Header: Seq[(String, String)] = Seq(
+    HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
+  )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
     (_: String, _: String, response: HttpResponse) => {

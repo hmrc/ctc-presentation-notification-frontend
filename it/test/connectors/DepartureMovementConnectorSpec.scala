@@ -16,17 +16,13 @@
 
 package connectors
 
-import base.SpecBase
 import base.TestMessageData.{jsonValue, messageData}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.Generators
-import helper.WireMockServerHandler
+import itbase.{ItSpecBase, WireMockServerHandler}
 import models.LocalReferenceNumber
 import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}
 import models.departureP5.{DepartureMessageMetaData, DepartureMessageType, DepartureMessages}
 import models.messages.Data
-import org.scalatest.EitherValues
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.OK
@@ -37,7 +33,7 @@ import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.xml.NodeSeq
 
-class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators with EitherValues {
+class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
   private lazy val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
 
