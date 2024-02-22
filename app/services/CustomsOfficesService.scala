@@ -17,7 +17,6 @@
 package services
 
 import connectors.ReferenceDataConnector
-import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
 import models.reference.{CountryCode, CustomsOffice}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,14 +35,9 @@ class CustomsOfficesService @Inject() (
       .getCustomsOfficesOfTransitForCountry(countryCode)
       .map(_.toSelectableList)
 
-  def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[Option[CustomsOffice]] =
+  def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
     referenceDataConnector
       .getCustomsOfficeForId(id)
-      .map(_.head)
-      .map(Some(_))
-      .recover {
-        case _: NoReferenceDataFoundException => None
-      }
 
   def getCustomsOfficesByMultipleIds(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[CustomsOffice]] =
     referenceDataConnector

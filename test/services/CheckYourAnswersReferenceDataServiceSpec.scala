@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.Nationality
 import models.reference.transport.border.active.Identification
@@ -28,7 +27,7 @@ import org.scalatest.BeforeAndAfterEach
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckYourAnswersReferenceDataServiceTest extends SpecBase with BeforeAndAfterEach {
+class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val connector = mock[ReferenceDataConnector]
   private val service   = new CheckYourAnswersReferenceDataService(connector)
@@ -42,7 +41,7 @@ class CheckYourAnswersReferenceDataServiceTest extends SpecBase with BeforeAndAf
       val identification = Identification("code", "description")
 
       when(connector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
-        .thenReturn(Future.successful(NonEmptySet.of(identification)))
+        .thenReturn(Future.successful(identification))
 
       service.getBorderMeansIdentification("code").futureValue mustBe identification
 
@@ -53,7 +52,7 @@ class CheckYourAnswersReferenceDataServiceTest extends SpecBase with BeforeAndAf
       val nationality = Nationality("code", "description")
 
       when(connector.getNationality(any())(any(), any()))
-        .thenReturn(Future.successful(NonEmptySet.of(nationality)))
+        .thenReturn(Future.successful(nationality))
 
       service.getNationality("code").futureValue mustBe nationality
 

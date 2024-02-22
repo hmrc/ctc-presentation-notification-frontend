@@ -19,7 +19,8 @@ object AppDependencies {
     "org.apache.commons"          % "commons-text"               % "1.10.0",
     "com.github.julien-truffaut" %% "monocle-core"               % "2.1.0",
     "com.github.julien-truffaut" %% "monocle-macro"              % monocleVersion,
-    "org.apache.pekko"           %% "pekko-actor"                % pekkoVersion
+    "org.apache.pekko"           %% "pekko-actor"                % pekkoVersion,
+    "javax.xml.bind"              % "jaxb-api"                   % "2.3.1"
   )
 
   val test: Seq[ModuleID] = Seq(

@@ -58,7 +58,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (
     }
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
-    referenceDataConnector.getMeansOfTransportIdentificationType(code).map(_.head)
+    referenceDataConnector.getMeansOfTransportIdentificationType(code)
 
   private def filter(
     identificationTypes: Seq[TransportMeansIdentification],

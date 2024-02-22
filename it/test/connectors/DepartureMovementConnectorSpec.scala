@@ -16,17 +16,13 @@
 
 package connectors
 
-import base.SpecBase
 import base.TestMessageData.{jsonValue, messageData}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.Generators
-import helper.WireMockServerHandler
+import itbase.{ItSpecBase, WireMockServerHandler}
 import models.LocalReferenceNumber
 import models.departureP5.DepartureMessageType.{AmendmentSubmitted, DepartureNotification}
 import models.departureP5.{DepartureMessageMetaData, DepartureMessageType, DepartureMessages}
 import models.messages.Data
-import org.scalatest.EitherValues
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.OK
@@ -37,7 +33,7 @@ import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.xml.NodeSeq
 
-class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators with EitherValues {
+class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
   private lazy val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
 
@@ -75,6 +71,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(s"/movements/departures/$departureId"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(responseJson.toString()))
         )
 
@@ -90,49 +87,49 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
       "must return Messages" in {
 
         val responseJson: JsValue = Json.parse("""
-            {
-                "_links": {
-                    "self": {
-                        "href": "/customs/transits/movements/departures/6365135ba5e821ee/messages"
-                    },
-                    "departure": {
-                        "href": "/customs/transits/movements/departures/6365135ba5e821ee"
-                    }
-                },
-                "messages": [
-                    {
-                        "_links": {
-                            "self": {
-                                "href": "/customs/transits/movements/departures/6365135ba5e821ee/message/634982098f02f00b"
-                            },
-                            "departure": {
-                                "href": "/customs/transits/movements/departures/6365135ba5e821ee"
-                            }
-                        },
-                        "id": "634982098f02f00a",
-                        "departureId": "6365135ba5e821ee",
-                        "received": "2022-11-11T15:32:51.459Z",
-                        "type": "IE015",
-                        "status": "Success"
-                    },
-                    {
-                        "_links": {
-                            "self": {
-                                "href": "/customs/transits/movements/departures/6365135ba5e821ee/message/634982098f02f00a"
-                            },
-                            "departure": {
-                                "href": "/customs/transits/movements/departures/6365135ba5e821ee"
-                            }
-                        },
-                        "id": "634982098f02f00a",
-                        "departureId": "6365135ba5e821ee",
-                        "received": "2022-11-10T15:32:51.459Z",
-                        "type": "IE013",
-                        "status": "Success"
-                    }
-                ]
-            }
-            """)
+            |{
+            |  "_links": {
+            |      "self": {
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee/messages"
+            |      },
+            |      "departure": {
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee"
+            |      }
+            |  },
+            |  "messages": [
+            |    {
+            |      "_links": {
+            |        "self": {
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee/message/634982098f02f00b"
+            |        },
+            |        "departure": {
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee"
+            |        }
+            |      },
+            |      "id": "634982098f02f00a",
+            |      "departureId": "6365135ba5e821ee",
+            |      "received": "2022-11-11T15:32:51.459Z",
+            |      "type": "IE015",
+            |      "status": "Success"
+            |    },
+            |    {
+            |      "_links": {
+            |        "self": {
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee/message/634982098f02f00a"
+            |        },
+            |        "departure": {
+            |          "href": "/customs/transits/movements/departures/6365135ba5e821ee"
+            |        }
+            |      },
+            |      "id": "634982098f02f00a",
+            |      "departureId": "6365135ba5e821ee",
+            |      "received": "2022-11-10T15:32:51.459Z",
+            |      "type": "IE013",
+            |      "status": "Success"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin)
 
         val expectedResult = DepartureMessages(
           List(
@@ -151,6 +148,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(s"/movements/departures/$departureId/messages"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(responseJson.toString()))
         )
 
@@ -172,7 +170,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(s"/$departureId"))
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(jsonIE015.toString()))
         )
 
@@ -198,7 +196,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(s"/$departureId"))
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(jsonIE013.toString()))
         )
 
@@ -223,8 +221,8 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
         server.stubFor(
           post(urlEqualTo(s"/movements/departures/$departureId/messages"))
             .withRequestBody(equalTo(body.toString()))
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
-            .withHeader("Content-Type", containing("application/xml"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("Content-Type", equalTo("application/xml"))
             .willReturn(aResponse().withStatus(OK))
         )
 

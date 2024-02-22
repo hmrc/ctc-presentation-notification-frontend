@@ -46,7 +46,7 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
+      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -61,21 +61,6 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
       contentAsString(result) mustEqual
         view("ABCD1234567890123", "ABCD1234567890123", customsOffice)(request, messages).toString
 
-    }
-
-    "must redirect to MoreInformationRequiredController when customs office is not found" in {
-
-      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(None))
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, declarationSubmittedRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.MoreInformationController.onPageLoad(departureId).url
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

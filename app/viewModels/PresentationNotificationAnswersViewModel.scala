@@ -51,7 +51,7 @@ object PresentationNotificationAnswersViewModel {
       val mode = CheckMode
 
       val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
-      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, mode)
       val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, mode)
       val inlandModeAnswersHelper     = new InlandModeAnswersHelper(userAnswers, departureId, mode)
       val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)

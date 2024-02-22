@@ -39,10 +39,8 @@ class InformationSubmittedController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val lrn = request.userAnswers.lrn
         customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestination).map {
-          case Some(customsOffice) => Ok(view(lrn, departureId, customsOffice))
-          case None                => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+          customsOffice => Ok(view(request.userAnswers.lrn, departureId, customsOffice))
         }
     }
 }

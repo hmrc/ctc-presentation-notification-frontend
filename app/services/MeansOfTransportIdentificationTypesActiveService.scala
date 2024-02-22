@@ -46,7 +46,6 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
     referenceDataConnector
       .getMeansOfTransportIdentificationTypeActive(code)
-      .map(_.head)
 
   private def filter(
     identificationTypes: Seq[Identification],
