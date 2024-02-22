@@ -57,10 +57,6 @@ class PostalCodeController @Inject() (
           countryList =>
             val postalCode = request.userAnswers
               .get(PostalCodePage)
-              .orElse {
-                logger.info(s"Retrieved PostalCode answer from IE015 journey")
-                request.userAnswers.departureData.Consignment.LocationOfGoods.flatMap(_.PostcodeAddress.map(_.toPostalCode))
-              }
             val form = formProvider(prefix, countryList)
             val preparedForm = postalCode match {
               case None        => form

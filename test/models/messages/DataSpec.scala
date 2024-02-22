@@ -18,7 +18,7 @@ package models.messages
 
 import base.TestMessageData.{jsonValue, messageData}
 import base.SpecBase
-import models.departureP5.DepartureMessageType
+import models.departureP5.MessageType
 import play.api.libs.json.Json
 
 class DataSpec extends SpecBase {
@@ -33,7 +33,7 @@ class DataSpec extends SpecBase {
           |}
           |""".stripMargin)
 
-      jsonIE015.as[Data](Data.reads(DepartureMessageType.DepartureNotification)) mustBe Data(
+      jsonIE015.as[Data](Data.reads(MessageType.DepartureNotification)) mustBe Data(
         messageData
       )
     }
@@ -48,7 +48,7 @@ class DataSpec extends SpecBase {
            |}
            |""".stripMargin)
 
-      jsonIE013.as[Data](Data.reads(DepartureMessageType.AmendmentSubmitted)) mustBe Data(
+      jsonIE013.as[Data](Data.reads(MessageType.AmendmentSubmitted)) mustBe Data(
         messageData
       )
     }

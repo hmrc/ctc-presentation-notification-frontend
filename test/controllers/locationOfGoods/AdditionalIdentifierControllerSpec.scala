@@ -32,10 +32,10 @@ import scala.concurrent.Future
 
 class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private lazy val additionalIdentifierRoute = controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, mode).url
   private val formProvider                   = new AdditionalIdentifierFormProvider()
   private val form                           = formProvider("locationOfGoods.additionalIdentifier")
   private val mode                           = NormalMode
-  private lazy val additionalIdentifierRoute = controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -63,26 +63,6 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(AdditionalIdentifierPage, "ab12")
       setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, additionalIdentifierRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "ab12"))
-
-      val view = injector.instanceOf[AdditionalIdentifierView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
-
-      val userAnswers15 = UserAnswers.setAdditionalIdentifierOnUserAnswersLens.set("ab12")(emptyUserAnswers)
-
-      setExistingUserAnswers(userAnswers15)
 
       val request = FakeRequest(GET, additionalIdentifierRoute)
 

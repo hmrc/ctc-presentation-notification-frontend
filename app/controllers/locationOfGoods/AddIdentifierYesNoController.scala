@@ -52,7 +52,6 @@ class AddIdentifierYesNoController @Inject() (
       val identifierYesNo =
         request.userAnswers
           .get(AddIdentifierYesNoPage)
-          .orElse(request.userAnswers.departureData.Consignment.LocationOfGoods.map(_.additionalIdentifier.isDefined))
       val preparedForm = identifierYesNo match {
         case None        => form
         case Some(value) => form.fill(value)

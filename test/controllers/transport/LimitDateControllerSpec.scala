@@ -59,7 +59,7 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return OK and the correct view for a GET when given a customs office" in {
 
-      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
+      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -75,29 +75,9 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
         view(form, mode, departureId, maxDateArg, customsOffice.toString)(request, messages).toString
     }
 
-    "must return OK and the correct view for a GET when without a customs office" in {
-
-      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(None))
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, limitDateRoute)
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[LimitDateView]
-
-      status(result) mustEqual OK
-
-      val expectedString = emptyUserAnswers.departureData.CustomsOfficeOfDestination
-
-      contentAsString(result) mustEqual
-        view(form, mode, departureId, maxDateArg, expectedString)(request, messages).toString
-    }
-
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
+      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
 
       val userAnswers = emptyUserAnswers.setValue(LimitDatePage, date)
 
@@ -145,7 +125,7 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
+      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
 
       setExistingUserAnswers(emptyUserAnswers)
 

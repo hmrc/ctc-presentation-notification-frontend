@@ -24,6 +24,10 @@ class IndexSpec extends SpecBase {
     Index(0).display mustEqual 1
   }
 
+  "Index sequenceNumber must return display id in string" in {
+    Index(0).sequenceNumber mustEqual "1"
+  }
+
   "indexPathBindable" - {
     val binder = Index.indexPathBindable
     val key    = "index"

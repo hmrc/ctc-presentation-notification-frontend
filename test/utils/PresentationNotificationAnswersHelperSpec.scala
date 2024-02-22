@@ -31,7 +31,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.libs.json.Json
-import services.{CheckYourAnswersReferenceDataService, TransportModeCodesService}
+import services.TransportModeCodesService
 
 import java.time.{Instant, LocalDate}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,7 +41,6 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
   "PresentationNotificationAnswersHelper" - {
 
-    val mockReferenceDataService: CheckYourAnswersReferenceDataService   = mock[CheckYourAnswersReferenceDataService]
     val mockTransportModeReferenceDataService: TransportModeCodesService = mock[TransportModeCodesService]
 
     "customs office departure reference" - {
@@ -50,7 +49,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         forAll(arbitrary[Mode], nonEmptyString) {
           (mode, departureCustomsOfficeRefNumber) =>
             val userAnswers = setCustomsOfficeDepartureReferenceLens.set(departureCustomsOfficeRefNumber)(emptyUserAnswers)
-            val helper      = new PresentationNotificationAnswersHelper(userAnswers, departureId, mockReferenceDataService, mode)
+            val helper      = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
             val result      = helper.customsOfficeDeparture.get
 
             result.key.value mustBe s"Office of departure"
@@ -68,7 +67,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val ie015WithNoLimitDateUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
               val result = helper.limitDate
               result mustBe None
           }
@@ -79,11 +78,11 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         s"when $LimitDatePage defined in the ie170" in {
           forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
             (mode, customsOffice) =>
-              when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(Some(customsOffice)))
+              when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
               val limitDate = LocalDate.of(2000: Int, 1: Int, 8: Int)
               val answers = emptyUserAnswers
                 .setValue(LimitDatePage, limitDate)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.limitDate.get
 
               result.key.value mustBe s"Estimated arrival date at the office of destination"
@@ -107,7 +106,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val ie015WithNoContainerIndicatorUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoContainerIndicatorUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoContainerIndicatorUserAnswers, departureId, mode)
               val result = helper.containerIndicator
               result mustBe None
           }
@@ -120,7 +119,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val answers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, true)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.containerIndicator.get
 
               result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
@@ -144,7 +143,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val ie015WithNoUserAnswers =
                 UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mode)
               val result = helper.borderModeOfTransportYesNo
               result.get.key.value mustBe s"Do you want to add a border mode of transport?"
               result.get.value.value mustBe "No"
@@ -170,7 +169,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
               val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
-              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mockReferenceDataService, mode)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.borderModeOfTransportRow.get
 
               result.key.value mustBe s"Mode"

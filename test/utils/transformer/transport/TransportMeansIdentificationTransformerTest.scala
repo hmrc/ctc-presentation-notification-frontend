@@ -25,6 +25,7 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
+import utils.transformer.departureTransportMeans.TransportMeansIdentificationTransformer
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

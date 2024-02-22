@@ -156,7 +156,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
       val identification = Identification("code", "description")
 
       when(mockRefDataConnector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
-        .thenReturn(Future.successful(NonEmptySet.of(identification)))
+        .thenReturn(Future.successful(identification))
 
       service.getBorderMeansIdentification("code").futureValue mustBe identification
 

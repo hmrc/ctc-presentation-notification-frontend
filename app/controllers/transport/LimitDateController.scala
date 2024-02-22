@@ -66,13 +66,11 @@ class LimitDateController @Inject() (
 
         customsOfficesService.getCustomsOfficeById(customsOfficeOfDestinationId).map {
           customsOffice =>
-            val customsOfficeString: String = customsOffice.map(_.toString).getOrElse(customsOfficeOfDestinationId)
-
             val preparedForm = request.userAnswers.get(LimitDatePage) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
-            Ok(view(preparedForm, mode, departureId, maxDateArg, customsOfficeString))
+            Ok(view(preparedForm, mode, departureId, maxDateArg, customsOffice.toString))
         }
     }
 
@@ -84,12 +82,10 @@ class LimitDateController @Inject() (
 
         customsOfficesService.getCustomsOfficeById(customsOfficeOfDestinationId).flatMap {
           customsOffice =>
-            val customsOfficeString: String = customsOffice.map(_.toString).getOrElse(customsOfficeOfDestinationId)
-
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, departureId, maxDateArg, customsOfficeString))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, departureId, maxDateArg, customsOffice.toString))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(LimitDatePage, value))

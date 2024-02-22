@@ -415,8 +415,10 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
 
               navigator
-                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
+                )
           }
         }
 
@@ -442,8 +444,8 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
 
               navigator
-                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
+                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, NormalMode)
+                .mustBe(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, NormalMode, equipmentIndex))
           }
         }
       }

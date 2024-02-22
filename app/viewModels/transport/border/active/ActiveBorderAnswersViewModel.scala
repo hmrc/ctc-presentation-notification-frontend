@@ -18,7 +18,6 @@ package viewModels.transport.border.active
 
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.ActiveBorderTransportMeansAnswersHelper
 import viewModels.Section
 
@@ -32,8 +31,7 @@ object ActiveBorderAnswersViewModel {
   class ActiveBorderAnswersViewModelProvider @Inject() (implicit executionContext: ExecutionContext) {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, index: Index)(implicit
-      messages: Messages,
-      hc: HeaderCarrier
+      messages: Messages
     ): ActiveBorderAnswersViewModel = {
       val helper = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, index)
       new ActiveBorderAnswersViewModel(helper.getSection())

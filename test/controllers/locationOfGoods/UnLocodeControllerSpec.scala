@@ -20,38 +20,36 @@ import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.UnLocodeFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.locationOfGoods.UnLocodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UnLocodeService
 import views.html.locationOfGoods.UnLocodeView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private lazy val unLocodeRoute                   = controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode).url
   private val formProvider                         = new UnLocodeFormProvider()
   private val form                                 = formProvider("locationOfGoods.unLocode")
   private val mode                                 = NormalMode
-  private lazy val unLocodeRoute                   = controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode).url
   private val mockUnLocodeService: UnLocodeService = mock[UnLocodeService]
-
-  override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[UnLocodeService]).toInstance(mockUnLocodeService))
 
   override def beforeEach(): Unit = {
     reset(mockUnLocodeService)
     super.beforeEach()
   }
+
+  override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[UnLocodeService]).toInstance(mockUnLocodeService))
 
   "UnLocode Controller" - {
 
@@ -157,32 +155,5 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must get answer IE015 if not available in IE170" in {
-      val ie015UserAnswers = UserAnswers(
-        departureId,
-        eoriNumber,
-        lrn.value,
-        Json.obj(),
-        Instant.now(),
-        messageData.copy(Consignment =
-          messageData.Consignment.copy(LocationOfGoods = Some(messageData.Consignment.LocationOfGoods.get.copy(UNLocode = Some("DEAAL"))))
-        )
-      )
-
-      setExistingUserAnswers(ie015UserAnswers)
-
-      val request = FakeRequest(GET, unLocodeRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "DEAAL"))
-
-      val view = injector.instanceOf[UnLocodeView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, departureId, mode)(request, messages).toString
-    }
   }
 }

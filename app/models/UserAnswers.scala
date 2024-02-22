@@ -16,6 +16,7 @@
 
 package models
 
+import models.SensitiveFormats.SensitiveWrites
 import models.messages._
 import monocle.macros.GenLens
 import monocle.{Lens, Optional}
@@ -220,13 +221,19 @@ object UserAnswers {
       (__ \ "departureData").read[MessageData](sensitiveFormats.messageDataReads)
   )(UserAnswers.apply _)
 
-  implicit def writes(implicit sensitiveFormats: SensitiveFormats): OWrites[UserAnswers] = (
+  val auditWrites: OWrites[UserAnswers] =
+    writes(SensitiveWrites())
+
+  implicit def writes(implicit sensitiveFormats: SensitiveFormats): OWrites[UserAnswers] =
+    writes(SensitiveWrites(sensitiveFormats))
+
+  private def writes(sensitiveWrites: SensitiveWrites): OWrites[UserAnswers] = (
     (__ \ "_id").write[String] and
       (__ \ "eoriNumber").write[EoriNumber] and
       (__ \ "lrn").write[String] and
-      (__ \ "data").write[JsObject](sensitiveFormats.jsObjectWrites) and
+      (__ \ "data").write[JsObject](sensitiveWrites.jsObjectWrites) and
       (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites) and
-      (__ \ "departureData").write[MessageData](sensitiveFormats.messageDataWrites)
+      (__ \ "departureData").write[MessageData](sensitiveWrites.messageDataWrites)
   )(unlift(UserAnswers.unapply))
 
   implicit def format(implicit sensitiveFormats: SensitiveFormats): Format[UserAnswers] =

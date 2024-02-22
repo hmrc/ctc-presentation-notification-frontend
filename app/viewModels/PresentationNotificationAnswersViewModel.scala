@@ -50,9 +50,9 @@ object PresentationNotificationAnswersViewModel {
     ): Future[PresentationNotificationAnswersViewModel] = {
       val mode = CheckMode
 
-      val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
-      val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, cyaRefDataService, mode)
+      val helper                      = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
+      val placeOfLoadingAnswersHelper = new PlaceOfLoadingAnswersHelper(userAnswers, departureId, mode)
+      val locationOfGoodsHelper       = new LocationOfGoodsAnswersHelper(userAnswers, departureId, mode)
       val inlandModeAnswersHelper     = new InlandModeAnswersHelper(userAnswers, departureId, mode)
       val transitHolderAnswerHelper   = new TransitHolderAnswerHelper(userAnswers, departureId, cyaRefDataService, mode)
       val activeBorderHelper          = new ActiveBorderTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(0))
@@ -110,12 +110,12 @@ object PresentationNotificationAnswersViewModel {
       )
 
       val representativeSection: Section = representativeHelper.representativeSection
+      val locationOfGoods                = locationOfGoodsHelper.locationOfGoodsSection
       val inlandModeSection              = inlandModeAnswersHelper.buildInlandModeSection
       val borderSection                  = helper.borderModeSection
 
       for {
         transitHolderSection              <- transitHolderAnswerHelper.transitHolderSection
-        locationOfGoods                   <- locationOfGoodsHelper.locationOfGoodsSection
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         transportEquipmentSection = TransportEquipmentAnswersHelper.sections(userAnswers, departureId, mode)

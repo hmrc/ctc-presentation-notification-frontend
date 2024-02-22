@@ -31,8 +31,6 @@ trait PageTransformer {
   type ExtractedTypeInDepartureData
   type CapturedAnswer = (QuestionPage[DomainModelType], DomainModelType)
 
-  def shouldTransform: UserAnswers => Boolean = _ => true
-
   def transformFromDeparture(
     userAnswers: UserAnswers,
     extractDataFromDepartureData: UserAnswers => Seq[ExtractedTypeInDepartureData],
@@ -45,6 +43,18 @@ trait PageTransformer {
       collectAllCapturedAnswers(userAnswers, capturedAnswers).asFuture
     }
     .getOrElse(successful(userAnswers))
+
+  def shouldTransform: UserAnswers => Boolean = _ => true
+
+  private def collectAllCapturedAnswers(userAnswers: UserAnswers, capturedAnswers: Seq[CapturedAnswer])(implicit
+    writes: Writes[DomainModelType],
+    reads: Reads[DomainModelType]
+  ) =
+    capturedAnswers
+      .foldLeft(Try(userAnswers)) {
+        (accTry, capturedAnswer) =>
+          accTry.flatMap(_.set(capturedAnswer._1, capturedAnswer._2))
+      }
 
   def transformFromDepartureWithRefData(
     userAnswers: UserAnswers,
@@ -61,16 +71,6 @@ trait PageTransformer {
       }
     }
     .getOrElse(successful(userAnswers))
-
-  private def collectAllCapturedAnswers(userAnswers: UserAnswers, capturedAnswers: Seq[CapturedAnswer])(implicit
-    writes: Writes[DomainModelType],
-    reads: Reads[DomainModelType]
-  ) =
-    capturedAnswers
-      .foldLeft(Try(userAnswers)) {
-        (accTry, capturedAnswer) =>
-          accTry.flatMap(_.set(capturedAnswer._1, capturedAnswer._2))
-      }
 
   def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers]
 }

@@ -17,33 +17,64 @@
 package connectors
 
 import config.FrontendAppConfig
+import logging.Logging
 import models.LocalReferenceNumber
 import models.departureP5._
 import models.messages.Data
+import play.api.http.HeaderNames
+import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpReadsTry}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReadsTry, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.xml.NodeSeq
 
-class DepartureMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) extends HttpReadsTry {
+class DepartureMovementConnector @Inject() (
+  config: FrontendAppConfig,
+  http: HttpClientV2
+)(implicit ec: ExecutionContext)
+    extends HttpReadsTry
+    with Logging {
 
-  private def headers(implicit hc: HeaderCarrier): HeaderCarrier = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
+  private def acceptHeader: (String, String) =
+    HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json"
 
-  def getData(location: String, messageType: DepartureMessageType)(implicit hc: HeaderCarrier): Future[Data] = {
-    implicit val dataReads: Reads[Data] = Data.reads(messageType)
-    val url                             = s"${config.commonTransitConventionTradersUrl}$location"
-    http.GET[Data](url)(implicitly, headers, ec)
+  def getMessage(departureId: String, messageMetaData: MessageMetaData)(implicit hc: HeaderCarrier): Future[Data] = {
+    implicit val dataReads: Reads[Data] = Data.reads(messageMetaData.messageType)
+
+    val url = url"${config.commonTransitConventionTradersUrl}/movements/departures/$departureId/messages/${messageMetaData.id}"
+    http
+      .get(url)
+      .setHeader(acceptHeader)
+      .execute[Data]
   }
 
-  def getMessageMetaData(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DepartureMessages] = {
-    val url = s"${config.commonTransitConventionTradersUrl}movements/departures/$departureId/messages"
-    http.GET[DepartureMessages](url)(implicitly, headers, ec)
+  def getMessages(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DepartureMessages] = {
+    val url = url"${config.commonTransitConventionTradersUrl}movements/departures/$departureId/messages"
+    http
+      .get(url)
+      .setHeader(acceptHeader)
+      .execute[DepartureMessages]
   }
 
   def getLRN(departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] = {
-    val url = s"${config.commonTransitConventionTradersUrl}movements/departures/$departureId"
-    http.GET[LocalReferenceNumber](url)(HttpReads[LocalReferenceNumber], headers, ec)
+    val url = url"${config.commonTransitConventionTradersUrl}movements/departures/$departureId"
+    http
+      .get(url)
+      .setHeader(acceptHeader)
+      .execute[LocalReferenceNumber]
+  }
+
+  def submit(xml: NodeSeq, departureId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    val url = url"${config.commonTransitConventionTradersUrl}movements/departures/$departureId/messages"
+    http
+      .post(url)
+      .setHeader(acceptHeader)
+      .setHeader(CONTENT_TYPE -> "application/xml")
+      .withBody(xml)
+      .execute[HttpResponse]
   }
 }

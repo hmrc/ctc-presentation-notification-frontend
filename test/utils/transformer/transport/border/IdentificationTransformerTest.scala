@@ -18,8 +18,8 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentification
-import models.{Index, UserAnswers}
 import models.reference.transport.border.active.Identification
+import models.{Index, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatest.Assertion

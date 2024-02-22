@@ -20,6 +20,7 @@ import base.SpecBase
 import base.TestMessageData.transportMeansIdentificationNumber
 import models.Index
 import pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage
+import utils.transformer.departureTransportMeans.TransportMeansIdentificationNumberTransformer
 
 class TransportMeansIdentificationNumberTransformerTest extends SpecBase {
   val identificationNumber = transportMeansIdentificationNumber
