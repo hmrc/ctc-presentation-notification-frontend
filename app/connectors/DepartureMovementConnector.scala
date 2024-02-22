@@ -42,16 +42,17 @@ class DepartureMovementConnector @Inject() (
   private def acceptHeader: (String, String) =
     HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json"
 
-  def getData(location: String, messageType: DepartureMessageType)(implicit hc: HeaderCarrier): Future[Data] = {
-    val url                             = url"${config.commonTransitConventionTradersUrl}$location"
-    implicit val dataReads: Reads[Data] = Data.reads(messageType)
+  def getMessage(departureId: String, messageMetaData: MessageMetaData)(implicit hc: HeaderCarrier): Future[Data] = {
+    implicit val dataReads: Reads[Data] = Data.reads(messageMetaData.messageType)
+
+    val url = url"${config.commonTransitConventionTradersUrl}/movements/departures/$departureId/messages/${messageMetaData.id}"
     http
       .get(url)
       .setHeader(acceptHeader)
       .execute[Data]
   }
 
-  def getMessageMetaData(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DepartureMessages] = {
+  def getMessages(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DepartureMessages] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/departures/$departureId/messages"
     http
       .get(url)

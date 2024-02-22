@@ -16,14 +16,14 @@
 
 package models.messages
 
-import models.departureP5.DepartureMessageType
+import models.departureP5.MessageType
 import play.api.libs.json.{__, Reads}
 
 case class Data(data: MessageData)
 
 object Data {
 
-  def reads(messageType: DepartureMessageType): Reads[Data] =
+  def reads(messageType: MessageType): Reads[Data] =
     (__ \ "body" \ s"n1:${messageType.dataPath}").read[MessageData].map(Data.apply)
 
 }
