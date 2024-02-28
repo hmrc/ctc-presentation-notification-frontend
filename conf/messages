@@ -32,7 +32,7 @@ unauthorisedWithGroupAccess.paragraph = If you already have access, you must con
 
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
-session_expired.guidance =We saved your answers. They will be available for 15 minutes.
+session_expired.guidance = We saved your answers. They will be available for 15 minutes.
 session_expired.button = Sign in
 
 pageNotFound.title = Page not found
