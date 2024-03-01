@@ -657,3 +657,5 @@ information.sent.paragraph1 = to find out when goods have been released.
 information.sent.paragraph2.withTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
 information.sent.paragraph2.withoutTelephoneNumber = If the goods are not released when expected or you have another problem, contact Customs at {0}.
 information.sent.newDeparture = Make another departure declaration
+
+testMessage = helloWorld
