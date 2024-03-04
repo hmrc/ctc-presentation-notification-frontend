@@ -58,7 +58,7 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       val unLocode = "ABCDE"
 
       when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
-        .thenReturn(Future.failed(new NoReferenceDataFoundException))
+        .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
 
       service.doesUnLocodeExist(unLocode).futureValue mustBe false
       verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())

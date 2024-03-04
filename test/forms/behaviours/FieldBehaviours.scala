@@ -45,7 +45,6 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
           })
           dataItemWithSpaces must not be dataItem
           val result = form.bind(Map(fieldName -> dataItemWithSpaces))
-          result.errors.foreach(println)
           result.value.value mustBe dataItem
       }
     }
