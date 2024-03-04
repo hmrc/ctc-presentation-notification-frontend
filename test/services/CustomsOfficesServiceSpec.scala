@@ -83,7 +83,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must throw exception if no matches" in {
 
         when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
-          .thenReturn(Future.failed(new NoReferenceDataFoundException))
+          .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
 
         val result = service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2"))
 
