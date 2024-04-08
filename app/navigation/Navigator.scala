@@ -17,37 +17,38 @@
 package navigation
 
 import controllers.routes
+import logging.Logging
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
-trait Navigator {
+trait Navigator extends Logging {
   private type RouteMapping = PartialFunction[Page, UserAnswers => Option[Call]]
 
   protected def normalRoutes(departureId: String, mode: Mode): RouteMapping
 
   protected def checkRoutes(departureId: String, mode: Mode): RouteMapping
 
-  protected def checkModeDefaultPage(userAnswers: UserAnswers): Call =
-    routes.SessionExpiredController.onPageLoad()
+  def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = {
+    def handleCall(call: UserAnswers => Option[Call]) =
+      call(userAnswers) match {
+        case Some(onwardRoute) => onwardRoute
+        case None =>
+          logger.error(s"No navigation defined for $page")
+          routes.ErrorController.technicalDifficulties()
+      }
 
-  private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
-    call(userAnswers) match {
-      case Some(onwardRoute) => onwardRoute
-      case None              => ??? //TODO add error page
-    }
-
-  def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call =
     mode match {
       case NormalMode =>
         normalRoutes(departureId, mode).lift(page) match {
           case None       => controllers.routes.IndexController.index(departureId)
-          case Some(call) => handleCall(userAnswers, call)
+          case Some(call) => handleCall(call)
         }
       case CheckMode =>
         checkRoutes(departureId, mode).lift(page) match {
           case None       => controllers.routes.IndexController.index(departureId)
-          case Some(call) => handleCall(userAnswers, call)
+          case Some(call) => handleCall(call)
         }
     }
+  }
 }

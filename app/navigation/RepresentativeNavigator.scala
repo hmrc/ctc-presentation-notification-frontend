@@ -27,7 +27,9 @@ import javax.inject.Inject
 @Singleton
 class RepresentativeNavigator @Inject() () extends Navigator {
 
-  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+  }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ActingAsRepresentativePage               => ua => actingAsRepresentativeCheckRoute(ua, departureId)

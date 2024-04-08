@@ -50,7 +50,4 @@ class ContainerNavigator @Inject() () extends Navigator {
       case Some(false) => Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
       case None        => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
-
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = ???
-
 }

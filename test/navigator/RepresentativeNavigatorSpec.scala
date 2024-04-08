@@ -22,6 +22,7 @@ import generators.Generators
 import models._
 import navigation.RepresentativeNavigator
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ActingAsRepresentativePage
 import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
@@ -31,6 +32,26 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
   val navigator = new RepresentativeNavigator
 
   "RepresentativeNavigator" - {
+
+    "in NormalMode" - {
+      val mode = NormalMode
+      "must redirect to CYA" in {
+        val pagesGen = Gen.oneOf(
+          ActingAsRepresentativePage,
+          EoriPage,
+          AddRepresentativeContactDetailsYesNoPage,
+          NamePage,
+          RepresentativePhoneNumberPage
+        )
+
+        forAll(pagesGen) {
+          page =>
+            navigator
+              .nextPage(page, emptyUserAnswers, departureId, mode)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+    }
 
     "in CheckMode" - {
       val mode = CheckMode
