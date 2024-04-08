@@ -40,12 +40,12 @@ class AddAnotherBorderTransportViewSpec extends ListWithActionsViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherBorderTransportView]
-      .apply(form, departureId, notMaxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
+      .apply(form, notMaxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherBorderTransportView]
-      .apply(formProvider(maxedOutViewModel), departureId, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
+      .apply(formProvider(maxedOutViewModel), maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "transport.border.active.addAnotherBorderTransport"
 

@@ -28,8 +28,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, SelectItemsViewModel}
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
+import viewModels.transport.equipment.{AddAnotherEquipmentViewModel, SelectItemsViewModel}
 import views.html.transport.equipment.AddAnotherEquipmentView
 
 import javax.inject.Inject
@@ -57,7 +57,7 @@ class AddAnotherEquipmentController @Inject() (
       val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, isNumberItemsZero)
       viewModel.count match {
         case 0 => Redirect(routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-        case _ => Ok(view(form(viewModel), departureId, viewModel))
+        case _ => Ok(view(form(viewModel), viewModel))
       }
   }
 
@@ -68,7 +68,7 @@ class AddAnotherEquipmentController @Inject() (
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, viewModel))),
           value => redirect(departureId, mode, value, viewModel.nextIndex)
         )
   }

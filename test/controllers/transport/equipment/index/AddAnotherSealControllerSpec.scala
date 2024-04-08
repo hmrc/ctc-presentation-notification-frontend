@@ -106,7 +106,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel), departureId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(notMaxedOutViewModel), notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
@@ -124,7 +124,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel), departureId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(maxedOutViewModel), maxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -203,7 +203,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, departureId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(boundForm, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 

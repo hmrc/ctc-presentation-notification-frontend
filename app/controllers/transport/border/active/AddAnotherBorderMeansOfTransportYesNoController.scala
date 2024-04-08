@@ -56,7 +56,7 @@ class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       viewModel.count match {
         case 0 => Redirect(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
-        case _ => Ok(view(form(viewModel), departureId, viewModel))
+        case _ => Ok(view(form(viewModel), viewModel))
       }
   }
 
@@ -66,7 +66,7 @@ class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, viewModel))),
           value => redirect(mode, value, departureId, viewModel.nextIndex)
         )
   }

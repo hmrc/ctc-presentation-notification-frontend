@@ -28,8 +28,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transport.equipment.{ApplyAnotherItemViewModel, SelectItemsViewModel}
 import viewModels.transport.equipment.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
+import viewModels.transport.equipment.{ApplyAnotherItemViewModel, SelectItemsViewModel}
 import views.html.transport.equipment.ApplyAnotherItemView
 
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class ApplyAnotherItemController @Inject() (
       viewModel.count match {
         case 0 =>
           Redirect(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
-        case _ => Ok(view(form(viewModel, equipmentIndex), departureId, viewModel))
+        case _ => Ok(view(form(viewModel, equipmentIndex), viewModel))
       }
   }
 
@@ -69,7 +69,7 @@ class ApplyAnotherItemController @Inject() (
       form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, viewModel))),
           value => redirect(departureId, mode, value, equipmentIndex, viewModel.nextIndex)
         )
   }

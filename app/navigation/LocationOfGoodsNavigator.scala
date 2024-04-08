@@ -36,7 +36,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case IdentificationPage | InferredIdentificationPage                                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
     case CountryPage                                                                              => ua => AddressPage.route(ua, departureId, mode)
     case MoreInformationPage                                                                      => ua => locationOfGoodsNavigation(ua, departureId, mode)
-    case CheckInformationPage                                                                     => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case CheckInformationPage                                                                     => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case EoriPage | AuthorisationNumberPage                                                       => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
     case AddIdentifierYesNoPage                                                                   => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)

@@ -23,16 +23,13 @@ import forms.Constants.loadingLocationMaxLength
 import forms.loading.LoadingLocationFormProvider
 import generators.Generators
 import models.reference.Country
-import models.{NormalMode, SelectableList, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.loading.{CountryPage, LocationPage}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CountriesService
 import views.html.loading.LocationView
 
 import scala.concurrent.Future
@@ -40,22 +37,15 @@ import scala.concurrent.Future
 class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val country            = arbitrary[Country].sample.value
-  private val countryList        = SelectableList(Seq(country))
   private val countryName        = country.description
   private val formProvider       = new LoadingLocationFormProvider()
   private val form               = formProvider("loading.location", countryName)
   private val mode               = NormalMode
   private lazy val locationRoute = loadingRoutes.LocationController.onPageLoad(departureId, mode).url
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind(classOf[CountriesService]).toInstance(mockCountriesService))
-
   "Location Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
       setExistingUserAnswers(UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(None)(userAnswers))
 
@@ -71,7 +61,6 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
       val userAnswers = emptyUserAnswers
         .setValue(CountryPage, country)
         .setValue(LocationPage, "Test")
@@ -93,8 +82,6 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
       setExistingUserAnswers(userAnswers)
 
@@ -111,8 +98,6 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
       setExistingUserAnswers(userAnswers)
 

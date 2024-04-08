@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import config.Constants.Air
+import config.Constants.{Air, Mail}
 import controllers.transport.border.active.routes
 import models._
 import models.reference.TransportMode.BorderMode
@@ -76,21 +76,20 @@ class BorderNavigator extends Navigator {
 
   private def inlandModeCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.get(InlandModePage).map(_.code) match {
-      case Some("5") => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case _         => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)))
+      case Some(Mail) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case _          => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)))
     }
 
-  private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] = {
-    val ie015InlandMode = ua.departureData.Consignment.inlandModeOfTransport
+  private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddInlandModeOfTransportYesNoPage) match {
       case Some(true) =>
+        val ie015InlandMode = ua.departureData.Consignment.inlandModeOfTransport
         (ua.get(InlandModePage), ie015InlandMode) match {
           case (None, None) => Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, CheckMode))
           case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-  }
 
   private def addBorderModeOfTransportYesNoNavigation(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddBorderModeOfTransportYesNoPage) match {
