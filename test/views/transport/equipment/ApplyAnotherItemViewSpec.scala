@@ -41,16 +41,16 @@ class ApplyAnotherItemViewSpec extends ListWithActionsViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[ApplyAnotherItemView]
-      .apply(form, departureId, notMaxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
+      .apply(form, notMaxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
       .instanceOf[ApplyAnotherItemView]
-      .apply(formProvider(maxedOutViewModel), departureId, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
+      .apply(formProvider(maxedOutViewModel), maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
   def applyNoMoreItemsView: HtmlFormat.Appendable = injector
     .instanceOf[ApplyAnotherItemView]
-    .apply(formProvider(noMoreItemsViewModel), departureId, noMoreItemsViewModel)(fakeRequest, messages, frontendAppConfig)
+    .apply(formProvider(noMoreItemsViewModel), noMoreItemsViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "transport.equipment.applyAnotherItem"
 

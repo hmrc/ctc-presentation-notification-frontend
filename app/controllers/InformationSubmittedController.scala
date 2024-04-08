@@ -40,7 +40,7 @@ class InformationSubmittedController @Inject() (
     .async {
       implicit request =>
         customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestination).map {
-          customsOffice => Ok(view(request.userAnswers.lrn, departureId, customsOffice))
+          customsOffice => Ok(view(request.userAnswers.lrn, customsOffice))
         }
     }
 }

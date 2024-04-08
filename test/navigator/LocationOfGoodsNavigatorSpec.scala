@@ -35,7 +35,7 @@ import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{CheckInformationPage, ContainerIndicatorPage, LimitDatePage}
-import pages.{AddPlaceOfLoadingYesNoPage, MoreInformationPage, Page}
+import pages.{MoreInformationPage, Page}
 
 import java.time.LocalDate
 
@@ -651,7 +651,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
@@ -679,7 +678,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(LimitDatePage, LocalDate.now())
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
@@ -709,7 +707,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             answers =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
@@ -739,7 +736,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             answers =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
-                .setValue(AddPlaceOfLoadingYesNoPage, true)
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(LimitDatePage, LocalDate.now())
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))

@@ -59,7 +59,7 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view("ABCD1234567890123", "ABCD1234567890123", customsOffice)(request, messages).toString
+        view("ABCD1234567890123", customsOffice)(request, messages).toString
 
     }
 

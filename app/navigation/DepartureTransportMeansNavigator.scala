@@ -39,7 +39,7 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
       _ => Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
     case TransportMeansNationalityPage(_) =>
       _ => Some(controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode))
-    case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, mode, transportIndex)
+    case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, transportIndex)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -48,7 +48,7 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
     case TransportMeansIdentificationNumberPage(transportIndex) => ua => transportMeansNumberNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansNationalityPage(_) =>
       _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, mode, transportIndex)
+    case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, transportIndex)
 
   }
 
@@ -65,7 +65,7 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
       case None    => Some(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
     }
 
-  private def addAnotherTransportMeansNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
+  private def addAnotherTransportMeansNavigation(ua: UserAnswers, departureId: String, transportIndex: Index): Option[Call] =
     ua.get(AddAnotherTransportMeansPage(transportIndex)) match {
       case Some(true) =>
         Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex))

@@ -43,7 +43,7 @@ class DateTimeServiceSpec extends SpecBase with AppWithDefaultMockFixtures with 
           val dataTimeService1 = new DateTimeService(clock1)
           val dataTimeService2 = new DateTimeService(clock2)
 
-          val duration = Duration.between(dataTimeService1.now, dataTimeService2.now)
+          val duration = Duration.between(dataTimeService1.currentDateTime, dataTimeService2.currentDateTime)
 
           duration.toHours mustEqual hour
       }

@@ -56,7 +56,7 @@ class AddAnotherTransportMeansController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       viewModel.count match {
         case 0 => Redirect(routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, Index(0)))
-        case _ => Ok(view(form(viewModel), departureId, viewModel))
+        case _ => Ok(view(form(viewModel), viewModel))
       }
   }
 
@@ -66,7 +66,7 @@ class AddAnotherTransportMeansController @Inject() (
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, viewModel))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, viewModel))),
           value => redirect(departureId, mode, value, viewModel.nextIndex)
         )
   }

@@ -32,6 +32,4 @@ case class IdentificationPage(index: Index) extends QuestionPage[Identification]
 
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.IdentificationController.onPageLoad(departureId, mode, index))
-
-// TODO override def cleanup(value: Option[Identification], userAnswers: UserAnswers): Try[UserAnswers] = ???
 }

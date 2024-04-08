@@ -25,10 +25,9 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.DepartureMessageService
+import services.{DateTimeService, DepartureMessageService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.TimeMachine
 import utils.transformer.DepartureDataTransformer
 
 import javax.inject.{Inject, Singleton}
@@ -41,7 +40,7 @@ class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   service: DepartureMessageService,
   departureDataTransformer: DepartureDataTransformer,
-  timeMachine: TimeMachine
+  dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -72,7 +71,7 @@ class IndexController @Inject() (
   private def generateFromDepartureData(departureId: String, request: OptionalDataRequest[AnyContent], departureData: Data, lrn: LocalReferenceNumber)(implicit
     hc: HeaderCarrier
   ): Future[Boolean] = {
-    val userAnswers = UserAnswers(departureId, request.eoriNumber, lrn.value, JsObject.empty, timeMachine.now(), departureData.data)
+    val userAnswers = UserAnswers(departureId, request.eoriNumber, lrn.value, JsObject.empty, dateTimeService.currentInstant, departureData.data)
     for {
       updatedUserAnswers <- departureDataTransformer.transform(userAnswers)
       result             <- sessionRepository.set(updatedUserAnswers)

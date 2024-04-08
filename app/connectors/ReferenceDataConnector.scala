@@ -161,18 +161,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .execute[NonEmptySet[LocationOfGoodsIdentification]]
   }
 
-  def getQualifierOfTheIdentification(
-    qualifier: String
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[LocationOfGoodsIdentification] = {
-    val url = url"${config.referenceDataUrl}/lists/QualifierOfTheIdentification"
-    http
-      .get(url)
-      .transform(_.withQueryStringParameters("data.qualifier" -> qualifier))
-      .setHeader(version2Header: _*)
-      .execute[NonEmptySet[LocationOfGoodsIdentification]]
-      .map(_.head)
-  }
-
   def getTransportModeCodes[T <: TransportMode[T]]()(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier,
@@ -184,18 +172,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .get(url)
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[T]]
-  }
-
-  def getTransportModeCode[T <: TransportMode[T]](
-    code: String
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier, rds: Reads[T], order: Order[T]): Future[T] = {
-    val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
-    http
-      .get(url)
-      .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
-      .execute[NonEmptySet[T]]
-      .map(_.head)
   }
 
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Identification]] = {

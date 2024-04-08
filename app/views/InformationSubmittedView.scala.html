@@ -17,16 +17,14 @@
 @import config.FrontendAppConfig
 @import controllers.routes
 @import models.reference.CustomsOffice
-@import views.html.components.Heading
 
 @this(
     mainTemplate: MainTemplate,
-    heading: Heading,
     config: FrontendAppConfig,
     govukPanel: GovukPanel
 )
 
-@(lrn: String, departureId: String, officeOfDestination: CustomsOffice)(implicit request: Request[_], messages: Messages)
+@(lrn: String, officeOfDestination: CustomsOffice)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("information.sent.title"),
@@ -47,10 +45,10 @@
     </p>
 
     @officeOfDestination match {
-        case CustomsOffice(id, name, Some(tel)) => {
+        case CustomsOffice(_, name, Some(tel)) => {
             <p class="govuk-body">@messages("information.sent.paragraph2.withTelephoneNumber", name, tel)</p>
         }
-        case CustomsOffice(id, name, None) => {
+        case CustomsOffice(_, name, None) => {
             <p class="govuk-body">@messages("information.sent.paragraph2.withoutTelephoneNumber", name)</p>
         }
     }

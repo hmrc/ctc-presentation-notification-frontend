@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, viewModel: ApplyAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], viewModel: ApplyAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -48,7 +48,7 @@
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
         @if(viewModel.isNumberItemsZero) {
-        <p class="govuk-body" id="noItems">@viewModel.noMoreItemsLabel</p>
+            <p class="govuk-body" id="noItems">@viewModel.noMoreItemsLabel</p>
         }else if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),

@@ -16,8 +16,8 @@
 
 package viewModels
 
+import config.Constants.Mail
 import config.FrontendAppConfig
-import models.reference.TransportMode.InlandMode
 import models.{CheckMode, Index, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
@@ -89,7 +89,7 @@ object PresentationNotificationAnswersViewModel {
 
       val departureTransportMeansSections: Seq[Section] = {
         userAnswers.get(InlandModePage) match {
-          case Some(value) if value == InlandMode("5", "Mail (Active mode of transport unknown)") => Seq.empty
+          case Some(value) if value.code == Mail => Seq.empty
           case _ =>
             userAnswers
               .get(TransportMeansListSection)
