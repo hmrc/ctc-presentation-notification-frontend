@@ -247,11 +247,6 @@ locationOfGoods.customsOfficeIdentifier.change.hidden = the customs office ident
 locationOfGoods.customsOfficeIdentifier.checkYourAnswersLabel = Customs office identifier
 locationOfGoods.customsOfficeIdentifier.error.required = Enter the customs office identifier for the location of goods
 
-addPlaceOfLoadingYesNo.title = Do you want to add a place of loading?
-addPlaceOfLoadingYesNo.heading = Do you want to add a place of loading?
-addPlaceOfLoadingYesNo.paragraph = This is where the goods are loaded.
-addPlaceOfLoadingYesNo.error.required = Select yes if you want to add a place of loading
-
 loading.addUnLocodeYesNo.title = Do you want to add a UN/LOCODE for the place of loading?
 loading.addUnLocodeYesNo.heading = Do you want to add a UN/LOCODE for the place of loading?
 loading.addUnLocodeYesNo.checkYourAnswersLabel = Do you want to add a UN/LOCODE for the place of loading?
