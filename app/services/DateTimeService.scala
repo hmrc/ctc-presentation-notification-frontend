@@ -16,14 +16,16 @@
 
 package services
 
-import java.time.{Clock, LocalDate, LocalDateTime}
+import java.time.{Clock, Instant, LocalDate, LocalDateTime}
 import javax.inject.Inject
 
 class DateTimeService @Inject() (clock: Clock) {
 
-  def today: LocalDate = LocalDate.now(clock)
+  def currentDate: LocalDate = LocalDate.now(clock)
 
-  def now: LocalDateTime = LocalDateTime.now(clock)
+  def currentDateTime: LocalDateTime = LocalDateTime.now(clock)
 
-  def plusMinusDays(n: Int): LocalDate = today.plusDays(n)
+  def currentDatePlusMinusDays(n: Int): LocalDate = currentDate.plusDays(n)
+
+  def currentInstant: Instant = Instant.now(clock)
 }

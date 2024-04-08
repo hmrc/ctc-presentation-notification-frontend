@@ -50,11 +50,11 @@ class LimitDateController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private lazy val maxDate    = dateTimeService.plusMinusDays(config.limitDateDaysAfter)
+  private lazy val maxDate    = dateTimeService.currentDatePlusMinusDays(config.limitDateDaysAfter)
   private lazy val maxDateArg = maxDate.plusDays(1).formatForText
 
   private def form: Form[LocalDate] = {
-    val minDate = dateTimeService.plusMinusDays(config.limitDateDaysBefore)
+    val minDate = dateTimeService.currentDatePlusMinusDays(config.limitDateDaysBefore)
     formProvider("transport.limit.date", minDate, maxDate)
   }
 
