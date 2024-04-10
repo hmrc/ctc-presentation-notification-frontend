@@ -140,6 +140,12 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, CheckMode))
       }
 
+      "to session expired when ContainerIndicatorPage does not exist" in {
+        navigator
+          .nextPage(ContainerIndicatorPage, emptyUserAnswers, departureId, CheckMode)
+          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+
     }
 
   }
