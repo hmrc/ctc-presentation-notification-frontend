@@ -71,6 +71,11 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
       "must go from AddExtraInformationYesNoPage" - {
+        "to session expired when AddExtraInformationYesNoPage does not exist" in {
+          navigator
+            .nextPage(AddExtraInformationYesNoPage, emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+        }
 
         "to Country page when answer is Yes" in {
           val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, true)
@@ -304,6 +309,13 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           navigator
             .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)
             .mustBe(AddExtraInformationYesNoPage.route(withAddExtraInformationUserAnswers, departureId, CheckMode).value)
+        }
+        "to CYAPage when AddExtraInformationYesNoPage exists" in {
+          val withAddExtraInformationUserAnswers = emptyUserAnswers
+            .setValue(AddExtraInformationYesNoPage, true)
+          navigator
+            .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
 

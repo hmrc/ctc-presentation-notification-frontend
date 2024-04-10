@@ -83,6 +83,32 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
         }
       }
 
+      "must go from add another departure transport means page" - {
+        "to TransportMeansIdentificationPage when user answers yes" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAnotherTransportMeansPage(transportIndex), true)
+          navigator
+            .nextPage(AddAnotherTransportMeansPage(transportIndex), userAnswers, departureId, mode)
+            .mustBe(
+              controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex)
+            )
+        }
+
+        "to CYA page when user answers no" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAnotherTransportMeansPage(transportIndex), false)
+          navigator
+            .nextPage(AddAnotherTransportMeansPage(transportIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+        "to session expired when AddAnotherTransportMeansPage does not exist" in {
+          navigator
+            .nextPage(AddAnotherTransportMeansPage(transportIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+        }
+      }
+
     }
 
     "in CheckMode" - {
@@ -178,6 +204,12 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
           navigator
             .nextPage(AddAnotherTransportMeansPage(transportIndex), userAnswers, departureId, mode)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+        "to session expired when AddAnotherTransportMeansPage does not exist" in {
+          navigator
+            .nextPage(AddAnotherTransportMeansPage(transportIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
         }
       }
 

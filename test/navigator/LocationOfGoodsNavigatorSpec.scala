@@ -79,6 +79,16 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
+      "must go from CountryPage to AddressPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(pages.locationOfGoods.CountryPage, answers, departureId, mode)
+              .mustBe(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, mode))
+        }
+
+      }
+
       "must go from IdentificationPage to next page" - {
         "when AuthorisationNumberIdentifier" - {
           val identifier = AuthorisationNumberIdentifier
@@ -155,6 +165,15 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
             .mustBe(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode))
         }
+
+        "when unknown identifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnknownIdentifier, "unknownIdentifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+        }
       }
 
       "redirect to LocationTypeController when locationOfGoods is None and not simplified" in {
@@ -210,6 +229,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
+      "must go from AddIdentifierYesNoPage to session expired when AddIdentifierYesNoPage does not exist" in {
+        navigator
+          .nextPage(AddIdentifierYesNoPage, emptyUserAnswers, departureId, mode)
+          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+
       "must go from Add AdditionalIdentifierYesNo page to AddContactYesNo page when user selects No" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -250,6 +275,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
               .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, NormalMode))
         }
+      }
+
+      "must go from AddContactYesNoPage to session expired when AddContactYesNoPage does not exist" in {
+        navigator
+          .nextPage(AddContactYesNoPage, emptyUserAnswers, departureId, mode)
+          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
       }
 
       "must go from Add AddContactYesNo page to AddUnLocode page when user selects No and POL does not exist" in {
@@ -833,6 +864,27 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
     }
 
     "in Check Mode" - {
+      val mode = CheckMode
+      "must go from NamePage" - {
+
+        "to PhoneNumberPage when  phone number is empty and addContact is yes" in {
+
+          val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, true)
+
+          navigator
+            .nextPage(NamePage, userAnswers, departureId, mode)
+            .mustBe(PhoneNumberPage.route(userAnswers, departureId, mode).value)
+        }
+
+        "to CYA page otherwise" in {
+          val value = arbitrary[LocationType].sample.value
+
+          val userAnswers = emptyUserAnswers.setValue(LocationTypePage, value)
+          navigator
+            .nextPage(NamePage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
 
       "must go from limit date page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
