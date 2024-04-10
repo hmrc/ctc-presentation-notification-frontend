@@ -68,6 +68,11 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         }
 
+        "to session expired when AddContainerIdentificationNumberYesNoPage does not exist" in {
+          navigator
+            .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+        }
       }
 
       "Must go from AddAnotherTransportEquipmentPage" - {
@@ -296,6 +301,12 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
           }
         }
+
+        "to session expired when AddSealYesNoPage does not exist" in {
+          navigator
+            .nextPage(AddSealYesNoPage(equipmentIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+        }
       }
 
       "must go from the seal identification number page to add another seal page" in {
@@ -321,6 +332,11 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
             .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
         }
+        "to session expired when AddAnotherSealPage does not exist" in {
+          navigator
+            .nextPage(AddAnotherSealPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+        }
       }
 
       "to to goods reference item page when user answers no" in {
@@ -333,6 +349,93 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     }
     "in Check mode" - {
       val mode = CheckMode
+
+      "Must go from AddAnotherTransportEquipmentPage" - {
+        "when answered no must go to Check your answers page" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), false)
+          navigator
+            .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+        "when answered yes" - {
+          "when ContainerIndicatorPage is true" - {
+            "must navigate to AddContainerIdentificationNumberYesNoPage " in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, true)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
+                    .onPageLoad(departureId, mode, equipmentIndex)
+                )
+            }
+          }
+
+          "when ContainerIndicatorPage is false" - {
+
+            "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test"), Authorisation(C521, "test2")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, false)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
+                .mustBe(
+                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
+                )
+            }
+
+            "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test2")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, false)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+                )
+            }
+
+            "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
+              val userAnswers = emptyUserAnswers
+                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test2")))))
+                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
+                .setValue(ContainerIndicatorPage, false)
+              navigator
+                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
+                .mustBe(
+                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+                )
+            }
+
+          }
+        }
+        "to session expired when AddAnotherTransportEquipmentPage does not exist" in {
+          navigator
+            .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+        }
+      }
+
+      "must go from ItemPage to Apply another Item page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers =
+              answers
+                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
+
+            navigator
+              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
+        }
+      }
 
       "must go from addTransportEquipmentPage" - {
         "to CYA page when answer is No" in {
@@ -415,7 +518,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
 
               navigator
-                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, NormalMode)
+                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, mode)
                 .mustBe(
                   controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
                 )
@@ -444,10 +547,16 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
 
               navigator
-                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, NormalMode)
+                .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), updatedAnswers, departureId, CheckMode)
                 .mustBe(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, NormalMode, equipmentIndex))
           }
         }
+        "to cya when AddContainerIdentificationNumberYesNoPage does not exist" in {
+          navigator
+            .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
       }
 
       "must go from the container identification number page to CYA page" in {
@@ -461,6 +570,19 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             navigator
               .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
+
+      "must go from the container identification number page to AddSealYesNo when addSealYesNo is not defined" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers =
+              answers
+                .setValue(ContainerIdentificationNumberPage(equipmentIndex), "67YU988")
+
+            navigator
+              .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
+              .mustBe(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, NormalMode, equipmentIndex))
         }
       }
 
@@ -507,6 +629,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
 
       "must go from ApplyAnotherItempage" - {
+
         "to Item page when user answers yes" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -531,6 +654,11 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
+        }
+        "to session expired when ApplyAnotherItemPage does not exist" in {
+          navigator
+            .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
         }
       }
 
