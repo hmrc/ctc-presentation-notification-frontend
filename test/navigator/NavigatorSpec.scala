@@ -19,7 +19,7 @@ package navigator
 import base.SpecBase
 import generators.Generators
 import models._
-import navigation.{LoadingNavigator, Navigator}
+import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call

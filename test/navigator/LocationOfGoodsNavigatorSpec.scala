@@ -165,6 +165,15 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
             .mustBe(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode))
         }
+
+        "when unknown identifier" in {
+          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnknownIdentifier, "unknownIdentifier")
+
+          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
+          navigator
+            .nextPage(IdentificationPage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+        }
       }
 
       "redirect to LocationTypeController when locationOfGoods is None and not simplified" in {

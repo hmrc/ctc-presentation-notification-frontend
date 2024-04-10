@@ -70,6 +70,8 @@ trait SpecBase
 
   case object TestBadPage extends Page
 
+  val UnknownIdentifier = "J"
+
   val departureId: String = "651431d7e3b05b21"
 
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123")

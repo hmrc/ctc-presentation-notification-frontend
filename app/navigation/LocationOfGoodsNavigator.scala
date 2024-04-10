@@ -76,6 +76,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
       case UnlocodeIdentifier            => Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode))
       case AddressIdentifier             => Some(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode))
       case PostalCodeIdentifier          => Some(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode))
+      case _                             => None
     }
 
   private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
