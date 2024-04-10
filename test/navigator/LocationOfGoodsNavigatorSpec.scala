@@ -79,6 +79,16 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
+      "must go from CountryPage to AddressPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(pages.locationOfGoods.CountryPage, answers, departureId, mode)
+              .mustBe(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, mode))
+        }
+
+      }
+
       "must go from IdentificationPage to next page" - {
         "when AuthorisationNumberIdentifier" - {
           val identifier = AuthorisationNumberIdentifier
@@ -833,6 +843,27 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
     }
 
     "in Check Mode" - {
+      val mode = CheckMode
+      "must go from NamePage" - {
+
+        "to PhoneNumberPage when  phone number is empty and addContact is yes" in {
+
+          val userAnswers = emptyUserAnswers.setValue(AddContactYesNoPage, true)
+
+          navigator
+            .nextPage(NamePage, userAnswers, departureId, mode)
+            .mustBe(PhoneNumberPage.route(userAnswers, departureId, mode).value)
+        }
+
+        "to CYA page otherwise" in {
+          val value = arbitrary[LocationType].sample.value
+
+          val userAnswers = emptyUserAnswers.setValue(LocationTypePage, value)
+          navigator
+            .nextPage(NamePage, userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+      }
 
       "must go from limit date page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
