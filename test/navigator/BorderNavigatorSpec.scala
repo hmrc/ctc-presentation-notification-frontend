@@ -431,7 +431,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           }
         }
 
-        "must go to " in {
+        "must go to CYA when CustomsOfficeOfTransitDeclared not defined and ContainerIndicatorPage is set to true" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
