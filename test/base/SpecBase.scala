@@ -26,7 +26,7 @@ import org.scalatest.matchers.must.Matchers
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import org.scalatest.{BeforeAndAfterEach, EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.QuestionPage
+import pages.{Page, QuestionPage}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json.{Format, Json, Reads}
@@ -67,6 +67,8 @@ trait SpecBase
     PostcodeAddress = None,
     ContactPerson = None
   )
+
+  case object TestBadPage extends Page
 
   val departureId: String = "651431d7e3b05b21"
 
