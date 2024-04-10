@@ -30,7 +30,12 @@ import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.active._
-import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transport.border.{
+  AddAnotherBorderMeansOfTransportYesNoPage,
+  AddBorderMeansOfTransportYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  BorderModeOfTransportPage
+}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
@@ -43,6 +48,27 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in Normal mode" - {
       val mode = NormalMode
+
+      "must go from AddAnotherBorderMeansOfTransportYesNoPage" - {
+        "to IdentificationController when yes" in {
+          val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), true)
+          navigator
+            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
+        }
+        "to CheckYourAnswersController when no" in {
+          val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), false)
+          navigator
+            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+        "to session expired when AddAnotherBorderMeansOfTransportYesNoPage does not exist" in {
+          navigator
+            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+        }
+
+      }
 
       "must go from Border mode of transport page" - {
 
@@ -327,6 +353,11 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, NormalMode)
           .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, NormalMode, activeIndex))
       }
+      "to session expired when AddConveyanceReferenceYesNoPage does not exist" in {
+        navigator
+          .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), emptyUserAnswers, departureId, mode)
+          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+      }
 
       "when selected no on add conveyance number yes no" - {
 
@@ -399,12 +430,39 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
+
+        "must go to " in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers
+                .copy(departureData =
+                  TestMessageData.messageData.copy(
+                    CustomsOfficeOfTransitDeclared = None
+                  )
+                )
+                .setValue(ContainerIndicatorPage, true)
+              navigator
+                .nextPage(ConveyanceReferenceNumberPage(activeIndex), userAnswers, departureId, NormalMode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
+        }
       }
 
     }
 
     "in CheckMode" - {
       val mode = CheckMode
+
+      "must go from AddAnotherBorderMeansOfTransportYesNoPage" - {
+        "to CYA when no" in {
+          val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), false)
+          navigator
+            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), userAnswers, departureId, mode)
+            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        }
+
+      }
 
       "must go from AddBorderModeOfTransportYesNoPage" - {
 
