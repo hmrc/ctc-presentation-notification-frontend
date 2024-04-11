@@ -36,9 +36,11 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.Instant
 import scala.concurrent.Future
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 trait SpecBase
     extends AnyFreeSpec
+    with ScalaCheckPropertyChecks
     with Matchers
     with OptionValues
     with EitherValues

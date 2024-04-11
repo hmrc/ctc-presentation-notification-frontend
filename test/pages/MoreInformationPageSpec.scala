@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import pages.behaviours.PageBehaviours
 
-object StopOnFirstFail {
+class MoreInformationPageSpec extends PageBehaviours {
 
-  def apply[T](constraints: Constraint[T]*): Constraint[T] = Constraint {
-    field: T =>
-      constraints.toList dropWhile (_(field) == Valid) match {
-        case Nil             => Valid
-        case constraint :: _ => constraint(field)
-      }
+  "MoreInformationPage" - {
+
+    beRetrievable[String](MoreInformationPage)
+
+    beSettable[String](MoreInformationPage)
+
+    beRemovable[String](MoreInformationPage)
+
   }
 
 }
