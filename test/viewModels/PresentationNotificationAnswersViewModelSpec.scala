@@ -17,29 +17,20 @@
 package viewModels
 
 import base.SpecBase
-import base.TestMessageData.messageData
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector
-import controllers.transport.equipment.index.routes
 import generators.Generators
-import models.messages.{ActiveBorderTransportMeans, Authorisation, Consignment}
-import models.messages.AuthorisationType.{C521, C523}
+import models.messages.Consignment
 import models.reference.TransportMode.InlandMode
-import models.reference.{Country, CountryCode, Item}
-import models.{Index, Mode}
+import models.reference.{Country, CountryCode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.{ContainerIndicatorPage, InlandModePage}
-import pages.transport.equipment.index._
-import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
-import play.api.inject.Injector
+import pages.transport.InlandModePage
 import services.CheckYourAnswersReferenceDataService
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
-import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -71,15 +62,16 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
       val activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
       val viewModelProvider                                                          = new PresentationNotificationAnswersViewModelProvider()(config, activeBorderAnswersViewModelProvider, cyaService)
 
-      val section = viewModelProvider.apply(userAnswers, departureId)
+      val section: Future[PresentationNotificationAnswersViewModel] = viewModelProvider.apply(userAnswers, departureId)
 
       whenReady(section) {
         viewModel =>
-          println(viewModel.toString)
+          viewModel.sections(5).rows.length mustBe 0
+          viewModel.sections(6).rows.length mustBe 1
+          viewModel.sections(7).rows.length mustBe 0
           viewModel.sections.length mustBe 9
 
       }
-      println(section)
 
     }
 
@@ -100,11 +92,12 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
       whenReady(section) {
         viewModel =>
-          println(viewModel.toString)
+          viewModel.sections(5).rows.length mustBe 1
+          viewModel.sections(6).rows.length mustBe 1
+          viewModel.sections(7).rows.length mustBe 0
           viewModel.sections.length mustBe 9
 
       }
-      println(section)
 
     }
 
@@ -127,11 +120,12 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
           whenReady(section) {
             viewModel =>
-              println(viewModel.toString)
+              viewModel.sections(5).rows.length mustBe 0
+              viewModel.sections(6).rows.length mustBe 1
+              viewModel.sections(7).rows.length mustBe 0
               viewModel.sections.length mustBe 9
 
           }
-          println(section)
 
       }
     }
