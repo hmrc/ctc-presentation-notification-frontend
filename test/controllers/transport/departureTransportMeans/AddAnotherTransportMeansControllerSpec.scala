@@ -21,7 +21,7 @@ import controllers.routes
 import controllers.transport.departureTransportMeans.{routes => departureTransportMeansRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.CheckMode
+import models.{CheckMode, Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -62,7 +62,8 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
   private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxTransportMeans - 1).sample.value)(listItem)
   private val maxedOutListItems = Seq.fill(frontendAppConfig.maxTransportMeans)(listItem)
 
-  private val viewModel = arbitrary[AddAnotherTransportMeansViewModel].sample.value
+  private val viewModel      = arbitrary[AddAnotherTransportMeansViewModel].sample.value
+  private val emptyViewModel = viewModel.copy(listItems = Nil)
 
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
@@ -70,6 +71,21 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
   "AddAnotherTransportMeans Controller" - {
 
     "must return OK and the correct view for a GET" - {
+      "when 0 items" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(emptyViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, addAnotherTransportMeansRouteCheckMode)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url
+      }
       "when max limit not reached" in {
 
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
@@ -157,6 +173,24 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "redirect to the onwardRoute when Post and form is submitted correctly" in {
+      when(mockViewModelProvider.apply(any(), any(), any())(any()))
+        .thenReturn(notMaxedOutViewModel)
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, addAnotherTransportMeansRouteCheckMode)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        onwardRoute.url
+
     }
   }
 }

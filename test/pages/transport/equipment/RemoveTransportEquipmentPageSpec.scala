@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package pages.sections.locationOfGoods
+package pages.transport.equipment
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import models.UserAnswers
+import pages.behaviours.PageBehaviours
+import pages.sections.transport.equipment.EquipmentsSection
+import play.api.libs.json.{JsArray, Json}
 
-case object LocationOfGoodsIdentifierSection extends Section[JsObject] {
+class RemoveTransportEquipmentPageSpec extends PageBehaviours {
 
-  override def path: JsPath = LocationOfGoodsSection.path \ toString
+  "RemoveTransportEquipmentPage" - {
 
-  override def toString: String = "identifier"
+    beRetrievable[Boolean](RemoveTransportEquipmentPage(equipmentIndex))
+    beSettable[Boolean](RemoveTransportEquipmentPage(equipmentIndex))
+    beRemovable[Boolean](RemoveTransportEquipmentPage(equipmentIndex))
+
+  }
 }

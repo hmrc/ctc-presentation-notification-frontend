@@ -82,16 +82,6 @@ class AnswersHelper(
       args = args: _*
     )
 
-  protected def fetchValue[T](
-    page: QuestionPage[T],
-    refDataLookup: String => Future[T],
-    valueFromDepartureData: Option[String]
-  )(implicit userAnswers: UserAnswers, rds: Reads[T]): Future[Option[T]] =
-    userAnswers.get(page) match {
-      case Some(value) => Future.successful(Some(value))
-      case None        => valueFromDepartureData.map(refDataLookup).sequence
-    }
-
   protected def buildLink[T](section: Section[JsArray], doesSectionExistInDepartureData: Boolean)(link: => Link): Option[Link] =
     if (userAnswers.get(section).isDefined || doesSectionExistInDepartureData) Some(link) else None
 

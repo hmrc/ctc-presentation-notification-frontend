@@ -20,22 +20,3 @@ import models.reference.CustomsOffice
 import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
 
 case class SelectableList[T <: Selectable](values: Seq[T])
-
-object SelectableList {
-
-  private def customsOfficeListReads(key: String): Reads[SelectableList[CustomsOffice]] = Reads[SelectableList[CustomsOffice]] {
-    case JsArray(values) =>
-      JsSuccess(
-        SelectableList(
-          values.flatMap {
-            value => (value \ key).validate[CustomsOffice].asOpt
-          }.toSeq
-        )
-      )
-    case _ => JsError(s"SelectableList::customsOfficeListReads: Failed to read $key list from cache")
-  }
-
-  val officesOfExitReads: Reads[SelectableList[CustomsOffice]]       = customsOfficeListReads("officeOfExit")
-  val officesOfTransitReads: Reads[SelectableList[CustomsOffice]]    = customsOfficeListReads("officeOfTransit")
-  val officeOfDestinationReads: Reads[SelectableList[CustomsOffice]] = customsOfficeListReads("officeOfDestination")
-}

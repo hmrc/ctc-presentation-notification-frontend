@@ -147,6 +147,23 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
     }
 
     "must return a Bad Request and errors" - {
+      "redirect to the onwardRoute when Post and form is submitted correctly" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherEquipmentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          onwardRoute.url
+
+      }
       "when invalid data is submitted and max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)

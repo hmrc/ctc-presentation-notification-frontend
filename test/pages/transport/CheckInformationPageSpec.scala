@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package pages.transport
 
-sealed trait ProcedureType extends Radioable[ProcedureType] {
-  override val messageKeyPrefix: String = ProcedureType.messageKeyPrefix
-  override val code: String             = this.toString
+import models.UserAnswers
+import pages.behaviours.PageBehaviours
+import pages.sections.transport.equipment.EquipmentsSection
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import play.api.libs.json.{JsArray, Json}
 
-}
+class CheckInformationPageSpec extends PageBehaviours {
 
-object ProcedureType extends EnumerableType[ProcedureType] {
+  "CheckInformationPage" - {
 
-  case object Normal extends WithName("normal") with ProcedureType
-  case object Simplified extends WithName("simplified") with ProcedureType
+    beRetrievable[String](CheckInformationPage)
 
-  val messageKeyPrefix: String = "procedureType"
+    beSettable[String](CheckInformationPage)
 
-  override val values: Seq[ProcedureType] = Seq(
-    Normal,
-    Simplified
-  )
+    beRemovable[String](CheckInformationPage)
+
+  }
+
 }

@@ -18,8 +18,10 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.reference.Nationality
+import models.LocationType
+import models.reference.{Country, CountryCode, Nationality}
 import models.reference.transport.border.active.Identification
+import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -37,6 +39,17 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
 
   "CheckYourAnswersReferenceDataService should" - {
 
+    "getMeansOfTransportIdentificationType" in {
+      val identification = TransportMeansIdentification("code", "description")
+
+      when(connector.getMeansOfTransportIdentificationType(any())(any(), any()))
+        .thenReturn(Future.successful(identification))
+
+      service.getMeansOfTransportIdentificationType("code").futureValue mustBe identification
+
+      verify(connector).getMeansOfTransportIdentificationType(eqTo("code"))(any(), any())
+    }
+
     "getBorderMeansIdentification" in {
       val identification = Identification("code", "description")
 
@@ -48,6 +61,17 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       verify(connector).getMeansOfTransportIdentificationTypeActive(eqTo("code"))(any(), any())
     }
 
+    "getLocationType" in {
+      val locationType = LocationType("code", "description")
+
+      when(connector.getTypeOfLocation(any())(any(), any()))
+        .thenReturn(Future.successful(locationType))
+
+      service.getLocationType("code").futureValue mustBe locationType
+
+      verify(connector).getTypeOfLocation(eqTo("code"))(any(), any())
+    }
+
     "getNationality" in {
       val nationality = Nationality("code", "description")
 
@@ -57,6 +81,17 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       service.getNationality("code").futureValue mustBe nationality
 
       verify(connector).getNationality(eqTo("code"))(any(), any())
+    }
+
+    "getCountry" in {
+      val country = Country(CountryCode("code"), "description")
+
+      when(connector.getCountry(any(), any())(any(), any()))
+        .thenReturn(Future.successful(country))
+
+      service.getCountry("code").futureValue mustBe country
+
+      verify(connector).getCountry(any(), eqTo("code"))(any(), any())
     }
   }
 }

@@ -77,6 +77,30 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
       }
     }
 
+    "must return OK and the correct view for a GET with no identificationNumber" in {
+
+      forAll(arbitrary[TransportMeansIdentification]) {
+        identifier =>
+          val userAnswers = emptyUserAnswers
+            .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
+
+          val insetText = TransportMeans(identifier, None).asString
+
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(GET, removeDepartureTransportMeansRoute)
+
+          val result = route(app, request).value
+
+          val view = injector.instanceOf[RemoveDepartureTransportMeansYesNoView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form, departureId, mode, transportIndex, insetText)(request, messages).toString
+      }
+    }
+
     "when yes submitted" - {
       "must redirect to add another departureTransportMeans and remove departureTransportMeans at specified index" ignore {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
