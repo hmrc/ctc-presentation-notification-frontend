@@ -33,7 +33,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.NameController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.NameController.onSubmit(departureId, mode), Symbol("autoComplete") -> "name") {
 
         @errorSummary(form.errors)
 
