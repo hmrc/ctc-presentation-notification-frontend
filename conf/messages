@@ -365,14 +365,14 @@ transport.border.active.identification.checkYourAnswersLabel = Identification ty
 transport.border.active.identification.change.hidden = identification type for the border means of transport
 transport.border.active.identification.error.required = Select which identification you want to use for this vehicle
 
-transport.border.active.identificationNumber.title = What is the identification number for this vehicle?
-transport.border.active.identificationNumber.heading = What is the identification number for this vehicle?
+transport.border.active.identificationNumber.title = What is the identification for this vehicle?
+transport.border.active.identificationNumber.heading = What is the identification for this vehicle?
 transport.border.active.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-transport.border.active.identificationNumber.checkYourAnswersLabel = Identification number
-transport.border.active.identificationNumber.change.hidden = identification number for the border means of transport
-transport.border.active.identificationNumber.error.length = The identification number must be 35 characters or less
-transport.border.active.identificationNumber.error.required = Enter the identification number for this vehicle
-transport.border.active.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+transport.border.active.identificationNumber.checkYourAnswersLabel = Identification
+transport.border.active.identificationNumber.change.hidden = identification for the border means of transport
+transport.border.active.identificationNumber.error.length = The identification must be 35 characters or less
+transport.border.active.identificationNumber.error.required = Enter the identification for this vehicle
+transport.border.active.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
 
 transport.border.active.customsOfficeActiveBorder.title = Where is the customs office at the border?
 transport.border.active.customsOfficeActiveBorder.heading = Where is the customs office at the border?

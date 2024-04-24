@@ -142,15 +142,15 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
               val result = helper.identificationNumber.get
 
-              result.key.value mustBe s"Identification number"
+              result.key.value mustBe s"Identification"
               result.value.value mustBe identificationNumber
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.border.active.routes.IdentificationNumberController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "identification number for the border means of transport"
-              action.id mustBe "change-identification-number-1"
+              action.visuallyHiddenText.get mustBe "identification for the border means of transport"
+              action.id mustBe "change-identification-1"
           }
         }
       }
