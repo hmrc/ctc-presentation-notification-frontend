@@ -591,13 +591,13 @@ houseConsignment.index.departureTransportMeans.identification.heading = Which id
 houseConsignment.index.departureTransportMeans.identification.checkYourAnswersLabel = Identification
 houseConsignment.index.departureTransportMeans.identification.error.required = Select which identification you want to use for the departure means of transport in house consignment {0}
 
-houseConsignment.index.departureTransportMeans.identificationNumber.title = What is the identification number for the departure means of transport in house consignment {0}?
-houseConsignment.index.departureTransportMeans.identificationNumber.heading = What is the identification number for the departure means of transport in house consignment {0}?
+houseConsignment.index.departureTransportMeans.identificationNumber.title = What is the identification for the departure means of transport in house consignment {0}?
+houseConsignment.index.departureTransportMeans.identificationNumber.heading = What is the identification for the departure means of transport in house consignment {0}?
 houseConsignment.index.departureTransportMeans.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-houseConsignment.index.departureTransportMeans.identificationNumber.checkYourAnswersLabel = Identification number
-houseConsignment.index.departureTransportMeans.identificationNumber.error.length = The identification number must be 35 characters or less
-houseConsignment.index.departureTransportMeans.identificationNumber.error.required = Enter the identification number for the departure means of transport in house consignment {0}
-houseConsignment.index.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+houseConsignment.index.departureTransportMeans.identificationNumber.checkYourAnswersLabel = Identification
+houseConsignment.index.departureTransportMeans.identificationNumber.error.length = The identification must be 35 characters or less
+houseConsignment.index.departureTransportMeans.identificationNumber.error.required = Enter the identification for the departure means of transport in house consignment {0}
+houseConsignment.index.departureTransportMeans.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
 
 houseConsignment.index.departureTransportMeans.country.title = What country is the departure means of transport registered to in house consignment {0}?
 houseConsignment.index.departureTransportMeans.country.heading = What country is the departure means of transport registered to in house consignment {0}?
@@ -620,14 +620,14 @@ consignment.departureTransportMeans.nationality.error.required = Select the coun
 consignment.departureTransportMeans.nationality.change.hidden = registered country for the departure means of transport
 consignment.departureTransportMeans.nationality.checkYourAnswersLabel = Registered country
 
-consignment.departureTransportMeans.identificationNumber.title = What is the identification number for the departure means of transport?
-consignment.departureTransportMeans.identificationNumber.heading = What is the identification number for the departure means of transport?
+consignment.departureTransportMeans.identificationNumber.title = What is the identification for the departure means of transport?
+consignment.departureTransportMeans.identificationNumber.heading = What is the identification for the departure means of transport?
 consignment.departureTransportMeans.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-consignment.departureTransportMeans.identificationNumber.checkYourAnswersLabel = Identification number
-consignment.departureTransportMeans.identificationNumber.error.length = The identification number must be 35 characters or less
-consignment.departureTransportMeans.identificationNumber.error.required = Enter the identification number for the departure means of transport
-consignment.departureTransportMeans.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-consignment.departureTransportMeans.identificationNumber.change.hidden = the identification number for the departure means of transport
+consignment.departureTransportMeans.identificationNumber.checkYourAnswersLabel = Identification
+consignment.departureTransportMeans.identificationNumber.error.length = The identification must be 35 characters or less
+consignment.departureTransportMeans.identificationNumber.error.required = Enter the identification for the departure means of transport
+consignment.departureTransportMeans.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
+consignment.departureTransportMeans.identificationNumber.change.hidden = the identification for the departure means of transport
 
 consignment.departureTransportMeans.removeDepartureTransportMeans.title = Are you sure you want to remove this departure means of transport?
 consignment.departureTransportMeans.removeDepartureTransportMeans.heading = Are you sure you want to remove this departure means of transport?
