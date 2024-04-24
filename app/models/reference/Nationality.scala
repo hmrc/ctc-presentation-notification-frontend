@@ -30,5 +30,7 @@ case class Nationality(code: String, description: String) extends Selectable {
 object Nationality {
   implicit val format: Format[Nationality] = Json.format[Nationality]
 
-  implicit val order: Order[Nationality] = (x: Nationality, y: Nationality) => x.toString.compareToIgnoreCase(y.toString)
+  implicit val order: Order[Nationality] = (x: Nationality, y: Nationality) => {
+    (x, y).compareBy(_.description, _.code)
+  }
 }

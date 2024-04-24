@@ -25,14 +25,14 @@ case class Identification(code: String, description: String) extends Radioable[I
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = Identification.messageKeyPrefix
+  override val messageKeyPrefix: String = "transport.border.active.identification"
 
 }
 
 object Identification extends DynamicEnumerableType[Identification] {
   implicit val format: Format[Identification] = Json.format[Identification]
 
-  implicit val order: Order[Identification] = (x: Identification, y: Identification) => x.code.compareToIgnoreCase(y.code)
-
-  val messageKeyPrefix = "transport.border.active.identification"
+  implicit val order: Order[Identification] = (x: Identification, y: Identification) => {
+    (x, y).compareBy(_.code)
+  }
 }
