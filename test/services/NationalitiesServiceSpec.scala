@@ -17,15 +17,13 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
-import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import models.reference.{Nationality, UnLocode}
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.{any, anyString}
+import models.SelectableList
+import models.reference.Nationality
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import cats.data.NonEmptySet
-import models.SelectableList
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -20,7 +20,6 @@ import base.SpecBase
 import base.TestMessageData.{contactPerson, locationOfGoods}
 import models.{LocationOfGoodsIdentification, UserAnswers}
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.locationOfGoods.{AddContactYesNoPage, IdentificationPage}
 
 class AddContactYesNoTransformerTest extends SpecBase {

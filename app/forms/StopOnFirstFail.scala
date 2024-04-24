@@ -16,7 +16,7 @@
 
 package forms
 
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.validation.{Constraint, Valid}
 
 object StopOnFirstFail {
 

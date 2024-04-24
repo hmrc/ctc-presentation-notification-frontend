@@ -26,7 +26,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.inject.guice.GuiceApplicationBuilder

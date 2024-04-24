@@ -19,7 +19,6 @@ package utils.transformer.transport.border
 import base.SpecBase
 import models.{Index, UserAnswers}
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.transport.border.active.ConveyanceReferenceNumberPage
 
 class ConveyanceReferenceTransformerTest extends SpecBase {

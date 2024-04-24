@@ -16,10 +16,7 @@
 
 package pages.transport.equipment
 
-import models.UserAnswers
 import pages.behaviours.PageBehaviours
-import pages.sections.transport.equipment.EquipmentsSection
-import play.api.libs.json.{JsArray, Json}
 
 class RemoveTransportEquipmentPageSpec extends PageBehaviours {
 

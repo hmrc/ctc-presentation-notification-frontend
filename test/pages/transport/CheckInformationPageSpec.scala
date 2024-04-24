@@ -16,11 +16,7 @@
 
 package pages.transport
 
-import models.UserAnswers
 import pages.behaviours.PageBehaviours
-import pages.sections.transport.equipment.EquipmentsSection
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
-import play.api.libs.json.{JsArray, Json}
 
 class CheckInformationPageSpec extends PageBehaviours {
 

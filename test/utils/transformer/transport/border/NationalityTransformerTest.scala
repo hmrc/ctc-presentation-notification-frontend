@@ -23,7 +23,6 @@ import models.{Index, SelectableList, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.transport.border.active.NationalityPage
 import services.NationalitiesService
 

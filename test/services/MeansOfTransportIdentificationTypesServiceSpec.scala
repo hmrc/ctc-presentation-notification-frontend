@@ -20,14 +20,12 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
-import models.{EoriNumber, Index}
-import models.reference.TransportMode.{BorderMode, InlandMode}
-import models.reference.transport.border.active.Identification
+import models.EoriNumber
+import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest

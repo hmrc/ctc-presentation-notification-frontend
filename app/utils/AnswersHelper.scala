@@ -16,7 +16,6 @@
 
 package utils
 
-import cats.implicits._
 import models.messages.MessageData
 import models.{Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
@@ -26,7 +25,7 @@ import play.api.libs.json.{JsArray, Reads}
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewModels.Link
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AnswersHelper(
   userAnswers: UserAnswers,

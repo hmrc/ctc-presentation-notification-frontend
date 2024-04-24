@@ -20,7 +20,6 @@ import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
 import models.{Index, UserAnswers}
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.transport.border.active.IdentificationNumberPage
 
 class IdentificationNumberTransformerTest extends SpecBase {
