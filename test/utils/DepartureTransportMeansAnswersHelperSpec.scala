@@ -61,7 +61,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               val result = helper.identificationNumberRow.get
 
-              result.key.value mustBe "Identification number"
+              result.key.value mustBe "Identification"
               result.value.value mustBe number
               val actions = result.actions.get.items
               actions.size mustBe 1
@@ -70,7 +70,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
                 .onPageLoad(departureId, mode, transportIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "the identification number for the departure means of transport"
+              action.visuallyHiddenText.get mustBe "the identification for the departure means of transport"
               action.id mustBe "change-departure-transport-means-identification-number"
           }
         }
