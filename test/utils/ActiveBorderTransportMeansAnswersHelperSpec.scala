@@ -150,7 +150,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               action.content.value mustBe "Change"
               action.href mustBe controllers.transport.border.active.routes.IdentificationNumberController.onPageLoad(departureId, mode, activeIndex).url
               action.visuallyHiddenText.get mustBe "identification for the border means of transport"
-              action.id mustBe "change-identification-1"
+              action.id mustBe "change-identification-number-1"
           }
         }
       }
