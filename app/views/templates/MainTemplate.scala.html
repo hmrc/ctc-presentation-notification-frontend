@@ -48,8 +48,8 @@
             timeout = Some(renderConfig.timeoutSeconds),
             countdown = Some(renderConfig.countdownSeconds),
             keepAliveUrl = Some(routes.KeepAliveController.keepAlive(departureId).url),
-            signOutUrl = Some(appConfig.signOutUrl)
-        ))
+            signOutUrl = Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    ))
     }
 
     <meta name="format-detection" content="telephone=no" />
