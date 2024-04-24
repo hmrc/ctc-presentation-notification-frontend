@@ -23,13 +23,13 @@ import play.api.libs.json.{Json, OFormat}
 case class CustomsOffice(id: String, name: String, phoneNumber: Option[String]) extends Selectable {
   override def toString: String = s"$name ($id)"
 
-  val countryCode: String = id.take(2)
-
   override val value: String = id
 }
 
 object CustomsOffice {
   implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
 
-  implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => x.name.compareToIgnoreCase(y.name)
+  implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => {
+    (x, y).compareBy(_.name, _.id)
+  }
 }

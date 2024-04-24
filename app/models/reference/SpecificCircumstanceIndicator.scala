@@ -27,14 +27,13 @@ case class SpecificCircumstanceIndicator(
 
   override def toString: String = s"$code - $description"
 
-  override val messageKeyPrefix: String = SpecificCircumstanceIndicator.messageKeyPrefix
+  override val messageKeyPrefix: String = "specificCircumstanceIndicator"
 }
 
 object SpecificCircumstanceIndicator extends DynamicEnumerableType[SpecificCircumstanceIndicator] {
   implicit val format: Format[SpecificCircumstanceIndicator] = Json.format[SpecificCircumstanceIndicator]
 
-  implicit val order: Order[SpecificCircumstanceIndicator] = (x: SpecificCircumstanceIndicator, y: SpecificCircumstanceIndicator) =>
-    x.toString.compareToIgnoreCase(y.toString)
-
-  val messageKeyPrefix = "specificCircumstanceIndicator"
+  implicit val order: Order[SpecificCircumstanceIndicator] = (x: SpecificCircumstanceIndicator, y: SpecificCircumstanceIndicator) => {
+    (x, y).compareBy(_.toString)
+  }
 }

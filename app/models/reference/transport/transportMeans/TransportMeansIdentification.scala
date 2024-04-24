@@ -25,7 +25,7 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = TransportMeansIdentification.messageKeyPrefix
+  override val messageKeyPrefix: String = "houseConsignment.index.departureTransportMeans.identification"
 
   override val code: String = `type`
 
@@ -34,8 +34,7 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 object TransportMeansIdentification extends DynamicEnumerableType[TransportMeansIdentification] {
   implicit val format: Format[TransportMeansIdentification] = Json.format[TransportMeansIdentification]
 
-  implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) =>
-    x.code.compareToIgnoreCase(y.code)
-
-  val messageKeyPrefix = "houseConsignment.index.departureTransportMeans.identification"
+  implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) => {
+    (x, y).compareBy(_.`type`)
+  }
 }

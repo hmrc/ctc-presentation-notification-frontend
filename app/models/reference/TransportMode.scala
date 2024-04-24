@@ -35,26 +35,26 @@ trait TransportMode[T] extends Radioable[T] {
 object TransportMode {
 
   case class InlandMode(code: String, description: String) extends TransportMode[InlandMode] {
-    override val messageKeyPrefix: String = InlandMode.messageKeyPrefix
+    override val messageKeyPrefix: String = "transport.inlandModeOfTransport"
   }
 
   object InlandMode extends DynamicEnumerableType[InlandMode] {
     implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
-    implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => x.code.compareToIgnoreCase(y.code)
-
-    val messageKeyPrefix = "transport.inlandModeOfTransport"
+    implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => {
+      (x, y).compareBy(_.code)
+    }
   }
 
   case class BorderMode(code: String, description: String) extends TransportMode[BorderMode] {
-    override val messageKeyPrefix: String = BorderMode.messageKeyPrefix
+    override val messageKeyPrefix: String = "transport.border.borderModeOfTransport"
   }
 
   object BorderMode extends DynamicEnumerableType[BorderMode] {
     implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
-    implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => x.code.compareToIgnoreCase(y.code)
-
-    val messageKeyPrefix = "transport.border.borderModeOfTransport"
+    implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => {
+      (x, y).compareBy(_.code)
+    }
   }
 }
