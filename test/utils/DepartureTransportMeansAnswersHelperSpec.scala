@@ -71,7 +71,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                 .onPageLoad(departureId, mode, transportIndex)
                 .url
               action.visuallyHiddenText.get mustBe "the identification for the departure means of transport"
-              action.id mustBe "change-departure-transport-means-identification"
+              action.id mustBe "change-departure-transport-means-identification-number"
           }
         }
       }

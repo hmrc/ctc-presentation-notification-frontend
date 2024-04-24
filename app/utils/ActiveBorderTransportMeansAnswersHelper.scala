@@ -67,7 +67,7 @@ class ActiveBorderTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(IdentificationNumberPage(activeIndex)),
     formatAnswer = formatAsText,
     prefix = "transport.border.active.identificationNumber",
-    id = Some(s"change-identification-${activeIndex.display}")
+    id = Some(s"change-identification-number-${activeIndex.display}")
   )
 
   def nationality: Option[SummaryListRow] = buildRowWithAnswer[Nationality](

@@ -58,7 +58,7 @@ class DepartureTransportMeansAnswersHelper(
     optionalAnswer = userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex)),
     formatAnswer = formatAsText,
     prefix = "consignment.departureTransportMeans.identificationNumber",
-    id = Some("change-departure-transport-means-identification")
+    id = Some("change-departure-transport-means-identification-number")
   )
 
   def nationality: Option[SummaryListRow] =
