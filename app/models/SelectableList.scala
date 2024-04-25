@@ -16,7 +16,4 @@
 
 package models
 
-import models.reference.CustomsOffice
-import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
-
 case class SelectableList[T <: Selectable](values: Seq[T])
