@@ -74,7 +74,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
           when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValueWithLrn.as[MessageData])))
           when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
-            UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+            setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
           )
           when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
           when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
@@ -100,7 +100,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
           when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
           when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
-            UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+            setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
           )
           when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
           when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))

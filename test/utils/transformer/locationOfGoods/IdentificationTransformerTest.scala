@@ -18,7 +18,7 @@ package utils.transformer.locationOfGoods
 
 import base.SpecBase
 import base.TestMessageData.locationOfGoods
-import models.{LocationOfGoodsIdentification, UserAnswers}
+import models.LocationOfGoodsIdentification
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import pages.locationOfGoods.IdentificationPage
@@ -37,7 +37,7 @@ class IdentificationTransformerTest extends SpecBase {
   "IdentificationTransformer" - {
 
     "must skip transforming if there is no qualifier identification" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers mustBe userAnswers

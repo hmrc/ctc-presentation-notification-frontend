@@ -23,20 +23,20 @@ import models.{EoriNumber, Index, LocalReferenceNumber, LocationType, UserAnswer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import org.scalatest.{BeforeAndAfterEach, EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.{Page, QuestionPage}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.Instant
 import scala.concurrent.Future
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 trait SpecBase
     extends AnyFreeSpec
@@ -49,7 +49,8 @@ trait SpecBase
     with IntegrationPatience
     with BeforeAndAfterEach
     with AppWithDefaultMockFixtures
-    with MockitoSugar {
+    with MockitoSugar
+    with Lenses {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val eoriNumber: EoriNumber     = EoriNumber("eoriNumber")

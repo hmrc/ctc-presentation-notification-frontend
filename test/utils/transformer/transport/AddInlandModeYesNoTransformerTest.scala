@@ -17,7 +17,6 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import models.UserAnswers
 import pages.transport.AddInlandModeOfTransportYesNoPage
 
 class AddInlandModeYesNoTransformerTest extends SpecBase {
@@ -36,7 +35,7 @@ class AddInlandModeYesNoTransformerTest extends SpecBase {
     }
 
     "when inland mode not present must return updated answers with AddInlandModeYesNoPage as false" in {
-      val userAnswers = UserAnswers.setInlandModeOfTransportOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(None)(emptyUserAnswers)
 
       userAnswers.get(AddInlandModeOfTransportYesNoPage) mustBe None
 

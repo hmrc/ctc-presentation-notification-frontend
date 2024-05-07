@@ -17,7 +17,6 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import models.UserAnswers
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 
 class TransportEquipmentYesNoTransformerTest extends SpecBase {
@@ -36,7 +35,7 @@ class TransportEquipmentYesNoTransformerTest extends SpecBase {
     }
 
     "when transport equipment not present must return updated answers with AddTransportEquipmentYesNoPage as false" in {
-      val userAnswers = UserAnswers.setTransportEquipmentLens.set(None)(emptyUserAnswers)
+      val userAnswers = setTransportEquipmentLens.set(None)(emptyUserAnswers)
 
       userAnswers.get(AddTransportEquipmentYesNoPage) mustBe None
 

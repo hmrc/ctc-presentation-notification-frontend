@@ -17,9 +17,9 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
+import models.Index
 import models.messages.{GoodsReference, TransportEquipment}
 import models.reference.Item
-import models.{Index, UserAnswers}
 import pages.transport.equipment.{AddAnotherTransportEquipmentPage, ItemPage}
 
 class ItemTransformerTest extends SpecBase {
@@ -28,7 +28,7 @@ class ItemTransformerTest extends SpecBase {
 
   "ItemTransformer" - {
     "must return updated answers with ItemPage if Items exist for the equipment" in {
-      val userAnswersWithEquipments = UserAnswers.setTransportEquipmentLens
+      val userAnswersWithEquipments = setTransportEquipmentLens
         .set(
           Option(
             List(

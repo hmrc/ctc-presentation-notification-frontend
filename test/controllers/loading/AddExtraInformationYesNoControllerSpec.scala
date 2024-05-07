@@ -19,7 +19,7 @@ package controllers.loading
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -46,7 +46,7 @@ class AddExtraInformationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addExtraInformationYesNoRoute)
       val result  = route(app, request).value

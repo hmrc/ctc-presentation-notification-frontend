@@ -18,7 +18,6 @@ package utils.transformer.representative
 
 import base.SpecBase
 import base.TestMessageData.representativeEori
-import models.UserAnswers
 import models.messages.Representative
 import pages.representative.AddRepresentativeContactDetailsYesNoPage
 
@@ -38,7 +37,7 @@ class AddRepresentativeContactDetailsYesNoTransformerSpec extends SpecBase {
     }
 
     "when representative contact details not present must return updated answers with AddRepresentativeContactDetailsYesNoPage as false" in {
-      val userAnswers = UserAnswers.setRepresentativeOnUserAnswersLens.set(Option(Representative(representativeEori, "2", None)))(emptyUserAnswers)
+      val userAnswers = setRepresentativeOnUserAnswersLens.set(Option(Representative(representativeEori, "2", None)))(emptyUserAnswers)
 
       userAnswers.get(AddRepresentativeContactDetailsYesNoPage) mustBe None
 

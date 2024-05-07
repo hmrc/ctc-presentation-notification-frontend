@@ -19,7 +19,7 @@ package utils.transformer.locationOfGoods
 import base.SpecBase
 import base.TestMessageData.locationOfGoods
 import base.TestMessageData.messageData.isSimplified
-import models.{LocationType, UserAnswers}
+import models.LocationType
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import pages.locationOfGoods.LocationTypePage
@@ -38,7 +38,7 @@ class LocationTypeTransformerTest extends SpecBase {
   "LocationTypeTransformer" - {
 
     "must skip transforming if there is no location type" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers mustBe userAnswers
@@ -49,7 +49,7 @@ class LocationTypeTransformerTest extends SpecBase {
       val locationType = LocationType(locationOfGoods.typeOfLocation, "description")
       when(service.getLocationTypes(isSimplified)).thenReturn(Future.successful(Seq(locationType)))
 
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
         Some(locationOfGoods.copy(Address = Some(locationOfGoods.Address.get.copy(country = "GB"))))
       )(emptyUserAnswers)
       userAnswers.get(LocationTypePage) mustBe None
@@ -65,7 +65,7 @@ class LocationTypeTransformerTest extends SpecBase {
     val locationType = LocationType(locationOfGoods.typeOfLocation, "description")
     when(service.getLocationTypes(isSimplified)).thenReturn(Future.successful(Seq(locationType)))
 
-    val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(
+    val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
       Some(locationOfGoods.copy(typeOfLocation = "SomethingElse"))
     )(emptyUserAnswers)
 

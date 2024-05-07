@@ -18,7 +18,7 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.borderTransportMeans
-import models.{Index, UserAnswers}
+import models.Index
 import org.scalacheck.Gen
 import pages.transport.border.active.AddConveyanceReferenceYesNoPage
 
@@ -30,7 +30,7 @@ class AddConveyanceReferenceYesNoTransformerTest extends SpecBase {
     "must skip transforming if there is no border means" in {
       forAll(Gen.oneOf(Option(List()), None)) {
         borderMeans =>
-          val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
+          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
           whenReady(transformer.transform(hc)(userAnswers)) {
             updatedUserAnswers =>
               updatedUserAnswers mustBe userAnswers
@@ -39,7 +39,7 @@ class AddConveyanceReferenceYesNoTransformerTest extends SpecBase {
     }
 
     "must return AddConveyanceReferenceYesNoPage Yes (true) when there is conveyance reference" in {
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(List(borderTransportMeans, borderTransportMeans)))(emptyUserAnswers)
+      val userAnswers = setBorderMeansAnswersLens.set(Option(List(borderTransportMeans, borderTransportMeans)))(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(AddConveyanceReferenceYesNoPage(Index(0))).get mustBe true

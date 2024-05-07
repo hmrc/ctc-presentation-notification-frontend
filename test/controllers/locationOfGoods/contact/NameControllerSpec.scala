@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.contact.{routes => contactRoutes}
 import controllers.routes
 import forms.NameFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.contact.NamePage
@@ -46,7 +46,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, nameRoute)
 

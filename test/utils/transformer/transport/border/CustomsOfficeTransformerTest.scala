@@ -18,8 +18,8 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.borderTransportMeans
+import models.Index
 import models.reference.CustomsOffice
-import models.{Index, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -41,7 +41,7 @@ class CustomsOfficeTransformerTest extends SpecBase {
     "must skip transforming if there is no border means" in {
       forAll(Gen.oneOf(Option(List()), None)) {
         borderMeans =>
-          val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
+          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
           whenReady(transformer.transform(hc)(userAnswers)) {
             updatedUserAnswers =>
               updatedUserAnswers mustBe userAnswers
@@ -54,7 +54,7 @@ class CustomsOfficeTransformerTest extends SpecBase {
         val customsOffice = CustomsOffice("GB000028", "CustomsOffice1", None)
         when(service.getCustomsOfficesByMultipleIds(Seq("GB000028"))).thenReturn(Future.successful(Seq(customsOffice)))
 
-        val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(List(borderTransportMeans)))(emptyUserAnswers)
+        val userAnswers = setBorderMeansAnswersLens.set(Option(List(borderTransportMeans)))(emptyUserAnswers)
         val index       = Index(0)
         userAnswers.get(CustomsOfficeActiveBorderPage(index)) mustBe None
 

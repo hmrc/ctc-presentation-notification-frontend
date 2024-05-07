@@ -17,7 +17,6 @@
 package utils.transformer.representative
 
 import base.SpecBase
-import models.UserAnswers
 import pages.ActingAsRepresentativePage
 
 class ActingAsRepresentativeTransformerSpec extends SpecBase {
@@ -36,7 +35,7 @@ class ActingAsRepresentativeTransformerSpec extends SpecBase {
     }
 
     "when representative details not present must return updated answers with ActingAsRepresentative page as false" in {
-      val userAnswers = UserAnswers.setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers)
 
       userAnswers.get(ActingAsRepresentativePage) mustBe None
 

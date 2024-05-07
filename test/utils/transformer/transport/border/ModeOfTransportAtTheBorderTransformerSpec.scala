@@ -17,7 +17,6 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import models.UserAnswers
 import models.reference.TransportMode.BorderMode
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
@@ -51,7 +50,7 @@ class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase {
 
     "must not update if mode of transport is None" in {
       when(service.getBorderModes()).thenReturn(Future.successful(Seq(borderMode)))
-      val userAnswers = UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers)
       userAnswers.get(BorderModeOfTransportPage) mustBe None
 
       whenReady(transformer.transform(hc)(userAnswers)) {

@@ -17,7 +17,6 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import models.UserAnswers
 import models.messages.TransportEquipment
 import pages.transport.equipment.index.AddSealYesNoPage
 
@@ -37,7 +36,7 @@ class AddSealYesNoTransformerTest extends SpecBase {
     }
 
     "when seals not present must return updated answers with AddSealYesNoPage as false" in {
-      val userAnswers = UserAnswers.setTransportEquipmentLens.set(Some(List(TransportEquipment("1", None, 0, None, None))))(emptyUserAnswers)
+      val userAnswers = setTransportEquipmentLens.set(Some(List(TransportEquipment("1", None, 0, None, None))))(emptyUserAnswers)
 
       userAnswers.get(AddSealYesNoPage(equipmentIndex)) mustBe None
 

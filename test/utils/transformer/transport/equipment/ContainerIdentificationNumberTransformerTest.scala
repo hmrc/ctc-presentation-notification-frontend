@@ -17,8 +17,8 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
+import models.Index
 import models.messages.TransportEquipment
-import models.{Index, UserAnswers}
 import pages.transport.border.active.IdentificationNumberPage
 import pages.transport.equipment.index.{AddSealYesNoPage, ContainerIdentificationNumberPage}
 
@@ -28,7 +28,7 @@ class ContainerIdentificationNumberTransformerTest extends SpecBase {
 
   "ContainerIdentificationNumberTransformer" - {
     "must return updated answers with ContainerIdentificationNumberPage if container id exist for the equipment" in {
-      val userAnswersWithEquipments = UserAnswers.setTransportEquipmentLens
+      val userAnswersWithEquipments = setTransportEquipmentLens
         .set(
           Option(
             List(

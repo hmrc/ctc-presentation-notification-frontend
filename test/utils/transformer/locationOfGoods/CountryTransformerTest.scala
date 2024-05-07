@@ -18,8 +18,8 @@ package utils.transformer.locationOfGoods
 
 import base.SpecBase
 import base.TestMessageData.locationOfGoods
+import models.SelectableList
 import models.reference.{Country, CountryCode}
-import models.{SelectableList, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import pages.locationOfGoods.CountryPage
@@ -38,7 +38,7 @@ class CountryTransformerTest extends SpecBase {
   "CountryTransformer" - {
 
     "must skip transforming if there is no country data" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(Some(locationOfGoods.copy(Address = None)))(emptyUserAnswers)
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(Some(locationOfGoods.copy(Address = None)))(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers mustBe userAnswers
@@ -49,7 +49,7 @@ class CountryTransformerTest extends SpecBase {
       val country = Country(CountryCode("GB"), "Great Britain")
       when(service.getCountries()).thenReturn(Future.successful(SelectableList(Seq(country))))
 
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
         Some(locationOfGoods.copy(Address = Some(locationOfGoods.Address.get.copy(country = "GB"))))
       )(emptyUserAnswers)
       userAnswers.get(CountryPage) mustBe None
@@ -65,7 +65,7 @@ class CountryTransformerTest extends SpecBase {
     val country = Country(CountryCode("GB"), "Great Britain")
     when(service.getCountries()).thenReturn(Future.successful(SelectableList(Seq(country))))
 
-    val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(
+    val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
       Some(locationOfGoods.copy(Address = Some(locationOfGoods.Address.get.copy(country = "FR"))))
     )(emptyUserAnswers)
 

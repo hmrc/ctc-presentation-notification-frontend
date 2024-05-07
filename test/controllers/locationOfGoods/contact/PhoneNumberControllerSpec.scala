@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.contact.{routes => contactRoutes}
 import controllers.routes
 import forms.TelephoneNumberFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -47,7 +47,7 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   "TelephoneNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers).setValue(NamePage, contactName))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers).setValue(NamePage, contactName))
 
       val request = FakeRequest(GET, telephoneNumberRoute)
 

@@ -19,7 +19,7 @@ package controllers.loading
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.UnLocodeFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.loading.UnLocodePage
@@ -53,7 +53,7 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   "UnLocode Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      setExistingUserAnswers(UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       when(mockUnLocodeService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(true)
 

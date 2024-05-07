@@ -22,7 +22,7 @@ import controllers.routes
 import forms.locationOfGoods.PostalCodeFormProvider
 import generators.Generators
 import models.reference.Country
-import models.{NormalMode, PostalCodeAddress, SelectableList, UserAnswers}
+import models.{NormalMode, PostalCodeAddress, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -57,7 +57,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
-      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, postalCodeRoute)
       val result  = route(app, request).value

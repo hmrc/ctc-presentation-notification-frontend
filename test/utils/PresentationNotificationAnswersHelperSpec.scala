@@ -19,7 +19,6 @@ package utils
 import base.SpecBase
 import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
-import models.UserAnswers.setCustomsOfficeDepartureReferenceLens
 import models.messages.MessageData
 import models.reference.CustomsOffice
 import models.reference.TransportMode.BorderMode

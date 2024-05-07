@@ -22,7 +22,7 @@ import controllers.routes
 import forms.DynamicAddressFormProvider
 import generators.Generators
 import models.reference.Country
-import models.{DynamicAddress, NormalMode, UserAnswers}
+import models.{DynamicAddress, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -63,7 +63,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
+        setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value
@@ -84,7 +84,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
+        setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value

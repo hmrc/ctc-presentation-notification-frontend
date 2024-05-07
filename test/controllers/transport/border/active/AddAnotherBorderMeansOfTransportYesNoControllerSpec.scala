@@ -21,7 +21,7 @@ import controllers.routes
 import controllers.transport.border.active.{routes => borderActiveRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, Index, NormalMode, UserAnswers}
+import models.{CheckMode, Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -81,7 +81,7 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(noItemViewModel)
 
-        val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+        val userAnswers = setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, addAnotherBorderTransportRoute)
@@ -101,7 +101,7 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(noItemViewModel)
 
-        val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+        val userAnswers = setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, addAnotherBorderTransportRouteCheckMode)
