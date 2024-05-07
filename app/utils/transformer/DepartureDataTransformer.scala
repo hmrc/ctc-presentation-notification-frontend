@@ -40,8 +40,8 @@ class DepartureDataTransformer @Inject() (
 
     val transformerPipeline =
       transportPipeline.pipeline andThen
-        borderMeansPipeline.pipeline andThen
         borderModePipeline.pipeline andThen
+        borderMeansPipeline.pipeline andThen
         departureTransportMeansPipeline.pipeline andThen
         locationOfGoodsPipeline.pipeline andThen
         placeOfLoadingPipeline.pipeline andThen
