@@ -18,7 +18,6 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeans
-import models.UserAnswers
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 
 class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
@@ -26,7 +25,7 @@ class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
 
   "AddBorderMeansOfTransportYesNoTransformer" - {
     "must return AddBorderMeansOfTransportYesNoPage Yes (true) when there is at least 1 border means" in {
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(activeBorderTransportMeans))(emptyUserAnswers)
+      val userAnswers = setBorderMeansAnswersLens.set(Option(activeBorderTransportMeans))(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(AddBorderMeansOfTransportYesNoPage).get mustBe true
@@ -34,7 +33,7 @@ class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
     }
 
     "must return AddBorderMeansOfTransportYesNoPage No (false) when there is no border means" in {
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(Seq()))(emptyUserAnswers)
+      val userAnswers = setBorderMeansAnswersLens.set(Option(Seq()))(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers.get(AddBorderMeansOfTransportYesNoPage).get mustBe false

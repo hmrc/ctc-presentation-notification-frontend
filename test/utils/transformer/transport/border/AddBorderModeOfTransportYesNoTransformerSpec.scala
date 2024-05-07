@@ -17,7 +17,6 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import models.UserAnswers
 import pages.transport.border.AddBorderModeOfTransportYesNoPage
 
 class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase {
@@ -36,7 +35,7 @@ class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase {
     }
 
     "when border mode not present must return updated answers with AddBorderModeOfTransportYesNoPage as false" in {
-      val userAnswers = UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers)
 
       userAnswers.get(AddBorderModeOfTransportYesNoPage) mustBe None
 

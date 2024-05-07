@@ -21,7 +21,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import controllers.transport.border.{routes => borderRoutes}
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -48,7 +48,7 @@ class AddBorderMeansOfTransportYesNoControllerSpec extends SpecBase with AppWith
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)
@@ -85,7 +85,7 @@ class AddBorderMeansOfTransportYesNoControllerSpec extends SpecBase with AppWith
 
     "must populate the view correctly on a GET when the question has previously been answered in the IE015" in {
 
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(activeBorderTransportMeans))(emptyUserAnswers)
+      val userAnswers = setBorderMeansAnswersLens.set(Option(activeBorderTransportMeans))(emptyUserAnswers)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addBorderModeOfTransportYesNoRoute)

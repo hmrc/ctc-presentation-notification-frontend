@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -47,7 +47,7 @@ class AddIdentifierYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, addIdentifierYesNoRoute)
       val result  = route(app, request).value

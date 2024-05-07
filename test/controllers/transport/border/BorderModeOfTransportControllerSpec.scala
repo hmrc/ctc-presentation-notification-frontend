@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import models.reference.TransportMode.BorderMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -63,7 +63,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(UserAnswers.setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, borderModeOfTransportRoute)
 

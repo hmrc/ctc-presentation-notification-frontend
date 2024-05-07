@@ -22,8 +22,8 @@ import controllers.routes
 import forms.Constants.loadingLocationMaxLength
 import forms.loading.LoadingLocationFormProvider
 import generators.Generators
+import models.NormalMode
 import models.reference.Country
-import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -47,7 +47,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" in {
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
-      setExistingUserAnswers(UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(None)(userAnswers))
+      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.set(None)(userAnswers))
 
       val request = FakeRequest(GET, locationRoute)
       val result  = route(app, request).value

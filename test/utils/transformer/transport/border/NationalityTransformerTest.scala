@@ -19,7 +19,7 @@ package utils.transformer.transport.border
 import base.SpecBase
 import base.TestMessageData.borderTransportMeans
 import models.reference.Nationality
-import models.{Index, SelectableList, UserAnswers}
+import models.{Index, SelectableList}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -41,7 +41,7 @@ class NationalityTransformerTest extends SpecBase {
     "must skip transforming if there is no border means" in {
       forAll(Gen.oneOf(Option(List()), None)) {
         borderMeans =>
-          val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
+          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
           whenReady(transformer.transform(hc)(userAnswers)) {
             updatedUserAnswers =>
               updatedUserAnswers mustBe userAnswers
@@ -54,7 +54,7 @@ class NationalityTransformerTest extends SpecBase {
         val nationality = Nationality("FR", "France")
         when(service.getNationalities()).thenReturn(Future.successful(SelectableList(Seq(nationality))))
 
-        val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(Option(List(borderTransportMeans)))(emptyUserAnswers)
+        val userAnswers = setBorderMeansAnswersLens.set(Option(List(borderTransportMeans)))(emptyUserAnswers)
         val index       = Index(0)
         userAnswers.get(NationalityPage(index)) mustBe None
 

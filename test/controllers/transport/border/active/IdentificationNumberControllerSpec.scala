@@ -20,8 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.border.IdentificationNumberFormProvider
 import generators.Generators
+import models.NormalMode
 import models.reference.transport.border.active.Identification
-import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -62,7 +62,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     "must return Ok and the correct view for a get" in {
       forAll(arbitrary[Identification]) {
         identifier =>
-          val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.set(
             None
           )(
             emptyUserAnswers

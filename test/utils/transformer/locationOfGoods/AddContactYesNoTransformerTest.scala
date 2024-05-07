@@ -18,7 +18,7 @@ package utils.transformer.locationOfGoods
 
 import base.SpecBase
 import base.TestMessageData.{contactPerson, locationOfGoods}
-import models.{LocationOfGoodsIdentification, UserAnswers}
+import models.LocationOfGoodsIdentification
 import org.scalacheck.Gen
 import pages.locationOfGoods.{AddContactYesNoPage, IdentificationPage}
 
@@ -28,7 +28,7 @@ class AddContactYesNoTransformerTest extends SpecBase {
   "AddContactYesNoTransformer" - {
     "must return AddContactYesNoPage Yes (true) when there is ContactPerson and identification type is not V" in {
       val userAnswers =
-        UserAnswers.setLocationOfGoodsOnUserAnswersLens
+        setLocationOfGoodsOnUserAnswersLens
           .set(Option(locationOfGoods))(emptyUserAnswers)
           .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "description"))
 
@@ -39,7 +39,7 @@ class AddContactYesNoTransformerTest extends SpecBase {
     }
 
     "must return AddContactYesNoPage No (false) when there is no ContactPerson and identification is not V" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens
         .set(
           Option(locationOfGoods.copy(ContactPerson = None))
         )(emptyUserAnswers)
@@ -55,7 +55,7 @@ class AddContactYesNoTransformerTest extends SpecBase {
       forAll(Gen.oneOf(None, Some(contactPerson))) {
         person =>
           val userAnswers =
-            UserAnswers.setLocationOfGoodsOnUserAnswersLens
+            setLocationOfGoodsOnUserAnswersLens
               .set(Option(locationOfGoods.copy(ContactPerson = person)))(emptyUserAnswers)
               .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "CustomsOfficeIdentifier"))
 

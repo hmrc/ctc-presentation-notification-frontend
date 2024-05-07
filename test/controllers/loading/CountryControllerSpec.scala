@@ -21,7 +21,7 @@ import controllers.loading.{routes => loadingRoutes}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList, UserAnswers}
+import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.loading.CountryPage
@@ -56,7 +56,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must return OK and the correct view for a GET" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      setExistingUserAnswers(UserAnswers.setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, countryRoute)
       val result  = route(app, request).value

@@ -17,8 +17,8 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
+import models.Index
 import models.messages.{Seal, TransportEquipment}
-import models.{Index, UserAnswers}
 import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
@@ -28,7 +28,7 @@ class SealTransformerTest extends SpecBase {
 
   "SealTransformer" - {
     "must return updated answers with SealIdentificationNumberPage if seals exist for the equipment" in {
-      val userAnswersWithEquipments = UserAnswers.setTransportEquipmentLens
+      val userAnswersWithEquipments = setTransportEquipmentLens
         .set(
           Option(
             List(

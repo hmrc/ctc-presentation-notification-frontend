@@ -18,8 +18,8 @@ package utils.transformer.locationOfGoods
 
 import base.SpecBase
 import base.TestMessageData.{locationOfGoods, messageData}
+import models.SelectableList
 import models.reference.CustomsOffice
-import models.{SelectableList, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
@@ -38,7 +38,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase {
   "CustomsOfficeIdentifierTransformer" - {
 
     "must skip transforming if there is no customs office data" in {
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(Some(locationOfGoods.copy(CustomsOffice = None)))(emptyUserAnswers)
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(Some(locationOfGoods.copy(CustomsOffice = None)))(emptyUserAnswers)
       whenReady(transformer.transform(hc)(userAnswers)) {
         updatedUserAnswers =>
           updatedUserAnswers mustBe userAnswers
@@ -51,7 +51,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase {
 
       when(service.getCustomsOfficesOfDepartureForCountry(customsOfficeReference.take(2))).thenReturn(Future.successful(SelectableList(Seq(customsOffice))))
 
-      val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
         Some(locationOfGoods.copy(CustomsOffice = Some(locationOfGoods.CustomsOffice.get.copy(referenceNumber = customsOfficeReference))))
       )(emptyUserAnswers.copy(departureData = messageData.copy(CustomsOfficeOfDeparture = "GB000011")))
       userAnswers.get(CustomsOfficeIdentifierPage) mustBe None
@@ -66,7 +66,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase {
   "must return None when the customs office from departure data cannot be found in service response" in {
     when(service.getCustomsOfficesOfDepartureForCountry("TR")).thenReturn(Future.successful(SelectableList(Seq())))
 
-    val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(
+    val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
       Some(locationOfGoods.copy(CustomsOffice = Some(locationOfGoods.CustomsOffice.get.copy(referenceNumber = "TR000011"))))
     )(emptyUserAnswers.copy(departureData = messageData.copy(CustomsOfficeOfDeparture = "TR000011")))
 
@@ -80,7 +80,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase {
     val customsOfficeReference = "GB000028"
     when(service.getCustomsOfficesOfDepartureForCountry(customsOfficeReference.take(2))).thenReturn(Future.failed(new RuntimeException("")))
 
-    val userAnswers = UserAnswers.setLocationOfGoodsOnUserAnswersLens.set(
+    val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
       Some(locationOfGoods.copy(CustomsOffice = Some(locationOfGoods.CustomsOffice.get.copy(referenceNumber = customsOfficeReference))))
     )(emptyUserAnswers.copy(departureData = messageData.copy(CustomsOfficeOfDeparture = "GB000011")))
 

@@ -18,9 +18,9 @@ package utils
 
 import base.SpecBase
 import generators.Generators
+import models.Mode
 import models.messages.Address
 import models.reference.{Country, CountryCode}
-import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -39,7 +39,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     "return `Do you know the transit holder’s EORI number?` row" in {
       forAll(arbitrary[Mode], arbitrary[Option[String]]) {
         (mode, optionalEori) =>
-          val answers = UserAnswers.setTransitHolderEoriLens.set(optionalEori)(emptyUserAnswers)
+          val answers = setTransitHolderEoriLens.set(optionalEori)(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.eoriYesNoRow
 
@@ -57,7 +57,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     "return EORI number row" in {
       forAll(arbitrary[Mode], arbitrary[Option[String]]) {
         (mode, optionalEori) =>
-          val answers = UserAnswers.setTransitHolderEoriLens.set(optionalEori)(emptyUserAnswers)
+          val answers = setTransitHolderEoriLens.set(optionalEori)(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.eoriRow
 
@@ -75,7 +75,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     "return TIR identification row" in {
       forAll(arbitrary[Mode], arbitrary[Option[String]]) {
         (mode, optionalTirIdentification) =>
-          val answers = UserAnswers.setTransitHolderTirIdentificationLens.set(optionalTirIdentification)(emptyUserAnswers)
+          val answers = setTransitHolderTirIdentificationLens.set(optionalTirIdentification)(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.tirIdentificationRow
 
@@ -94,7 +94,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
       forAll(arbitrary[Mode], arbitrary[Country]) {
         (mode, country) =>
           when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(country))
-          val answers = UserAnswers.setTransitHolderAddressLens.set(Address("Address Line 1", Some("NE53KL"), "Newcastle", country.code.code))(emptyUserAnswers)
+          val answers = setTransitHolderAddressLens.set(Address("Address Line 1", Some("NE53KL"), "Newcastle", country.code.code))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val row     = helper.countryRow
 
@@ -112,7 +112,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
       forAll(arbitrary[Mode], arbitrary[Address]) {
         (mode, address) =>
           when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(Country(CountryCode(address.country), "description")))
-          val answers = UserAnswers.setTransitHolderAddressLens.set(address)(emptyUserAnswers)
+          val answers = setTransitHolderAddressLens.set(address)(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.addressRow
 
@@ -126,7 +126,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     "return name row" in {
       forAll(arbitrary[Mode], arbitrary[String]) {
         (mode, name) =>
-          val answers = UserAnswers.setTransitHolderNameLens.set(Some(name))(emptyUserAnswers)
+          val answers = setTransitHolderNameLens.set(Some(name))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.nameRow
 

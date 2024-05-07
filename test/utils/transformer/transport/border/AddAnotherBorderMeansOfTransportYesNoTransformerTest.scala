@@ -18,7 +18,7 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.borderTransportMeans
-import models.{Index, UserAnswers}
+import models.Index
 import org.scalacheck.Gen
 import pages.transport.border.AddAnotherBorderMeansOfTransportYesNoPage
 
@@ -30,7 +30,7 @@ class AddAnotherBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
     "must skip transforming if there is no border means" in {
       forAll(Gen.oneOf(Option(List()), None)) {
         borderMeans =>
-          val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
+          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
           whenReady(transformer.transform(hc)(userAnswers)) {
             updatedUserAnswers =>
               updatedUserAnswers mustBe userAnswers
@@ -41,7 +41,7 @@ class AddAnotherBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
     "must return updated answers with Add Another yes/no answers" - {
       "when there is 1 border means, answer should be No (false)" in {
         val listWith1Item = List(borderTransportMeans)
-        val userAnswers   = UserAnswers.setBorderMeansAnswersLens.set(Option(listWith1Item))(emptyUserAnswers)
+        val userAnswers   = setBorderMeansAnswersLens.set(Option(listWith1Item))(emptyUserAnswers)
         whenReady(transformer.transform(hc)(userAnswers)) {
           updatedUserAnswers =>
             updatedUserAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage(Index(0))).get mustBe false
@@ -50,7 +50,7 @@ class AddAnotherBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
 
       "when there are more than 1 border means, only the last answer should be No (false)" in {
         val listWith3Item = List(borderTransportMeans, borderTransportMeans, borderTransportMeans)
-        val userAnswers   = UserAnswers.setBorderMeansAnswersLens.set(Option(listWith3Item))(emptyUserAnswers)
+        val userAnswers   = setBorderMeansAnswersLens.set(Option(listWith3Item))(emptyUserAnswers)
         whenReady(transformer.transform(hc)(userAnswers)) {
           updatedUserAnswers =>
             updatedUserAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage(Index(0))).get mustBe true

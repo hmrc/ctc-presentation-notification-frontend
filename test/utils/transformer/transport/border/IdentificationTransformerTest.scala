@@ -18,12 +18,11 @@ package utils.transformer.transport.border
 
 import base.SpecBase
 import base.TestMessageData.activeBorderTransportMeansIdentification
+import models.Index
 import models.reference.transport.border.active.Identification
-import models.{Index, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.transport.border.active.IdentificationPage
 import services.MeansOfTransportIdentificationTypesActiveService
 
@@ -42,7 +41,7 @@ class IdentificationTransformerTest extends SpecBase {
     "must skip transforming if there is no border means" in {
       forAll(Gen.oneOf(Option(List()), None)) {
         borderMeans =>
-          val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
+          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
           whenReady(transformer.transform(hc)(userAnswers)) {
             updatedUserAnswers =>
               updatedUserAnswers mustBe userAnswers

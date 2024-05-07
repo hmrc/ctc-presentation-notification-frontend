@@ -16,9 +16,9 @@
 
 package pages.transport
 
-import models.reference.Nationality
 import pages.behaviours.PageBehaviours
-import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage, TransportMeansNationalityPage}
+import pages.sections.transport.departureTransportMeans.TransportMeansListSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
 
@@ -30,33 +30,17 @@ class AddInlandModeOfTransportYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove country and location pages in 15/13/170" in {
+        "must remove inland mode page" in {
           forAll(arbitraryInlandModeOfTransport.arbitrary) {
             inlandMode =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddInlandModeOfTransportYesNoPage, true)
                 .setValue(InlandModePage, inlandMode)
+                .setValue(TransportMeansListSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
 
               val result = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, false)
 
               result.get(InlandModePage) must not be defined
-              result.departureData.Consignment.inlandModeOfTransport must not be defined
-          }
-        }
-
-        "must remove departure means of transport section in 15/13/170" in {
-          forAll(arbitraryInlandModeOfTransport.arbitrary.suchThat(_.code != "5"), arbitraryTransportMeansIdentification.arbitrary) {
-            (inlandMode, identification) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AddInlandModeOfTransportYesNoPage, true)
-                .setValue(InlandModePage, inlandMode)
-                .setValue(TransportMeansIdentificationPage(transportIndex), identification)
-                .setValue(TransportMeansIdentificationNumberPage(transportIndex), "1234")
-                .setValue(TransportMeansNationalityPage(transportIndex), Nationality("FR", "France"))
-
-              val result = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, false)
-
-              result.departureData.Consignment.DepartureTransportMeans must not be defined
+              result.get(TransportMeansListSection) must not be defined
           }
         }
       }

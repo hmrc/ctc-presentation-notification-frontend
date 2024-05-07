@@ -20,7 +20,7 @@ import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.border.ConveyanceReferenceNumberFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transport.border.active.ConveyanceReferenceNumberPage
@@ -45,7 +45,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   "ConveyanceReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = UserAnswers.setBorderMeansAnswersLens.set(
+      val userAnswers = setBorderMeansAnswersLens.set(
         Option(
           Seq(
             activeBorderTransportMeans.head.copy(conveyanceReferenceNumber = None)
