@@ -31,7 +31,6 @@ import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
 
 import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

@@ -32,7 +32,7 @@ class CustomsOfficeTransformer @Inject() (service: CustomsOfficesService)(implic
 
   override type DomainModelType              = CustomsOffice
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
+  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
@@ -52,5 +52,5 @@ class CustomsOfficeTransformer @Inject() (service: CustomsOfficesService)(implic
     }
 
   private def extractDataFromDepartureData: UserAnswers => Seq[ExtractedTypeInDepartureData] =
-    _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.customsOfficeAtBorderReferenceNumber)
+    _.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.customsOfficeAtBorderReferenceNumber)
 }

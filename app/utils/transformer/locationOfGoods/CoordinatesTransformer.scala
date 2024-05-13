@@ -16,7 +16,7 @@
 
 package utils.transformer.locationOfGoods
 
-import models.{Coordinates, UserAnswers}
+import models.{Coordinates, RichGNSSType, UserAnswers}
 import pages.locationOfGoods.CoordinatesPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
@@ -30,7 +30,7 @@ class CoordinatesTransformer extends PageTransformer {
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.GNSS).toSeq,
+      extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.GNSS.map(_.toCoordinates)).toSeq,
       generateCapturedAnswers = _.map((CoordinatesPage, _))
     )
 }

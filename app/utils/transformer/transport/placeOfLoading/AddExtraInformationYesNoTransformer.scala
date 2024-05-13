@@ -16,8 +16,8 @@
 
 package utils.transformer.transport.placeOfLoading
 
+import generated.PlaceOfLoadingType03
 import models.UserAnswers
-import models.messages.PlaceOfLoading
 import pages.loading.AddExtraInformationYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 class AddExtraInformationYesNoTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = PlaceOfLoading
+  override type ExtractedTypeInDepartureData = PlaceOfLoadingType03
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     userAnswers =>
@@ -35,7 +35,7 @@ class AddExtraInformationYesNoTransformer extends PageTransformer {
         extractDataFromDepartureData = _.departureData.Consignment.PlaceOfLoading.toSeq,
         generateCapturedAnswers = placeOfLoadings =>
           placeOfLoadings.map(
-            placeOfLoading => (AddExtraInformationYesNoPage, placeOfLoading.isAdditionalInformationPresent)
+            placeOfLoading => (AddExtraInformationYesNoPage, placeOfLoading.country.isDefined)
           )
       )
   }

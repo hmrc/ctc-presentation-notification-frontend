@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
+import config.Constants._
+import generated._
+import models.messages.AuthorisationType._
 import models.messages.MessageData
+import models.reference.{Country, CountryCode, Item}
 import play.api.libs.json._
+import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
+import java.time.LocalDate
+import javax.xml.datatype.XMLGregorianCalendar
 import scala.annotation.nowarn
+import scala.xml.NodeSeq
 
 package object models {
 
@@ -205,4 +213,160 @@ package object models {
           acc + c.toString.trim
       }
   }
+
+  implicit class RichSeqT[T](value: Seq[T]) {
+
+    def toOption: Option[Seq[T]] = value match {
+      case Nil => None
+      case _   => Some(value)
+    }
+  }
+
+  implicit class RichCC015CType(value: CC015CType) {
+
+    def toXML: NodeSeq = scalaxb.toXML(value, CC015C.toString, toScope())
+
+    def isSimplified: Boolean = value.Authorisation.exists(_.typeValue == C521.toString)
+
+    def hasAuthC523: Boolean = value.Authorisation.exists(_.typeValue == C523.toString)
+
+    private def isDataCompleteSimplified: Boolean = {
+      val options: List[Option[_]] = List(
+        value.TransitOperation.limitDate,
+        value.Consignment.containerIndicator,
+        value.Consignment.modeOfTransportAtTheBorder,
+        value.Consignment.TransportEquipment.toOption,
+        value.Consignment.LocationOfGoods,
+        value.Consignment.ActiveBorderTransportMeans.toOption,
+        value.Consignment.PlaceOfLoading
+      )
+      options.forall(_.isDefined)
+    }
+
+    private def isDataCompleteNormal: Boolean = {
+      val options: List[Option[_]] = List(
+        value.Consignment.containerIndicator,
+        value.Consignment.modeOfTransportAtTheBorder,
+        value.Consignment.TransportEquipment.toOption,
+        value.Consignment.LocationOfGoods,
+        value.Consignment.ActiveBorderTransportMeans.toOption,
+        value.Consignment.PlaceOfLoading
+      )
+      options.forall(_.isDefined)
+    }
+
+    def isDataComplete: Boolean = if (isSimplified) isDataCompleteSimplified else isDataCompleteNormal
+
+    def customsOffices: Seq[String] =
+      Seq(
+        Seq(value.CustomsOfficeOfDestinationDeclared.referenceNumber),
+        value.CustomsOfficeOfTransitDeclared.map(_.referenceNumber),
+        value.CustomsOfficeOfExitForTransitDeclared.map(_.referenceNumber)
+      ).flatten
+
+    def hasSecurity: Boolean =
+      value.TransitOperation.security != NoSecurityDetails
+
+    def countryOfDeparture: String =
+      value.CustomsOfficeOfDeparture.referenceNumber.take(2)
+
+    def items: Seq[Item] =
+      value.Consignment.HouseConsignment
+        .flatMap(_.ConsignmentItem.map {
+          consignmentItem =>
+            Item(consignmentItem.declarationGoodsItemNumber.toInt, consignmentItem.Commodity.descriptionOfGoods)
+        })
+        .sortBy(_.declarationGoodsItemNumber)
+  }
+
+  implicit class RichCC013CType(value: CC013CType) {
+
+    def toCC015CType(lrn: LocalReferenceNumber): CC015CType = CC015CType(
+      messageSequence1 = value.messageSequence1,
+      TransitOperation = value.TransitOperation.toTransitOperationType06(lrn),
+      Authorisation = value.Authorisation,
+      CustomsOfficeOfDeparture = value.CustomsOfficeOfDeparture,
+      CustomsOfficeOfDestinationDeclared = value.CustomsOfficeOfDestinationDeclared,
+      CustomsOfficeOfTransitDeclared = value.CustomsOfficeOfTransitDeclared,
+      CustomsOfficeOfExitForTransitDeclared = value.CustomsOfficeOfExitForTransitDeclared,
+      HolderOfTheTransitProcedure = value.HolderOfTheTransitProcedure,
+      Representative = value.Representative,
+      Guarantee = value.Guarantee.flatMap(_.toGuaranteeType02),
+      Consignment = value.Consignment,
+      attributes = value.attributes
+    )
+  }
+
+  implicit class RichGuaranteeType02(value: GuaranteeType01) {
+
+    def toGuaranteeType02: Option[GuaranteeType02] = value.guaranteeType.map {
+      guaranteeType =>
+        GuaranteeType02(
+          sequenceNumber = value.sequenceNumber,
+          guaranteeType = guaranteeType,
+          otherGuaranteeReference = value.otherGuaranteeReference,
+          GuaranteeReference = value.GuaranteeReference
+        )
+    }
+  }
+
+  implicit class RichTransitOperationType04(value: TransitOperationType04) {
+
+    def toTransitOperationType06(lrn: LocalReferenceNumber): TransitOperationType06 =
+      TransitOperationType06(
+        LRN = lrn.value,
+        declarationType = value.declarationType,
+        additionalDeclarationType = value.additionalDeclarationType,
+        TIRCarnetNumber = value.TIRCarnetNumber,
+        presentationOfTheGoodsDateAndTime = value.presentationOfTheGoodsDateAndTime,
+        security = value.security,
+        reducedDatasetIndicator = value.reducedDatasetIndicator,
+        specificCircumstanceIndicator = value.specificCircumstanceIndicator,
+        communicationLanguageAtDeparture = value.communicationLanguageAtDeparture,
+        bindingItinerary = value.bindingItinerary,
+        limitDate = value.limitDate
+      )
+  }
+
+  implicit class RichGNSSType(value: GNSSType) {
+
+    def toCoordinates: Coordinates = Coordinates(
+      latitude = value.latitude,
+      longitude = value.longitude
+    )
+  }
+
+  implicit class RichAddressType14(value: AddressType14) {
+
+    def toDynamicAddress: DynamicAddress = DynamicAddress(
+      numberAndStreet = value.streetAndNumber,
+      city = value.city,
+      postalCode = value.postcode
+    )
+  }
+
+  implicit class RichAddressType17(value: AddressType17) {
+
+    def toDynamicAddress: DynamicAddress = DynamicAddress(
+      numberAndStreet = value.streetAndNumber,
+      city = value.city,
+      postalCode = value.postcode
+    )
+  }
+
+  implicit class RichPostcodeAddressType02(value: PostcodeAddressType02) {
+
+    // TODO - this isn't great...
+    def toPostalCode: PostalCodeAddress = PostalCodeAddress(
+      streetNumber = value.houseNumber.getOrElse(""),
+      postalCode = value.postcode,
+      country = Country(CountryCode(value.country), "")
+    )
+  }
+
+  implicit def flagToBool(value: Flag): Boolean =
+    value == Number1
+
+  implicit def xmlGregorianCalendarToLocalDate(value: XMLGregorianCalendar): LocalDate =
+    value.toGregorianCalendar.toZonedDateTime.toLocalDate
 }

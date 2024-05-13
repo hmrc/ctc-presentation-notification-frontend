@@ -16,18 +16,19 @@
 
 package utils.transformer.transport
 
-import models.UserAnswers
+import models.{xmlGregorianCalendarToLocalDate, UserAnswers}
 import pages.transport.LimitDatePage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
 import java.time.LocalDate
+import javax.xml.datatype.XMLGregorianCalendar
 import scala.concurrent.Future
 
 class LimitDateTransformer extends PageTransformer {
 
   override type DomainModelType              = LocalDate
-  override type ExtractedTypeInDepartureData = String
+  override type ExtractedTypeInDepartureData = XMLGregorianCalendar
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
@@ -35,7 +36,7 @@ class LimitDateTransformer extends PageTransformer {
       extractDataFromDepartureData = _.departureData.TransitOperation.limitDate.toSeq,
       generateCapturedAnswers = limitDates =>
         limitDates.map(
-          limitDate => (LimitDatePage, LocalDate.parse(limitDate))
+          limitDate => (LimitDatePage, limitDate)
         )
     )
 }

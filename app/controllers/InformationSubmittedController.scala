@@ -39,7 +39,7 @@ class InformationSubmittedController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestination).map {
+        customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestinationDeclared.referenceNumber).map {
           customsOffice => Ok(view(request.userAnswers.lrn, customsOffice))
         }
     }

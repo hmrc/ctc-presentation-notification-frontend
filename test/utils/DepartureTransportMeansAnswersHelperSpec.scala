@@ -31,7 +31,6 @@ import pages.transport.departureTransportMeans._
 import play.api.libs.json.Json
 
 import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

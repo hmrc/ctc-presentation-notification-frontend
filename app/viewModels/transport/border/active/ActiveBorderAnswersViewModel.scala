@@ -22,13 +22,12 @@ import utils.ActiveBorderTransportMeansAnswersHelper
 import viewModels.Section
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 case class ActiveBorderAnswersViewModel(section: Section)
 
 object ActiveBorderAnswersViewModel {
 
-  class ActiveBorderAnswersViewModelProvider @Inject() (implicit executionContext: ExecutionContext) {
+  class ActiveBorderAnswersViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, index: Index)(implicit
       messages: Messages

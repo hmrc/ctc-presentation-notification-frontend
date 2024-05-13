@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{Index, Mode, NormalMode, UserAnswers}
+import models.{Index, Mode, NormalMode, RichCC015CType, UserAnswers}
 import pages.Page
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.index._

@@ -17,26 +17,23 @@
 package utils
 
 import models.reference.TransportMode.InlandMode
-import models.{Mode, UserAnswers}
+import models.{flagToBool, Mode, UserAnswers}
 import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import viewModels.Section
 
-import scala.concurrent.ExecutionContext
-
 class InlandModeAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers
 
   def inlandModeOfTransportYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddInlandModeOfTransportYesNoPage,
-    optionalAnswer = userAnswers.get(AddInlandModeOfTransportYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.addInlandModeOfTransport",
     id = Some("change-add-inland-mode-of-transport")
@@ -45,14 +42,13 @@ class InlandModeAnswersHelper(
   def inlandMode: Option[SummaryListRow] =
     buildRowWithAnswer[InlandMode](
       page = InlandModePage,
-      optionalAnswer = userAnswers.get(InlandModePage),
       formatAnswer = formatDynamicEnumAsText(_),
       prefix = "transport.inlandModeOfTransport",
       id = Some("change-transport-inland-mode")
     )
 
   def buildInlandModeSection: Option[Section] =
-    if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator.asBoolean) {
+    if (!userAnswers.departureData.TransitOperation.reducedDatasetIndicator) {
 
       val rows = Seq(inlandModeOfTransportYesNo, inlandMode).flatten
 

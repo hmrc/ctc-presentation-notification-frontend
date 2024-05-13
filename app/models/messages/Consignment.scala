@@ -50,7 +50,7 @@ case class Consignment(
             item => Item(item.declarationGoodsItemNumber, item.Commodity.descriptionOfGoods)
           ) ++ listOfItems
       }
-      .sortBy(_.goodsItemNumber)
+      .sortBy(_.declarationGoodsItemNumber)
 }
 
 object Consignment {

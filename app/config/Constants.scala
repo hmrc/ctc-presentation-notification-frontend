@@ -17,6 +17,9 @@
 package config
 
 object Constants {
+
+  // TODO - organise into objects
+
   val GB  = "GB"
   val XI  = "XI"
   val AD  = "AD"

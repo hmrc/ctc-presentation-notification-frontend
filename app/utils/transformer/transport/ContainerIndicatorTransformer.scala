@@ -16,10 +16,10 @@
 
 package utils.transformer.transport
 
-import models.UserAnswers
+import generated.Flag
+import models.{flagToBool, UserAnswers}
 import pages.transport.ContainerIndicatorPage
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.EnrichedString
 import utils.transformer.PageTransformer
 
 import scala.concurrent.Future
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 class ContainerIndicatorTransformer extends PageTransformer {
 
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = String
+  override type ExtractedTypeInDepartureData = Flag
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
@@ -35,7 +35,7 @@ class ContainerIndicatorTransformer extends PageTransformer {
       extractDataFromDepartureData = _.departureData.Consignment.containerIndicator.toSeq,
       generateCapturedAnswers = containerIndicators =>
         containerIndicators.map(
-          containerIndicator => (ContainerIndicatorPage, containerIndicator.asBoolean)
+          containerIndicator => (ContainerIndicatorPage, containerIndicator)
         )
     )
 }

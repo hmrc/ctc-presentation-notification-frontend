@@ -16,8 +16,8 @@
 
 package utils.transformer.transport.border
 
+import generated.ConsignmentType20
 import models.UserAnswers
-import models.messages.Consignment
 import models.reference.TransportMode.BorderMode
 import pages.transport.border.BorderModeOfTransportPage
 import services.TransportModeCodesService
@@ -29,9 +29,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ModeOfTransportAtTheBorderTransformer @Inject() (borderModeService: TransportModeCodesService)(implicit ec: ExecutionContext) extends PageTransformer {
   override type DomainModelType              = BorderMode
-  override type ExtractedTypeInDepartureData = Consignment
+  override type ExtractedTypeInDepartureData = ConsignmentType20
 
-  private def generateCapturedAnswers(departureDataCode: Seq[Consignment], borderModeList: Seq[BorderMode]): Seq[(BorderModeOfTransportPage.type, BorderMode)] =
+  private def generateCapturedAnswers(departureDataCode: Seq[ConsignmentType20],
+                                      borderModeList: Seq[BorderMode]
+  ): Seq[(BorderModeOfTransportPage.type, BorderMode)] =
     departureDataCode.flatMap(
       consignment =>
         consignment.modeOfTransportAtTheBorder

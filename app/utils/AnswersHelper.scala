@@ -16,7 +16,6 @@
 
 package utils
 
-import models.messages.MessageData
 import models.{Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
 import pages.sections.Section
@@ -25,13 +24,11 @@ import play.api.libs.json.{JsArray, Reads}
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewModels.Link
 
-import scala.concurrent.ExecutionContext
-
 class AnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, executionContext: ExecutionContext)
+)(implicit messages: Messages)
     extends SummaryListRowHelper {
 
   protected def lrn: String = userAnswers.lrn
@@ -43,35 +40,15 @@ class AnswersHelper(
         (_, index) => f(index)
       }
 
-  protected def getAnswerAndBuildRow[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    findValueInDepartureData: MessageData => Option[T],
-    id: Option[String],
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    for {
-      answer <- userAnswers.getOrElse(page, findValueInDepartureData)
-      call   <- page.route(userAnswers, departureId, mode)
-    } yield buildRow(
-      prefix = prefix,
-      answer = formatAnswer(answer),
-      id = id,
-      call = call,
-      args = args: _*
-    )
-
   protected def buildRowWithAnswer[T](
     page: QuestionPage[T],
-    optionalAnswer: Option[T],
     formatAnswer: T => Content,
     prefix: String,
     id: Option[String],
     args: Any*
-  ): Option[SummaryListRow] =
+  )(implicit reads: Reads[T]): Option[SummaryListRow] =
     for {
-      answer <- optionalAnswer
+      answer <- userAnswers.get(page)
       call   <- page.route(userAnswers, departureId, mode)
     } yield buildRow(
       prefix = prefix,

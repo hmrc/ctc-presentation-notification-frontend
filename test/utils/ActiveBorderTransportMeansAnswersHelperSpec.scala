@@ -29,7 +29,6 @@ import pages.transport.border.active._
 import play.api.libs.json.Json
 
 import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

@@ -102,9 +102,7 @@ class IdentificationNumberController @Inject() (
     request.userAnswers.get(IdentificationPage(activeIndex))
 
   private def identificationPageIe015(activeIndex: Index)(implicit request: DataRequest[_]): Option[String] =
-    request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.flatMap(
-      x => x.lift(activeIndex.position).flatMap(_.typeOfIdentification)
-    )
+    request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.lift(activeIndex.position).flatMap(_.typeOfIdentification)
 
   private def getReferenceDataFor15(activeIndex: Index)(implicit request: DataRequest[_]): Option[Future[Identification]] =
     identificationPageIe015(activeIndex).map {

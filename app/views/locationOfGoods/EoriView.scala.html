@@ -33,7 +33,6 @@
     showBackLink = true
 ) {
 
-@*    TODO change to on submit once done*@
     @formHelper(action =  routes.EoriController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)

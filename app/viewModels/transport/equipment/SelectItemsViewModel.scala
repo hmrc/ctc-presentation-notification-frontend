@@ -17,7 +17,7 @@
 package viewModels.transport.equipment
 
 import models.reference.Item
-import models.{Index, SelectableList, UserAnswers}
+import models.{Index, RichCC015CType, SelectableList, UserAnswers}
 import pages.sections.transport.equipment.{EquipmentsSection, ItemsSection}
 import pages.transport.equipment.ItemPage
 
@@ -26,7 +26,7 @@ case class SelectItemsViewModel(items: SelectableList[Item], allItemsCount: Int)
 object SelectItemsViewModel {
 
   def apply(userAnswers: UserAnswers, selectedItem: Option[Item] = None): SelectItemsViewModel = {
-    val allItems = userAnswers.departureData.Consignment.allItems
+    val allItems = userAnswers.departureData.items
 
     val filteredList = (for {
       equipmentIndex <- 0 until userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)

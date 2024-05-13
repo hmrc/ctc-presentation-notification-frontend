@@ -19,10 +19,10 @@ package models.reference
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
-case class Item(goodsItemNumber: Int, description: String) extends Selectable {
-  override def toString: String = s"$goodsItemNumber - $description"
+case class Item(declarationGoodsItemNumber: Int, description: String) extends Selectable {
+  override def toString: String = s"$declarationGoodsItemNumber - $description"
 
-  override val value: String = goodsItemNumber.toString
+  override val value: String = declarationGoodsItemNumber.toString
 }
 
 object Item {

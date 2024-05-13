@@ -23,7 +23,7 @@ import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.InlandModePage
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.JsArray
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
@@ -60,7 +60,7 @@ object PresentationNotificationAnswersViewModel {
       val representativeHelper = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 
       val activeBorderTransportMeansSectionFuture: Future[Seq[Section]] = {
-        (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
+        (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty) match {
           case (None, false) =>
             Future.successful(
               Section(sectionTitle = messages("checkYourAnswers.transportMeans.active.withoutIndex"),
@@ -71,12 +71,7 @@ object PresentationNotificationAnswersViewModel {
             Future.sequence(
               userAnswers
                 .get(BorderActiveListSection)
-                .getOrElse(
-                  userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
-                    case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
-                    case None                             => JsArray()
-                  }
-                )
+                .getOrElse(JsArray())
                 .value
                 .zipWithIndex
                 .map {

@@ -25,13 +25,12 @@ import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.transport.equipment.{EquipmentSection, ItemSection, SealSection}
-import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.libs.json.Json
 
 import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -300,9 +299,10 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         "when item is defined" in {
           forAll(arbitrary[Mode], nonEmptyString, positiveIntsMinMax(1, 100)) {
             (mode, description, itemNumber) =>
-              val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, sealIndex), Item(goodsItemNumber = itemNumber, description = description))
-              val helper      = TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
-              val result      = helper.item(itemIndex).get
+              val userAnswers =
+                emptyUserAnswers.setValue(ItemPage(equipmentIndex, sealIndex), Item(declarationGoodsItemNumber = itemNumber, description = description))
+              val helper = TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
+              val result = helper.item(itemIndex).get
 
               result.key.value mustBe "Item 1"
               result.value.value mustBe description

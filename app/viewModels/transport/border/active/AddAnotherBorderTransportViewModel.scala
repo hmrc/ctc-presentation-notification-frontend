@@ -18,7 +18,7 @@ package viewModels.transport.border.active
 
 import config.Constants._
 import config.FrontendAppConfig
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, RichCC015CType, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
@@ -43,8 +43,8 @@ object AddAnotherBorderTransportViewModel {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode)(implicit messages: Messages): AddAnotherBorderTransportViewModel = {
       val isSectionMandatory = userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail) ||
-        userAnswers.departureData.TransitOperation.isSecurityTypeInSet ||
-        userAnswers.departureData.CustomsOfficeOfTransitDeclared.isDefined
+        userAnswers.departureData.hasSecurity ||
+        userAnswers.departureData.CustomsOfficeOfTransitDeclared.nonEmpty
 
       val listItems = userAnswers
         .get(BorderActiveListSection)

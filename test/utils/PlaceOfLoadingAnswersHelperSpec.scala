@@ -27,7 +27,6 @@ import pages.loading._
 import play.api.libs.json.Json
 
 import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

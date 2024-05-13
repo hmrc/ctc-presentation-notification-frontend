@@ -16,11 +16,15 @@
 
 package models
 
-import models.messages.MessageData
+import generated.CC015CType
 import play.api.libs.json._
+import scalaxb.`package`.fromXML
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
+
+import scala.util.{Failure, Success, Try}
+import scala.xml.XML
 
 class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter with Decrypter) {
 
@@ -35,34 +39,54 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter wi
       SensitiveFormats.nonSensitiveJsObjectWrites
     }
 
-  val messageDataReads: Reads[MessageData] =
-    jsObjectReads.map(_.as[MessageData])
+  val cc015cReads: Reads[CC015CType] = {
+    def parseXml(xml: String): CC015CType = fromXML[CC015CType](XML.loadString(xml))
 
-  val messageDataWrites: Writes[MessageData] =
-    if (encryptionEnabled) {
-      JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap(_.encrypt)
-    } else {
-      SensitiveFormats.nonSensitiveMessageDataWrites
+    implicitly[Reads[String]].flatMap {
+      xml =>
+        Try(parseXml(xml)) match {
+          case Success(value) =>
+            Reads {
+              _ => JsSuccess(value)
+            }
+          case Failure(_) =>
+            JsonEncryption.sensitiveDecrypter(SensitiveString.apply).map(_.decryptedValue).map(parseXml)
+        }
     }
+  }
+
+  val cc015cWrites: Writes[CC015CType] = {
+    if (encryptionEnabled) {
+      JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap {
+        cc015cType =>
+          SensitiveString(cc015cType.toXML.toString())
+      }
+    } else {
+      SensitiveFormats.nonSensitiveCc015cTypeWrites
+    }
+  }
 }
 
 object SensitiveFormats {
 
   case class SensitiveWrites(
     jsObjectWrites: Writes[JsObject],
-    messageDataWrites: Writes[MessageData]
+    cc015cTypeWrites: Writes[CC015CType]
   )
 
   object SensitiveWrites {
 
     def apply(): SensitiveWrites =
-      new SensitiveWrites(nonSensitiveJsObjectWrites, nonSensitiveMessageDataWrites)
+      new SensitiveWrites(nonSensitiveJsObjectWrites, nonSensitiveCc015cTypeWrites)
 
     def apply(sensitiveFormats: SensitiveFormats) =
-      new SensitiveWrites(sensitiveFormats.jsObjectWrites, sensitiveFormats.messageDataWrites)
+      new SensitiveWrites(sensitiveFormats.jsObjectWrites, sensitiveFormats.cc015cWrites)
   }
 
   val nonSensitiveJsObjectWrites: Writes[JsObject] = implicitly[Writes[JsObject]]
 
-  val nonSensitiveMessageDataWrites: Writes[MessageData] = implicitly[Writes[MessageData]]
+  val nonSensitiveCc015cTypeWrites: Writes[CC015CType] = Writes {
+    cc015cType =>
+      JsString(cc015cType.toXML.toString())
+  }
 }

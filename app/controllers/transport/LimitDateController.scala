@@ -62,7 +62,7 @@ class LimitDateController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val customsOfficeOfDestinationId = request.userAnswers.departureData.CustomsOfficeOfDestination
+        val customsOfficeOfDestinationId = request.userAnswers.departureData.CustomsOfficeOfDestinationDeclared.referenceNumber
 
         customsOfficesService.getCustomsOfficeById(customsOfficeOfDestinationId).map {
           customsOffice =>
@@ -78,7 +78,7 @@ class LimitDateController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val customsOfficeOfDestinationId = request.userAnswers.departureData.CustomsOfficeOfDestination
+        val customsOfficeOfDestinationId = request.userAnswers.departureData.CustomsOfficeOfDestinationDeclared.referenceNumber
 
         customsOfficesService.getCustomsOfficeById(customsOfficeOfDestinationId).flatMap {
           customsOffice =>

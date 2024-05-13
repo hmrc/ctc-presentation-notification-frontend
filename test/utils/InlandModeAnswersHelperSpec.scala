@@ -31,7 +31,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
 import viewModels.Section
 
 import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

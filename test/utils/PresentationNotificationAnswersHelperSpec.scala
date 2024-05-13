@@ -33,7 +33,6 @@ import play.api.libs.json.Json
 import services.TransportModeCodesService
 
 import java.time.{Instant, LocalDate}
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

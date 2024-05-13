@@ -23,18 +23,17 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.Section
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class PlaceOfLoadingAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def countryTypeRow: Option[SummaryListRow] = buildRowWithAnswer[Country](
     page = CountryPage,
-    optionalAnswer = userAnswers.get(CountryPage),
     formatAnswer = formatAsCountry,
     prefix = "loading.country",
     id = Some("change-country")
@@ -42,7 +41,6 @@ class PlaceOfLoadingAnswersHelper(
 
   def addUnlocodeYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddUnLocodeYesNoPage,
-    optionalAnswer = userAnswers.get(AddUnLocodeYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "loading.addUnLocodeYesNo",
     id = Some("change-add-unlocode")
@@ -51,7 +49,6 @@ class PlaceOfLoadingAnswersHelper(
   def unlocode: Option[SummaryListRow] = {
     val code = buildRowWithAnswer[String](
       page = UnLocodePage,
-      optionalAnswer = userAnswers.get(UnLocodePage),
       formatAnswer = formatAsText,
       prefix = "loading.unLocode",
       id = Some("change-unlocode")
@@ -61,7 +58,6 @@ class PlaceOfLoadingAnswersHelper(
 
   def addExtraInformationYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddExtraInformationYesNoPage,
-    optionalAnswer = userAnswers.get(AddExtraInformationYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "loading.addExtraInformationYesNo",
     id = Some("change-add-extra-information")
@@ -69,7 +65,6 @@ class PlaceOfLoadingAnswersHelper(
 
   def location: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = LocationPage,
-    optionalAnswer = userAnswers.get(LocationPage),
     formatAnswer = formatAsText,
     prefix = "loading.location",
     id = Some("change-location")

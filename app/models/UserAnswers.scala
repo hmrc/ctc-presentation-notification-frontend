@@ -16,10 +16,8 @@
 
 package models
 
+import generated.CC015CType
 import models.SensitiveFormats.SensitiveWrites
-import models.messages._
-import monocle.macros.GenLens
-import monocle.{Lens, Optional}
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
@@ -34,14 +32,11 @@ final case class UserAnswers(
   lrn: String,
   data: JsObject,
   lastUpdated: Instant,
-  departureData: MessageData
+  departureData: CC015CType
 ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
-
-  def getOrElse[A](page: Gettable[A], findValueInDepartureData: MessageData => Option[A])(implicit reads: Reads[A]): Option[A] =
-    get(page) orElse findValueInDepartureData(departureData)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
     lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {
@@ -78,7 +73,7 @@ object UserAnswers {
       (__ \ "lrn").read[String] and
       (__ \ "data").read[JsObject](sensitiveFormats.jsObjectReads) and
       (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads) and
-      (__ \ "departureData").read[MessageData](sensitiveFormats.messageDataReads)
+      (__ \ "departureData").read[CC015CType](sensitiveFormats.cc015cReads)
   )(UserAnswers.apply _)
 
   val auditWrites: OWrites[UserAnswers] =
@@ -93,7 +88,7 @@ object UserAnswers {
       (__ \ "lrn").write[String] and
       (__ \ "data").write[JsObject](sensitiveWrites.jsObjectWrites) and
       (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites) and
-      (__ \ "departureData").write[MessageData](sensitiveWrites.messageDataWrites)
+      (__ \ "departureData").write[CC015CType](sensitiveWrites.cc015cTypeWrites)
   )(unlift(UserAnswers.unapply))
 
   implicit def format(implicit sensitiveFormats: SensitiveFormats): Format[UserAnswers] =

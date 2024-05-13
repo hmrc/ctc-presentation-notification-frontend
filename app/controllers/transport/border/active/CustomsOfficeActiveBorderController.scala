@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.CustomsOffice
 import models.requests.MandatoryDataRequest
-import models.{Index, Mode, SelectableList}
+import models.{Index, Mode, RichCC015CType, SelectableList}
 import navigation.BorderNavigator
 import pages.transport.border.active.CustomsOfficeActiveBorderPage
 import play.api.data.Form

@@ -16,7 +16,7 @@
 
 package utils.transformer.departureTransportMeans
 
-import models.messages.DepartureTransportMeans
+import generated.DepartureTransportMeansType03
 import models.{Index, UserAnswers}
 import pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,12 +27,12 @@ import scala.concurrent.Future
 class TransportMeansIdentificationNumberTransformer extends PageTransformer {
 
   override type DomainModelType              = String
-  override type ExtractedTypeInDepartureData = DepartureTransportMeans
+  override type ExtractedTypeInDepartureData = DepartureTransportMeansType03
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.toSeq.flatten,
+      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans,
       generateCapturedAnswers = departureMeans => {
         departureMeans.zipWithIndex.flatMap {
           case (departureMeans, index) =>

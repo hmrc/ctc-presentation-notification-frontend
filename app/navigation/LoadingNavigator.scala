@@ -106,7 +106,7 @@ object LoadingNavigator {
   private def isContainerIndicatorMissing(ua: UserAnswers) = ua.departureData.Consignment.containerIndicator.isEmpty && ua.get(ContainerIndicatorPage).isEmpty
 
   private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.TransitOperation.isSecurityTypeInSet)
+    if (ua.departureData.hasSecurity)
       BorderModeOfTransportPage.route(ua, departureId, mode)
     else containerIndicatorRouting(ua, departureId, mode)
 

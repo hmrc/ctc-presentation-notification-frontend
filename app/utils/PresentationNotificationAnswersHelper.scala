@@ -25,13 +25,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.Section
 
 import java.time.LocalDate
-import scala.concurrent.ExecutionContext
 
 class PresentationNotificationAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def customsOfficeDeparture: Option[SummaryListRow] =
@@ -44,7 +43,6 @@ class PresentationNotificationAnswersHelper(
 
   def limitDate: Option[SummaryListRow] = buildRowWithAnswer[LocalDate](
     page = LimitDatePage,
-    optionalAnswer = userAnswers.get(LimitDatePage),
     formatAnswer = formatAsDate,
     prefix = "transport.limit.date",
     id = Some("change-limit-date")
@@ -52,23 +50,20 @@ class PresentationNotificationAnswersHelper(
 
   def containerIndicator: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = ContainerIndicatorPage,
-    optionalAnswer = userAnswers.get(ContainerIndicatorPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.containers.containerIndicator",
     id = Some("change-container-indicator")
   )
 
-  def borderModeOfTransportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def borderModeOfTransportYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddBorderModeOfTransportYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.border.addBorderModeOfTransport",
-    findValueInDepartureData = _.Consignment.isModeOfTransportDefined,
     id = Some("change-add-border-mode")
   )
 
   def borderModeOfTransportRow: Option[SummaryListRow] = buildRowWithAnswer[BorderMode](
     page = BorderModeOfTransportPage,
-    optionalAnswer = userAnswers.get(BorderModeOfTransportPage),
     formatAnswer = formatAsText,
     prefix = "transport.border.borderModeOfTransport",
     id = Some("change-border-mode-of-transport")
