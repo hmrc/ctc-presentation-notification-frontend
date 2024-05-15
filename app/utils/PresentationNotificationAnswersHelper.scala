@@ -37,7 +37,7 @@ class PresentationNotificationAnswersHelper(
     Option(
       buildRowWithNoChangeLink(
         prefix = "customsOfficeOfDeparture",
-        answer = formatAsText(userAnswers.departureData.CustomsOfficeOfDeparture)
+        answer = formatAsText(userAnswers.departureData.CustomsOfficeOfDeparture.referenceNumber)
       )
     )
 

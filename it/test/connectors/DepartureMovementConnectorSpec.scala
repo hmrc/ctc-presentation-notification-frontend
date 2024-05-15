@@ -16,22 +16,21 @@
 
 package connectors
 
-import base.TestMessageData.{jsonValue, messageData}
 import com.github.tomakehurst.wiremock.client.WireMock._
+import generated._
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.LocalReferenceNumber
-import models.departureP5.MessageType.{AmendmentSubmitted, DepartureNotification}
 import models.departureP5.{DepartureMessages, MessageMetaData, MessageType}
-import models.messages.Data
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.OK
+import scalaxb.XMLCalendar
 import uk.gov.hmrc.http.HttpResponse
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.xml.NodeSeq
+import scala.xml.{Node, NodeSeq}
 
 class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
@@ -161,57 +160,155 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
       val messageId = "messageId"
 
       "when IE015 messageData" in {
-        val jsonIE015 = Json.parse(s"""
-             |{
-             |  "type": "IE015",
-             |  "body" : {
-             |    "n1:CC015C": $jsonValue
-             |  }
-             |}
-             |""".stripMargin)
+        val xml: Node =
+          <ncts:CC015C xmlns:ncts="http://ncts.dgtaxud.ec">
+            <messageSender>message sender</messageSender>
+            <messageRecipient>NTA.GB</messageRecipient>
+            <preparationDateAndTime>2022-01-22T07:43:36</preparationDateAndTime>
+            <messageIdentification>messageId</messageIdentification>
+            <messageType>CC015C</messageType>
+            <TransitOperation>
+              <LRN>HnVr</LRN>
+              <declarationType>Pbg</declarationType>
+              <additionalDeclarationType>A</additionalDeclarationType>
+              <security>1</security>
+              <reducedDatasetIndicator>1</reducedDatasetIndicator>
+              <bindingItinerary>0</bindingItinerary>
+            </TransitOperation>
+            <CustomsOfficeOfDeparture>
+              <referenceNumber>GB000060</referenceNumber>
+            </CustomsOfficeOfDeparture>
+            <CustomsOfficeOfDestinationDeclared>
+              <referenceNumber>XI000142</referenceNumber>
+            </CustomsOfficeOfDestinationDeclared>
+            <HolderOfTheTransitProcedure>
+              <identificationNumber>idNumber</identificationNumber>
+            </HolderOfTheTransitProcedure>
+            <Consignment>
+              <grossMass>6430669292.48125</grossMass>
+            </Consignment>
+          </ncts:CC015C>
 
-        server.stubFor(
-          get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId"))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(jsonIE015.toString()))
+        val expectedResult = CC015CType(
+          messageSequence1 = MESSAGESequence(
+            messageSender = "message sender",
+            messagE_1Sequence2 = MESSAGE_1Sequence(
+              messageRecipient = "NTA.GB",
+              preparationDateAndTime = XMLCalendar("2022-01-22T07:43:36"),
+              messageIdentification = "messageId"
+            ),
+            messagE_TYPESequence3 = MESSAGE_TYPESequence(
+              messageType = CC015C
+            ),
+            correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence()
+          ),
+          TransitOperation = TransitOperationType06(
+            LRN = "HnVr",
+            declarationType = "Pbg",
+            additionalDeclarationType = "A",
+            security = "1",
+            reducedDatasetIndicator = Number1,
+            bindingItinerary = Number0
+          ),
+          CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+            referenceNumber = "GB000060"
+          ),
+          CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
+            referenceNumber = "XI000142"
+          ),
+          HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
+            identificationNumber = Some("idNumber")
+          ),
+          Consignment = ConsignmentType20(
+            grossMass = 6430669292.48125
+          )
         )
 
-        val messageMetaData = MessageMetaData(LocalDateTime.now(), DepartureNotification, messageId)
+        server.stubFor(
+          get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId/body"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+xml"))
+            .willReturn(ok(xml.toString()))
+        )
 
-        val result: Data = connector.getMessage(departureId, messageMetaData).futureValue
-
-        val expectedResult =
-          Data(
-            messageData
-          )
+        val result = connector.getMessage[CC015CType](departureId, messageId).futureValue
 
         result mustBe expectedResult
       }
 
       "when IE013 messageData" in {
-        val jsonIE013 = Json.parse(s"""
-             |{
-             |  "type": "IE013",
-             |  "body" : {
-             |    "n1:CC013C": $jsonValue
-             |  }
-             |}
-             |""".stripMargin)
+        val xml: Node =
+          <ncts:CC013C xmlns:ncts="http://ncts.dgtaxud.ec">
+            <messageSender>message sender</messageSender>
+            <messageRecipient>NTA.GB</messageRecipient>
+            <preparationDateAndTime>2022-01-22T07:43:36</preparationDateAndTime>
+            <messageIdentification>messageId</messageIdentification>
+            <messageType>CC015C</messageType>
+            <TransitOperation>
+              <LRN>HnVr</LRN>
+              <declarationType>Pbg</declarationType>
+              <additionalDeclarationType>A</additionalDeclarationType>
+              <security>1</security>
+              <reducedDatasetIndicator>1</reducedDatasetIndicator>
+              <bindingItinerary>0</bindingItinerary>
+              <amendmentTypeFlag>0</amendmentTypeFlag>
+            </TransitOperation>
+            <CustomsOfficeOfDeparture>
+              <referenceNumber>GB000060</referenceNumber>
+            </CustomsOfficeOfDeparture>
+            <CustomsOfficeOfDestinationDeclared>
+              <referenceNumber>XI000142</referenceNumber>
+            </CustomsOfficeOfDestinationDeclared>
+            <HolderOfTheTransitProcedure>
+              <identificationNumber>idNumber</identificationNumber>
+            </HolderOfTheTransitProcedure>
+            <Consignment>
+              <grossMass>6430669292.48125</grossMass>
+            </Consignment>
+          </ncts:CC013C>
 
-        server.stubFor(
-          get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId"))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(jsonIE013.toString()))
+        val expectedResult = CC013CType(
+          messageSequence1 = MESSAGESequence(
+            messageSender = "message sender",
+            messagE_1Sequence2 = MESSAGE_1Sequence(
+              messageRecipient = "NTA.GB",
+              preparationDateAndTime = XMLCalendar("2022-01-22T07:43:36"),
+              messageIdentification = "messageId"
+            ),
+            messagE_TYPESequence3 = MESSAGE_TYPESequence(
+              messageType = CC015C
+            ),
+            correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence()
+          ),
+          TransitOperation = TransitOperationType04(
+            LRN = Some("HnVr"),
+            declarationType = "Pbg",
+            additionalDeclarationType = "A",
+            security = "1",
+            reducedDatasetIndicator = Number1,
+            bindingItinerary = Number0,
+            amendmentTypeFlag = Number0
+          ),
+          CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+            referenceNumber = "GB000060"
+          ),
+          CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
+            referenceNumber = "XI000142"
+          ),
+          HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
+            identificationNumber = Some("idNumber")
+          ),
+          Consignment = ConsignmentType20(
+            grossMass = 6430669292.48125
+          )
         )
 
-        val messageMetaData = MessageMetaData(LocalDateTime.now(), AmendmentSubmitted, messageId)
+        server.stubFor(
+          get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId/body"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+xml"))
+            .willReturn(ok(xml.toString()))
+        )
 
-        val result: Data = connector.getMessage(departureId, messageMetaData).futureValue
-
-        val expectedResult =
-          Data(
-            messageData
-          )
+        val result = connector.getMessage[CC013CType](departureId, messageId).futureValue
 
         result mustBe expectedResult
       }

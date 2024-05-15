@@ -17,10 +17,12 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import base.TestMessageData.departureTransportMeansNationality
+import generated.DepartureTransportMeansType03
+import generators.Generators
 import models.reference.Nationality
 import models.{Index, SelectableList}
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.transport.departureTransportMeans.TransportMeansNationalityPage
 import services.NationalitiesService
@@ -29,52 +31,51 @@ import utils.transformer.departureTransportMeans.TransportMeansNationalityTransf
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TransportMeansNationalityTransformerTest extends SpecBase {
+class TransportMeansNationalityTransformerTest extends SpecBase with Generators {
   private val nationalitiesService                              = mock[NationalitiesService]
   private val transformer: TransportMeansNationalityTransformer = new TransportMeansNationalityTransformer(nationalitiesService)
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(nationalitiesService)
 
   "TransportMeansNationalityTransformer" - {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        val transportMeansNationality = Nationality(departureTransportMeansNationality, "desc")
-        when(nationalitiesService.getNationalities()).thenReturn(Future.successful(SelectableList(List(transportMeansNationality))))
+        forAll(arbitrary[DepartureTransportMeansType03], arbitrary[Nationality]) {
+          (departureTransportMeans, nationality) =>
+            when(nationalitiesService.getNationalities())
+              .thenReturn(Future.successful(SelectableList(List(nationality))))
 
-        val userAnswers = emptyUserAnswers
-        val index       = Index(0)
-        userAnswers.get(TransportMeansNationalityPage(index)) mustBe None
+            val userAnswers = setDepartureTransportMeansAnswersLens.set(
+              Seq(departureTransportMeans.copy(nationality = Some(nationality.code)))
+            )(emptyUserAnswers)
 
-        whenReady(transformer.transform(hc)(userAnswers)) {
-          updatedUserAnswers =>
-            updatedUserAnswers.get(TransportMeansNationalityPage(index)) mustBe Some(transportMeansNationality)
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(TransportMeansNationalityPage(Index(0))).value mustBe nationality
         }
       }
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      val transportMeansNationality = Nationality("foo", "desc")
-      when(nationalitiesService.getNationalities()).thenReturn(Future.successful(SelectableList(List(transportMeansNationality))))
+      forAll(arbitrary[DepartureTransportMeansType03], arbitrary[Nationality]) {
+        (departureTransportMeans, nationality) =>
+          when(nationalitiesService.getNationalities())
+            .thenReturn(Future.successful(SelectableList(Nil)))
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(TransportMeansNationalityPage(index)) mustBe None
+          val userAnswers = setDepartureTransportMeansAnswersLens.set(
+            Seq(departureTransportMeans.copy(nationality = Some(nationality.code)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(TransportMeansNationalityPage(index)) mustBe None
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(TransportMeansNationalityPage(Index(0))) mustBe None
       }
     }
 
     "must return failure if the service fails" in {
-      when(nationalitiesService.getNationalities()).thenReturn(Future.failed(new RuntimeException("")))
+      when(nationalitiesService.getNationalities())
+        .thenReturn(Future.failed(new RuntimeException("")))
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(TransportMeansNationalityPage(index)) mustBe None
-
-      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
+      whenReady[Throwable, Assertion](transformer.transform.apply(emptyUserAnswers).failed) {
         _ mustBe an[Exception]
       }
     }

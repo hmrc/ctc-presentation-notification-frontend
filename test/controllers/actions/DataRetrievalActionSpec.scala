@@ -16,19 +16,21 @@
 
 package controllers.actions
 
-import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generated.CC015CType
+import generators.Generators
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContent, Results}
 
 import java.time.Instant
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
+class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   def harness(departureId: String)(f: OptionalDataRequest[AnyContent] => Unit): Unit = {
 
@@ -63,13 +65,15 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     "must return an OptionalDataRequest with some defined UserAnswers" - {
 
       "when there are existing answers for this departureId" in {
+        forAll(arbitrary[CC015CType]) {
+          ie015 =>
+            when(mockSessionRepository.get(any())) thenReturn Future.successful(
+              Some(UserAnswers(departureId, eoriNumber, lrn.value, JsObject.empty, Instant.now(), ie015))
+            )
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(
-          Some(UserAnswers(departureId, eoriNumber, lrn.value, JsObject.empty, Instant.now(), messageData))
-        )
-
-        harness(departureId) {
-          _.userAnswers mustBe defined
+            harness(departureId) {
+              _.userAnswers mustBe defined
+            }
         }
       }
     }

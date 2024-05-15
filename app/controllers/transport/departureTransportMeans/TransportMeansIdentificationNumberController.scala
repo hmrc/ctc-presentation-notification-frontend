@@ -36,6 +36,7 @@ class TransportMeansIdentificationNumberController @Inject() (
   implicit val sessionRepository: SessionRepository,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   navigator: DepartureTransportMeansNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationNumberView
@@ -45,40 +46,30 @@ class TransportMeansIdentificationNumberController @Inject() (
 
   private val prefix = "consignment.departureTransportMeans.identificationNumber"
 
+  private val form = formProvider(prefix)
+
   def onPageLoad(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] =
     actions
-      .requireData(departureId) {
+      .requireData(departureId)
+      .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportIndex))) {
         implicit request =>
-          val form = formProvider(prefix)
-
-          val fillForm = request.userAnswers
-            .get(TransportMeansIdentificationNumberPage(transportIndex))
-
-          val preparedForm = fillForm match {
+          val preparedForm = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-          request.userAnswers.get(TransportMeansIdentificationPage(transportIndex)) match {
-            case Some(identificationType) => Ok(view(preparedForm, departureId, mode, identificationType.asString, transportIndex))
-            case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
-          }
+          Ok(view(preparedForm, departureId, mode, request.arg.asString, transportIndex))
       }
 
   def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
+      .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportIndex)))
       .async {
         implicit request =>
-          val form = formProvider(prefix)
-
           form
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(request.userAnswers.get(TransportMeansIdentificationPage(transportIndex)) match {
-                  case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, identificationType.asString, transportIndex))
-                  case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
-                }),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, request.arg.asString, transportIndex))),
               value => redirect(value, departureId, mode, transportIndex)
             )
       }

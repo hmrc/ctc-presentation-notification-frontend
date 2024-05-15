@@ -16,16 +16,14 @@
 
 package controllers
 
-import base.TestMessageData.{activeBorderTransportMeansIdentification, incompleteJsonValue, jsonValue, jsonValueWithLrn}
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generated.CC015CType
 import generators.Generators
-import models.messages.{Data, MessageData}
-import models.reference.transport.border.active.Identification
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
-import pages.transport.border.active.IdentificationPage
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -37,7 +35,7 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val indexRoute = routes.IndexController.index(departureId).url
+  private lazy val indexRoute = routes.IndexController.redirect(departureId).url
 
   private lazy val withIncompleteDataNextPage = routes.MoreInformationController.onPageLoad(departureId).url
 
@@ -64,22 +62,60 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   "Index Controller" - {
 
-    "index" - {
-      "must redirect to onward route for a GET when there are no UserAnswers and prepopulated data" - {
+    "redirect" - {
+      "must redirect to onward route for a GET when there are no UserAnswers and pre-populated data" in {
+        forAll(arbitrary[CC015CType]) {
+          ie015 =>
+            beforeEach()
 
-        "when LRN is defined in messageData" in {
+            val request = FakeRequest(GET, indexRoute)
+
+            setNoExistingUserAnswers()
+
+            when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+              Future.successful(lrn)
+
+            when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+              Future.successful(Some(ie015))
+
+            when(departureDataTransformer.transform(any())(any())) thenReturn
+              Future.successful(emptyUserAnswers)
+
+            when(mockSessionRepository.get(any())) thenReturn
+              Future.successful(None)
+
+            when(mockSessionRepository.set(any())) thenReturn
+              Future.successful(true)
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual withIncompleteDataNextPage
+
+            verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
+            verify(mockDepartureMessageService).getDepartureData(eqTo(departureId), eqTo(lrn))(any(), any())
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+        }
+      }
+
+      "must redirect to onward route when there are UserAnswers" - {
+        "and data is complete" in {
+          setExistingUserAnswers(emptyUserAnswers)
+
           val request = FakeRequest(GET, indexRoute)
 
-          setNoExistingUserAnswers()
+          when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+            Future.successful(lrn)
 
-          when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValueWithLrn.as[MessageData])))
-          when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
-            setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
-          )
-          when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
-          when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+          when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+            Future.successful(Some(completeIe015))
 
-          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          when(mockSessionRepository.get(any())) thenReturn
+            Future.successful(Some(emptyUserAnswers))
 
           val result = route(app, request).value
 
@@ -87,112 +123,43 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
           redirectLocation(result).value mustEqual withCompleteDataNextPage
 
-          verify(mockDepartureMessageService, never).getLRN(any())(any())
-          verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
-        }
-
-        "when LRN is not defined in messageData" in {
-          val request = FakeRequest(GET, indexRoute)
-
-          setNoExistingUserAnswers()
-
-          when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
-          when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
-          when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
-            setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
-          )
-          when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
-          when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual withCompleteDataNextPage
-
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          verify(mockDepartureMessageService).getLRN(any())(any())
+          userAnswersCaptor.getValue.lrn mustBe lrn.value
+          userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
           userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
         }
 
-      }
+        "and data is incomplete" in {
+          forAll(arbitrary[CC015CType]) {
+            ie015 =>
+              beforeEach()
+              setExistingUserAnswers(emptyUserAnswers)
 
-      "must redirect to onward route when there are UserAnswers" in {
+              val request = FakeRequest(GET, indexRoute)
 
-        setExistingUserAnswers(emptyUserAnswers)
+              when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+                Future.successful(lrn)
 
-        val request = FakeRequest(GET, indexRoute)
+              when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+                Future.successful(Some(ie015))
 
-        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
-        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
+              when(mockSessionRepository.get(any())) thenReturn
+                Future.successful(Some(emptyUserAnswers))
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
+              val result = route(app, request).value
 
-        val result = route(app, request).value
+              status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustEqual withIncompleteDataNextPage
 
-        redirectLocation(result).value mustEqual withCompleteDataNextPage
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.lrn mustBe lrn.value
-        userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
-      }
-
-      "must redirect to the correct onward route when there are UserAnswers and complete message data" in {
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, indexRoute)
-
-        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
-        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
-
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual withCompleteDataNextPage
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.lrn mustBe lrn.value
-        userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
-
-      }
-
-      "must redirect to the correct onward route when there are UserAnswers and incomplete message data" in {
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, indexRoute)
-
-        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
-        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(
-          Some(Data(incompleteJsonValue.as[MessageData]))
-        )
-
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual withIncompleteDataNextPage
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.lrn mustBe lrn.value
-        userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+              val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(mockSessionRepository).set(userAnswersCaptor.capture())
+              userAnswersCaptor.getValue.lrn mustBe lrn.value
+              userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
+              userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+          }
+        }
       }
 
       "must redirect to the technical difficulties route when there is an issue retrieving the data" in {
@@ -201,42 +168,20 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         val request = FakeRequest(GET, indexRoute)
 
-        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
-        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(
-          None
-        )
+        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+          Future.successful(lrn)
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(emptyUserAnswers))
+        when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+          Future.successful(None)
+
+        when(mockSessionRepository.get(any())) thenReturn
+          Future.successful(Some(emptyUserAnswers))
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
-      }
-
-      "must populate updated user answers from departure data" in {
-        val request = FakeRequest(GET, indexRoute)
-
-        setNoExistingUserAnswers()
-
-        when(mockDepartureMessageService.getDepartureData(any())(any(), any())) thenReturn Future.successful(Some(Data(jsonValue.as[MessageData])))
-        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn Future.successful(lrn)
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
-        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-        when(departureDataTransformer.transform(any())(any())) thenReturn Future.successful(
-          emptyUserAnswers.set(IdentificationPage(Index(0)), Identification(activeBorderTransportMeansIdentification, "IMO Ship Identification Number")).get
-        )
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-        val result = route(app, request).value
-        redirectLocation(result)
-
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-
-        userAnswersCaptor.getValue.data
-          .toString() mustBe """{"transport":{"transportMeansActiveList":[{"identification":{"code":"10","description":"IMO Ship Identification Number"}}]}}"""
       }
     }
   }

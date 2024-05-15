@@ -16,7 +16,7 @@
 
 package forms.transport.equipment
 
-import config.Constants.maxContainerIdNumberLength
+import forms.Constants.maxContainerIdNumberLength
 import forms.StopOnFirstFail
 import forms.mappings.Mappings
 import models.StringFieldRegex.alphaNumericRegex

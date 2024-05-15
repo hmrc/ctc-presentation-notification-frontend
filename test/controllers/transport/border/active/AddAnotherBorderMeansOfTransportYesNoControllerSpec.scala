@@ -17,11 +17,9 @@
 package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
-import controllers.transport.border.active.{routes => borderActiveRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, Index, NormalMode}
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -47,10 +45,7 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
   private val mode = NormalMode
 
   private lazy val addAnotherBorderTransportRoute =
-    borderActiveRoutes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
-
-  private lazy val addAnotherBorderTransportRouteCheckMode =
-    borderActiveRoutes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, CheckMode).url
+    routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
 
   private val mockViewModelProvider = mock[AddAnotherBorderTransportViewModelProvider]
 
@@ -81,8 +76,7 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(noItemViewModel)
 
-        val userAnswers = setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, addAnotherBorderTransportRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -93,26 +87,6 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
 
         redirectLocation(result).value mustEqual
           controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
-      }
-    }
-
-    "redirect to CYA page" - {
-      "when in check mode and addAnotherBorder is false" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any()))
-          .thenReturn(noItemViewModel)
-
-        val userAnswers = setBorderMeansAnswersLens.set(None)(emptyUserAnswers)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(POST, addAnotherBorderTransportRouteCheckMode)
-          .withFormUrlEncodedBody(("value", "false"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          onwardRoute.url
       }
     }
 
@@ -243,7 +217,7 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -257,7 +231,7 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

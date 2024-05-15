@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import config.Constants._
+import config.Constants.AuthorisationTypeDeparture._
+import config.Constants.DeclarationTypeSecurity._
 import generated._
-import models.messages.AuthorisationType._
-import models.messages.MessageData
 import models.reference.{Country, CountryCode, Item}
 import play.api.libs.json._
 import scalaxb.`package`.toScope
@@ -32,10 +31,6 @@ package object models {
 
   implicit class RichSensitiveString(sensitiveString: SensitiveString) {
     def decrypt: JsObject = Json.parse(sensitiveString.decryptedValue).as[JsObject]
-  }
-
-  implicit class RichMessageData(messageData: MessageData) {
-    def encrypt: SensitiveString = Json.toJson(messageData).encrypt
   }
 
   implicit class RichJsArray(arr: JsArray) {
@@ -226,9 +221,9 @@ package object models {
 
     def toXML: NodeSeq = scalaxb.toXML(value, CC015C.toString, toScope())
 
-    def isSimplified: Boolean = value.Authorisation.exists(_.typeValue == C521.toString)
+    def isSimplified: Boolean = value.Authorisation.exists(_.typeValue == ACR)
 
-    def hasAuthC523: Boolean = value.Authorisation.exists(_.typeValue == C523.toString)
+    def hasAuthC523: Boolean = value.Authorisation.exists(_.typeValue == SSE)
 
     private def isDataCompleteSimplified: Boolean = {
       val options: List[Option[_]] = List(

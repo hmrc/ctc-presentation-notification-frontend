@@ -18,117 +18,91 @@ package viewModels
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.ReferenceDataConnector
 import generators.Generators
-import models.messages.Consignment
+import models.Index
 import models.reference.TransportMode.InlandMode
+import models.reference.transport.border.active.Identification
 import models.reference.{Country, CountryCode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.InlandModePage
 import services.CheckYourAnswersReferenceDataService
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
-import viewModels.transport.border.active.ActiveBorderAnswersViewModel
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generators {
 
-  //mock reference too
-  private val mockRefDataConnector: ReferenceDataConnector     = mock[ReferenceDataConnector]
-  private val cyaService: CheckYourAnswersReferenceDataService = new CheckYourAnswersReferenceDataService(mockRefDataConnector)
-  private val config: FrontendAppConfig                        = injector.instanceOf[FrontendAppConfig]
+  private val mockCyaService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
+  private val config: FrontendAppConfig                            = injector.instanceOf[FrontendAppConfig]
 
   override def beforeEach(): Unit = {
-    reset(mockRefDataConnector)
+    reset(mockCyaService)
     super.beforeEach()
   }
 
-  "PresentationNotificationAnswersViewModelSpec" - {
+  "PresentationNotificationAnswersViewModel" - {
 
     "must return the view model" in {
 
-      val consignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = None)
-      val dep                      = emptyUserAnswers.departureData.copy(Consignment = consignment)
-      val userAnswers              = emptyUserAnswers.copy(departureData = dep)
+      val userAnswers = emptyUserAnswers
+        .setValue(pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage(Index(0)), "foo1")
+        .setValue(pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage(Index(1)), "foo2")
 
       val country = Country(CountryCode("a"), "b")
-      when(mockRefDataConnector.getCountry(any(), any())(any(), any()))
+      when(mockCyaService.getCountry(any())(any()))
         .thenReturn(Future.successful(country))
 
-      val activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
-      val viewModelProvider                                                          = new PresentationNotificationAnswersViewModelProvider()(config, activeBorderAnswersViewModelProvider, cyaService)
+      val activeBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModelProvider()
 
-      val section: Future[PresentationNotificationAnswersViewModel] = viewModelProvider.apply(userAnswers, departureId)
+      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(config, activeBorderAnswersViewModelProvider, mockCyaService)
 
-      whenReady(section) {
-        viewModel =>
-          viewModel.sections(5).rows.length mustBe 0
-          viewModel.sections(6).rows.length mustBe 1
-          viewModel.sections(7).rows.length mustBe 0
-          viewModel.sections.length mustBe 9
+      val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
-      }
-
+      result.sections.length mustBe 11
+      result.sections(9).sectionTitle.value mustBe "Border means of transport"
     }
 
     "must return the view model when InlandMode is mail" in {
 
-      val consignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = None)
-      val dep                      = emptyUserAnswers.departureData.copy(Consignment = consignment)
-      val userAnswers              = emptyUserAnswers.copy(departureData = dep).setValue(InlandModePage, InlandMode("5", "desc"))
+      val userAnswers = emptyUserAnswers
+        .setValue(InlandModePage, InlandMode("5", "desc"))
+        .setValue(pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage(Index(0)), "foo1")
+        .setValue(pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage(Index(1)), "foo2")
 
       val country = Country(CountryCode("a"), "b")
-      when(mockRefDataConnector.getCountry(any(), any())(any(), any()))
+      when(mockCyaService.getCountry(any())(any()))
         .thenReturn(Future.successful(country))
 
-      val activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
-      val viewModelProvider                                                          = new PresentationNotificationAnswersViewModelProvider()(config, activeBorderAnswersViewModelProvider, cyaService)
+      val activeBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModelProvider()
 
-      val section = viewModelProvider.apply(userAnswers, departureId)
+      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(config, activeBorderAnswersViewModelProvider, mockCyaService)
 
-      whenReady(section) {
-        viewModel =>
-          viewModel.sections(5).rows.length mustBe 1
-          viewModel.sections(6).rows.length mustBe 1
-          viewModel.sections(7).rows.length mustBe 0
-          viewModel.sections.length mustBe 9
+      val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
-      }
-
+      result.sections.length mustBe 9
+      result.sections(7).sectionTitle.value mustBe "Border means of transport"
     }
 
     "must return the view model when ActiveBorderTransportMeans is defined" in {
 
-      forAll(arbitraryActiveBorderTransportMeans.arbitrary) {
-        arbitraryActiveBorderTransportMeans =>
-          val consignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = arbitraryActiveBorderTransportMeans)
-          val dep                      = emptyUserAnswers.departureData.copy(Consignment = consignment)
-          val userAnswers              = emptyUserAnswers.copy(departureData = dep)
+      val userAnswers = emptyUserAnswers
+        .setValue(pages.transport.border.active.IdentificationPage(Index(0)), Identification("foo", "bar"))
 
-          val country = Country(CountryCode("a"), "b")
-          when(mockRefDataConnector.getCountry(any(), any())(any(), any()))
-            .thenReturn(Future.successful(country))
+      val country = Country(CountryCode("a"), "b")
+      when(mockCyaService.getCountry(any())(any()))
+        .thenReturn(Future.successful(country))
 
-          val activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
-          val viewModelProvider                                                          = new PresentationNotificationAnswersViewModelProvider()(config, activeBorderAnswersViewModelProvider, cyaService)
+      val activeBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModelProvider()
 
-          val section = viewModelProvider.apply(userAnswers, departureId)
+      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(config, activeBorderAnswersViewModelProvider, mockCyaService)
 
-          whenReady(section) {
-            viewModel =>
-              viewModel.sections(5).rows.length mustBe 0
-              viewModel.sections(6).rows.length mustBe 1
-              viewModel.sections(7).rows.length mustBe 0
-              viewModel.sections.length mustBe 9
+      val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
-          }
-
-      }
+      result.sections.length mustBe 9
+      result.sections(7).sectionTitle.value mustBe "Border means of transport 1"
     }
-
   }
 }

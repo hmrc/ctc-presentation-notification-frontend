@@ -16,7 +16,7 @@
 
 package utils.transformer.locationOfGoods
 
-import config.Constants.CustomsOfficeIdentifier
+import config.Constants.QualifierOfTheIdentification._
 import generated.ContactPersonType06
 import models.UserAnswers
 import pages.locationOfGoods.{AddContactYesNoPage, IdentificationPage}

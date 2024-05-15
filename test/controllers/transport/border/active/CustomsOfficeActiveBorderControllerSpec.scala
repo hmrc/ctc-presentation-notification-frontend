@@ -16,11 +16,9 @@
 
 package controllers.transport.border.active
 
-import base.TestMessageData.messageData.customsOffices
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
-import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared}
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -42,14 +40,6 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
   private val transitOffice     = arbitrary[CustomsOffice].sample.value
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
 
-  private val updatedDepartureData = emptyUserAnswers.departureData.copy(
-    CustomsOfficeOfDestination = destinationOffice.id,
-    CustomsOfficeOfTransitDeclared = Some(Seq(CustomsOfficeOfTransitDeclared(transitOffice.id))),
-    CustomsOfficeOfExitForTransitDeclared = Some(Seq(CustomsOfficeOfExitForTransitDeclared(exitOffice.id)))
-  )
-
-  private val updatedUserAnswers = emptyUserAnswers.copy(departureData = updatedDepartureData)
-
   private val customOfficeList = List(destinationOffice, transitOffice, exitOffice)
   private val selectableList   = SelectableList(customOfficeList)
 
@@ -59,20 +49,21 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
 
-  private lazy val customsOfficeActiveBorderRoute = routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, mode, activeIndex).url
+  private lazy val customsOfficeActiveBorderRoute =
+    routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, mode, activeIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficesService))
 
-  "ActiveBorderOfficeTransit Controller" - {
+  "CustomsOfficeActiveBorder Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(any())(any()))
         .thenReturn(Future.successful(customOfficeList))
 
-      setExistingUserAnswers(updatedUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, customsOfficeActiveBorderRoute)
 
@@ -88,10 +79,10 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customsOffices))(any()))
+      when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(any())(any()))
         .thenReturn(Future.successful(customOfficeList))
 
-      val userAnswers = updatedUserAnswers
+      val userAnswers = emptyUserAnswers
         .setValue(CustomsOfficeActiveBorderPage(index), destinationOffice)
 
       setExistingUserAnswers(userAnswers)
@@ -117,7 +108,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(updatedUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, customsOfficeActiveBorderRoute)
         .withFormUrlEncodedBody(("value", destinationOffice.id))
@@ -134,7 +125,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       when(mockCustomsOfficesService.getCustomsOfficesByMultipleIds(eqTo(customOfficeList.map(_.id)))(any()))
         .thenReturn(Future.successful(customOfficeList))
 
-      setExistingUserAnswers(updatedUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, customsOfficeActiveBorderRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))

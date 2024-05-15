@@ -16,8 +16,8 @@
 
 package navigator
 
-import base.TestMessageData.representative
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
+import generated.RepresentativeType05
 import generators.Generators
 import models._
 import navigation.RepresentativeNavigator
@@ -107,8 +107,8 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               val userAnswers = emptyUserAnswers
                 .setValue(AddRepresentativeContactDetailsYesNoPage, true)
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Representative = Some(representative.copy(ContactPerson = None))
+                  basicIe015.copy(
+                    Representative = Some(RepresentativeType05("", "", None))
                   )
                 )
               navigator
@@ -121,8 +121,8 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             val userAnswers = emptyUserAnswers
               .setValue(AddRepresentativeContactDetailsYesNoPage, true)
               .copy(departureData =
-                TestMessageData.messageData.copy(
-                  Representative = Some(representative.copy(ContactPerson = None))
+                basicIe015.copy(
+                  Representative = Some(RepresentativeType05("", "", None))
                 )
               )
               .setValue(NamePage, nonEmptyString.sample.value)
@@ -135,8 +135,8 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             val userAnswers = emptyUserAnswers
               .setValue(AddRepresentativeContactDetailsYesNoPage, true)
               .copy(departureData =
-                TestMessageData.messageData.copy(
-                  Representative = Some(representative.copy(ContactPerson = None))
+                basicIe015.copy(
+                  Representative = Some(RepresentativeType05("", "", None))
                 )
               )
               .setValue(NamePage, nonEmptyString.sample.value)
@@ -161,7 +161,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               val userAnswers = emptyUserAnswers
                 .setValue(ActingAsRepresentativePage, true)
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
+                  basicIe015.copy(
                     Representative = None
                   )
                 )

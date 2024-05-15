@@ -17,21 +17,26 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.LocationOfGoodsType05
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.AuthorisationNumberPage
 
-class AuthorisationNumberTransformerTest extends SpecBase {
+class AuthorisationNumberTransformerTest extends SpecBase with Generators {
   val transformer = new AuthorisationNumberTransformer()
 
   "AuthorisationNumberTransformer" - {
 
-    "must return updated answers with AdditionalIdentifierPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AuthorisationNumberPage) mustBe None
+    "must return updated answers with AuthorisationNumberPage" in {
+      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
+        (locationOfGoods, authorisationNumber) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(authorisationNumber = Some(authorisationNumber)))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AuthorisationNumberPage) mustBe locationOfGoods.authorisationNumber
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AuthorisationNumberPage).value mustBe authorisationNumber
       }
     }
   }

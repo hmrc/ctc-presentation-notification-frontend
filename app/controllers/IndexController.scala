@@ -44,7 +44,7 @@ class IndexController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def index(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
+  def redirect(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
     implicit request =>
       (for {
         lrn           <- OptionT.liftF(service.getLRN(departureId))

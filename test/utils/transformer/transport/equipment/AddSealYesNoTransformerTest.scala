@@ -17,32 +17,38 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import models.messages.TransportEquipment
+import generated.{SealType05, TransportEquipmentType06}
+import generators.Generators
+import models.Index
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.equipment.index.AddSealYesNoPage
 
-class AddSealYesNoTransformerTest extends SpecBase {
+class AddSealYesNoTransformerTest extends SpecBase with Generators {
 
   val transformer = new AddSealYesNoTransformer()
 
   "AddSealYesNoTransformer" - {
     "when seals present must return updated answers with AddSealYesNoPage as true" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddSealYesNoPage(equipmentIndex)) mustBe None
+      forAll(arbitrary[TransportEquipmentType06], arbitrary[SealType05]) {
+        (transportEquipment, seal) =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Seq(transportEquipment.copy(Seal = Seq(seal)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddSealYesNoPage(equipmentIndex)) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddSealYesNoPage(Index(0))) mustBe Some(true)
       }
     }
 
     "when seals not present must return updated answers with AddSealYesNoPage as false" in {
-      val userAnswers = setTransportEquipmentLens.set(Some(List(TransportEquipment("1", None, 0, None, None))))(emptyUserAnswers)
+      forAll(arbitrary[TransportEquipmentType06]) {
+        transportEquipment =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Seq(transportEquipment.copy(Seal = Nil))
+          )(emptyUserAnswers)
 
-      userAnswers.get(AddSealYesNoPage(equipmentIndex)) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddSealYesNoPage(equipmentIndex)) mustBe Some(false)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddSealYesNoPage(Index(0))) mustBe Some(false)
       }
     }
   }

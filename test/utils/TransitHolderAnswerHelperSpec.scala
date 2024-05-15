@@ -17,10 +17,10 @@
 package utils
 
 import base.SpecBase
+import generated.AddressType17
 import generators.Generators
-import models.Mode
-import models.messages.Address
-import models.reference.{Country, CountryCode}
+import models.reference.Country
+import models.{Mode, RichAddressType17}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -37,82 +37,67 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
   "TransitHolderAnswerHelper should" - {
 
     "return `Do you know the transit holder’s EORI number?` row" in {
-      forAll(arbitrary[Mode], arbitrary[Option[String]]) {
-        (mode, optionalEori) =>
-          val answers = setTransitHolderEoriLens.set(optionalEori)(emptyUserAnswers)
+      forAll(arbitrary[Mode], nonEmptyString) {
+        (mode, eori) =>
+          val answers = setTransitHolderEoriLens.set(Some(eori))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.eoriYesNoRow
 
           result.key.value mustBe "Do you know the transit holder’s EORI number?"
-          result.value.value mustBe optionalEori
-            .map(
-              _ => "Yes"
-            )
-            .getOrElse("No")
+          result.value.value mustBe "Yes"
           val actions = result.actions
           actions.size mustBe 0
       }
     }
 
     "return EORI number row" in {
-      forAll(arbitrary[Mode], arbitrary[Option[String]]) {
-        (mode, optionalEori) =>
-          val answers = setTransitHolderEoriLens.set(optionalEori)(emptyUserAnswers)
+      forAll(arbitrary[Mode], nonEmptyString) {
+        (mode, eori) =>
+          val answers = setTransitHolderEoriLens.set(Some(eori))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.eoriRow
 
-          optionalEori match {
-            case Some(eori) =>
-              result.get.key.value mustBe "EORI number"
-              result.get.value.value mustBe eori
-              val actions = result.get.actions
-              actions.size mustBe 0
-            case None => result mustBe None
-          }
+          result.get.key.value mustBe "EORI number"
+          result.get.value.value mustBe eori
+          val actions = result.get.actions
+          actions.size mustBe 0
       }
     }
 
     "return TIR identification row" in {
-      forAll(arbitrary[Mode], arbitrary[Option[String]]) {
-        (mode, optionalTirIdentification) =>
-          val answers = setTransitHolderTirIdentificationLens.set(optionalTirIdentification)(emptyUserAnswers)
+      forAll(arbitrary[Mode], nonEmptyString) {
+        (mode, tirIdentification) =>
+          val answers = setTransitHolderTirIdentificationLens.set(Some(tirIdentification))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.tirIdentificationRow
 
-          optionalTirIdentification match {
-            case Some(identification) =>
-              result.get.key.value mustBe "TIR holder’s identification number"
-              result.get.value.value mustBe identification
-              val actions = result.get.actions
-              actions.size mustBe 0
-            case None => result mustBe None
-          }
+          result.get.key.value mustBe "TIR holder’s identification number"
+          result.get.value.value mustBe tirIdentification
+          val actions = result.get.actions
+          actions.size mustBe 0
       }
     }
 
     "return country row" in {
-      forAll(arbitrary[Mode], arbitrary[Country]) {
-        (mode, country) =>
+      forAll(arbitrary[Mode], arbitrary[AddressType17], arbitrary[Country]) {
+        (mode, address, country) =>
           when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(country))
-          val answers = setTransitHolderAddressLens.set(Address("Address Line 1", Some("NE53KL"), "Newcastle", country.code.code))(emptyUserAnswers)
+          val answers = setTransitHolderAddressLens.set(Some(address.copy(country = country.code.code))).apply(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
-          val row     = helper.countryRow
+          val result  = helper.countryRow.get.futureValue
 
-          whenReady(row.get) {
-            result =>
-              result.key.value mustBe "Transit holder’s country"
-              result.value.value mustBe country.description
-              val actions = result.actions
-              actions.size mustBe 0
-          }
+          result.key.value mustBe "Transit holder’s country"
+          result.value.value mustBe country.description
+          val actions = result.actions
+          actions.size mustBe 0
       }
     }
 
     "return address row" in {
-      forAll(arbitrary[Mode], arbitrary[Address]) {
-        (mode, address) =>
-          when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(Country(CountryCode(address.country), "description")))
-          val answers = setTransitHolderAddressLens.set(address)(emptyUserAnswers)
+      forAll(arbitrary[Mode], arbitrary[AddressType17], arbitrary[Country]) {
+        (mode, address, country) =>
+          when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(country))
+          val answers = setTransitHolderAddressLens.set(Some(address))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.addressRow
 
@@ -124,7 +109,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     }
 
     "return name row" in {
-      forAll(arbitrary[Mode], arbitrary[String]) {
+      forAll(arbitrary[Mode], nonEmptyString) {
         (mode, name) =>
           val answers = setTransitHolderNameLens.set(Some(name))(emptyUserAnswers)
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
@@ -138,17 +123,20 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     }
 
     "return section" in {
-      forAll(arbitrary[Mode]) {
-        mode =>
-          val answerWithDefaultTransitHolderData = emptyUserAnswers
-          val helper                             = new TransitHolderAnswerHelper(answerWithDefaultTransitHolderData, departureId, mockReferenceDataService, mode)
-          val result                             = helper.transitHolderSection
+      forAll(arbitrary[Mode], nonEmptyString, arbitrary[AddressType17]) {
+        (mode, str, address) =>
+          val pipeline = setTransitHolderEoriLens.set(Some(str)) andThen
+            setTransitHolderTirIdentificationLens.set(Some(str)) andThen
+            setTransitHolderAddressLens.set(Some(address)) andThen
+            setTransitHolderAddressLens.set(Some(address)) andThen
+            setTransitHolderNameLens.set(Some(str))
 
-          whenReady(result) {
-            section =>
-              section.sectionTitle.get mustBe "Transit holder"
-              section.rows.size mustBe 6
-          }
+          val userAnswers = pipeline(emptyUserAnswers)
+          val helper      = new TransitHolderAnswerHelper(userAnswers, departureId, mockReferenceDataService, mode)
+          val section     = helper.transitHolderSection.futureValue
+
+          section.sectionTitle.get mustBe "Transit holder"
+          section.rows.size mustBe 6
       }
     }
   }

@@ -16,7 +16,6 @@
 
 package controllers.locationOfGoods
 
-import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.locationOfGoods.AuthorisationNumberFormProvider
@@ -46,7 +45,7 @@ class AuthorisationNumberControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers.copy(departureData = messageData.copy(Consignment = messageData.Consignment.copy(LocationOfGoods = None))))
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, authorisationNumberRoute)
 

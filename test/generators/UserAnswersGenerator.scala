@@ -16,7 +16,7 @@
 
 package generators
 
-import base.TestMessageData.messageData
+import generated.CC015CType
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -39,6 +39,7 @@ trait UserAnswersGenerator extends TryValues {
         eoriNumber <- arbitrary[EoriNumber]
         lrn        <- nonEmptyString
         data       <- Gen.const(Map[QuestionPage[_], JsValue]())
+        ie015Data  <- arbitrary[CC015CType]
       } yield UserAnswers(
         id = id,
         eoriNumber = eoriNumber,
@@ -48,7 +49,7 @@ trait UserAnswersGenerator extends TryValues {
             obj.setObject(path.path, value).get
         },
         lastUpdated = Instant.now(),
-        departureData = messageData
+        departureData = ie015Data
       )
     }
   }

@@ -16,37 +16,37 @@
 
 package utils.transformer.representative
 
-import base.TestMessageData.{contactName, representative}
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
+import generated.{ContactPersonType05, RepresentativeType05}
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.representative.NamePage
 
-class RepresentativeNameTransformerSpec extends SpecBase {
+class RepresentativeNameTransformerSpec extends SpecBase with Generators {
   val transformer = new RepresentativeNameTransformer()
 
   "RepresentativeNameTransformer" - {
     "must return updated answers with representative NamePage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(NamePage) mustBe None
+      forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05], nonEmptyString) {
+        (representative, contactPerson, name) =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative.copy(ContactPerson = Some(contactPerson.copy(name = name))))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(NamePage) mustBe Some(contactName)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(NamePage).value mustBe name
       }
     }
 
     "must not update if representative name is None" in {
-      val userAnswers =
-        emptyUserAnswers.copy(departureData =
-          TestMessageData.messageData.copy(
-            Representative = Some(representative.copy(ContactPerson = None))
-          )
-        )
+      forAll(arbitrary[RepresentativeType05]) {
+        representative =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative.copy(ContactPerson = None))
+          )(emptyUserAnswers)
 
-      userAnswers.get(NamePage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(NamePage) mustBe None
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(NamePage) mustBe None
       }
     }
   }

@@ -17,7 +17,6 @@
 package controllers.representative
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.{representative, routes}
 import forms.TelephoneNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +34,7 @@ class RepresentativePhoneNumberControllerSpec extends SpecBase with AppWithDefau
   private val formProvider              = new TelephoneNumberFormProvider()
   private val form                      = formProvider("representative.representativeTelephoneNumber")
   private val mode                      = NormalMode
-  private lazy val telephoneNumberRoute = representative.routes.RepresentativePhoneNumberController.onPageLoad(departureId, mode).url
+  private lazy val telephoneNumberRoute = routes.RepresentativePhoneNumberController.onPageLoad(departureId, mode).url
   private val validAnswer: String       = "+44 808 157 0192"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -126,7 +125,7 @@ class RepresentativePhoneNumberControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -140,7 +139,7 @@ class RepresentativePhoneNumberControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

@@ -17,32 +17,41 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import base.TestMessageData.consignment
+import generated._
+import generators.Generators
 import pages.transport.ContainerIndicatorPage
 
-class ContainerIndicatorTransformerTest extends SpecBase {
+class ContainerIndicatorTransformerTest extends SpecBase with Generators {
   val transformer = new ContainerIndicatorTransformer()
 
   "ContainerIndicatorPageTransformer" - {
-    "must return updated answers with ContainerIndicatorPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(ContainerIndicatorPage) mustBe None
+    "must return updated answers with ContainerIndicatorPage" - {
+      "when true" in {
+        val userAnswers = setContainerIndicatorOnUserAnswersLens.set(
+          Some(Number1)
+        )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(ContainerIndicatorPage) mustBe Some(true)
+        val result = transformer.transform.apply(userAnswers).futureValue
+        result.get(ContainerIndicatorPage) mustBe Some(true)
+      }
+
+      "when false" in {
+        val userAnswers = setContainerIndicatorOnUserAnswersLens.set(
+          Some(Number0)
+        )(emptyUserAnswers)
+
+        val result = transformer.transform.apply(userAnswers).futureValue
+        result.get(ContainerIndicatorPage) mustBe Some(false)
       }
     }
 
     "must not update if ContainerIndicatorPage is None" in {
-      val userAnswers =
-        emptyUserAnswers.copy(departureData = emptyUserAnswers.departureData.copy(Consignment = consignment.copy(containerIndicator = None)))
-      userAnswers.get(ContainerIndicatorPage) mustBe None
+      val userAnswers = setContainerIndicatorOnUserAnswersLens.set(
+        None
+      )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(ContainerIndicatorPage) mustBe None
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(ContainerIndicatorPage) mustBe None
     }
   }
 }

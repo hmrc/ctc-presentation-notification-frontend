@@ -21,9 +21,15 @@ import models.{Index, RichCC015CType, SelectableList, UserAnswers}
 import pages.sections.transport.equipment.{EquipmentsSection, ItemsSection}
 import pages.transport.equipment.ItemPage
 
-case class SelectItemsViewModel(items: SelectableList[Item], allItemsCount: Int)
+case class SelectItemsViewModel(items: SelectableList[Item])
 
 object SelectItemsViewModel {
+
+  class SelectItemsViewModelProvider {
+
+    def apply(userAnswers: UserAnswers, selectedItem: Option[Item] = None): SelectItemsViewModel =
+      SelectItemsViewModel(userAnswers, selectedItem)
+  }
 
   def apply(userAnswers: UserAnswers, selectedItem: Option[Item] = None): SelectItemsViewModel = {
     val allItems = userAnswers.departureData.items
@@ -37,6 +43,6 @@ object SelectItemsViewModel {
         items.filterNot(_ == itemToFilter)
     }
 
-    SelectItemsViewModel(SelectableList(filteredList ++ selectedItem.toSeq), allItems.length)
+    SelectItemsViewModel(SelectableList(filteredList ++ selectedItem.toSeq))
   }
 }

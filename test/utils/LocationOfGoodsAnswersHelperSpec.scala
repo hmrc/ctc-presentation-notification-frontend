@@ -17,20 +17,15 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.allOptionsNoneJsonValue
-import config.Constants._
+import config.Constants.QualifierOfTheIdentification._
 import generators.Generators
-import models.messages.MessageData
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, PostalCodeAddress, UserAnswers}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, PostalCodeAddress}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import play.api.libs.json.Json
 import services.CheckYourAnswersReferenceDataService
-
-import java.time.Instant
 
 class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -63,7 +58,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when LocationTypePage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[LocationType]) {
               (mode, locationType) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(LocationTypePage, locationType)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.locationTypeRow.get
@@ -87,7 +82,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when IdentificationPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[LocationOfGoodsIdentification]) {
               (mode, identification) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(IdentificationPage, identification)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.qualifierIdentificationRow.get
@@ -111,7 +106,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when AuthorisationNumberPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[String]) {
               (mode, authorisationNumber) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(AuthorisationNumberPage, authorisationNumber)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.authorisationNumber
@@ -135,7 +130,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when EoriPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[String]) {
               (mode, locationOfGoodsAnswerEori) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(EoriPage, locationOfGoodsAnswerEori)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.eoriNumber
@@ -170,7 +165,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when AddIdentifierYesNoPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[Boolean]) {
               (mode, additionalIdentifier) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(AddIdentifierYesNoPage, additionalIdentifier)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.additionalIdentifierYesNo
@@ -194,7 +189,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when AddIdentifierYesNoPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[String]) {
               (mode, additionalIdentifier) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(AddIdentifierYesNoPage, true)
                   .setValue(AdditionalIdentifierPage, additionalIdentifier)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
@@ -219,7 +214,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when UnLocodePage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[String]) {
               (mode, unLocode) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(UnLocodePage, unLocode)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.unLocode
@@ -244,7 +239,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           "must return Some(Row) when CustomsOfficeIdentifierPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[CustomsOffice]) {
               (mode, customsOffice) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(CustomsOfficeIdentifierPage, customsOffice)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.customsOfficeIdentifierRow.get
@@ -280,7 +275,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when CoordinatesPage is defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[Coordinates]) {
               (mode, coordinates) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(CoordinatesPage, coordinates)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.coordinates
@@ -304,7 +299,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when locationOfGoodsContactYesNo defined in the ie170" in {
             forAll(arbitrary[Mode]) {
               mode =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(AddContactYesNoPage, true)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.locationOfGoodsContactYesNo
@@ -339,7 +334,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when locationOfGoodsContactPersonName defined in the ie170" in {
             forAll(arbitrary[Mode]) {
               mode =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(NamePage, "Han Solo")
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.locationOfGoodsContactPersonName
@@ -374,7 +369,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when locationOfGoodsContactPersonNumber defined in the ie170" in {
             forAll(arbitrary[Mode]) {
               mode =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(PhoneNumberPage, "999")
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.locationOfGoodsContactPersonNumber
@@ -409,7 +404,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when CountryPage defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[Country]) {
               (mode, countryType) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(CountryPage, countryType)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.countryTypeRow.get
@@ -433,7 +428,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when address defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[DynamicAddress]) {
               (mode, addressData) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(AddressPage, addressData)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.address
@@ -468,7 +463,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
           s"when postCodeAddress defined in the ie170" in {
             forAll(arbitrary[Mode], arbitrary[PostalCodeAddress]) {
               (mode, addressData) =>
-                val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+                val answers = emptyUserAnswers
                   .setValue(PostalCodePage, addressData)
                 val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
                 val result = helper.postCodeAddress
@@ -501,7 +496,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
       "section should contain all the answer rows" in {
         forAll(arbitrary[Mode], arbitrary[LocationType], arbitrary[LocationOfGoodsIdentification], arbitrary[String], arbitrary[Boolean], arbitrary[String]) {
           (mode, locationType, identification, authorisationNumber, additionalIdentifierYesNo, additionalIdentifier) =>
-            val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+            val answers = emptyUserAnswers
               .setValue(LocationTypePage, locationType)
               .setValue(IdentificationPage, identification)
               .setValue(AuthorisationNumberPage, authorisationNumber)

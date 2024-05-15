@@ -17,21 +17,25 @@
 package utils.transformer.transport.placeOfLoading
 
 import base.SpecBase
+import generated.PlaceOfLoadingType03
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.loading.AddExtraInformationYesNoPage
 
-class AddExtraInformationYesNoTransformerTest extends SpecBase {
+class AddExtraInformationYesNoTransformerTest extends SpecBase with Generators {
   val transformer = new AddExtraInformationYesNoTransformer
 
   "AddExtraInformationYesNoTransformer" - {
     "must return updated answers with AddExtraInformationYesNo" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddExtraInformationYesNoPage) mustBe None
+      forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
+        (placeOfLoading, country) =>
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+            Some(placeOfLoading.copy(country = Some(country)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddExtraInformationYesNoPage) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddExtraInformationYesNoPage) mustBe Some(true)
       }
-
     }
   }
 }

@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import config.Constants.{Air, Mail}
+import config.Constants.TransportModeCode._
 import controllers.transport.border.active.routes
 import models._
 import models.reference.TransportMode.BorderMode

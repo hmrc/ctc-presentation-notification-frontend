@@ -16,38 +16,35 @@
 
 package utils.transformer.representative
 
-import base.TestMessageData.representativeEori
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
+import generated.RepresentativeType05
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.representative.EoriPage
 
-class RepresentativeEoriTransformerSpec extends SpecBase {
+class RepresentativeEoriTransformerSpec extends SpecBase with Generators {
   val transformer = new RepresentativeEoriTransformer()
 
   "RepresentativeEoriTransformer" - {
     "must return updated answers with representative EoriPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(EoriPage) mustBe None
+      forAll(arbitrary[RepresentativeType05], nonEmptyString) {
+        (representative, eori) =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative.copy(identificationNumber = eori))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(EoriPage) mustBe Some(representativeEori)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(EoriPage).value mustBe eori
       }
     }
 
     "must not update if representative eori is None" in {
-      val userAnswers =
-        emptyUserAnswers.copy(departureData =
-          TestMessageData.messageData.copy(
-            Representative = None
-          )
-        )
+      val userAnswers = setRepresentativeOnUserAnswersLens.set(
+        None
+      )(emptyUserAnswers)
 
-      userAnswers.get(EoriPage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(EoriPage) mustBe None
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(EoriPage) mustBe None
     }
   }
 }

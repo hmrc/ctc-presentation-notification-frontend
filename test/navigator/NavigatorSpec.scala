@@ -26,6 +26,8 @@ import play.api.mvc.Call
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
+  private case object TestBadPage extends Page
+
   val nonExhaustiveNavigator: Navigator = new Navigator {
 
     override protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -55,7 +57,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       "must go to index page with bad navigation" in {
         nonExhaustiveNavigator
           .nextPage(TestBadPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.IndexController.index(departureId))
+          .mustBe(controllers.routes.IndexController.redirect(departureId))
       }
       "must go to the error controller when the route returns a None for the page" in {
         errorControllerNavigator
@@ -70,7 +72,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       "must go to index page with bad navigation" in {
         nonExhaustiveNavigator
           .nextPage(TestBadPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.IndexController.index(departureId))
+          .mustBe(controllers.routes.IndexController.redirect(departureId))
       }
       "must go to the error controller when the route returns a None for the page" in {
         errorControllerNavigator

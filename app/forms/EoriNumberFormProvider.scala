@@ -16,7 +16,7 @@
 
 package forms
 
-import config.Constants.maxEoriNumberLength
+import forms.Constants.maxEoriNumberLength
 import forms.mappings.Mappings
 import models.RichString
 import models.StringFieldRegex.alphaNumericRegex

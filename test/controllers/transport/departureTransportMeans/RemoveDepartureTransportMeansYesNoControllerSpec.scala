@@ -17,24 +17,19 @@
 package controllers.transport.departureTransportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.YesNoFormProvider
 import generators.Generators
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{NormalMode, TransportMeans, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.verify
 import org.scalacheck.Arbitrary.arbitrary
 import pages.sections.transport.departureTransportMeans.TransportMeansSection
 import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumberPage, TransportMeansIdentificationPage}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.transport.departureTransportMeans.RemoveDepartureTransportMeansYesNoView
-
-import scala.concurrent.Future
 
 class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -43,13 +38,13 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
   private val mode         = NormalMode
 
   private lazy val removeDepartureTransportMeansRoute =
-    controllers.transport.departureTransportMeans.routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, transportIndex).url
+    routes.RemoveDepartureTransportMeansYesNoController.onPageLoad(departureId, mode, transportIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "RemoveBorderTransportYesNoController Controller" - {
+  "RemoveBorderTransportYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -101,68 +96,59 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
     }
 
     "when yes submitted" - {
-      "must redirect to add another departureTransportMeans and remove departureTransportMeans at specified index" ignore {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-        val userAnswers = emptyUserAnswers.setValue(TransportMeansSection(transportIndex), Json.obj())
+      "must redirect to add another departureTransportMeans and remove departureTransportMeans at specified index" in {
+        forAll(arbitrary[TransportMeansIdentification]) {
+          identifier =>
+            beforeEach()
 
-        setExistingUserAnswers(userAnswers)
+            val userAnswers = emptyUserAnswers
+              .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
 
-        val request = FakeRequest(POST, removeDepartureTransportMeansRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+            setExistingUserAnswers(userAnswers)
 
-        val result = route(app, request).value
+            val request = FakeRequest(POST, removeDepartureTransportMeansRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-        redirectLocation(result).value mustEqual controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController
-          .onPageLoad(departureId, mode)
-          .url
+            status(result) mustEqual SEE_OTHER
 
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(TransportMeansSection(transportIndex)) mustNot be(defined)
+            redirectLocation(result).value mustEqual
+              routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.get(TransportMeansSection(transportIndex)) mustNot be(defined)
+        }
       }
     }
 
     "when no submitted" - {
-      "must redirect to add another departureTransportMeans and not remove departureTransportMeans at specified index" ignore {
-        val userAnswers = emptyUserAnswers.setValue(TransportMeansSection(transportIndex), Json.obj())
+      "must redirect to add another departureTransportMeans and not remove departureTransportMeans at specified index" in {
+        forAll(arbitrary[TransportMeansIdentification]) {
+          identifier =>
+            beforeEach()
 
-        setExistingUserAnswers(userAnswers)
+            val userAnswers = emptyUserAnswers
+              .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
 
-        val request = FakeRequest(POST, removeDepartureTransportMeansRoute)
-          .withFormUrlEncodedBody(("value", "false"))
+            setExistingUserAnswers(userAnswers)
 
-        val result = route(app, request).value
+            val request = FakeRequest(POST, removeDepartureTransportMeansRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-        status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-        redirectLocation(result).value mustEqual controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController
-          .onPageLoad(departureId, mode)
-          .url
+            status(result) mustEqual SEE_OTHER
 
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(TransportMeansSection(transportIndex)) must be(defined)
+            redirectLocation(result).value mustEqual
+              routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.get(TransportMeansSection(transportIndex)) must be(defined)
+        }
       }
-    }
-
-    "must redirect to the next page when valid data is submitted" ignore {
-
-      setExistingUserAnswers(emptyUserAnswers.setValue(TransportMeansSection(transportIndex), Json.obj()))
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val request = FakeRequest(POST, removeDepartureTransportMeansRoute)
-        .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController
-        .onPageLoad(departureId, mode)
-        .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -203,7 +189,7 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -217,7 +203,7 @@ class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with App
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

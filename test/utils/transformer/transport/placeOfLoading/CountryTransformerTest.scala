@@ -17,11 +17,13 @@
 package utils.transformer.transport.placeOfLoading
 
 import base.SpecBase
+import generated.PlaceOfLoadingType03
 import generators.Generators
 import models.SelectableList
-import models.reference.{Country, CountryCode}
+import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.loading.CountryPage
 import services.CountriesService
 
@@ -29,9 +31,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CountryTransformerTest extends SpecBase with Generators {
-  private val country1    = Country(CountryCode("GB"), "Great Britain")
-  private val country2    = Country(CountryCode("FR"), "France")
-  private val countryList = SelectableList(Seq(country1, country2))
+
   private val service     = mock[CountriesService]
   private val transformer = new CountryTransformer(service)
 
@@ -40,16 +40,18 @@ class CountryTransformerTest extends SpecBase with Generators {
 
   "CountryTransformer" - {
     "must return updated answers with CountryPage" in {
+      forAll(arbitrary[PlaceOfLoadingType03], arbitrary[Country]) {
+        (placeOfLoading, country) =>
+          when(service.getCountries()(any()))
+            .thenReturn(Future.successful(SelectableList(Seq(country))))
 
-      when(service.getCountries()(any())).thenReturn(Future.successful(countryList))
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(CountryPage) mustBe None
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+            Some(placeOfLoading.copy(country = Some(country.code.code)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(CountryPage) mustBe Some(country1)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(CountryPage).value mustBe country
       }
-
     }
   }
 }

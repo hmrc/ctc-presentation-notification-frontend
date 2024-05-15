@@ -17,34 +17,33 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import base.TestMessageData.{limitDate, messageData}
+import generators.Generators
 import pages.transport.LimitDatePage
+import scalaxb.XMLCalendar
 
 import java.time.LocalDate
 
-class LimitDateTransformerTest extends SpecBase {
+class LimitDateTransformerTest extends SpecBase with Generators {
   val transformer = new LimitDateTransformer()
 
   "LimitDateTransformer" - {
     "must return updated answers with LimitDatePage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(LimitDatePage) mustBe None
+      val limitDate = XMLCalendar("2022-02-03T08:45:00.000000")
+      val userAnswers = setLimitDateLens.set(
+        Some(limitDate)
+      )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(LimitDatePage) mustBe Some(LocalDate.parse(limitDate))
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(LimitDatePage).value mustBe LocalDate.parse("2022-02-03")
     }
 
     "must not update if limit date is None" in {
-      val userAnswers =
-        emptyUserAnswers.copy(departureData = emptyUserAnswers.departureData.copy(TransitOperation = messageData.TransitOperation.copy(limitDate = None)))
-      userAnswers.get(LimitDatePage) mustBe None
+      val userAnswers = setLimitDateLens.set(
+        None
+      )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(LimitDatePage) mustBe None
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(LimitDatePage) mustBe None
     }
   }
 }

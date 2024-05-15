@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transport.equipment.SelectItemsViewModel
+import viewModels.transport.equipment.SelectItemsViewModel.SelectItemsViewModelProvider
 import views.html.transport.equipment.SelectItemsView
 
 import javax.inject.Inject
@@ -38,7 +38,8 @@ class SelectItemsController @Inject() (
   actions: Actions,
   formProvider: SelectableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: SelectItemsView
+  view: SelectItemsView,
+  viewModelProvider: SelectItemsViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,7 +47,7 @@ class SelectItemsController @Inject() (
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
       val getSelectedItem = request.userAnswers.get(ItemPage(equipmentIndex, itemIndex))
-      val viewModel       = SelectItemsViewModel(request.userAnswers, getSelectedItem)
+      val viewModel       = viewModelProvider(request.userAnswers, getSelectedItem)
       val form            = formProvider("transport.equipment.selectItems", viewModel.items)
       val preparedForm = getSelectedItem match {
         case None        => form
@@ -59,7 +60,7 @@ class SelectItemsController @Inject() (
   def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
       val getSelectedItem = request.userAnswers.get(ItemPage(equipmentIndex, itemIndex))
-      val viewModel       = SelectItemsViewModel(request.userAnswers, getSelectedItem)
+      val viewModel       = viewModelProvider(request.userAnswers, getSelectedItem)
 
       val form = formProvider("transport.equipment.selectItems", viewModel.items)
       form

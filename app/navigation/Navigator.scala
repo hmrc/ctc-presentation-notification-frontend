@@ -41,12 +41,12 @@ trait Navigator extends Logging {
     mode match {
       case NormalMode =>
         normalRoutes(departureId, mode).lift(page) match {
-          case None       => controllers.routes.IndexController.index(departureId)
+          case None       => controllers.routes.IndexController.redirect(departureId)
           case Some(call) => handleCall(call)
         }
       case CheckMode =>
         checkRoutes(departureId, mode).lift(page) match {
-          case None       => controllers.routes.IndexController.index(departureId)
+          case None       => controllers.routes.IndexController.redirect(departureId)
           case Some(call) => handleCall(call)
         }
     }

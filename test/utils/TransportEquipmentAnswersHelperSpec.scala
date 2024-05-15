@@ -17,9 +17,7 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
-import models.messages.MessageData
 import models.reference.Item
 import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,8 +28,6 @@ import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPag
 import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.libs.json.Json
 
-import java.time.Instant
-
 class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "TransportEquipmentAnswersHelper" - {
@@ -41,10 +37,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
         s"when $AddTransportEquipmentYesNoPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper =
-                new TransportEquipmentAnswersHelper(ie015WithNoAddBorderMeansOfTransportYesNoUserAnswers, departureId, mode, activeIndex)
+              val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.addAnyTransportEquipmentYesNo()
 
               result mustBe None

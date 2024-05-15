@@ -17,29 +17,23 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
-import models.messages.MessageData
+import models.Mode
 import models.reference.CustomsOffice
 import models.reference.TransportMode.BorderMode
-import models.{Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.border.BorderModeOfTransportPage
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
-import play.api.libs.json.Json
-import services.TransportModeCodesService
 
-import java.time.{Instant, LocalDate}
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "PresentationNotificationAnswersHelper" - {
-
-    val mockTransportModeReferenceDataService: TransportModeCodesService = mock[TransportModeCodesService]
 
     "customs office departure reference" - {
 
@@ -63,9 +57,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         s"when $LimitDatePage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoLimitDateUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoLimitDateUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.limitDate
               result mustBe None
           }
@@ -102,9 +94,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         s"when $ContainerIndicatorPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoContainerIndicatorUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoContainerIndicatorUserAnswers, departureId, mode)
+              val helper = new PresentationNotificationAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.containerIndicator
               result mustBe None
           }
@@ -139,9 +129,9 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
         "when transport mode is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PresentationNotificationAnswersHelper(ie015WithNoUserAnswers, departureId, mode)
+              val answers = emptyUserAnswers
+                .setValue(AddBorderModeOfTransportYesNoPage, false)
+              val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.borderModeOfTransportYesNo
               result.get.key.value mustBe s"Do you want to add a border mode of transport?"
               result.get.value.value mustBe "No"
@@ -163,9 +153,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
 
           forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
-              when(mockTransportModeReferenceDataService.getBorderModes()(any())).thenReturn(Future.successful(Seq(borderModeOfTransport)))
-
-              val answers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
+              val answers = emptyUserAnswers
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
               val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.borderModeOfTransportRow.get

@@ -17,16 +17,11 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
-import models.messages.MessageData
-import models.{Mode, UserAnswers}
+import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading._
-import play.api.libs.json.Json
-
-import java.time.Instant
 
 class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -37,9 +32,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when $AddUnLocodeYesNoPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithUnlocodeAddYesNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithUnlocodeAddYesNoUserAnswers, departureId, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.addUnlocodeYesNo
               result mustBe None
           }
@@ -74,9 +67,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when $UnLocodePage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithLoadingUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithLoadingUserAnswers, departureId, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.unlocode
               result mustBe None
           }
@@ -111,9 +102,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when $AddExtraInformationYesNoPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoLoadingUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.addExtraInformationYesNo
               result mustBe None
           }
@@ -148,9 +137,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when $CountryPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoLoadingUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.countryTypeRow
               result mustBe None
           }
@@ -185,9 +172,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when $LocationPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoLoadingUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new PlaceOfLoadingAnswersHelper(ie015WithNoLoadingUserAnswers, departureId, mode)
+              val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.location
               result mustBe None
           }

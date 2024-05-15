@@ -16,14 +16,11 @@
 
 package navigator
 
-import base.TestMessageData._
-import base.{SpecBase, TestMessageData}
-import config.Constants.NoSecurityDetails
+import base.SpecBase
+import config.Constants.DeclarationTypeSecurity.NoSecurityDetails
 import generators.Generators
-import models.messages.MessageData
 import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.ContainerNavigator
-import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
@@ -39,22 +36,13 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       "must go from ContainerIndicatorPage" - {
 
         "to BorderModeOfTransportPage when security is between 1-3" in {
-          val securityGen = Arbitrary.arbitrary[String](arbitrarySecurityCode)
-          forAll(securityGen) {
+          forAll(arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
             security =>
-              val messageData: MessageData =
-                MessageData(
-                  customsOfficeOfDeparture,
-                  customsOfficeOfDestination,
-                  transitOperation.copy(security = security),
-                  Some(authorisation),
-                  holderOfTheTransitProcedure,
-                  Some(representative),
-                  None,
-                  None,
-                  consignment
+              val userAnswers = emptyUserAnswers.copy(departureData =
+                basicIe015.copy(
+                  TransitOperation = basicIe015.TransitOperation.copy(security = security)
                 )
-              val userAnswers = emptyUserAnswers.copy(departureData = messageData)
+              )
               navigator
                 .nextPage(ContainerIndicatorPage, userAnswers, departureId, NormalMode)
                 .mustBe(BorderModeOfTransportPage.route(userAnswers, departureId, NormalMode).value)
@@ -69,9 +57,9 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val updatedAnswers = answers
                   .setValue(ContainerIndicatorPage, true)
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                      Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
+                    basicIe015.copy(
+                      TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails),
+                      Consignment = basicIe015.Consignment.copy(containerIndicator = None)
                     )
                   )
                 navigator
@@ -90,9 +78,9 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val updatedAnswers = answers
                   .setValue(ContainerIndicatorPage, false)
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      TransitOperation = transitOperation.copy(security = NoSecurityDetails),
-                      Consignment = TestMessageData.messageData.Consignment.copy(containerIndicator = None)
+                    basicIe015.copy(
+                      TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails),
+                      Consignment = basicIe015.Consignment.copy(containerIndicator = None)
                     )
                   )
                 navigator
@@ -110,8 +98,8 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               answers =>
                 val updatedAnswers = answers
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    basicIe015.copy(
+                      TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                     )
                   )
                 navigator

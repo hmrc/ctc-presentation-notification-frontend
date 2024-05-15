@@ -16,14 +16,13 @@
 
 package navigator
 
-import base.TestMessageData.{allOptionsNoneJsonValue, consignment, customsOfficeOfTransitDeclared, transitOperation}
-import base.{SpecBase, TestMessageData}
-import config.Constants._
+import base.SpecBase
+import config.Constants.DeclarationTypeSecurity.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import controllers.transport.border.active.routes
+import generated._
 import generators.Generators
 import models._
-import models.messages.{CustomsOfficeOfExitForTransitDeclared, CustomsOfficeOfTransitDeclared, MessageData}
-import models.reference.{CustomsOffice, Nationality}
+import models.reference.Nationality
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.transport.border.active.Identification
 import navigation.BorderNavigator
@@ -76,9 +75,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIndicatorPage, true)
             .copy(departureData =
-              TestMessageData.messageData.copy(
-                Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                TransitOperation = transitOperation.copy(security = EntrySummaryDeclarationSecurityDetails)
+              basicIe015.copy(
+                Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                TransitOperation = basicIe015.TransitOperation.copy(security = EntrySummaryDeclarationSecurityDetails)
               )
             )
           navigator
@@ -91,14 +90,17 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "when security is in set 1,2,3 and active border transport is present" - {
           "and containerIndicator is true navigate to ContainerIdentificationNumber page " in {
 
-            forAll(arbitraryActiveBorderTransportMeans.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
               (activeBorderTransportMeans, securityType) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ContainerIndicatorPage, true)
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
-                      TransitOperation = transitOperation.copy(security = securityType)
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(
+                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
+                        containerIndicator = None
+                      ),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                     )
                   )
                 navigator
@@ -109,14 +111,17 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           "and containerIndicator is false navigate to AddTransportEquipmentYesNo page " in {
 
-            forAll(arbitraryActiveBorderTransportMeans.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
               (activeBorderTransportMeans, securityType) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ContainerIndicatorPage, false)
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
-                      TransitOperation = transitOperation.copy(security = securityType)
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(
+                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
+                        containerIndicator = None
+                      ),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                     )
                   )
                 navigator
@@ -127,13 +132,16 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           "and container indicator is not captured in IE170 navigate to check your answers page " in {
 
-            forAll(arbitraryActiveBorderTransportMeans.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
               (activeBorderTransportMeans, securityType) =>
                 val userAnswers = emptyUserAnswers
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
-                      TransitOperation = transitOperation.copy(security = securityType)
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(
+                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
+                        containerIndicator = None
+                      ),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                     )
                   )
                 navigator
@@ -144,13 +152,16 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           "and container indicator is captured in IE013/15 navigate to check your answers page " in {
 
-            forAll(arbitraryActiveBorderTransportMeans.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
               (activeBorderTransportMeans, securityType) =>
                 val userAnswers = emptyUserAnswers
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = Some("1")),
-                      TransitOperation = transitOperation.copy(security = securityType)
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(
+                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
+                        containerIndicator = Some(Number1)
+                      ),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                     )
                   )
                 navigator
@@ -163,14 +174,17 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "when security is NoSecurityDetails and active border transport is present " - {
           "and container indicator equals true navigate to ContainerIdentificationNumber page " in {
 
-            forAll(arbitraryActiveBorderTransportMeans.arbitrary) {
+            forAll(arbitrary[ActiveBorderTransportMeansType02]) {
               activeBorderTransportMeans =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ContainerIndicatorPage, true)
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
-                      TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(
+                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
+                        containerIndicator = None
+                      ),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                     )
                   )
                 navigator
@@ -183,14 +197,17 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           "and container indicator equals false navigate to AddTransportEquipmentYesNo page " in {
 
-            forAll(arbitraryActiveBorderTransportMeans.arbitrary) {
+            forAll(arbitrary[ActiveBorderTransportMeansType02]) {
               activeBorderTransportMeans =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ContainerIndicatorPage, false)
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans, containerIndicator = None),
-                      TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(
+                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
+                        containerIndicator = None
+                      ),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                     )
                   )
                 navigator
@@ -203,13 +220,16 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           "and container indicator is not captured in IE170 navigate to check your answers page " in {
 
-            forAll(arbitraryActiveBorderTransportMeans.arbitrary) {
+            forAll(arbitrary[ActiveBorderTransportMeansType02]) {
               activeBorderTransportMeans =>
                 val userAnswers = emptyUserAnswers
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
-                      TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(
+                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
+                        containerIndicator = None
+                      ),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                     )
                   )
                 navigator
@@ -227,9 +247,12 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, true)
               .copy(departureData =
-                TestMessageData.messageData.copy(
-                  Consignment = consignment.copy(ActiveBorderTransportMeans = None, containerIndicator = None),
-                  TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                basicIe015.copy(
+                  Consignment = basicIe015.Consignment.copy(
+                    ActiveBorderTransportMeans = Nil,
+                    containerIndicator = None
+                  ),
+                  TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                 )
               )
             navigator
@@ -242,9 +265,12 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, false)
               .copy(departureData =
-                TestMessageData.messageData.copy(
-                  Consignment = consignment.copy(ActiveBorderTransportMeans = None, containerIndicator = None),
-                  TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                basicIe015.copy(
+                  Consignment = basicIe015.Consignment.copy(
+                    ActiveBorderTransportMeans = Nil,
+                    containerIndicator = None
+                  ),
+                  TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                 )
               )
             navigator
@@ -256,9 +282,12 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
             val userAnswers = emptyUserAnswers
               .copy(departureData =
-                TestMessageData.messageData.copy(
-                  Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                  TransitOperation = transitOperation.copy(security = NoSecurityDetails)
+                basicIe015.copy(
+                  Consignment = basicIe015.Consignment.copy(
+                    ActiveBorderTransportMeans = Nil,
+                    containerIndicator = None
+                  ),
+                  TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                 )
               )
             navigator
@@ -289,14 +318,14 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       }
 
       "must go from nationality page to customs offices page" in {
-        val exitOffice        = arbitrary[CustomsOffice].sample.value
-        val transitOffice     = arbitrary[CustomsOffice].sample.value
-        val destinationOffice = arbitrary[CustomsOffice].sample.value
+        val destinationOffice = arbitrary[CustomsOfficeOfDestinationDeclaredType01].sample.value
+        val transitOffice     = arbitrary[CustomsOfficeOfTransitDeclaredType04].sample.value
+        val exitOffice        = arbitrary[CustomsOfficeOfExitForTransitDeclaredType02].sample.value
 
-        val updatedDepartureData = emptyUserAnswers.departureData.copy(
-          CustomsOfficeOfDestination = destinationOffice.id,
-          CustomsOfficeOfTransitDeclared = Some(Seq(CustomsOfficeOfTransitDeclared(transitOffice.id))),
-          CustomsOfficeOfExitForTransitDeclared = Some(Seq(CustomsOfficeOfExitForTransitDeclared(exitOffice.id)))
+        val updatedDepartureData = basicIe015.copy(
+          CustomsOfficeOfDestinationDeclared = destinationOffice,
+          CustomsOfficeOfTransitDeclared = Seq(transitOffice),
+          CustomsOfficeOfExitForTransitDeclared = Seq(exitOffice)
         )
 
         val userAnswers = emptyUserAnswers
@@ -309,13 +338,13 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       "must go from to customs offices page to conveyance number page when security is 1,2,3 and border mode of transport is 4 " in {
 
-        forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString) {
+        forAll(arbitrary[String](arbitrarySecurityDetailsNonZeroType), nonEmptyString) {
           (securityType, borderModeDesc) =>
             val userAnswers = emptyUserAnswers
               .setValue(BorderModeOfTransportPage, BorderMode("4", borderModeDesc))
               .copy(departureData =
-                TestMessageData.messageData.copy(
-                  TransitOperation = transitOperation.copy(security = securityType)
+                basicIe015.copy(
+                  TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                 )
               )
             navigator
@@ -333,8 +362,8 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             val userAnswers = emptyUserAnswers
               .setValue(BorderModeOfTransportPage, borderModeOfTransport)
               .copy(departureData =
-                TestMessageData.messageData.copy(
-                  TransitOperation = transitOperation.copy(security = "0")
+                basicIe015.copy(
+                  TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                 )
               )
             navigator
@@ -363,13 +392,13 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "must go to add another active border when customs office of transit is present" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
+          forAll(arbitrary[UserAnswers], arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+            (answers, customsOffices) =>
               val updatedAnswers = answers
                 .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                  basicIe015.copy(
+                    CustomsOfficeOfTransitDeclared = Seq(customsOffices)
                   )
                 )
               navigator
@@ -384,8 +413,8 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             answers =>
               val updatedAnswers = answers
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
+                  basicIe015.copy(
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
                 .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
@@ -402,12 +431,12 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "must go to add another active border when customs office of transit is present" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
+          forAll(arbitrary[UserAnswers], arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+            (answers, customsOffices) =>
               val updatedAnswers = answers
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = customsOfficeOfTransitDeclared
+                  basicIe015.copy(
+                    CustomsOfficeOfTransitDeclared = Seq(customsOffices)
                   )
                 )
               navigator
@@ -421,8 +450,8 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             answers =>
               val userAnswers = answers
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
+                  basicIe015.copy(
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
               navigator
@@ -437,8 +466,11 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             answers =>
               val userAnswers = answers
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    CustomsOfficeOfTransitDeclared = None
+                  basicIe015.copy(
+                    CustomsOfficeOfTransitDeclared = Nil,
+                    Consignment = basicIe015.Consignment.copy(
+                      containerIndicator = Some(Number1)
+                    )
                   )
                 )
                 .setValue(ContainerIndicatorPage, true)
@@ -614,7 +646,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "Add border means of transport page when Do you want to add border mode of transport?  is Yes and security type is 0" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddBorderModeOfTransportYesNoPage, true)
-            .copy(departureData = emptyUserAnswers.departureData.copy(TransitOperation = emptyUserAnswers.departureData.TransitOperation.copy(security = "0")))
+            .copy(departureData =
+              emptyUserAnswers.departureData.copy(TransitOperation = emptyUserAnswers.departureData.TransitOperation.copy(security = NoSecurityDetails))
+            )
           navigator
             .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
             .mustBe(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
@@ -648,14 +682,14 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "to identification page when security mode of transport at border is not 5, security is 1,2,3 and active border transport is not present " in {
 
-          forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrarySecurityDetailsNonZeroType.arbitrary) {
+          forAll(arbitraryOptionalNonMailBorderModeOfTransport.arbitrary, arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
             (borderModeOfTransport, securityType) =>
               val userAnswers = emptyUserAnswers
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                    TransitOperation = transitOperation.copy(security = securityType)
+                  basicIe015.copy(
+                    Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                    TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                   )
                 )
               navigator
@@ -669,13 +703,13 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         //TODO: Change more information page to other page when created
         "to more add active border transport means page when security is 0 and active border transport is present " in {
 
-          forAll(arbitraryActiveBorderTransportMeans.arbitrary) {
+          forAll(arbitrary[ActiveBorderTransportMeansType02]) {
             activeBorderTransportMeans =>
               val userAnswers = emptyUserAnswers
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Consignment = consignment.copy(ActiveBorderTransportMeans = activeBorderTransportMeans),
-                    TransitOperation = transitOperation.copy(security = "0")
+                  basicIe015.copy(
+                    Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Seq(activeBorderTransportMeans)),
+                    TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails)
                   )
                 )
               navigator
@@ -702,7 +736,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           val userAnswers = emptyUserAnswers
             .setValue(AddBorderMeansOfTransportYesNoPage, true)
             .copy(departureData =
-              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = None))
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = Nil))
             )
           navigator
             .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
@@ -780,17 +814,15 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "if security is 1,2,3 and border mode of transport is 4 " - {
 
           "go to the ConveyanceRefNumberPage if it is not in the ie170" in {
-            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary) {
+            forAll(arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
               securityType =>
                 val userAnswers =
                   emptyUserAnswers
                     .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
                     .copy(departureData =
-                      allOptionsNoneJsonValue
-                        .as[MessageData]
-                        .copy(
-                          TransitOperation = transitOperation.copy(security = securityType)
-                        )
+                      basicIe015.copy(
+                        TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
+                      )
                     )
                 navigator
                   .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
@@ -799,14 +831,14 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           }
 
           "go to CYA page if ConveyanceRefNumber is in the 170" in {
-            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString, nonEmptyString) {
+            forAll(arbitrary[String](arbitrarySecurityDetailsNonZeroType), nonEmptyString, nonEmptyString) {
               (securityType, borderModeDesc, conveyanceRefNumber) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
                   .setValue(BorderModeOfTransportPage, BorderMode("4", borderModeDesc))
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      TransitOperation = transitOperation.copy(security = securityType)
+                    basicIe015.copy(
+                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                     )
                   )
                 navigator
@@ -826,14 +858,14 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           }
 
           "go to CYA page if AddConveyanceRefNumberYesNo is in the 170" in {
-            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary, nonEmptyString, nonEmptyString) {
+            forAll(arbitrary[String](arbitrarySecurityDetailsNonZeroType), nonEmptyString, nonEmptyString) {
               (securityType, borderModeDesc, conveyanceRefNumber) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
                   .setValue(BorderModeOfTransportPage, BorderMode("3", borderModeDesc))
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      TransitOperation = transitOperation.copy(security = securityType)
+                    basicIe015.copy(
+                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                     )
                   )
                 navigator
@@ -863,7 +895,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           val userAnswers = emptyUserAnswers
             .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
             .copy(departureData =
-              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = None))
+              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(ActiveBorderTransportMeans = Nil))
             )
           navigator
             .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)

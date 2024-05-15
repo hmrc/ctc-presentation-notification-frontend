@@ -18,7 +18,8 @@ package services
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.Constants._
+import config.Constants.QualifierOfTheIdentification._
+import config.Constants.TypeOfLocation._
 import connectors.ReferenceDataConnector
 import models.{LocationOfGoodsIdentification, LocationType}
 import org.mockito.ArgumentMatchers.any

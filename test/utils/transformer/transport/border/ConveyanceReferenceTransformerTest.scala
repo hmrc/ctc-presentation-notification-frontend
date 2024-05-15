@@ -17,34 +17,38 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
+import generated.ActiveBorderTransportMeansType02
+import generators.Generators
 import models.Index
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.active.ConveyanceReferenceNumberPage
 
-class ConveyanceReferenceTransformerTest extends SpecBase {
+class ConveyanceReferenceTransformerTest extends SpecBase with Generators {
   val transformer = new ConveyanceReferenceTransformer()
 
   "IdentificationNumberTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(Gen.oneOf(Option(List()), None)) {
-        borderMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers mustBe userAnswers
-          }
+      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+        borderTransportMeans =>
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(conveyanceReferenceNumber = None))
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(ConveyanceReferenceNumberPage(Index(0))) mustBe None
       }
     }
 
     "must return updated answers with IdentificationNumberPage" in {
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(ConveyanceReferenceNumberPage(index)) mustBe None
+      forAll(arbitrary[ActiveBorderTransportMeansType02], nonEmptyString) {
+        (borderTransportMeans, conveyanceReferenceNumber) =>
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(conveyanceReferenceNumber = Some(conveyanceReferenceNumber)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(ConveyanceReferenceNumberPage(index)) mustBe Some("REF2")
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(ConveyanceReferenceNumberPage(Index(0))).value mustBe conveyanceReferenceNumber
       }
     }
   }

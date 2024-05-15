@@ -18,15 +18,13 @@ package controllers.transport.border.active
 
 import controllers.actions._
 import forms.border.IdentificationNumberFormProvider
-import models.reference.transport.border.active.Identification
-import models.requests.{DataRequest, MandatoryDataRequest}
+import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.BorderNavigator
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.MeansOfTransportIdentificationTypesActiveService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.border.active.IdentificationNumberView
 
@@ -39,50 +37,39 @@ class IdentificationNumberController @Inject() (
   navigator: BorderNavigator,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationNumberView,
-  service: MeansOfTransportIdentificationTypesActiveService
+  view: IdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val prefix = "transport.border.active.identificationNumber"
 
+  private val form = formProvider(prefix)
+
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
-      .async {
+      .andThen(getMandatoryPage(IdentificationPage(activeIndex))) {
         implicit request =>
-          val form = formProvider(prefix)
-
-          val fillForm = request.userAnswers
-            .get(IdentificationNumberPage(activeIndex))
-
-          val preparedForm = fillForm match {
+          val preparedForm = request.userAnswers.get(IdentificationNumberPage(activeIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-          getIdentification(activeIndex).map {
-            case Some(identificationType) => Ok(view(preparedForm, departureId, mode, activeIndex, identificationType.asString))
-            case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
-          }
+          Ok(view(preparedForm, departureId, mode, activeIndex, request.arg.asString))
       }
 
   def onSubmit(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
       .requireData(departureId)
+      .andThen(getMandatoryPage(IdentificationPage(activeIndex)))
       .async {
         implicit request =>
-          val form = formProvider(prefix)
-
           form
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                getIdentification(activeIndex).map {
-                  case Some(identificationType) => BadRequest(view(formWithErrors, departureId, mode, activeIndex, identificationType.asString))
-                  case None                     => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
-                },
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, activeIndex, request.arg.asString))),
               value => redirect(mode, value, departureId, activeIndex)
             )
       }
@@ -97,31 +84,4 @@ class IdentificationNumberController @Inject() (
       updatedAnswers <- Future.fromTry(request.userAnswers.set(IdentificationNumberPage(activeIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(IdentificationNumberPage(activeIndex), updatedAnswers, departureId, mode))
-
-  private def identificationPageIe170(activeIndex: Index)(implicit request: DataRequest[_]): Option[Identification] =
-    request.userAnswers.get(IdentificationPage(activeIndex))
-
-  private def identificationPageIe015(activeIndex: Index)(implicit request: DataRequest[_]): Option[String] =
-    request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.lift(activeIndex.position).flatMap(_.typeOfIdentification)
-
-  private def getReferenceDataFor15(activeIndex: Index)(implicit request: DataRequest[_]): Option[Future[Identification]] =
-    identificationPageIe015(activeIndex).map {
-      str =>
-        service.getBorderMeansIdentification(str)
-    }
-
-  private def getIdentification(activeIndex: Index)(implicit request: DataRequest[_]): Future[Option[Identification]] = identificationPageIe170(
-    activeIndex
-  ) match {
-    case Some(value) => Future.successful(Some(value))
-    case None =>
-      getReferenceDataFor15(activeIndex) match {
-        case Some(identification) =>
-          identification.map(
-            Some(_)
-          )
-        case None => Future.successful(None)
-      }
-  }
-
 }

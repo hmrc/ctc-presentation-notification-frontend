@@ -17,21 +17,26 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.{EconomicOperatorType03, LocationOfGoodsType05}
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.EoriPage
 
-class EoriTransformerTest extends SpecBase {
+class EoriTransformerTest extends SpecBase with Generators {
   val transformer = new EoriTransformer()
 
   "EoriTransformer" - {
 
     "must return updated answers with EoriPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(EoriPage) mustBe None
+      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
+        (locationOfGoods, eori) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(EconomicOperator = Some(EconomicOperatorType03(eori))))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(EoriPage) mustBe locationOfGoods.EconomicOperator.map(_.identificationNumber)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(EoriPage).value mustBe eori
       }
     }
   }

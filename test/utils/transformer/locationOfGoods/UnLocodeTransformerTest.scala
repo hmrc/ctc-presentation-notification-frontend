@@ -17,21 +17,26 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.LocationOfGoodsType05
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.UnLocodePage
 
-class UnLocodeTransformerTest extends SpecBase {
+class UnLocodeTransformerTest extends SpecBase with Generators {
   val transformer = new UnLocodeTransformer()
 
   "UnLocodeTransformer" - {
 
     "must return updated answers with UnLocodePage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(UnLocodePage) mustBe None
+      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
+        (locationOfGoods, unLocode) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(UNLocode = Some(unLocode)))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(UnLocodePage) mustBe locationOfGoods.UNLocode
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(UnLocodePage).value mustBe unLocode
       }
     }
   }

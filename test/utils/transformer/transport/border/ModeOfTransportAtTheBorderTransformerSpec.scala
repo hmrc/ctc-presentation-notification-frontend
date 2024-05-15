@@ -17,8 +17,10 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
+import generators.Generators
 import models.reference.TransportMode.BorderMode
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.transport.border.BorderModeOfTransportPage
 import services.TransportModeCodesService
@@ -26,49 +28,51 @@ import services.TransportModeCodesService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase {
+class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase with Generators {
   private val service = mock[TransportModeCodesService]
   val transformer     = new ModeOfTransportAtTheBorderTransformer(service)
-  val borderMode      = BorderMode("2", "two description")
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(service)
 
   "BorderModeOfTransportTransformer" - {
     "must return updated answers with BorderModeOfTransportPage" in {
+      forAll(arbitrary[BorderMode]) {
+        borderMode =>
+          when(service.getBorderModes())
+            .thenReturn(Future.successful(Seq(borderMode)))
 
-      when(service.getBorderModes()).thenReturn(Future.successful(Seq(borderMode)))
+          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+            Some(borderMode.code)
+          )(emptyUserAnswers)
 
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(BorderModeOfTransportPage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(BorderModeOfTransportPage) mustBe Some(borderMode)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(BorderModeOfTransportPage) mustBe Some(borderMode)
       }
     }
 
     "must not update if mode of transport is None" in {
-      when(service.getBorderModes()).thenReturn(Future.successful(Seq(borderMode)))
-      val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers)
-      userAnswers.get(BorderModeOfTransportPage) mustBe None
+      forAll(arbitrary[BorderMode]) {
+        borderMode =>
+          when(service.getBorderModes())
+            .thenReturn(Future.successful(Seq(borderMode)))
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(BorderModeOfTransportPage) mustBe None
+          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+            None
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(BorderModeOfTransportPage) mustBe None
       }
     }
 
     "must return failure if the service fails" in {
-      when(service.getBorderModes()).thenReturn(Future.failed(new RuntimeException("")))
+      when(service.getBorderModes())
+        .thenReturn(Future.failed(new RuntimeException("")))
 
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(BorderModeOfTransportPage) mustBe None
-
-      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
+      whenReady[Throwable, Assertion](transformer.transform.apply(emptyUserAnswers).failed) {
         _ mustBe an[Exception]
       }
     }
-
   }
 }

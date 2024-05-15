@@ -16,17 +16,17 @@
 
 package navigator
 
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
+import config.Constants.AuthorisationTypeDeparture._
+import generated._
 import generators.Generators
-import models.messages.Authorisation
-import models.messages.AuthorisationType.{C521, C523}
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index._
+import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage, ItemPage}
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -48,7 +48,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         "to SealIdentifierNumberPage when user selects No and AuthType is in CL253" in {
           val userAnswers = emptyUserAnswers
-            .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234"), Authorisation(C523, "1235")))))
+            .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"), AuthorisationType03("2", SSE, "1235"))))
             .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
           navigator
             .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), userAnswers, departureId, NormalMode)
@@ -60,7 +60,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         "to AddSealsYesNo page when user selects No and AuthType is not in CL253" in {
           val userAnswers = emptyUserAnswers
-            .copy(departureData = TestMessageData.messageData.copy(Authorisation = None))
+            .copy(departureData = basicIe015.copy(Authorisation = Nil))
             .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
           navigator
             .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), userAnswers, departureId, NormalMode)
@@ -88,7 +88,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           "when ContainerIndicatorPage is true" - {
             "must navigate to AddContainerIdentificationNumberYesNoPage " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "test"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, true)
               navigator
@@ -104,7 +104,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test"), Authorisation(C521, "test2")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "test"), AuthorisationType03("2", ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -117,7 +117,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test2")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -129,7 +129,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test2")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -191,9 +191,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers =
-                answers.copy(departureData =
-                  TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234"), Authorisation(C523, "1235"))))
-                )
+                answers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"), AuthorisationType03("1", SSE, "1235"))))
 
               navigator
                 .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
@@ -206,7 +204,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers =
-                  answers.copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1235")))))
+                  answers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "1235"))))
 
                 navigator
                   .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
@@ -218,7 +216,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers =
-                  answers.copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+                  answers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
                 navigator
                   .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
                   .mustBe(AddSealYesNoPage(equipmentIndex).route(updatedAnswers, departureId, mode).value)
@@ -235,8 +233,8 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 answers
                   .setValue(AddTransportEquipmentYesNoPage, true)
                   .copy(departureData =
-                    TestMessageData.messageData
-                      .copy(Authorisation = Some(Seq(Authorisation(C521, "1234"), Authorisation(C523, "1235"))))
+                    basicIe015
+                      .copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"), AuthorisationType03("1", SSE, "1235")))
                   )
 
               navigator
@@ -252,7 +250,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val updatedAnswers =
                   answers
                     .setValue(AddTransportEquipmentYesNoPage, true)
-                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1235")))))
+                    .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "1235"))))
 
                 navigator
                   .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
@@ -266,7 +264,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val updatedAnswers =
                   answers
                     .setValue(AddTransportEquipmentYesNoPage, true)
-                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+                    .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
                 navigator
                   .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
                   .mustBe(AddSealYesNoPage(equipmentIndex).route(updatedAnswers, departureId, mode).value)
@@ -363,7 +361,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           "when ContainerIndicatorPage is true" - {
             "must navigate to AddContainerIdentificationNumberYesNoPage " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "test"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, true)
               navigator
@@ -379,7 +377,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test"), Authorisation(C521, "test2")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "test"), AuthorisationType03("1", ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -392,7 +390,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "test2")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -404,7 +402,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "test2")))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -458,7 +456,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val updatedAnswers =
                   answers
                     .setValue(AddTransportEquipmentYesNoPage, true)
-                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1235")))))
+                    .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "1235"))))
 
                 navigator
                   .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
@@ -472,7 +470,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 val updatedAnswers =
                   answers
                     .setValue(AddTransportEquipmentYesNoPage, true)
-                    .copy(departureData = TestMessageData.messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+                    .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
                 navigator
                   .nextPage(AddTransportEquipmentYesNoPage, updatedAnswers, departureId, mode)
                   .mustBe(AddSealYesNoPage(equipmentIndex).route(updatedAnswers, departureId, mode).value)

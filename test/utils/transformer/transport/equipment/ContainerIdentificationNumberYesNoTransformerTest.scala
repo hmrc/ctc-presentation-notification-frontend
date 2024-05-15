@@ -17,32 +17,38 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import models.messages.TransportEquipment
+import generated.TransportEquipmentType06
+import generators.Generators
+import models.Index
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.equipment.index.AddContainerIdentificationNumberYesNoPage
 
-class ContainerIdentificationNumberYesNoTransformerTest extends SpecBase {
+class ContainerIdentificationNumberYesNoTransformerTest extends SpecBase with Generators {
 
   val transformer = new ContainerIdentificationNumberYesNoTransformer()
 
   "ContainerIdentificationNumberYesNoTransformer" - {
-    "when seals present must return updated answers with AddContainerIdentificationNumberYesNoPage as true" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) mustBe None
+    "when container id present must return updated answers with AddContainerIdentificationNumberYesNoPage as true" in {
+      forAll(arbitrary[TransportEquipmentType06], nonEmptyString) {
+        (transportEquipment, containerIdentificationNumber) =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Seq(transportEquipment.copy(containerIdentificationNumber = Some(containerIdentificationNumber)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddContainerIdentificationNumberYesNoPage(Index(0))) mustBe Some(true)
       }
     }
 
     "when seals not present must return updated answers with AddContainerIdentificationNumberYesNoPage as false" in {
-      val userAnswers = setTransportEquipmentLens.set(Some(List(TransportEquipment("1", None, 0, None, None))))(emptyUserAnswers)
+      forAll(arbitrary[TransportEquipmentType06]) {
+        transportEquipment =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Seq(transportEquipment.copy(containerIdentificationNumber = None))
+          )(emptyUserAnswers)
 
-      userAnswers.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) mustBe Some(false)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddContainerIdentificationNumberYesNoPage(Index(0))) mustBe Some(false)
       }
     }
   }

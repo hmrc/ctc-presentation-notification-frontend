@@ -16,7 +16,7 @@
 
 package viewModels.transport.border.active
 
-import config.Constants._
+import config.Constants.TransportModeCode._
 import config.FrontendAppConfig
 import models.{Index, Mode, RichCC015CType, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
