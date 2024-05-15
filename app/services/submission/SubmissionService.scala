@@ -68,11 +68,14 @@ class SubmissionService @Inject() (
       HolderOfTheTransitProcedure = holderOfTransit(userAnswers.departureData.HolderOfTheTransitProcedure),
       Representative = representative,
       Consignment = consignment,
-      attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
+      attributes = attributes
     )
 
     userAnswers.data.as[CC170CType]
   }
+
+  def attributes: Map[String, DataRecord[_]] =
+    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS5u461Value.toString, scope)))
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDeparture: String): MESSAGESequence =
     MESSAGESequence(
