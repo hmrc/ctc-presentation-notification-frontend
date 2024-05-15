@@ -17,7 +17,7 @@
 package viewModels.transport.departureTransportMeans
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.TransportModeCode.{Air, Mail}
 import generators.Generators
 import models.reference.TransportMode.InlandMode
 import models.reference.transport.transportMeans.TransportMeansIdentification

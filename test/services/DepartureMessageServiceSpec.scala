@@ -16,15 +16,16 @@
 
 package services
 
-import base.TestMessageData.messageData
 import base.SpecBase
 import connectors.DepartureMovementConnector
+import generated.{CC013CType, CC015CType}
 import generators.Generators
+import models.RichCC013CType
 import models.departureP5.MessageType.{AmendmentSubmitted, DepartureNotification}
 import models.departureP5.{DepartureMessages, MessageMetaData}
-import models.messages.Data
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -37,15 +38,6 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
   private val mockConnector = mock[DepartureMovementConnector]
   private val service       = new DepartureMessageService(mockConnector)
-
-  private val departureMessageMetaData1: MessageMetaData = MessageMetaData(LocalDateTime.now(), DepartureNotification, "path/url")
-
-  private val departureMessageMetaData2: MessageMetaData =
-    MessageMetaData(LocalDateTime.now().minusDays(1), AmendmentSubmitted, "path/url")
-
-  private val departureMessages: DepartureMessages = DepartureMessages(List(departureMessageMetaData1, departureMessageMetaData2))
-
-  private val ie015Data = Data(messageData)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -61,16 +53,55 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
     "getLRN success" in {
       when(mockConnector.getLRN(any())(any())).thenReturn(Future.successful(lrn))
+
       service.getLRN(departureId).futureValue mustBe lrn
-      verify(mockConnector).getLRN(any())(any())
+
+      verify(mockConnector).getLRN(eqTo(departureId))(any())
     }
 
-    "getDepartureData success" in {
-      when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(departureMessages))
-      when(mockConnector.getMessage(any(), any())(any())).thenReturn(Future.successful(ie015Data))
-      service.getDepartureData(departureId).futureValue mustBe Some(ie015Data)
-      verify(mockConnector).getMessage(any(), any())(any())
-      verify(mockConnector).getMessages(any())(any(), any())
+    "getDepartureData success" - {
+      "when IE013 is latest" in {
+        forAll(arbitrary[CC013CType]) {
+          ie013 =>
+            beforeEach()
+
+            val ie015MetaData: MessageMetaData =
+              MessageMetaData(LocalDateTime.now(), DepartureNotification, "id1")
+
+            val ie013MetaData: MessageMetaData =
+              MessageMetaData(LocalDateTime.now().plusDays(1), AmendmentSubmitted, "id2")
+
+            val departureMessages: DepartureMessages = DepartureMessages(List(ie015MetaData, ie013MetaData))
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(departureMessages))
+            when(mockConnector.getMessage[CC013CType](any(), any())(any(), any())).thenReturn(Future.successful(ie013))
+
+            service.getDepartureData(departureId, lrn).futureValue.value mustBe ie013.toCC015CType(lrn)
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+            verify(mockConnector).getMessage(eqTo(departureId), eqTo("id2"))(any(), any())
+        }
+      }
+
+      "when IE015 is latest" in {
+        forAll(arbitrary[CC015CType]) {
+          ie015 =>
+            beforeEach()
+
+            val ie015MetaData: MessageMetaData =
+              MessageMetaData(LocalDateTime.now(), DepartureNotification, "id1")
+
+            val departureMessages: DepartureMessages = DepartureMessages(List(ie015MetaData))
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(departureMessages))
+            when(mockConnector.getMessage[CC015CType](any(), any())(any(), any())).thenReturn(Future.successful(ie015))
+
+            service.getDepartureData(departureId, lrn).futureValue.value mustBe ie015
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+            verify(mockConnector).getMessage(eqTo(departureId), eqTo("id1"))(any(), any())
+        }
+      }
     }
   }
 }

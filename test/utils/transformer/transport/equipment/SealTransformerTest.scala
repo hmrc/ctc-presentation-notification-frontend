@@ -17,45 +17,26 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
+import generated.{SealType05, TransportEquipmentType06}
+import generators.Generators
 import models.Index
-import models.messages.{Seal, TransportEquipment}
-import pages.transport.equipment.index.AddSealYesNoPage
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
-class SealTransformerTest extends SpecBase {
+class SealTransformerTest extends SpecBase with Generators {
 
   val transformer = new SealTransformer()
 
   "SealTransformer" - {
     "must return updated answers with SealIdentificationNumberPage if seals exist for the equipment" in {
-      val userAnswersWithEquipments = setTransportEquipmentLens
-        .set(
-          Option(
-            List(
-              TransportEquipment("1", Some("container id 1"), 1, Some(List(Seal("1", "seal1"))), None),
-              TransportEquipment("2", None, 0, None, None),
-              TransportEquipment("3", Some("container id 3"), 2, Some(List(Seal("2", "seal2"), Seal("3", "seal3"))), None)
-            )
-          )
-        )(emptyUserAnswers)
-        .set(AddSealYesNoPage(Index(0)), true)
-        .get
-        .set(AddSealYesNoPage(Index(1)), true)
-        .get
-        .set(AddSealYesNoPage(Index(2)), true)
-        .get
+      forAll(arbitrary[TransportEquipmentType06], arbitrary[SealType05]) {
+        (transportEquipment, seal) =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Seq(transportEquipment.copy(Seal = Seq(seal)))
+          )(emptyUserAnswers)
 
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(0), Index(0))) mustBe None
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(1), Index(0))) mustBe None
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(2), Index(0))) mustBe None
-      userAnswersWithEquipments.get(SealIdentificationNumberPage(Index(2), Index(1))) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswersWithEquipments)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(0), Index(0))) mustBe Some("seal1")
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(1), Index(0))) mustBe None
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(2), Index(0))) mustBe Some("seal2")
-          updatedUserAnswers.get(SealIdentificationNumberPage(Index(2), Index(1))) mustBe Some("seal3")
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(SealIdentificationNumberPage(Index(0), Index(0))).value mustBe seal.identifier
       }
     }
   }

@@ -17,12 +17,14 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import base.TestMessageData.departureTransportMeansIdentification
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
+import generated.DepartureTransportMeansType03
+import generators.Generators
 import models.Index
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import utils.transformer.departureTransportMeans.TransportMeansIdentificationTransformer
@@ -30,7 +32,7 @@ import utils.transformer.departureTransportMeans.TransportMeansIdentificationTra
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TransportMeansIdentificationTransformerTest extends SpecBase {
+class TransportMeansIdentificationTransformerTest extends SpecBase with Generators {
   private val referenceDataConnector                               = mock[ReferenceDataConnector]
   private val transformer: TransportMeansIdentificationTransformer = new TransportMeansIdentificationTransformer(referenceDataConnector)
 
@@ -40,42 +42,43 @@ class TransportMeansIdentificationTransformerTest extends SpecBase {
   "IdentificationTransformer" - {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        val transportMeansIdentification = TransportMeansIdentification(departureTransportMeansIdentification, "desc")
-        when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptySet.of(transportMeansIdentification)))
+        forAll(arbitrary[DepartureTransportMeansType03], arbitrary[TransportMeansIdentification]) {
+          (departureTransportMeans, identification) =>
+            when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
+              .thenReturn(Future.successful(NonEmptySet.of(identification)))
 
-        val userAnswers = emptyUserAnswers
-        val index       = Index(0)
-        userAnswers.get(TransportMeansIdentificationPage(index)) mustBe None
+            val userAnswers = setDepartureTransportMeansAnswersLens.set(
+              Seq(departureTransportMeans.copy(typeOfIdentification = Some(identification.`type`)))
+            )(emptyUserAnswers)
 
-        whenReady(transformer.transform(hc)(userAnswers)) {
-          updatedUserAnswers =>
-            updatedUserAnswers.get(TransportMeansIdentificationPage(index)) mustBe Some(transportMeansIdentification)
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(TransportMeansIdentificationPage(Index(0))).value mustBe identification
         }
       }
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      val transportMeansIdentification = TransportMeansIdentification("foo", "desc")
-      when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.successful(NonEmptySet.of(transportMeansIdentification)))
+      forAll(arbitrary[DepartureTransportMeansType03], nonEmptyString) {
+        (departureTransportMeans, identificationCode) =>
+          val identification = TransportMeansIdentification("foo", "desc")
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(TransportMeansIdentificationPage(index)) mustBe None
+          when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
+            .thenReturn(Future.successful(NonEmptySet.of(identification)))
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(TransportMeansIdentificationPage(index)) mustBe None
+          val userAnswers = setDepartureTransportMeansAnswersLens.set(
+            Seq(departureTransportMeans.copy(typeOfIdentification = Some(identificationCode)))
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(TransportMeansIdentificationPage(Index(0))) mustBe None
       }
     }
 
     "must return failure if the service fails" in {
-      when(referenceDataConnector.getMeansOfTransportIdentificationTypes()).thenReturn(Future.failed(new RuntimeException("")))
+      when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
+        .thenReturn(Future.failed(new RuntimeException("")))
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(TransportMeansIdentificationPage(index)) mustBe None
-
-      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
+      whenReady[Throwable, Assertion](transformer.transform.apply(emptyUserAnswers).failed) {
         _ mustBe an[Exception]
       }
     }

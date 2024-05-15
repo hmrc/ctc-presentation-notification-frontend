@@ -18,7 +18,6 @@ package services.submission
 
 import connectors.DepartureMovementConnector
 import generated._
-import models.messages.HolderOfTheTransitProcedure
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.{Country, CustomsOffice, Item, Nationality}
 import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress, UserAnswers}
@@ -55,7 +54,7 @@ class SubmissionService @Inject() (
     toXML(transform(userAnswers), s"ncts:${CC170C.toString}", scope)
 
   private def transform(userAnswers: UserAnswers): CC170CType = {
-    val officeOfDeparture = userAnswers.departureData.CustomsOfficeOfDeparture
+    val officeOfDeparture = userAnswers.departureData.CustomsOfficeOfDeparture.referenceNumber
     implicit val reads: Reads[CC170CType] = for {
       transitOperation <- __.read[TransitOperationType24](transitOperationReads(userAnswers))
       representative   <- __.readNullableSafe[RepresentativeType05]
@@ -96,7 +95,7 @@ class SubmissionService @Inject() (
       limitDate => TransitOperationType24(userAnswers.lrn, limitDate)
     }
 
-  def holderOfTransit(holderOfTransit: HolderOfTheTransitProcedure): HolderOfTheTransitProcedureType19 =
+  def holderOfTransit(holderOfTransit: HolderOfTheTransitProcedureType14): HolderOfTheTransitProcedureType19 =
     HolderOfTheTransitProcedureType19(
       identificationNumber = holderOfTransit.identificationNumber,
       TIRHolderIdentificationNumber = holderOfTransit.TIRHolderIdentificationNumber,
@@ -276,7 +275,7 @@ class SubmissionService @Inject() (
 
     def goodsReferenceReads(itemIndex: Index): Reads[GoodsReferenceType02] =
       __.read[Item]
-        .map(_.goodsItemNumber)
+        .map(_.declarationGoodsItemNumber)
         .map(GoodsReferenceType02(itemIndex.sequenceNumber, _))
 
     for {

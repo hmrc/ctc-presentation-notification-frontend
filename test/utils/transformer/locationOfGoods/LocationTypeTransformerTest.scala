@@ -17,10 +17,12 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
-import base.TestMessageData.messageData.isSimplified
+import generated.LocationOfGoodsType05
+import generators.Generators
 import models.LocationType
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.locationOfGoods.LocationTypePage
 import services.LocationTypeService
@@ -28,58 +30,65 @@ import services.LocationTypeService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LocationTypeTransformerTest extends SpecBase {
+class LocationTypeTransformerTest extends SpecBase with Generators {
   private val service     = mock[LocationTypeService]
   private val transformer = new LocationTypeTransformer(service)
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(service)
 
   "LocationTypeTransformer" - {
 
     "must skip transforming if there is no location type" in {
       val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers)
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers mustBe userAnswers
-      }
+      val result      = transformer.transform.apply(userAnswers).futureValue
+      result mustBe userAnswers
     }
 
     "must return updated answers when the location type from departure data can be found in service response" in {
-      val locationType = LocationType(locationOfGoods.typeOfLocation, "description")
-      when(service.getLocationTypes(isSimplified)).thenReturn(Future.successful(Seq(locationType)))
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType]) {
+        (locationOfGoods, locationType) =>
+          when(service.getLocationTypes(any())(any()))
+            .thenReturn(Future.successful(Seq(locationType)))
 
-      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
-        Some(locationOfGoods.copy(Address = Some(locationOfGoods.Address.get.copy(country = "GB"))))
-      )(emptyUserAnswers)
-      userAnswers.get(LocationTypePage) mustBe None
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+            Some(locationOfGoods.copy(typeOfLocation = locationType.`type`))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(LocationTypePage) mustBe Some(locationType)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(LocationTypePage) mustBe Some(locationType)
       }
     }
   }
 
   "must return None when the location type from departure data cannot be found in service response" in {
-    val locationType = LocationType(locationOfGoods.typeOfLocation, "description")
-    when(service.getLocationTypes(isSimplified)).thenReturn(Future.successful(Seq(locationType)))
+    forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType]) {
+      (locationOfGoods, locationType) =>
+        when(service.getLocationTypes(any())(any()))
+          .thenReturn(Future.successful(Nil))
 
-    val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
-      Some(locationOfGoods.copy(typeOfLocation = "SomethingElse"))
-    )(emptyUserAnswers)
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          Some(locationOfGoods.copy(typeOfLocation = locationType.`type`))
+        )(emptyUserAnswers)
 
-    whenReady(transformer.transform(hc)(userAnswers)) {
-      updatedUserAnswers =>
-        updatedUserAnswers.get(LocationTypePage) mustBe None
+        val result = transformer.transform.apply(userAnswers).futureValue
+        result.get(LocationTypePage) mustBe None
     }
   }
 
   "must return failure if the service fails" in {
-    when(service.getLocationTypes(isSimplified)).thenReturn(Future.failed(new RuntimeException("")))
+    forAll(arbitrary[LocationOfGoodsType05]) {
+      locationOfGoods =>
+        when(service.getLocationTypes(any())(any()))
+          .thenReturn(Future.failed(new RuntimeException("")))
 
-    whenReady[Throwable, Assertion](transformer.transform(hc)(emptyUserAnswers).failed) {
-      _ mustBe an[Exception]
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          Some(locationOfGoods)
+        )(emptyUserAnswers)
+
+        whenReady[Throwable, Assertion](transformer.transform.apply(userAnswers).failed) {
+          _ mustBe an[Exception]
+        }
     }
   }
 }

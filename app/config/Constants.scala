@@ -17,48 +17,56 @@
 package config
 
 object Constants {
-  val GB  = "GB"
-  val XI  = "XI"
-  val AD  = "AD"
-  val XXX = "XXX"
 
-  val STANDARD    = "A"
-  val `PRE-LODGE` = "D"
+  val GB = "GB"
+  val XI = "XI"
+  val AD = "AD"
 
-  val TIR = "TIR"
-  val T2  = "T2"
-  val T   = "T"
+  object DeclarationType {
+    val T2 = "T2"
+    val T  = "T"
+  }
 
-  val NoSecurityDetails                             = "0"
-  val EntrySummaryDeclarationSecurityDetails        = "1"
-  val ExitSummaryDeclarationSecurityDetails         = "2"
-  val EntryAndExitSummaryDeclarationSecurityDetails = "3"
+  object DeclarationTypeSecurity {
+    val NoSecurityDetails                             = "0"
+    val EntrySummaryDeclarationSecurityDetails        = "1"
+    val ExitSummaryDeclarationSecurityDetails         = "2"
+    val EntryAndExitSummaryDeclarationSecurityDetails = "3"
+  }
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
+  object TransportModeCode {
+    val Maritime = "1"
+    val Rail     = "2"
+    val Road     = "3"
+    val Air      = "4"
+    val Mail     = "5"
+    val Fixed    = "7"
+    val Unknown  = "9"
+  }
 
-  val CustomsOfficeIdentifier       = "V"
-  val EoriNumberIdentifier          = "X"
-  val AuthorisationNumberIdentifier = "Y"
-  val UnlocodeIdentifier            = "U"
-  val CoordinatesIdentifier         = "W"
-  val AddressIdentifier             = "Z"
-  val PostalCodeIdentifier          = "T"
+  object QualifierOfTheIdentification {
+    val PostalCodeIdentifier          = "T"
+    val UnlocodeIdentifier            = "U"
+    val CustomsOfficeIdentifier       = "V"
+    val CoordinatesIdentifier         = "W"
+    val EoriNumberIdentifier          = "X"
+    val AuthorisationNumberIdentifier = "Y"
+    val AddressIdentifier             = "Z"
+  }
 
-  val DesignatedLocation = "A"
-  val AuthorisedPlace    = "B"
-  val ApprovedPlace      = "C"
-  val Other              = "D"
-
-  lazy val maxEoriNumberLength: Int        = 17
-  lazy val maxContainerIdNumberLength: Int = 17
+  object TypeOfLocation {
+    val DesignatedLocation = "A"
+    val AuthorisedPlace    = "B"
+    val ApprovedPlace      = "C"
+    val Other              = "D"
+  }
 
   object MeansOfTransportIdentification {
     val UnknownIdentification = "99"
+  }
+
+  object AuthorisationTypeDeparture {
+    val ACR = "C521"
+    val SSE = "C523"
   }
 }

@@ -17,7 +17,6 @@
 package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.border.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
@@ -48,7 +47,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     mock[MeansOfTransportIdentificationTypesActiveService]
 
   private lazy val identificationNumberRoute =
-    controllers.transport.border.active.routes.IdentificationNumberController.onPageLoad(departureId, mode, index).url
+    routes.IdentificationNumberController.onPageLoad(departureId, mode, index).url
 
   private val validAnswer = "testString"
 
@@ -62,12 +61,8 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     "must return Ok and the correct view for a get" in {
       forAll(arbitrary[Identification]) {
         identifier =>
-          val userAnswers = setBorderMeansAnswersLens.set(
-            None
-          )(
-            emptyUserAnswers
-              .setValue(IdentificationPage(index), identifier)
-          )
+          val userAnswers = emptyUserAnswers
+            .setValue(IdentificationPage(index), identifier)
 
           setExistingUserAnswers(userAnswers)
           val request = FakeRequest(GET, identificationNumberRoute)
@@ -161,7 +156,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -175,7 +170,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

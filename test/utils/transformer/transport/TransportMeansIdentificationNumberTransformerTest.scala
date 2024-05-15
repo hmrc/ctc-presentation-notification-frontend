@@ -17,24 +17,27 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import base.TestMessageData.transportMeansIdentificationNumber
+import generated._
+import generators.Generators
 import models.Index
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.departureTransportMeans.TransportMeansIdentificationNumberPage
 import utils.transformer.departureTransportMeans.TransportMeansIdentificationNumberTransformer
 
-class TransportMeansIdentificationNumberTransformerTest extends SpecBase {
-  val identificationNumber = transportMeansIdentificationNumber
-  val transformer          = new TransportMeansIdentificationNumberTransformer()
+class TransportMeansIdentificationNumberTransformerTest extends SpecBase with Generators {
+
+  val transformer = new TransportMeansIdentificationNumberTransformer()
 
   "TransportMeansIdentificationNumberTransformer" - {
     "must return updated answers with TransportMeansIdentificationNumberPage" in {
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(TransportMeansIdentificationNumberPage(index)) mustBe None
+      forAll(arbitrary[DepartureTransportMeansType03], nonEmptyString) {
+        (departureTransportMeans, identificationNumber) =>
+          val userAnswers = setDepartureTransportMeansAnswersLens.set(
+            Seq(departureTransportMeans.copy(identificationNumber = Some(identificationNumber)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(TransportMeansIdentificationNumberPage(index)) mustBe Some(identificationNumber)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(TransportMeansIdentificationNumberPage(Index(0))).value mustBe identificationNumber
       }
     }
   }

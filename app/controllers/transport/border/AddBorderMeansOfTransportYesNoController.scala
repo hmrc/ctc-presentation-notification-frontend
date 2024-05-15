@@ -47,11 +47,7 @@ class AddBorderMeansOfTransportYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
     implicit request =>
-      val preparedForm = request.userAnswers
-        .get(AddBorderMeansOfTransportYesNoPage)
-        .orElse(
-          Some(request.userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined)
-        ) match {
+      val preparedForm = request.userAnswers.get(AddBorderMeansOfTransportYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

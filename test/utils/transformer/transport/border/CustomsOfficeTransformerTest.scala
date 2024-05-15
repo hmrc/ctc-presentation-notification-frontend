@@ -17,11 +17,13 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.borderTransportMeans
+import generated.ActiveBorderTransportMeansType02
+import generators.Generators
 import models.Index
 import models.reference.CustomsOffice
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.transport.border.active.CustomsOfficeActiveBorderPage
 import services.CustomsOfficesService
@@ -29,65 +31,69 @@ import services.CustomsOfficesService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsOfficeTransformerTest extends SpecBase {
+class CustomsOfficeTransformerTest extends SpecBase with Generators {
   private val service     = mock[CustomsOfficesService]
   private val transformer = new CustomsOfficeTransformer(service)
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(service)
 
   "CustomsOfficeTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(Gen.oneOf(Option(List()), None)) {
-        borderMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers mustBe userAnswers
-          }
-      }
+      val userAnswers = setBorderMeansAnswersLens.set(
+        Nil
+      )(emptyUserAnswers)
+
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(CustomsOfficeActiveBorderPage(Index(0))) mustBe None
     }
 
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        val customsOffice = CustomsOffice("GB000028", "CustomsOffice1", None)
-        when(service.getCustomsOfficesByMultipleIds(Seq("GB000028"))).thenReturn(Future.successful(Seq(customsOffice)))
+        forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[CustomsOffice]) {
+          (borderTransportMeans, customsOffice) =>
+            when(service.getCustomsOfficesByMultipleIds(any())(any()))
+              .thenReturn(Future.successful(Seq(customsOffice)))
 
-        val userAnswers = setBorderMeansAnswersLens.set(Option(List(borderTransportMeans)))(emptyUserAnswers)
-        val index       = Index(0)
-        userAnswers.get(CustomsOfficeActiveBorderPage(index)) mustBe None
+            val userAnswers = setBorderMeansAnswersLens.set(
+              Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = Some(customsOffice.id)))
+            )(emptyUserAnswers)
 
-        whenReady(transformer.transform(hc)(userAnswers)) {
-          updatedUserAnswers =>
-            updatedUserAnswers.get(CustomsOfficeActiveBorderPage(index)) mustBe Some(customsOffice)
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(CustomsOfficeActiveBorderPage(index)) mustBe Some(customsOffice)
         }
       }
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      val customsOffice = CustomsOffice("something else", "CustomsOffice2", None)
-      when(service.getCustomsOfficesByMultipleIds(Seq("GB000028"))).thenReturn(Future.successful(Seq(customsOffice)))
+      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[CustomsOffice]) {
+        (borderTransportMeans, customsOffice) =>
+          when(service.getCustomsOfficesByMultipleIds(any())(any()))
+            .thenReturn(Future.successful(Nil))
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(CustomsOfficeActiveBorderPage(index)) mustBe None
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = Some(customsOffice.id)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(CustomsOfficeActiveBorderPage(index)) mustBe None
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(CustomsOfficeActiveBorderPage(index)) mustBe None
       }
     }
 
     "must return failure if the service fails" in {
-      when(service.getCustomsOfficesByMultipleIds(Seq("GB000028"))).thenReturn(Future.failed(new RuntimeException("")))
+      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+        borderTransportMeans =>
+          when(service.getCustomsOfficesByMultipleIds(any())(any()))
+            .thenReturn(Future.failed(new RuntimeException("")))
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(CustomsOfficeActiveBorderPage(index)) mustBe None
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans)
+          )(emptyUserAnswers)
 
-      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
-        _ mustBe an[Exception]
+          whenReady[Throwable, Assertion](transformer.transform.apply(userAnswers).failed) {
+            _ mustBe an[Exception]
+          }
       }
     }
   }

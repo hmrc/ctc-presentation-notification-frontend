@@ -17,10 +17,24 @@
 package repositories
 
 import config.FrontendAppConfig
+import generated.{
+  CC015C,
+  CC015CType,
+  CORRELATION_IDENTIFIERSequence,
+  ConsignmentType20,
+  CustomsOfficeOfDepartureType03,
+  CustomsOfficeOfDestinationDeclaredType01,
+  HolderOfTheTransitProcedureType14,
+  MESSAGESequence,
+  MESSAGE_1Sequence,
+  MESSAGE_TYPESequence,
+  Number0,
+  TransitOperationType06
+}
 import itbase.ItSpecBase
-import models.messages.{Consignment, HolderOfTheTransitProcedure, MessageData, TransitOperation}
 import models.{EoriNumber, SensitiveFormats, UserAnswers}
 import play.api.libs.json.Json
+import scalaxb.XMLCalendar
 import services.DateTimeService
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -35,37 +49,80 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
   override protected val repository = new SessionRepository(mongoComponent, config, dateTimeService)
 
-  private val ie015: MessageData = MessageData(
-    CustomsOfficeOfDeparture = "c of dep",
-    CustomsOfficeOfDestination = "c of des",
-    TransitOperation = TransitOperation(
-      LRN = None,
-      limitDate = None,
-      security = "sec",
-      reducedDatasetIndicator = "0"
+  private val ie015: CC015CType = CC015CType(
+    messageSequence1 = MESSAGESequence(
+      messageSender = "",
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = "",
+        preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
+        messageIdentification = ""
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC015C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
+      )
     ),
-    Authorisation = None,
-    HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
+    TransitOperation = TransitOperationType06(
+      LRN = "",
+      declarationType = "",
+      additionalDeclarationType = "",
+      TIRCarnetNumber = None,
+      presentationOfTheGoodsDateAndTime = None,
+      security = "",
+      reducedDatasetIndicator = Number0,
+      specificCircumstanceIndicator = None,
+      communicationLanguageAtDeparture = None,
+      bindingItinerary = Number0,
+      limitDate = None
+    ),
+    Authorisation = Nil,
+    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+      referenceNumber = ""
+    ),
+    CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
+      referenceNumber = ""
+    ),
+    CustomsOfficeOfTransitDeclared = Nil,
+    CustomsOfficeOfExitForTransitDeclared = Nil,
+    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
       identificationNumber = None,
-      name = None,
       TIRHolderIdentificationNumber = None,
-      ContactPerson = None,
-      Address = None
+      name = None,
+      Address = None,
+      ContactPerson = None
     ),
     Representative = None,
-    CustomsOfficeOfTransitDeclared = None,
-    CustomsOfficeOfExitForTransitDeclared = None,
-    Consignment = Consignment(
+    Guarantee = Nil,
+    Consignment = ConsignmentType20(
+      countryOfDispatch = None,
+      countryOfDestination = None,
       containerIndicator = None,
       inlandModeOfTransport = None,
       modeOfTransportAtTheBorder = None,
-      TransportEquipment = None,
+      grossMass = BigDecimal(0),
+      referenceNumberUCR = None,
+      Carrier = None,
+      Consignor = None,
+      Consignee = None,
+      AdditionalSupplyChainActor = Nil,
+      TransportEquipment = Nil,
       LocationOfGoods = None,
-      DepartureTransportMeans = None,
-      ActiveBorderTransportMeans = None,
+      DepartureTransportMeans = Nil,
+      CountryOfRoutingOfConsignment = Nil,
+      ActiveBorderTransportMeans = Nil,
       PlaceOfLoading = None,
+      PlaceOfUnloading = None,
+      PreviousDocument = Nil,
+      SupportingDocument = Nil,
+      TransportDocument = Nil,
+      AdditionalReference = Nil,
+      AdditionalInformation = Nil,
+      TransportCharges = None,
       HouseConsignment = Nil
-    )
+    ),
+    attributes = Map.empty
   )
 
   private val userAnswers1 = UserAnswers(

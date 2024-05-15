@@ -27,4 +27,6 @@ object Constants {
   lazy val loadingLocationMaxLength: Int      = 35
   lazy val conveyanceRefNumberLength: Int     = 17
   lazy val maxIdentificationNumberLength: Int = 35
+  lazy val maxEoriNumberLength: Int           = 17
+  lazy val maxContainerIdNumberLength: Int    = 17
 }

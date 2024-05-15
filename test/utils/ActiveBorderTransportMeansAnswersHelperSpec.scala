@@ -17,19 +17,13 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
-import models.messages.MessageData
 import models.reference.{CustomsOffice, Nationality}
 import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import pages.transport.border.active._
-import play.api.libs.json.Json
-
-import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -84,9 +78,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $IdentificationPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val noIdentificationTypeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.identificationType
               result mustBe None
           }
@@ -123,9 +115,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $IdentificationNumberPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val noIdentificationTypeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.identificationNumber
               result mustBe None
           }
@@ -161,9 +151,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $NationalityPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val noNationalityUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noNationalityUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.nationality
               result mustBe None
           }
@@ -199,9 +187,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $CustomsOfficeActiveBorderPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val noCustomsOfficeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noCustomsOfficeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.customsOffice
               result mustBe None
           }
@@ -240,9 +226,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
           s"when $AddConveyanceReferenceYesNoPage undefined" in {
             forAll(arbitrary[Mode]) {
               mode =>
-                val noConveyanceReferenceUserAnswers =
-                  UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                val helper = new ActiveBorderTransportMeansAnswersHelper(noConveyanceReferenceUserAnswers, departureId, mode, activeIndex)
+                val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
                 val result = helper.conveyanceReferenceNumberYesNo
                 result mustBe None
             }
@@ -281,9 +265,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
         s"when $ConveyanceReferenceNumberPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val noIdentificationTypeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new ActiveBorderTransportMeansAnswersHelper(noIdentificationTypeUserAnswers, departureId, mode, activeIndex)
+              val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.conveyanceReferenceNumber
               result mustBe None
           }

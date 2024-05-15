@@ -17,21 +17,26 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.LocationOfGoodsType05
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.AdditionalIdentifierPage
 
-class AdditionalIdentifierTransformerTest extends SpecBase {
+class AdditionalIdentifierTransformerTest extends SpecBase with Generators {
   val transformer = new AdditionalIdentifierTransformer()
 
   "AdditionalIdentifierTransformer" - {
 
     "must return updated answers with AdditionalIdentifierPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AdditionalIdentifierPage) mustBe None
+      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
+        (locationOfGoods, additionalIdentifier) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AdditionalIdentifierPage) mustBe locationOfGoods.additionalIdentifier
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AdditionalIdentifierPage).value mustBe additionalIdentifier
       }
     }
   }

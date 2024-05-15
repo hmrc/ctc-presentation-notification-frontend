@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.transport.equipment.index.seals.{routes => sealsRoutes}
 import controllers.transport.equipment.index.{routes => equipmentRoutes}
 import controllers.transport.equipment.routes
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, RichCC015CType, UserAnswers}
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage

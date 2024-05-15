@@ -16,7 +16,6 @@
 
 package controllers.locationOfGoods
 
-import base.TestMessageData.messageData
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.locationOfGoods.{routes => locationOfGoodsRoutes}
 import controllers.routes
@@ -48,7 +47,7 @@ class EoriControllerSpec extends SpecBase with AppWithDefaultMockFixtures with M
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers.copy(departureData = messageData.copy(Consignment = messageData.Consignment.copy(LocationOfGoods = None))))
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, locationOfGoodsEoriRoute)
       val result  = route(app, request).value

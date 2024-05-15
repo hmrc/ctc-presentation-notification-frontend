@@ -16,14 +16,14 @@
 
 package viewModels
 
-import config.Constants.Mail
+import config.Constants.TransportModeCode._
 import config.FrontendAppConfig
 import models.{CheckMode, Index, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.transport.InlandModePage
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.JsArray
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
@@ -36,7 +36,7 @@ case class PresentationNotificationAnswersViewModel(sections: Seq[Section])
 
 object PresentationNotificationAnswersViewModel {
 
-  class PresentationNotificationAnswersViewModelProvider @Inject() (implicit
+  class PresentationNotificationAnswersViewModelProvider @Inject() (
     val config: FrontendAppConfig,
     activeBorderAnswersViewModelProvider: ActiveBorderAnswersViewModelProvider,
     cyaRefDataService: CheckYourAnswersReferenceDataService
@@ -60,23 +60,19 @@ object PresentationNotificationAnswersViewModel {
       val representativeHelper = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 
       val activeBorderTransportMeansSectionFuture: Future[Seq[Section]] = {
-        (userAnswers.get(BorderActiveListSection), userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isDefined) match {
-          case (None, false) =>
+        userAnswers.get(BorderActiveListSection) match {
+          case None =>
             Future.successful(
-              Section(sectionTitle = messages("checkYourAnswers.transportMeans.active.withoutIndex"),
-                      rows = Seq(activeBorderHelper.addBorderMeansOfTransportYesNo).flatten
+              Section(
+                sectionTitle = messages("checkYourAnswers.transportMeans.active.withoutIndex"),
+                rows = Seq(activeBorderHelper.addBorderMeansOfTransportYesNo).flatten
               ).toSeq
             )
           case _ =>
             Future.sequence(
               userAnswers
                 .get(BorderActiveListSection)
-                .getOrElse(
-                  userAnswers.departureData.Consignment.ActiveBorderTransportMeans match {
-                    case Some(departureActiveBorderMeans) => Json.toJson(departureActiveBorderMeans).as[JsArray]
-                    case None                             => JsArray()
-                  }
-                )
+                .getOrElse(JsArray())
                 .value
                 .zipWithIndex
                 .map {
@@ -88,8 +84,9 @@ object PresentationNotificationAnswersViewModel {
       }
 
       val departureTransportMeansSections: Seq[Section] = {
-        userAnswers.get(InlandModePage) match {
-          case Some(value) if value.code == Mail => Seq.empty
+        userAnswers.get(InlandModePage).map(_.code) match {
+          case Some(Mail) =>
+            Seq.empty
           case _ =>
             userAnswers
               .get(TransportMeansListSection)
@@ -119,10 +116,17 @@ object PresentationNotificationAnswersViewModel {
         placeOfLoading                    <- placeOfLoadingAnswersHelper.placeOfLoadingSection
         activeBorderTransportMeansSection <- activeBorderTransportMeansSectionFuture
         transportEquipmentSection = TransportEquipmentAnswersHelper.sections(userAnswers, departureId, mode)
-        sections =
-          firstSection.toSeq ++ transitHolderSection.toSeq ++ representativeSection.toSeq ++ locationOfGoods.toSeq ++ placeOfLoading.toSeq ++ inlandModeSection.toSeq ++ departureTransportMeansSections ++ borderSection.toSeq ++ activeBorderTransportMeansSection ++ transportEquipmentSection
+        sections = firstSection.toSeq ++
+          transitHolderSection.toSeq ++
+          representativeSection.toSeq ++
+          locationOfGoods.toSeq ++
+          placeOfLoading.toSeq ++
+          inlandModeSection.toSeq ++
+          departureTransportMeansSections ++
+          borderSection.toSeq ++
+          activeBorderTransportMeansSection ++
+          transportEquipmentSection
       } yield new PresentationNotificationAnswersViewModel(sections)
-
     }
 
     // scalastyle:on method.length

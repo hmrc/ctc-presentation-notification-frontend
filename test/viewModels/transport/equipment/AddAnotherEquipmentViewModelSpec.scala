@@ -17,18 +17,17 @@
 package viewModels.transport.equipment
 
 import base.SpecBase
-import base.TestMessageData.messageData
+import config.Constants.AuthorisationTypeDeparture.{ACR, SSE}
 import controllers.transport.equipment.index.routes
+import generated.AuthorisationType03
 import generators.Generators
-import models.messages.Authorisation
-import models.messages.AuthorisationType.{C521, C523}
 import models.reference.Item
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import pages.transport.equipment.index._
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import viewModels.ListItem
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 
@@ -348,7 +347,9 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
-                userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C523, "1234"), Authorisation(C521, "1234")))))
+                userAnswers.copy(departureData =
+                  basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "1234"), AuthorisationType03("2", ACR, "1234")))
+                )
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
@@ -388,7 +389,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
-                userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
@@ -424,7 +425,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
-                userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
@@ -457,7 +458,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
-                userAnswers.copy(departureData = messageData.copy(Authorisation = Some(Seq(Authorisation(C521, "1234")))))
+                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 

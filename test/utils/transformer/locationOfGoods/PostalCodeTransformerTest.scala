@@ -17,21 +17,27 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.{LocationOfGoodsType05, PostcodeAddressType02}
+import generators.Generators
+import models.RichPostcodeAddressType02
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.PostalCodePage
 
-class PostalCodeTransformerTest extends SpecBase {
+class PostalCodeTransformerTest extends SpecBase with Generators {
   val transformer = new PostalCodeTransformer()
 
   "PostalCodeTransformer" - {
 
     "must return updated answers with PostalCodePage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(PostalCodePage) mustBe None
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02]) {
+        (locationOfGoods, postcodeAddress) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(PostcodeAddress = Some(postcodeAddress)))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(PostalCodePage) mustBe locationOfGoods.PostcodeAddress.map(_.toPostalCode)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(PostalCodePage).value mustBe postcodeAddress.toPostalCode
       }
     }
   }

@@ -24,18 +24,15 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.Section
 
-import scala.concurrent.ExecutionContext
-
 class LocationOfGoodsAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def locationTypeRow: Option[SummaryListRow] = buildRowWithAnswer[LocationType](
     page = LocationTypePage,
-    optionalAnswer = userAnswers.get(LocationTypePage),
     formatAnswer = formatAsText,
     prefix = "locationOfGoods.locationType",
     id = Some("change-location-type")
@@ -43,7 +40,6 @@ class LocationOfGoodsAnswersHelper(
 
   def qualifierIdentificationRow: Option[SummaryListRow] = buildRowWithAnswer[LocationOfGoodsIdentification](
     page = IdentificationPage,
-    optionalAnswer = userAnswers.get(IdentificationPage),
     formatAnswer = formatDynamicEnumAsText(_),
     prefix = "locationOfGoods.identification",
     id = Some("change-qualifier-identification")
@@ -51,7 +47,6 @@ class LocationOfGoodsAnswersHelper(
 
   def authorisationNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = AuthorisationNumberPage,
-    optionalAnswer = userAnswers.get(AuthorisationNumberPage),
     formatAnswer = formatAsText(_),
     prefix = "locationOfGoods.authorisationNumber",
     id = Some("change-authorisation-number")
@@ -59,7 +54,6 @@ class LocationOfGoodsAnswersHelper(
 
   def eoriNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = EoriPage,
-    optionalAnswer = userAnswers.get(EoriPage),
     formatAnswer = formatAsText(_),
     prefix = "locationOfGoods.eori",
     id = Some("change-eori")
@@ -67,7 +61,6 @@ class LocationOfGoodsAnswersHelper(
 
   def additionalIdentifierYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddIdentifierYesNoPage,
-    optionalAnswer = userAnswers.get(AddIdentifierYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "locationOfGoods.addIdentifierYesNo",
     id = Some("change-add-additional-identifier")
@@ -75,7 +68,6 @@ class LocationOfGoodsAnswersHelper(
 
   def additionalIdentifierRow: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = AdditionalIdentifierPage,
-    optionalAnswer = userAnswers.get(AdditionalIdentifierPage),
     formatAnswer = formatAsText(_),
     prefix = "locationOfGoods.additionalIdentifier",
     id = Some("change-additional-identifier")
@@ -83,7 +75,6 @@ class LocationOfGoodsAnswersHelper(
 
   def unLocode: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = UnLocodePage,
-    optionalAnswer = userAnswers.get(UnLocodePage),
     formatAnswer = formatAsText(_),
     prefix = "locationOfGoods.unLocode",
     id = Some("change-unLocode")
@@ -91,7 +82,6 @@ class LocationOfGoodsAnswersHelper(
 
   def customsOfficeIdentifierRow: Option[SummaryListRow] = buildRowWithAnswer[CustomsOffice](
     page = CustomsOfficeIdentifierPage,
-    optionalAnswer = userAnswers.get(CustomsOfficeIdentifierPage),
     formatAnswer = formatAsText,
     prefix = "locationOfGoods.customsOfficeIdentifier",
     id = Some("change-customs-office-identifier")
@@ -99,7 +89,6 @@ class LocationOfGoodsAnswersHelper(
 
   def coordinates: Option[SummaryListRow] = buildRowWithAnswer[Coordinates](
     page = CoordinatesPage,
-    optionalAnswer = userAnswers.get(CoordinatesPage),
     formatAnswer = formatAsText,
     prefix = "locationOfGoods.coordinates",
     id = Some("change-coordinates")
@@ -107,7 +96,6 @@ class LocationOfGoodsAnswersHelper(
 
   def locationOfGoodsContactYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddContactYesNoPage,
-    optionalAnswer = userAnswers.get(AddContactYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "locationOfGoods.addContact",
     id = Some("change-add-contact")
@@ -115,7 +103,6 @@ class LocationOfGoodsAnswersHelper(
 
   def locationOfGoodsContactPersonName: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = NamePage,
-    optionalAnswer = userAnswers.get(NamePage),
     formatAnswer = formatAsText(_),
     prefix = "locationOfGoods.contact.name",
     id = Some("change-person-name")
@@ -123,7 +110,6 @@ class LocationOfGoodsAnswersHelper(
 
   def locationOfGoodsContactPersonNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = PhoneNumberPage,
-    optionalAnswer = userAnswers.get(PhoneNumberPage),
     formatAnswer = formatAsText(_),
     prefix = "locationOfGoods.contactPhoneNumber",
     id = Some("change-person-number")
@@ -131,7 +117,6 @@ class LocationOfGoodsAnswersHelper(
 
   def countryTypeRow: Option[SummaryListRow] = buildRowWithAnswer[Country](
     page = CountryPage,
-    optionalAnswer = userAnswers.get(CountryPage),
     formatAnswer = formatAsCountry,
     prefix = "locationOfGoods.country",
     id = Some("change-location-of-goods-country")
@@ -139,7 +124,6 @@ class LocationOfGoodsAnswersHelper(
 
   def address: Option[SummaryListRow] = buildRowWithAnswer[DynamicAddress](
     page = AddressPage,
-    optionalAnswer = userAnswers.get(AddressPage),
     formatAnswer = formatAsDynamicAddress,
     prefix = "locationOfGoods.address",
     id = Some("change-location-of-goods-address")
@@ -147,7 +131,6 @@ class LocationOfGoodsAnswersHelper(
 
   def postCodeAddress: Option[SummaryListRow] = buildRowWithAnswer[PostalCodeAddress](
     page = PostalCodePage,
-    optionalAnswer = userAnswers.get(PostalCodePage),
     formatAnswer = formatAsPostalCode,
     prefix = "locationOfGoods.postalCode",
     id = Some("change-location-of-goods-postalCode")

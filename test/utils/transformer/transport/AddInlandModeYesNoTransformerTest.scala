@@ -17,32 +17,33 @@
 package utils.transformer.transport
 
 import base.SpecBase
+import generators.Generators
 import pages.transport.AddInlandModeOfTransportYesNoPage
 
-class AddInlandModeYesNoTransformerTest extends SpecBase {
+class AddInlandModeYesNoTransformerTest extends SpecBase with Generators {
 
   val transformer = new AddInlandModeYesNoTransformer
 
   "AddInlandModeYesNoTransformer" - {
     "when inland mode present must return updated answers with AddInlandModeYesNoPage as true" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddInlandModeOfTransportYesNoPage) mustBe None
+      forAll(nonEmptyString) {
+        inlandMode =>
+          val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+            Some(inlandMode)
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddInlandModeOfTransportYesNoPage) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddInlandModeOfTransportYesNoPage) mustBe Some(true)
       }
     }
 
     "when inland mode not present must return updated answers with AddInlandModeYesNoPage as false" in {
-      val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+        None
+      )(emptyUserAnswers)
 
-      userAnswers.get(AddInlandModeOfTransportYesNoPage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddInlandModeOfTransportYesNoPage) mustBe Some(false)
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(AddInlandModeOfTransportYesNoPage) mustBe Some(false)
     }
   }
 }

@@ -16,7 +16,7 @@
 
 package utils.transformer.transport.border
 
-import models.messages.ActiveBorderTransportMeans
+import generated.ActiveBorderTransportMeansType02
 import models.{Index, UserAnswers}
 import pages.transport.border.active.ConveyanceReferenceNumberPage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,13 +26,13 @@ import scala.concurrent.Future
 
 class ConveyanceReferenceTransformer extends PageTransformer {
   override type DomainModelType              = String
-  override type ExtractedTypeInDepartureData = ActiveBorderTransportMeans
-  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
+  override type ExtractedTypeInDepartureData = ActiveBorderTransportMeansType02
+  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten,
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans,
       generateCapturedAnswers = activeBorderTransportMeans =>
         activeBorderTransportMeans.zipWithIndex.flatMap {
           case (activeBorderTransportMean, i) =>

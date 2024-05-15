@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{Mode, UserAnswers}
+import models.{Mode, RichAddressType17, UserAnswers}
 import play.api.i18n.Messages
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.SummaryListRow

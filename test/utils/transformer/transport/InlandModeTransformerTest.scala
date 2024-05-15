@@ -17,9 +17,10 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import base.TestMessageData.inlandModeOfTransport
+import generators.Generators
 import models.reference.TransportMode.InlandMode
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.transport.InlandModePage
 import services.TransportModeCodesService
@@ -27,10 +28,9 @@ import services.TransportModeCodesService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class InlandModeTransformerTest extends SpecBase {
+class InlandModeTransformerTest extends SpecBase with Generators {
   private val service     = mock[TransportModeCodesService]
   private val transformer = new InlandModeTransformer(service)
-  private val inlandMode  = InlandMode(inlandModeOfTransport, "description")
 
   override def beforeEach(): Unit =
     reset(service)
@@ -38,37 +38,41 @@ class InlandModeTransformerTest extends SpecBase {
   "InlandModeTransformer" - {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        when(service.getInlandModes()).thenReturn(Future.successful(Seq(inlandMode)))
+        forAll(arbitrary[InlandMode]) {
+          inlandMode =>
+            when(service.getInlandModes())
+              .thenReturn(Future.successful(Seq(inlandMode)))
 
-        val userAnswers = emptyUserAnswers
-        userAnswers.get(InlandModePage) mustBe None
+            val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+              Some(inlandMode.code)
+            )(emptyUserAnswers)
 
-        whenReady(transformer.transform(hc)(userAnswers)) {
-          updatedUserAnswers =>
-            updatedUserAnswers.get(InlandModePage) mustBe Some(inlandMode)
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(InlandModePage).value mustBe inlandMode
         }
       }
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      when(service.getInlandModes()).thenReturn(Future.successful(Seq(InlandMode("4", "test"))))
+      forAll(arbitrary[InlandMode]) {
+        inlandMode =>
+          when(service.getInlandModes())
+            .thenReturn(Future.successful(Nil))
 
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(InlandModePage) mustBe None
+          val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+            Some(inlandMode.code)
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(InlandModePage) mustBe None
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(InlandModePage) mustBe None
       }
     }
 
     "must return failure if the service fails" in {
-      when(service.getInlandModes()).thenReturn(Future.failed(new RuntimeException("")))
+      when(service.getInlandModes())
+        .thenReturn(Future.failed(new RuntimeException("")))
 
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(InlandModePage) mustBe None
-
-      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
+      whenReady[Throwable, Assertion](transformer.transform.apply(emptyUserAnswers).failed) {
         _ mustBe an[Exception]
       }
     }

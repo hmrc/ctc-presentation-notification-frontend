@@ -17,8 +17,8 @@
 package controllers.transport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.transport.equipment.{routes => equipmentRoutes}
 import controllers.routes
+import controllers.transport.equipment.{routes => equipmentRoutes}
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any

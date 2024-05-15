@@ -17,22 +17,26 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
+import generated.TransportEquipmentType06
+import generators.Generators
 import models.Index
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.equipment.AddAnotherTransportEquipmentPage
 
-class TransportEquipmentTransformerTest extends SpecBase {
+class TransportEquipmentTransformerTest extends SpecBase with Generators {
 
   val transformer = new TransportEquipmentTransformer()
 
   "TransportEquipmentTransformer" - {
     "must return updated answers with AddAnotherTransportEquipmentPage" in {
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(AddAnotherTransportEquipmentPage(index)) mustBe None
+      forAll(arbitrary[TransportEquipmentType06]) {
+        transportEquipment =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Seq(transportEquipment)
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddAnotherTransportEquipmentPage(index)) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddAnotherTransportEquipmentPage(Index(0))) mustBe Some(true)
       }
     }
   }

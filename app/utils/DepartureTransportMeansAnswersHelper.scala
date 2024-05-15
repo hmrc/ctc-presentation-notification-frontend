@@ -25,14 +25,12 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import viewModels.{Link, Section}
 
-import scala.concurrent.ExecutionContext
-
 class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode,
   transportIndex: Index
-)(implicit messages: Messages, ec: ExecutionContext)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   implicit val ua: UserAnswers = userAnswers
@@ -47,7 +45,6 @@ class DepartureTransportMeansAnswersHelper(
   def identificationType: Option[SummaryListRow] =
     buildRowWithAnswer[TransportMeansIdentification](
       page = TransportMeansIdentificationPage(transportIndex),
-      optionalAnswer = userAnswers.get(TransportMeansIdentificationPage(transportIndex)),
       formatAnswer = formatDynamicEnumAsText(_),
       prefix = "consignment.departureTransportMeans.identification",
       id = Some("change-transport-means-identification")
@@ -55,7 +52,6 @@ class DepartureTransportMeansAnswersHelper(
 
   def identificationNumberRow: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = TransportMeansIdentificationNumberPage(transportIndex),
-    optionalAnswer = userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex)),
     formatAnswer = formatAsText,
     prefix = "consignment.departureTransportMeans.identificationNumber",
     id = Some("change-departure-transport-means-identification-number")
@@ -64,7 +60,6 @@ class DepartureTransportMeansAnswersHelper(
   def nationality: Option[SummaryListRow] =
     buildRowWithAnswer[Nationality](
       page = TransportMeansNationalityPage(transportIndex),
-      optionalAnswer = userAnswers.get(TransportMeansNationalityPage(transportIndex)),
       formatAnswer = formatAsNationality,
       prefix = "consignment.departureTransportMeans.nationality",
       id = Some("change-departure-transport-means-nationality")

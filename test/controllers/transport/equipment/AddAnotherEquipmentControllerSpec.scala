@@ -129,7 +129,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
     }
 
     "when max limit reached" - {
-      "must redirect to next page" ignore {
+      "must redirect to next page" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 

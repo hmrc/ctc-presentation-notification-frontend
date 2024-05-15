@@ -16,7 +16,7 @@
 
 package utils.transformer.transport.equipment
 
-import models.messages.TransportEquipment
+import generated.TransportEquipmentType06
 import models.{Index, UserAnswers}
 import pages.transport.equipment.index.AddSealYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,17 +27,17 @@ import scala.concurrent.Future
 class AddSealYesNoTransformer extends PageTransformer {
 
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = TransportEquipment
+  override type ExtractedTypeInDepartureData = TransportEquipmentType06
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment.toSeq.flatten,
+      extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment,
       generateCapturedAnswers = transportEquipments => {
         transportEquipments.zipWithIndex
           .map {
             case (transportEquipment, index) =>
-              (AddSealYesNoPage(Index(index)), transportEquipment.Seal.toList.flatten.nonEmpty)
+              (AddSealYesNoPage(Index(index)), transportEquipment.Seal.nonEmpty)
           }
       }
     )

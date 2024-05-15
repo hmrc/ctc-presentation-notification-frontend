@@ -18,7 +18,6 @@ package pages.transport.departureTransportMeans
 
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
-import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 
 class TransportMeansIdentificationPageSpec extends PageBehaviours {
 

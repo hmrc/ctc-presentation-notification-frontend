@@ -16,8 +16,8 @@
 
 package utils.transformer.locationOfGoods
 
-import models.UserAnswers
 import models.reference.CustomsOffice
+import models.{RichCC015CType, UserAnswers}
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import services.CustomsOfficesService
 import uk.gov.hmrc.http.HeaderCarrier

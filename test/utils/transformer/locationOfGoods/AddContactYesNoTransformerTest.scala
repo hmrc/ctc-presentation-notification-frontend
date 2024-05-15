@@ -17,52 +17,57 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.{contactPerson, locationOfGoods}
+import generated._
+import generators.Generators
 import models.LocationOfGoodsIdentification
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.locationOfGoods.{AddContactYesNoPage, IdentificationPage}
 
-class AddContactYesNoTransformerTest extends SpecBase {
+class AddContactYesNoTransformerTest extends SpecBase with Generators {
   val transformer = new AddContactYesNoTransformer()
 
   "AddContactYesNoTransformer" - {
     "must return AddContactYesNoPage Yes (true) when there is ContactPerson and identification type is not V" in {
-      val userAnswers =
-        setLocationOfGoodsOnUserAnswersLens
-          .set(Option(locationOfGoods))(emptyUserAnswers)
-          .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "description"))
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[ContactPersonType06]) {
+        (locationOfGoods, contactPerson) =>
+          val userAnswers =
+            setLocationOfGoodsOnUserAnswersLens
+              .set(
+                Some(locationOfGoods.copy(ContactPerson = Some(contactPerson)))
+              )(emptyUserAnswers)
+              .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "description"))
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddContactYesNoPage).get mustBe true
+          val result = transformer.transform.apply(userAnswers).futureValue
+
+          result.get(AddContactYesNoPage).get mustBe true
       }
     }
 
     "must return AddContactYesNoPage No (false) when there is no ContactPerson and identification is not V" in {
-      val userAnswers = setLocationOfGoodsOnUserAnswersLens
-        .set(
-          Option(locationOfGoods.copy(ContactPerson = None))
-        )(emptyUserAnswers)
-        .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "EoriIdentifier"))
+      forAll(arbitrary[LocationOfGoodsType05]) {
+        locationOfGoods =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(ContactPerson = None))
+            )(emptyUserAnswers)
+            .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "EoriIdentifier"))
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddContactYesNoPage).get mustBe false
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddContactYesNoPage).get mustBe false
       }
     }
 
     "must return AddContactYesNoPage None when identification is V" in {
-      forAll(Gen.oneOf(None, Some(contactPerson))) {
-        person =>
+      forAll(arbitrary[LocationOfGoodsType05], Gen.option(arbitrary[ContactPersonType06])) {
+        (locationOfGoods, person) =>
           val userAnswers =
             setLocationOfGoodsOnUserAnswersLens
               .set(Option(locationOfGoods.copy(ContactPerson = person)))(emptyUserAnswers)
               .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "CustomsOfficeIdentifier"))
 
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers.get(AddContactYesNoPage) mustBe None
-          }
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddContactYesNoPage) mustBe None
       }
     }
   }

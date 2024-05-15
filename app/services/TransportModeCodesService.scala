@@ -16,7 +16,7 @@
 
 package services
 
-import config.Constants._
+import config.Constants.TransportModeCode._
 import connectors.ReferenceDataConnector
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import uk.gov.hmrc.http.HeaderCarrier

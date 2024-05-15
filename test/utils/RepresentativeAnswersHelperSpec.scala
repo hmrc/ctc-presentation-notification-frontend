@@ -17,19 +17,13 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, messageData, representative}
 import generators.Generators
-import models.messages.MessageData
-import models.{Mode, UserAnswers}
+import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ActingAsRepresentativePage
 import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
-import play.api.libs.json.Json
-
-import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -74,10 +68,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when Representative is undefined in departure data IE015/013" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithoutRepresentativeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-
-              val helper = new RepresentativeAnswersHelper(ie015WithoutRepresentativeUserAnswers, departureId, mode)
+              val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.eori
 
               result mustBe None
@@ -147,13 +138,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when Representative Contact is undefined in departure data IE015/013" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val dataWithoutRepresentativeContactDetails = messageData.copy(
-                Representative = Some(representative.copy(ContactPerson = None))
-              )
-              val ie015WithoutRepresentativeContactDetailsUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), dataWithoutRepresentativeContactDetails)
-
-              val helper = new RepresentativeAnswersHelper(ie015WithoutRepresentativeContactDetailsUserAnswers, departureId, mode)
+              val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.name
 
               result mustBe None
@@ -188,13 +173,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         s"when Representative Contact is undefined in departure data IE015/013" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val dataWithoutRepresentativeContactDetails = messageData.copy(
-                Representative = Some(representative.copy(ContactPerson = None))
-              )
-              val ie015WithoutRepresentativeContactDetailsUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), dataWithoutRepresentativeContactDetails)
-
-              val helper = new RepresentativeAnswersHelper(ie015WithoutRepresentativeContactDetailsUserAnswers, departureId, mode)
+              val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.phoneNumber
 
               result mustBe None

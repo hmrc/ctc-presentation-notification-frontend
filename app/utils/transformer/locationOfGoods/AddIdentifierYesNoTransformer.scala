@@ -16,7 +16,7 @@
 
 package utils.transformer.locationOfGoods
 
-import config.Constants.{AuthorisationNumberIdentifier, EoriNumberIdentifier}
+import config.Constants.QualifierOfTheIdentification._
 import models.UserAnswers
 import pages.locationOfGoods.{AddIdentifierYesNoPage, IdentificationPage}
 import uk.gov.hmrc.http.HeaderCarrier

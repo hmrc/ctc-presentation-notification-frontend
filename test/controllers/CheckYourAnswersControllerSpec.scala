@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
 import models.AuditType.PresentationNotification
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       when(mockViewModelProvider.apply(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(PresentationNotificationAnswersViewModel(sampleSections)))
 
-      setExistingUserAnswers(emptyUserAnswers.copy(departureData = TestMessageData.messageData))
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(departureId).url)
 

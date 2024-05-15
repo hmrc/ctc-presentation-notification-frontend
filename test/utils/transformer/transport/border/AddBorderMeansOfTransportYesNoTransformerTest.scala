@@ -17,27 +17,34 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.activeBorderTransportMeans
+import generated.ActiveBorderTransportMeansType02
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 
-class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
+class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase with Generators {
   val transformer = new AddBorderMeansOfTransportYesNoTransformer()
 
   "AddBorderMeansOfTransportYesNoTransformer" - {
     "must return AddBorderMeansOfTransportYesNoPage Yes (true) when there is at least 1 border means" in {
-      val userAnswers = setBorderMeansAnswersLens.set(Option(activeBorderTransportMeans))(emptyUserAnswers)
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddBorderMeansOfTransportYesNoPage).get mustBe true
+      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+        borderTransportMeans =>
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans)
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddBorderMeansOfTransportYesNoPage).value mustBe true
       }
     }
 
     "must return AddBorderMeansOfTransportYesNoPage No (false) when there is no border means" in {
-      val userAnswers = setBorderMeansAnswersLens.set(Option(Seq()))(emptyUserAnswers)
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddBorderMeansOfTransportYesNoPage).get mustBe false
-      }
+      val userAnswers = setBorderMeansAnswersLens.set(
+        Nil
+      )(emptyUserAnswers)
+
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(AddBorderMeansOfTransportYesNoPage).value mustBe false
     }
   }
 }

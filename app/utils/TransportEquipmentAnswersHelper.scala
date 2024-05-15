@@ -26,14 +26,12 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.{Link, Section}
 
-import scala.concurrent.ExecutionContext
-
 class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode,
   equipmentIndex: Index
-)(implicit messages: Messages, ec: ExecutionContext)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   private val lastIndex: Index = Index(
@@ -46,7 +44,6 @@ class TransportEquipmentAnswersHelper(
   def addAnyTransportEquipmentYesNo(): Option[SummaryListRow] =
     buildRowWithAnswer[Boolean](
       page = AddTransportEquipmentYesNoPage,
-      optionalAnswer = userAnswers.get(AddTransportEquipmentYesNoPage),
       formatAnswer = formatAsYesOrNo,
       prefix = "transport.equipment.addTransportEquipment",
       id = Some("change-add-transport-equipment")
@@ -54,7 +51,6 @@ class TransportEquipmentAnswersHelper(
 
   def addContainerIdentificationNumberYesNo(): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddContainerIdentificationNumberYesNoPage(equipmentIndex),
-    optionalAnswer = userAnswers.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.equipment.index.addContainerIdentificationNumberYesNo",
     id = Some("change-add-transport-equipment-container-identification-number-yes-no")
@@ -62,7 +58,6 @@ class TransportEquipmentAnswersHelper(
 
   def containerIdentificationNumber(): Option[SummaryListRow] = buildRowWithAnswer[String](
     page = ContainerIdentificationNumberPage(equipmentIndex),
-    optionalAnswer = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)),
     formatAnswer = formatAsText,
     prefix = "transport.equipment.index.containerIdentificationNumber",
     id = Some("change-transport-equipment-container-identification-number")
@@ -70,7 +65,6 @@ class TransportEquipmentAnswersHelper(
 
   def sealsYesNo: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddSealYesNoPage(equipmentIndex),
-    optionalAnswer = userAnswers.get(AddSealYesNoPage(equipmentIndex)),
     formatAnswer = formatAsYesOrNo,
     prefix = "transport.equipment.index.addSealYesNo",
     id = Some("change-add-seals")
@@ -79,7 +73,6 @@ class TransportEquipmentAnswersHelper(
   def seal(index: Index): Option[SummaryListRow] =
     buildRowWithAnswer[String](
       page = SealIdentificationNumberPage(equipmentIndex, index),
-      optionalAnswer = userAnswers.get(SealIdentificationNumberPage(equipmentIndex, index)),
       formatAnswer = formatAsText,
       prefix = "transport.equipment.index.checkYourAnswers.seal",
       id = Some(s"change-seal-${index.display}"),
@@ -107,7 +100,6 @@ class TransportEquipmentAnswersHelper(
   def item(index: Index): Option[SummaryListRow] =
     buildRowWithAnswer[Item](
       page = ItemPage(equipmentIndex, index),
-      optionalAnswer = userAnswers.get(ItemPage(equipmentIndex, index)),
       formatAnswer = formatAsItem,
       prefix = "transport.equipment.index.checkYourAnswers.item",
       id = Some(s"change-item-${index.display}"),
@@ -154,10 +146,10 @@ class TransportEquipmentAnswersHelper(
 
 object TransportEquipmentAnswersHelper {
 
-  def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, activeIndex: Index)(implicit messages: Messages, ec: ExecutionContext) =
+  def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, activeIndex: Index)(implicit messages: Messages) =
     new TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
 
-  def sections(userAnswers: UserAnswers, departureId: String, mode: Mode)(implicit messages: Messages, ec: ExecutionContext): Seq[Section] = {
+  def sections(userAnswers: UserAnswers, departureId: String, mode: Mode)(implicit messages: Messages): Seq[Section] = {
 
     def transportEquipmentHelper(index: Int) =
       TransportEquipmentAnswersHelper(userAnswers, departureId, mode, Index(index))

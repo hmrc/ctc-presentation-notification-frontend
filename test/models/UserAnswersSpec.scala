@@ -17,7 +17,6 @@
 package models
 
 import base.SpecBase
-import base.TestMessageData.messageData
 import pages.QuestionPage
 import play.api.libs.json.{Format, JsPath, JsValue, Json}
 import play.api.test.Helpers.running
@@ -115,7 +114,7 @@ class UserAnswersSpec extends SpecBase {
         lrn = lrn.value,
         data = Json.obj(),
         lastUpdated = Instant.ofEpochMilli(1662546803472L),
-        departureData = messageData
+        departureData = basicIe015
       )
 
       "when encryption enabled" - {
@@ -138,7 +137,7 @@ class UserAnswersSpec extends SpecBase {
                |      "$$numberLong" : "1662546803472"
                |    }
                |  },
-               |  "departureData" : ${Json.toJson(messageData)(sensitiveFormats.messageDataWrites)}
+               |  "departureData" : "$encryptedIe015"
                |}
                |""".stripMargin)
 
@@ -174,7 +173,7 @@ class UserAnswersSpec extends SpecBase {
                |      "$$numberLong" : "1662546803472"
                |    }
                |  },
-               |  "departureData" : ${Json.toJson(messageData)(sensitiveFormats.messageDataWrites)}
+               |  "departureData" : "${basicIe015.toXML.toString()}"
                |}
                |""".stripMargin)
 

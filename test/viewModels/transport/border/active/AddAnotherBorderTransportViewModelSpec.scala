@@ -16,9 +16,11 @@
 
 package viewModels.transport.border.active
 
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
+import config.Constants.DeclarationTypeSecurity.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
+import config.Constants.TransportModeCode.Air
+import generated.CustomsOfficeOfTransitDeclaredType04
 import generators.Generators
-import models.messages.TransitOperation
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
 import models.{Index, Mode, NormalMode}
@@ -30,7 +32,6 @@ import pages.transport.border.active.{IdentificationNumberPage, IdentificationPa
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.ListItem
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
-import config.Constants._
 
 class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -82,9 +83,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation =
-                                                                     TransitOperation(None, None, security = NoSecurityDetails, reducedDatasetIndicator = "0"),
-                                                                   CustomsOfficeOfTransitDeclared = None
+                  departureData = basicIe015.copy(
+                    TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -117,9 +118,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(TransitOperation =
-                                                                     TransitOperation(None, None, security = NoSecurityDetails, reducedDatasetIndicator = "0"),
-                                                                   CustomsOfficeOfTransitDeclared = None
+                  departureData = basicIe015.copy(
+                    TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -149,9 +150,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(
-                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
-                    CustomsOfficeOfTransitDeclared = None
+                  departureData = basicIe015.copy(
+                    TransitOperation = basicIe015.TransitOperation.copy(security = EntrySummaryDeclarationSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -178,13 +179,13 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
       "for first Border Mode of transport when BorderMode of Transport is  5, " +
         "security type is not 1,2 or 3 and CustomsOfficeOfTransitDeclared is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
-            (mode, identification, identificationNumber) =>
+          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString, arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+            (mode, identification, identificationNumber, customsOfficeOfTransit) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(
-                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
-                    CustomsOfficeOfTransitDeclared = TestMessageData.customsOfficeOfTransitDeclared
+                  departureData = basicIe015.copy(
+                    TransitOperation = basicIe015.TransitOperation.copy(security = EntrySummaryDeclarationSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = Seq(customsOfficeOfTransit)
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -217,9 +218,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(
-                    TransitOperation = TransitOperation(LRN = None, limitDate = None, security = NoSecurityDetails, reducedDatasetIndicator = "0"),
-                    CustomsOfficeOfTransitDeclared = None
+                  departureData = basicIe015.copy(
+                    TransitOperation = basicIe015.TransitOperation.copy(security = NoSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -243,9 +244,9 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             (mode, identification, identificationNumber) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(
-                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
-                    CustomsOfficeOfTransitDeclared = None
+                  departureData = basicIe015.copy(
+                    TransitOperation = basicIe015.TransitOperation.copy(security = EntrySummaryDeclarationSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)
@@ -272,13 +273,13 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
       "for first Border Mode of transport when BorderMode of Transport is  5, " +
         "security type is not 1,2 or 3 and CustomsOfficeOfTransitDeclared is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString) {
-            (mode, identification, identificationNumber) =>
+          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString, arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+            (mode, identification, identificationNumber, customsOfficeOfTransit) =>
               val userAnswers = emptyUserAnswers
                 .copy(
-                  departureData = TestMessageData.messageData.copy(
-                    TransitOperation = TransitOperation(None, None, security = EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
-                    CustomsOfficeOfTransitDeclared = TestMessageData.customsOfficeOfTransitDeclared
+                  departureData = basicIe015.copy(
+                    TransitOperation = basicIe015.TransitOperation.copy(security = EntrySummaryDeclarationSecurityDetails),
+                    CustomsOfficeOfTransitDeclared = Seq(customsOfficeOfTransit)
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification)

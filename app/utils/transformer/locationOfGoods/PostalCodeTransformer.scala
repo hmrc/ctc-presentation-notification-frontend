@@ -16,7 +16,7 @@
 
 package utils.transformer.locationOfGoods
 
-import models.{PostalCodeAddress, UserAnswers}
+import models.{PostalCodeAddress, RichPostcodeAddressType02, UserAnswers}
 import pages.locationOfGoods.PostalCodePage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
@@ -27,6 +27,7 @@ class PostalCodeTransformer extends PageTransformer {
   override type DomainModelType              = PostalCodeAddress
   override type ExtractedTypeInDepartureData = PostalCodeAddress
 
+  // TODO - do reference data call here for address country
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,

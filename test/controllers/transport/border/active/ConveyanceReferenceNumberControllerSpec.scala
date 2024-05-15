@@ -16,7 +16,6 @@
 
 package controllers.transport.border.active
 
-import base.TestMessageData.activeBorderTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.border.ConveyanceReferenceNumberFormProvider
@@ -45,14 +44,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   "ConveyanceReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = setBorderMeansAnswersLens.set(
-        Option(
-          Seq(
-            activeBorderTransportMeans.head.copy(conveyanceReferenceNumber = None)
-          )
-        )
-      )(emptyUserAnswers)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, conveyanceReferenceNumberRoute)
 

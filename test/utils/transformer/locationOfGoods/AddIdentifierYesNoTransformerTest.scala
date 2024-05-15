@@ -17,60 +17,56 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated._
+import generators.Generators
 import models.LocationOfGoodsIdentification
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.locationOfGoods.{AddIdentifierYesNoPage, IdentificationPage}
 
-class AddIdentifierYesNoTransformerTest extends SpecBase {
+class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
   val transformer = new AddIdentifierYesNoTransformer()
 
   "AddIdentifierYesNoTransformer" - {
     "must return AddIdentifierYesNoPage Yes (true) when there is additionalIdentifier and identification is X or Y" in {
-      forAll(Gen.oneOf("X", "Y")) {
-        identification =>
+      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
+        (locationOfGoods, additionalIdentifier, identification) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .set(
-              Option(locationOfGoods)
+              Some(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
             )(emptyUserAnswers)
             .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers.get(AddIdentifierYesNoPage).get mustBe true
-          }
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddIdentifierYesNoPage).get mustBe true
       }
     }
 
     "must return AddIdentifierYesNoPage No (false) when there is no additionalIdentifier and identification is X or Y" in {
-      forAll(Gen.oneOf("X", "Y")) {
-        identification =>
+      forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
+        (locationOfGoods, identification) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .set(
-              Option(locationOfGoods.copy(additionalIdentifier = None))
+              Some(locationOfGoods.copy(additionalIdentifier = None))
             )(emptyUserAnswers)
             .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers.get(AddIdentifierYesNoPage).get mustBe false
-          }
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddIdentifierYesNoPage).get mustBe false
       }
     }
 
     "must return AddIdentifierYesNoPage None when identification is not X or Y" in {
-      forAll(Gen.oneOf(None, Some("additionalIdentifier"))) {
-        additionalIdentifier =>
+      forAll(arbitrary[LocationOfGoodsType05], Gen.option(nonEmptyString)) {
+        (locationOfGoods, additionalIdentifier) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .set(
-              Option(locationOfGoods.copy(additionalIdentifier = additionalIdentifier))
+              Some(locationOfGoods.copy(additionalIdentifier = additionalIdentifier))
             )(emptyUserAnswers)
             .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "description"))
 
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers.get(AddIdentifierYesNoPage) mustBe None
-          }
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddIdentifierYesNoPage) mustBe None
       }
     }
   }

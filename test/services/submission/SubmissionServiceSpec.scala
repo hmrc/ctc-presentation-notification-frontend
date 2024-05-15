@@ -19,7 +19,6 @@ package services.submission
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
-import models.messages.{Address, HolderOfTheTransitProcedure}
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference._
 import models.reference.transport.border.active.{Identification => ABTMIdentification}
@@ -148,10 +147,10 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           Gen.option(Gen.alphaNumStr),
           Gen.option(Gen.alphaNumStr),
           Gen.option(Gen.alphaNumStr),
-          arbitrary[Address]
+          arbitrary[AddressType17]
         ) {
           (identificationNumber, tirHolderIdentificationNumber, name, address) =>
-            val holderOfTransit = HolderOfTheTransitProcedure(
+            val holderOfTransit = HolderOfTheTransitProcedureType14(
               identificationNumber = identificationNumber,
               TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
               name = name,
@@ -184,7 +183,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           Gen.option(Gen.alphaNumStr)
         ) {
           (identificationNumber, tirHolderIdentificationNumber, name) =>
-            val holderOfTransit = HolderOfTheTransitProcedure(
+            val holderOfTransit = HolderOfTheTransitProcedureType14(
               identificationNumber = identificationNumber,
               TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
               name = name,

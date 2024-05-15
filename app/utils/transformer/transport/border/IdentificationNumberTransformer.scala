@@ -27,12 +27,12 @@ class IdentificationNumberTransformer extends PageTransformer {
 
   override type DomainModelType              = String
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.nonEmpty
+  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten.flatMap(_.identificationNumber),
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.identificationNumber),
       generateCapturedAnswers = identificationNumbers =>
         identificationNumbers.zipWithIndex.map {
           case (identificationNumber, i) =>

@@ -16,753 +16,201 @@
 
 package base
 
-import config.Constants.EntrySummaryDeclarationSecurityDetails
-import models.Coordinates
-import models.messages.AuthorisationType.{C521, Other}
-import models.messages._
-import play.api.libs.json.{JsValue, Json}
+import generated._
+import scalaxb.XMLCalendar
 
-object TestMessageData {
+trait TestMessageData {
 
-  val limitDate = "2023-06-09"
-
-  val transitOperation: TransitOperation =
-    TransitOperation(None, Some(limitDate), EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0")
-
-  val seals: List[Seal] = List(Seal("1", "seal1"), Seal("2", "seal2"))
-
-  val goodsReference: List[GoodsReference] = List(GoodsReference("1", 5))
-
-  val transportEquipment: List[TransportEquipment] =
-    List(TransportEquipment("26754", Some("CIN2"), 1234, Some(seals), Some(goodsReference)))
-
-  val customsOffice: CustomsOffice =
-    CustomsOffice("GB000068")
-
-  val coordinates: Coordinates = Coordinates("44.968046", "-94.420307")
-
-  val economicOperator: EconomicOperator = EconomicOperator("ECO247")
-
-  val address: Address = Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB")
-
-  val postcodeAddress: PostcodeAddress = PostcodeAddress(Some("House number 1"), "NE52ZL", "GB")
-
-  val contactName        = "Paul Sully"
-  val contactPhoneNumber = "07508994566"
-  val contactEmail       = "sullivan@epic.com"
-
-  val contactPerson: ContactPerson = ContactPerson(contactName, contactPhoneNumber, Some(contactEmail))
-
-  val representativeEori = "IdNumber"
-
-  val representative: Representative = Representative(representativeEori, "2", Some(contactPerson))
-
-  val locationOfGoods: LocationOfGoods = LocationOfGoods(
-    "A",
-    "Q",
-    Some("AUTH1"),
-    Some("ADD1"),
-    Some("FG345UNLOCODE"),
-    Some(customsOffice),
-    Some(coordinates),
-    Some(economicOperator),
-    Some(address),
-    Some(postcodeAddress),
-    Some(contactPerson)
-  )
-
-  val activeBorderTransportMeansIdentification       = "10"
-  val activeBorderTransportMeansIdentificationNumber = "BX857GGE"
-
-  val borderTransportMeans = ActiveBorderTransportMeans(
-    "11",
-    Some("GB000028"),
-    Some(activeBorderTransportMeansIdentification),
-    Some(activeBorderTransportMeansIdentificationNumber),
-    Some("FR"),
-    Some("REF2")
-  )
-
-  val departureTransportMeansIdentification = "10"
-  val departureTransportMeansNationality    = "FR"
-  val transportMeansIdentificationNumber    = "BX857GGE"
-
-  val activeBorderTransportMeans: List[ActiveBorderTransportMeans] = List(
-    ActiveBorderTransportMeans(
-      "11",
-      Some("GB000028"),
-      Some(activeBorderTransportMeansIdentification),
-      Some(activeBorderTransportMeansIdentificationNumber),
-      Some("FR"),
-      Some("REF2")
-    )
-  )
-
-  val departureTransportMeans: DepartureTransportMeans =
-    DepartureTransportMeans(
-      Some("10"),
-      Some("BX857GGE"),
-      Some("FR")
-    )
-
-  val placeOfLoading: PlaceOfLoading = PlaceOfLoading(Some("UNCODEX"), Some("GB"), Some("Sheffield"))
-
-  val inlandModeOfTransport = "3"
-
-  val consignment: Consignment = Consignment(
-    containerIndicator = Some("1"),
-    inlandModeOfTransport = Some(inlandModeOfTransport),
-    modeOfTransportAtTheBorder = Some("2"),
-    TransportEquipment = Some(transportEquipment),
-    LocationOfGoods = Some(locationOfGoods),
-    DepartureTransportMeans = Some(Seq(departureTransportMeans)),
-    ActiveBorderTransportMeans = Some(activeBorderTransportMeans),
-    PlaceOfLoading = Some(placeOfLoading),
-    HouseConsignment = Seq(
-      HouseConsignment(
-        List(
-          ConsignmentItem(
-            "18914",
-            1458,
-            Commodity("descOfGoods")
-          )
-        )
+  val basicIe015: CC015CType = CC015CType(
+    messageSequence1 = MESSAGESequence(
+      messageSender = "",
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = "",
+        preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
+        messageIdentification = ""
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC015C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
       )
-    )
+    ),
+    TransitOperation = TransitOperationType06(
+      LRN = "",
+      declarationType = "",
+      additionalDeclarationType = "",
+      TIRCarnetNumber = None,
+      presentationOfTheGoodsDateAndTime = None,
+      security = "",
+      reducedDatasetIndicator = Number0,
+      specificCircumstanceIndicator = None,
+      communicationLanguageAtDeparture = None,
+      bindingItinerary = Number0,
+      limitDate = None
+    ),
+    Authorisation = Nil,
+    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+      referenceNumber = ""
+    ),
+    CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
+      referenceNumber = ""
+    ),
+    CustomsOfficeOfTransitDeclared = Nil,
+    CustomsOfficeOfExitForTransitDeclared = Nil,
+    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
+      identificationNumber = None,
+      TIRHolderIdentificationNumber = None,
+      name = None,
+      Address = None,
+      ContactPerson = None
+    ),
+    Representative = None,
+    Guarantee = Nil,
+    Consignment = ConsignmentType20(
+      countryOfDispatch = None,
+      countryOfDestination = None,
+      containerIndicator = None,
+      inlandModeOfTransport = None,
+      modeOfTransportAtTheBorder = None,
+      grossMass = BigDecimal(0),
+      referenceNumberUCR = None,
+      Carrier = None,
+      Consignor = None,
+      Consignee = None,
+      AdditionalSupplyChainActor = Nil,
+      TransportEquipment = Nil,
+      LocationOfGoods = None,
+      DepartureTransportMeans = Nil,
+      CountryOfRoutingOfConsignment = Nil,
+      ActiveBorderTransportMeans = Nil,
+      PlaceOfLoading = None,
+      PlaceOfUnloading = None,
+      PreviousDocument = Nil,
+      SupportingDocument = Nil,
+      TransportDocument = Nil,
+      AdditionalReference = Nil,
+      AdditionalInformation = Nil,
+      TransportCharges = None,
+      HouseConsignment = Nil
+    ),
+    attributes = Map.empty
   )
 
-  val customsOfficeOfTransitDeclared: Option[Seq[CustomsOfficeOfTransitDeclared]] = Option(Seq(CustomsOfficeOfTransitDeclared("GB000013")))
-
-  val authorisation: Seq[Authorisation] = Seq(
-    Authorisation(C521, "AB123"),
-    Authorisation(Other("SomethingElse"), "CD123")
+  val completeIe015: CC015CType = CC015CType(
+    messageSequence1 = MESSAGESequence(
+      messageSender = "",
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = "",
+        preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
+        messageIdentification = ""
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC015C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
+      )
+    ),
+    TransitOperation = TransitOperationType06(
+      LRN = "",
+      declarationType = "",
+      additionalDeclarationType = "",
+      TIRCarnetNumber = None,
+      presentationOfTheGoodsDateAndTime = None,
+      security = "",
+      reducedDatasetIndicator = Number0,
+      specificCircumstanceIndicator = None,
+      communicationLanguageAtDeparture = None,
+      bindingItinerary = Number0,
+      limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))
+    ),
+    Authorisation = Nil,
+    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+      referenceNumber = ""
+    ),
+    CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
+      referenceNumber = ""
+    ),
+    CustomsOfficeOfTransitDeclared = Nil,
+    CustomsOfficeOfExitForTransitDeclared = Nil,
+    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
+      identificationNumber = None,
+      TIRHolderIdentificationNumber = None,
+      name = None,
+      Address = None,
+      ContactPerson = None
+    ),
+    Representative = None,
+    Guarantee = Nil,
+    Consignment = ConsignmentType20(
+      countryOfDispatch = None,
+      countryOfDestination = None,
+      containerIndicator = Some(Number1),
+      inlandModeOfTransport = None,
+      modeOfTransportAtTheBorder = Some("1"),
+      grossMass = BigDecimal(0),
+      referenceNumberUCR = None,
+      Carrier = None,
+      Consignor = None,
+      Consignee = None,
+      AdditionalSupplyChainActor = Nil,
+      TransportEquipment = Seq(
+        TransportEquipmentType06(
+          sequenceNumber = "1",
+          containerIdentificationNumber = None,
+          numberOfSeals = 0,
+          Seal = Nil,
+          GoodsReference = Nil
+        )
+      ),
+      LocationOfGoods = Some(
+        LocationOfGoodsType05(
+          typeOfLocation = "A",
+          qualifierOfIdentification = "T",
+          authorisationNumber = None,
+          additionalIdentifier = None,
+          UNLocode = None,
+          CustomsOffice = None,
+          GNSS = None,
+          EconomicOperator = None,
+          Address = None,
+          PostcodeAddress = None,
+          ContactPerson = None
+        )
+      ),
+      DepartureTransportMeans = Nil,
+      CountryOfRoutingOfConsignment = Nil,
+      ActiveBorderTransportMeans = Seq(
+        ActiveBorderTransportMeansType02(
+          sequenceNumber = "1",
+          customsOfficeAtBorderReferenceNumber = None,
+          typeOfIdentification = None,
+          identificationNumber = None,
+          nationality = None,
+          conveyanceReferenceNumber = None
+        )
+      ),
+      PlaceOfLoading = Some(
+        PlaceOfLoadingType03(
+          UNLocode = None,
+          country = None,
+          location = None
+        )
+      ),
+      PlaceOfUnloading = None,
+      PreviousDocument = Nil,
+      SupportingDocument = Nil,
+      TransportDocument = Nil,
+      AdditionalReference = Nil,
+      AdditionalInformation = Nil,
+      TransportCharges = None,
+      HouseConsignment = Nil
+    ),
+    attributes = Map.empty
   )
 
-  val customsOfficeOfDeparture: String = "GB000011"
-
-  val customsOfficeOfDestination: String = "GB000012"
-
-  val holderOfTheTransitProcedure: HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
-    identificationNumber = Some("identificationNumber"),
-    name = Some("trader1"),
-    TIRHolderIdentificationNumber = Some("TIRHolderIdentificationNumber"),
-    ContactPerson = Some(ContactPerson("name", "phone", Some("email"))),
-    Address = Some(Address("Address Line 1", Some("NE53KL"), "Newcastle", "GB"))
-  )
-
-  val messageData: MessageData =
-    MessageData(
-      customsOfficeOfDeparture,
-      customsOfficeOfDestination,
-      transitOperation,
-      Some(authorisation),
-      holderOfTheTransitProcedure,
-      Some(representative),
-      customsOfficeOfTransitDeclared,
-      None,
-      consignment
-    )
-
-  val jsonValue: JsValue = Json.parse(
-    s"""
-       |{
-       |    "CustomsOfficeOfDeparture": {
-       |        "referenceNumber": "GB000011"
-       |    },
-       |    "CustomsOfficeOfDestinationDeclared": {
-       |        "referenceNumber": "GB000012"
-       |    },
-       |    "CustomsOfficeOfTransitDeclared": [
-       |        {
-       |        "referenceNumber": "GB000013"
-       |        }
-       |    ],
-       |    "TransitOperation": {
-       |        "limitDate": "2023-06-09",
-       |        "security": "1",
-       |        "reducedDatasetIndicator": "0"
-       |    },
-       |    "Authorisation": [
-       |        {
-       |            "type": "C521",
-       |            "referenceNumber": "AB123"
-       |        },
-       |        {
-       |            "type": "SomethingElse",
-       |            "referenceNumber": "CD123"
-       |        }
-       |    ],
-       |    "HolderOfTheTransitProcedure": {
-       |        "identificationNumber": "identificationNumber",
-       |        "name": "trader1",
-       |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
-       |        "ContactPerson": {
-       |            "name": "name",
-       |            "phoneNumber": "phone",
-       |            "eMailAddress": "email"
-       |        },
-       |        "Address": {
-       |            "streetAndNumber": "Address Line 1",
-       |            "postcode": "NE53KL",
-       |            "city":
-       |            "Newcastle",
-       |            "country": "GB"
-       |        }
-       |    },
-       |    "Representative": {
-       |        "identificationNumber": "IdNumber",
-       |        "status": "2",
-       |        "ContactPerson": {
-       |            "name": "Paul Sully",
-       |            "phoneNumber": "07508994566",
-       |            "eMailAddress": "sullivan@epic.com"
-       |        }
-       |    },
-       |    "Consignment": {
-       |        "containerIndicator": "1",
-       |        "inlandModeOfTransport": "3",
-       |        "modeOfTransportAtTheBorder": "2",
-       |        "DepartureTransportMeans": [
-       |         {
-       |          "typeOfIdentification": "10",
-       |          "identificationNumber" : "BX857GGE",
-       |          "nationality" : "FR"
-       |          }
-       |        ],
-       |        "TransportEquipment": [
-       |            {
-       |                "sequenceNumber": "26754",
-       |                "containerIdentificationNumber": "CIN2",
-       |                "numberOfSeals": 1234,
-       |                "Seal": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "identifier": "seal1"
-       |                    },
-       |                    {
-       |                        "sequenceNumber": "2",
-       |                        "identifier": "seal2"
-       |                    }
-       |                ],
-       |                "GoodsReference": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "declarationGoodsItemNumber": 5
-       |                    }
-       |                ]
-       |            }
-       |        ],
-       |        "LocationOfGoods": {
-       |            "typeOfLocation": "A",
-       |            "qualifierOfIdentification": "Q",
-       |            "authorisationNumber": "AUTH1",
-       |            "additionalIdentifier": "ADD1",
-       |            "UNLocode": "FG345UNLOCODE",
-       |            "CustomsOffice": {
-       |                "referenceNumber": "GB000068"
-       |            },
-       |            "GNSS": {
-       |                "latitude": "44.968046",
-       |                "longitude": "-94.420307"
-       |            },
-       |            "EconomicOperator": {
-       |                "identificationNumber": "ECO247"
-       |            },
-       |            "Address": {
-       |                "streetAndNumber": "Address Line 1",
-       |                "postcode": "NE53KL",
-       |                "city": "Newcastle",
-       |                "country": "GB"
-       |            },
-       |            "PostcodeAddress": {
-       |                "houseNumber": "House number 1",
-       |                "postcode": "NE52ZL",
-       |                "country": "GB"
-       |            },
-       |            "ContactPerson": {
-       |                "name": "Paul Sully",
-       |                "phoneNumber": "07508994566",
-       |                "eMailAddress": "sullivan@epic.com"
-       |            }
-       |        },
-       |        "ActiveBorderTransportMeans": [
-       |            {
-       |                "sequenceNumber": "11",
-       |                "customsOfficeAtBorderReferenceNumber": "GB000028",
-       |                "typeOfIdentification": "10",
-       |                "identificationNumber": "BX857GGE",
-       |                "nationality": "FR",
-       |                "conveyanceReferenceNumber": "REF2"
-       |            }
-       |        ],
-       |        "PlaceOfLoading": {
-       |            "UNLocode": "UNCODEX",
-       |            "country": "GB",
-       |            "location": "Sheffield"
-       |        },
-       |        "HouseConsignment": [
-       |            {
-       |                "ConsignmentItem": [
-       |                    {
-       |                        "goodsItemNumber": "18914",
-       |                        "declarationGoodsItemNumber": 1458,
-       |                        "Commodity": {
-       |                            "descriptionOfGoods": "descOfGoods"
-       |                        }
-       |                    }
-       |                ]
-       |            }
-       |        ]
-       |    }
-       |}
-       |""".stripMargin
-  )
-
-  val jsonValueNormalNoLimitDate: JsValue = Json.parse(
-    s"""
-       |{
-       |    "CustomsOfficeOfDeparture": {
-       |        "referenceNumber": "GB000011"
-       |    },
-       |    "CustomsOfficeOfDestinationDeclared": {
-       |        "referenceNumber": "GB000012"
-       |    },
-       |    "CustomsOfficeOfTransitDeclared": [
-       |        {
-       |        "referenceNumber": "GB000013"
-       |        }
-       |    ],
-       |    "TransitOperation": {
-       |        "security": "1",
-       |        "reducedDatasetIndicator": "indicatorString"
-       |    },
-       |    "Authorisation": [
-       |        {
-       |            "type": "C521",
-       |            "referenceNumber": "AB123"
-       |        },
-       |        {
-       |            "type": "SomethingElse",
-       |            "referenceNumber": "CD123"
-       |        }
-       |    ],
-       |    "HolderOfTheTransitProcedure": {
-       |        "identificationNumber": "identificationNumber",
-       |        "name": "trader1",
-       |        "TIRHolderIdentificationNumber": "TIRHolderIdentificationNumber",
-       |        "ContactPerson": {
-       |            "name": "name",
-       |            "phoneNumber": "phone",
-       |            "eMailAddress": "email"
-       |        },
-       |        "Address": {
-       |            "streetAndNumber": "Address Line 1",
-       |            "postcode": "NE53KL",
-       |            "city":
-       |            "Newcastle",
-       |            "country": "GB"
-       |        }
-       |    },
-       |    "Representative": {
-       |        "identificationNumber": "IdNumber",
-       |        "status": "2",
-       |        "ContactPerson": {
-       |            "name": "Paul Sully",
-       |            "phoneNumber": "07508994566",
-       |            "eMailAddress": "sullivan@epic.com"
-       |        }
-       |    },
-       |    "Consignment": {
-       |        "containerIndicator": "1",
-       |        "modeOfTransportAtTheBorder": "2",
-       |        "inlandModeOfTransport": "2",
-       |        "TransportEquipment": [
-       |            {
-       |                "sequenceNumber": "26754",
-       |                "containerIdentificationNumber": "CIN2",
-       |                "numberOfSeals": 1234,
-       |                "Seal": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "identifier": "seal1"
-       |                    },
-       |                    {
-       |                        "sequenceNumber": "2",
-       |                        "identifier": "seal2"
-       |                    }
-       |                ],
-       |                "GoodsReference": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "declarationGoodsItemNumber": 5
-       |                    }
-       |                ]
-       |            }
-       |        ],
-       |        "LocationOfGoods": {
-       |            "typeOfLocation": "A",
-       |            "qualifierOfIdentification": "Q",
-       |            "authorisationNumber": "AUTH1",
-       |            "additionalIdentifier": "ADD1",
-       |            "UNLocode": "FG345UNLOCODE",
-       |            "CustomsOffice": {
-       |                "referenceNumber": "GB000068"
-       |            },
-       |            "GNSS": {
-       |                "latitude": "44.968046",
-       |                "longitude": "-94.420307"
-       |            },
-       |            "EconomicOperator": {
-       |                "identificationNumber": "ECO247"
-       |            },
-       |            "Address": {
-       |                "streetAndNumber": "Address Line 1",
-       |                "postcode": "NE53KL",
-       |                "city": "Newcastle",
-       |                "country": "GB"
-       |            },
-       |            "PostcodeAddress": {
-       |                "houseNumber": "House number 1",
-       |                "postcode": "NE52ZL",
-       |                "country": "GB"
-       |            },
-       |            "ContactPerson": {
-       |                "name": "Paul Sully",
-       |                "phoneNumber": "07508994566",
-       |                "eMailAddress": "sullivan@epic.com"
-       |            }
-       |        },
-       |        "DepartureTransportMeans": [
-       |           {
-       |                "typeOfIdentification": "10",
-       |                "identificationNumber": "BX857GGE",
-       |                "nationality": "FR"
-       |            }
-       |        ],
-       |        "ActiveBorderTransportMeans": [
-       |            {
-       |                "sequenceNumber": "11",
-       |                "customsOfficeAtBorderReferenceNumber": "GB000028",
-       |                "typeOfIdentification": "10",
-       |                "identificationNumber": "BX857GGE",
-       |                "nationality": "FR",
-       |                "conveyanceReferenceNumber": "REF2"
-       |            }
-       |        ],
-       |        "PlaceOfLoading": {
-       |            "UNLocode": "UNCODEX",
-       |            "country": "GB",
-       |            "location": "Sheffield"
-       |        },
-       |        "HouseConsignment": [
-       |            {
-       |                "ConsignmentItem": [
-       |                    {
-       |                        "goodsItemNumber": "18914",
-       |                        "declarationGoodsItemNumber": 1458,
-       |                        "Commodity": {
-       |                            "descriptionOfGoods": "descOfGoods"
-       |                        }
-       |                    }
-       |                ]
-       |            }
-       |        ]
-       |    }
-       |}
-       |""".stripMargin
-  )
-
-  val jsonValueWithLrn: JsValue = Json.parse(
-    s"""
-       |{
-       |    "CustomsOfficeOfDeparture": {
-       |        "referenceNumber": "GB000011"
-       |    },
-       |    "CustomsOfficeOfDestinationDeclared": {
-       |        "referenceNumber": "GB000012"
-       |    },
-       |    "TransitOperation": {
-       |        "limitDate": "2023-06-09",
-       |        "security": "1",
-       |        "LRN": "testLrn",
-       |        "reducedDatasetIndicator": "0"
-       |    },
-       |    "Authorisation": [
-       |        {
-       |            "type": "C521",
-       |            "referenceNumber": "AB123"
-       |        },
-       |        {
-       |            "type": "SomethingElse",
-       |            "referenceNumber": "CD123"
-       |        }
-       |    ],
-       |    "HolderOfTheTransitProcedure": {
-       |    },
-       |    "Consignment": {
-       |        "containerIndicator": "1",
-       |        "inlandModeOfTransport": "3",
-       |        "modeOfTransportAtTheBorder": "2",
-       |         "DepartureTransportMeans": [
-       |         {
-       |          "typeOfIdentification": "10",
-       |          "identificationNumber" : "BX857GGE",
-       |          "nationality" : "FR"
-       |          }
-       |        ],
-       |        "TransportEquipment": [
-       |            {
-       |                "sequenceNumber": "26754",
-       |                "containerIdentificationNumber": "CIN2",
-       |                "numberOfSeals": 1234,
-       |                "Seal": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "identifier": "seal1"
-       |                    },
-       |                    {
-       |                        "sequenceNumber": "2",
-       |                        "identifier": "seal2"
-       |                    }
-       |                ],
-       |                "GoodsReference": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "declarationGoodsItemNumber": 5
-       |                    }
-       |                ]
-       |            }
-       |        ],
-       |        "LocationOfGoods": {
-       |            "typeOfLocation": "A",
-       |            "qualifierOfIdentification": "Q",
-       |            "authorisationNumber": "AUTH1",
-       |            "additionalIdentifier": "ADD1",
-       |            "UNLocode": "FG345UNLOCODE",
-       |            "CustomsOffice": {
-       |                "referenceNumber": "GB000068"
-       |            },
-       |            "GNSS": {
-       |                "latitude": "44.968046",
-       |                "longitude": "-94.420307"
-       |            },
-       |            "EconomicOperator": {
-       |                "identificationNumber": "ECO247"
-       |            },
-       |            "Address": {
-       |                "streetAndNumber": "Address Line 1",
-       |                "postcode": "NE53KL",
-       |                "city": "Newcastle",
-       |                "country": "GB"
-       |            },
-       |            "PostcodeAddress": {
-       |                "houseNumber": "House number 1",
-       |                "postcode": "NE52ZL",
-       |                "country": "GB"
-       |            },
-       |            "ContactPerson": {
-       |                "name": "Paul Sully",
-       |                "phoneNumber": "07508994566",
-       |                "eMailAddress": "sullivan@epic.com"
-       |            }
-       |        },
-       |        "ActiveBorderTransportMeans": [
-       |            {
-       |                "sequenceNumber": "11",
-       |                "customsOfficeAtBorderReferenceNumber": "GB000028",
-       |                "typeOfIdentification": "10",
-       |                "identificationNumber": "BX857GGE",
-       |                "nationality": "FR",
-       |                "conveyanceReferenceNumber": "REF2"
-       |            }
-       |        ],
-       |        "PlaceOfLoading": {
-       |            "UNLocode": "UNCODEX",
-       |            "country": "GB",
-       |            "location": "Sheffield"
-       |        },
-       |        "HouseConsignment": [
-       |            {
-       |                "ConsignmentItem": [
-       |                    {
-       |                        "goodsItemNumber": "18914",
-       |                        "declarationGoodsItemNumber": 1458,
-       |                        "Commodity": {
-       |                            "descriptionOfGoods": "descOfGoods"
-       |                        }
-       |                    }
-       |                ]
-       |            }
-       |        ]
-       |    }
-       |}
-       |""".stripMargin
-  )
-
-  val incompleteJsonValue: JsValue = Json.parse(
-    s"""
-       |{
-       |    "CustomsOfficeOfDeparture": {
-       |        "referenceNumber": "GB000011"
-       |    },
-       |    "CustomsOfficeOfDestinationDeclared": {
-       |        "referenceNumber": "GB000012"
-       |    },
-       |    "TransitOperation": {
-       |        "limitDate": "2023-06-09",
-       |        "security": "1",
-       |        "reducedDatasetIndicator": "0"
-       |    },
-       |    "HolderOfTheTransitProcedure": {
-       |    },
-       |    "Consignment": {
-       |        "containerIndicator": "1",
-       |        "modeOfTransportAtTheBorder": "2",
-       |        "TransportEquipment": [
-       |            {
-       |                "sequenceNumber": "26754",
-       |                "containerIdentificationNumber": "CIN2",
-       |                "numberOfSeals": 1234,
-       |                "Seal": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "identifier": "seal1"
-       |                    },
-       |                    {
-       |                        "sequenceNumber": "2",
-       |                        "identifier": "seal2"
-       |                    }
-       |                ],
-       |                "GoodsReference": [
-       |                    {
-       |                        "sequenceNumber": "1",
-       |                        "declarationGoodsItemNumber": 5
-       |                    }
-       |                ]
-       |            }
-       |        ],
-       |        "LocationOfGoods": {
-       |            "typeOfLocation": "A",
-       |            "qualifierOfIdentification": "Q",
-       |            "authorisationNumber": "AUTH1",
-       |            "additionalIdentifier": "ADD1",
-       |            "UNLocode": "FG345UNLOCODE",
-       |            "CustomsOffice": {
-       |                "referenceNumber": "GB000068"
-       |            },
-       |            "GNSS": {
-       |                "latitude": "44.968046",
-       |                "longitude": "-94.420307"
-       |            },
-       |            "EconomicOperator": {
-       |                "identificationNumber": "ECO247"
-       |            },
-       |            "Address": {
-       |                "streetAndNumber": "Address Line 1",
-       |                "postcode": "NE53KL",
-       |                "city": "Newcastle",
-       |                "country": "GB"
-       |            },
-       |            "PostcodeAddress": {
-       |                "houseNumber": "House number 1",
-       |                "postcode": "NE52ZL",
-       |                "country": "GB"
-       |            },
-       |            "ContactPerson": {
-       |                "name": "Paul Sully",
-       |                "phoneNumber": "07508994566",
-       |                "eMailAddress": "sullivan@epic.com"
-       |            }
-       |        },
-       |        "PlaceOfLoading": {
-       |            "UNLocode": "UNCODEX",
-       |            "country": "GB",
-       |            "location": "Sheffield"
-       |        },
-       |        "HouseConsignment": [
-       |            {
-       |                "ConsignmentItem": [
-       |                    {
-       |                        "goodsItemNumber": "18914",
-       |                        "declarationGoodsItemNumber": 1458,
-       |                        "Commodity": {
-       |                            "descriptionOfGoods": "descOfGoods"
-       |                        }
-       |                    }
-       |                ]
-       |            }
-       |        ]
-       |    }
-       |}
-       |""".stripMargin
-  )
-
-  val allOptionsNoneJsonValue: JsValue = Json.parse(
-    s"""
-       |{
-       |    "CustomsOfficeOfDeparture": {
-       |        "referenceNumber": "GB000011"
-       |    },
-       |    "CustomsOfficeOfDestinationDeclared": {
-       |        "referenceNumber": "GB000012"
-       |    },
-       |    "TransitOperation": {
-       |        "security": "1",
-       |        "reducedDatasetIndicator": "0"
-       |    },
-       |    "HolderOfTheTransitProcedure": {
-       |    },
-       |    "Consignment": {
-       |        "HouseConsignment": [
-       |            {
-       |                "ConsignmentItem": [
-       |                    {
-       |                        "goodsItemNumber": "18914",
-       |                        "declarationGoodsItemNumber": 1458,
-       |                        "Commodity": {
-       |                            "descriptionOfGoods": "descOfGoods"
-       |                        }
-       |                    }
-       |                ]
-       |            }
-       |        ]
-       |    }
-       |}
-       |""".stripMargin
-  )
-
-  val allOptionsNoneReducedDatasetTrueJsonValue: JsValue = Json.parse(
-    s"""
-       |{
-       |    "CustomsOfficeOfDeparture": {
-       |        "referenceNumber": "GB000011"
-       |    },
-       |    "CustomsOfficeOfDestinationDeclared": {
-       |        "referenceNumber": "GB000012"
-       |    },
-       |    "TransitOperation": {
-       |        "security": "1",
-       |        "reducedDatasetIndicator": "1"
-       |    },
-       |    "HolderOfTheTransitProcedure": {
-       |    },
-       |    "Consignment": {
-       |        "HouseConsignment": [
-       |            {
-       |                "ConsignmentItem": [
-       |                    {
-       |                        "goodsItemNumber": "18914",
-       |                        "declarationGoodsItemNumber": 1458,
-       |                        "Commodity": {
-       |                            "descriptionOfGoods": "descOfGoods"
-       |                        }
-       |                    }
-       |                ]
-       |            }
-       |        ]
-       |    }
-       |}
-       |""".stripMargin
-  )
+  val encryptedIe015 =
+    "Z+e9hWuo5kVyyUAoHrzIkPKprkwyASm34WcPW+HjVIrJD96PmY80FVPRTkKt9Y4yEwm6q4y2p3pyYWgpbKOBaeTH0GG4ASbE10YBaRCgAhkqyg4s29O328VYIiHA3xaEmrAHAPat7UoJ0mBxNNI+GozoCseNMCGyedu77FrRSl/X/pAs31wMUbLfZ4dvDp67ATTA4o+JY+Dk41kxwz/HR2xmMnlqrLYfv0wZ900bEYAhTI0OaSte5Q/SySm4E1dMxFj+SkO8wWUFca3heO4Twyk03Nn4vLL4TWqNSGJKNug9PIUjeQGpFDsBiwTDnG5R9rx1N6ZvLHAl/Zu9WAaHFbV1r4NdtRnuWjViKL2jqHBYEOQOYiFdD+KP255M/REq3Ju5rtWPUq1zYfZRfmzX+anagew3/UTkyHXlGDzN1m/1+lWHnvz9Jmd7WrajoI2N+03qp/ew0hEzZ1N6D0SP7aegSQ7/fZAhMMV5OHZOTxPtsEGTzRdSsk2Xzv6x78uGNgWOFlkItxRmskS57NKjgUW55fWdoISjM0VS2a3Zrxxj02Qez0MUcUZoukVeyhEUPG9I40QyvN7mC8KQ+CDMCDxTgzA+aTJJtWE9zUMIgjlQDp75w/9s9ETx3AwRGeR23xE45CEPG4DJwWNzFziYQMTBaA/76WoGugn1uewmYEbYd3Twn6rFctgS0QWz2zDo6zTpilTNQFvMnsMxOBhS7T/+VeKnvHzgsP3SZts77V96UHmPRGoYQ+rWNXZX+Qi/k2H523wUGp69K/BmrdSG8arMrZlpWJzjZwotfX3HiyTDRrNUAk4MF03yu2ghBEiFF49UTvGDJzxwh6Pte982F+yjbjLvU6/gmjV8QGxOhLwJEI9+cHk+S4bBUUjhxD6/TYDjiCpgIQsSJpcZ0rwIZCdD83NEaeROqzR4T16hLDpij4HJB6KUnS0UwVcvPrdIc1ttNDTIgC5m9WYWUJClutaBJQNU+p0AMXSnkdu4CspbDZHndKJBihF9QPAJmUp1uNWSTvbwQI8SYo3zIlZHZgpn0wlbBpxaWeNp4kuuxX0="
 
 }

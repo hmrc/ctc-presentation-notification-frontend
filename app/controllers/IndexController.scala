@@ -18,15 +18,14 @@ package controllers
 
 import cats.data.OptionT
 import controllers.actions._
-import models.messages.{Data, MessageData}
+import generated.CC015CType
 import models.requests.OptionalDataRequest
-import models.{LocalReferenceNumber, UserAnswers}
+import models.{LocalReferenceNumber, RichCC015CType, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{DateTimeService, DepartureMessageService}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.transformer.DepartureDataTransformer
 
@@ -45,43 +44,34 @@ class IndexController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def index(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
+  def redirect(departureId: String): Action[AnyContent] = actions.getData(departureId).async {
     implicit request =>
       (for {
-        departureData <- OptionT(service.getDepartureData(departureId))
-        lrn           <- OptionT.liftF(retrieveLRN(departureData.data, departureId))
+        lrn           <- OptionT.liftF(service.getLRN(departureId))
+        departureData <- OptionT(service.getDepartureData(departureId, lrn))
         _ <- OptionT.liftF(
           request.userAnswers match {
             case Some(userAnswers) => sessionRepository.set(userAnswers)
-            case None              => generateFromDepartureData(departureId, request, departureData, lrn)
+            case None              => generateFromDepartureData(departureId, lrn, departureData)
           }
         )
       } yield
-        if (departureData.data.isSimplified) departureData.data.isDataCompleteSimplified match {
-          case true  => Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
-          case false => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
-        }
-        else
-          departureData.data.isDataCompleteNormal match {
-            case true  => Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
-            case false => Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
-          }).getOrElse(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
+        if (departureData.isDataComplete) {
+          Redirect(controllers.routes.CheckInformationController.onPageLoad(departureId))
+        } else {
+          Redirect(controllers.routes.MoreInformationController.onPageLoad(departureId))
+        }).getOrElse(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
   }
 
-  private def generateFromDepartureData(departureId: String, request: OptionalDataRequest[AnyContent], departureData: Data, lrn: LocalReferenceNumber)(implicit
-    hc: HeaderCarrier
-  ): Future[Boolean] = {
-    val userAnswers = UserAnswers(departureId, request.eoriNumber, lrn.value, JsObject.empty, dateTimeService.currentInstant, departureData.data)
+  private def generateFromDepartureData(
+    departureId: String,
+    lrn: LocalReferenceNumber,
+    departureData: CC015CType
+  )(implicit request: OptionalDataRequest[_]): Future[Boolean] = {
+    val userAnswers = UserAnswers(departureId, request.eoriNumber, lrn.value, JsObject.empty, dateTimeService.currentInstant, departureData)
     for {
       updatedUserAnswers <- departureDataTransformer.transform(userAnswers)
       result             <- sessionRepository.set(updatedUserAnswers)
     } yield result
   }
-
-  private def retrieveLRN(messageData: MessageData, departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] =
-    messageData.TransitOperation.LRN match {
-      case Some(lrn) => Future.successful(LocalReferenceNumber(lrn))
-      case _         => service.getLRN(departureId)
-    }
-
 }

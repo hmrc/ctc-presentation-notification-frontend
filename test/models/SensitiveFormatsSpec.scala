@@ -17,8 +17,7 @@
 package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.Constants.EntrySummaryDeclarationSecurityDetails
-import models.messages._
+import generated.CC015CType
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.running
 
@@ -114,47 +113,9 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
   }
 
-  "MessageData" - {
-    val encryptedValue =
-      "IxCJkQSsWDU4gBMmgr1iKMlIAUmUTgdwCEy47wRm0zz1SnRnMJMecwNMLvge+4sTxAGu9aES6ugd7SemYZljokr7e8BWVABHjihQFcw9ugOwcU50crt/haN8omRipWNXDAtAlICqF0RlG1yrEi29VQWG5k6g8BVYl+0tqMMlxsEoDXWjBEkw4GhW/mF1J6SnRj+D1bP31CQaE05H3uEiKSVy4NpAa5KRqDzmV0Cko+t2ChwObnt2aUZO3pxsRcwyubOU9MN+sOZNlHMXCZ57p9O/bw239cJX6uvTOnYNlZ5VVIF8L5Co7E7j0jf59FJ5/XLM1MKD6eegkQhJJ80r51bNkYL0CFOAb09DOGVHtQVHXKhg3fTiJtDk3ru9feeUIvvFOx80H70I031oi50ur/UDd5D4qDWxOrG6lP1RcbmNtpnXFGplh6ohZFLF9zSTu81mvZuKEI10eJXABT1w5WCBESoCXol3h+IZRKZofXtC4VDuIj9345SbgbNZ2XfuSuP2NA4QNwO8HILwYr5QpquJVOM8P/VuULrdUrbK5tLacc2eB8srqb1crUkwKIeKmvNRXkDSS3kTj3TU0YDYIqgzpPnIFVYDtMHhfa2ZWEgwptbSJ045yy1+ELB82tkCERHnTNDhUJOn0F4cROGcNGJHwVG7F3lv0pm81qBD"
-
-    val decryptedValue = MessageData(
-      CustomsOfficeOfDeparture = "",
-      TransitOperation = TransitOperation(None, None, EntrySummaryDeclarationSecurityDetails, reducedDatasetIndicator = "0"),
-      Authorisation = None,
-      HolderOfTheTransitProcedure = HolderOfTheTransitProcedure(
-        Some("identificationNumber"),
-        None,
-        None,
-        None,
-        None
-      ),
-      Representative = None,
-      Consignment = Consignment(
-        containerIndicator = None,
-        inlandModeOfTransport = None,
-        modeOfTransportAtTheBorder = None,
-        TransportEquipment = None,
-        LocationOfGoods = None,
-        DepartureTransportMeans = None,
-        ActiveBorderTransportMeans = None,
-        PlaceOfLoading = None,
-        HouseConsignment = Seq(
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemsNo1",
-                1,
-                Commodity("descOfGoods")
-              )
-            )
-          )
-        )
-      ),
-      CustomsOfficeOfDestination = "",
-      CustomsOfficeOfExitForTransitDeclared = None,
-      CustomsOfficeOfTransitDeclared = None
-    )
+  "CC015CType" - {
+    val encryptedValue = encryptedIe015
+    val decryptedValue = basicIe015
 
     "reads" - {
       "when encryption enabled" - {
@@ -165,7 +126,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
           running(app) {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
-            val result           = Json.toJson(encryptedValue).as[MessageData](sensitiveFormats.messageDataReads)
+            val result           = JsString(encryptedValue).as[CC015CType](sensitiveFormats.cc015cReads)
             result mustBe decryptedValue
           }
         }
@@ -177,7 +138,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
           running(app) {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
-            val result           = Json.toJson(decryptedValue).as[MessageData](sensitiveFormats.messageDataReads)
+            val result           = JsString(decryptedValue.toXML.toString()).as[CC015CType](sensitiveFormats.cc015cReads)
             result mustBe decryptedValue
           }
         }
@@ -191,7 +152,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
           running(app) {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
-            val result           = Json.toJson(encryptedValue).as[MessageData](sensitiveFormats.messageDataReads)
+            val result           = JsString(encryptedValue).as[CC015CType](sensitiveFormats.cc015cReads)
             result mustBe decryptedValue
           }
         }
@@ -203,7 +164,7 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
           running(app) {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
-            val result           = Json.toJson(decryptedValue).as[MessageData](sensitiveFormats.messageDataReads)
+            val result           = JsString(decryptedValue.toXML.toString()).as[CC015CType](sensitiveFormats.cc015cReads)
             result mustBe decryptedValue
           }
         }
@@ -219,9 +180,8 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
           running(app) {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
-            val result           = Json.toJson(decryptedValue)(sensitiveFormats.messageDataWrites)
-
-            result mustBe a[JsString]
+            val result           = Json.toJson(decryptedValue)(sensitiveFormats.cc015cWrites)
+            result.as[JsString].value must not startWith "<CC015C>"
           }
         }
       }
@@ -234,8 +194,8 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
           running(app) {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
-            val result           = Json.toJson(decryptedValue)(sensitiveFormats.messageDataWrites)
-            result mustBe a[JsObject]
+            val result           = Json.toJson(decryptedValue)(sensitiveFormats.cc015cWrites)
+            result.as[JsString].value must startWith("<CC015C>")
           }
         }
       }

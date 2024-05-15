@@ -16,9 +16,9 @@
 
 package utils.transformer.transport.equipment
 
-import models.messages.TransportEquipment
+import generated.TransportEquipmentType06
 import models.reference.Item
-import models.{Index, UserAnswers}
+import models.{Index, RichCC015CType, UserAnswers}
 import pages.transport.equipment.ItemPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
@@ -28,20 +28,20 @@ import scala.concurrent.Future
 class ItemTransformer extends PageTransformer {
 
   override type DomainModelType              = Item
-  override type ExtractedTypeInDepartureData = TransportEquipment
+  override type ExtractedTypeInDepartureData = TransportEquipmentType06
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment.toSeq.flatten,
+      extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment,
       generateCapturedAnswers = transportEquipments => {
         transportEquipments.zipWithIndex
           .flatMap {
             case (transportEquipment, equipmentIndex) =>
-              transportEquipment.GoodsReference.toList.flatten.zipWithIndex.flatMap {
+              transportEquipment.GoodsReference.zipWithIndex.flatMap {
                 case (goodsReference, itemIndex) =>
-                  userAnswers.departureData.Consignment.allItems
-                    .find(_.goodsItemNumber == goodsReference.declarationGoodsItemNumber.toInt)
+                  userAnswers.departureData.items
+                    .find(_.declarationGoodsItemNumber == goodsReference.declarationGoodsItemNumber)
                     .map(
                       item => (ItemPage(Index(equipmentIndex), Index(itemIndex)), item)
                     )

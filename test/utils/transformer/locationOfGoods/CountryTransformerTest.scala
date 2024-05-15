@@ -17,10 +17,12 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.{AddressType14, LocationOfGoodsType05}
+import generators.Generators
 import models.SelectableList
-import models.reference.{Country, CountryCode}
+import models.reference.Country
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.locationOfGoods.CountryPage
 import services.CountriesService
@@ -28,58 +30,71 @@ import services.CountriesService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CountryTransformerTest extends SpecBase {
+class CountryTransformerTest extends SpecBase with Generators {
   private val service     = mock[CountriesService]
   private val transformer = new CountryTransformer(service)
 
-  override def beforeEach() =
+  override def beforeEach(): Unit =
     reset(service)
 
   "CountryTransformer" - {
 
     "must skip transforming if there is no country data" in {
-      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(Some(locationOfGoods.copy(Address = None)))(emptyUserAnswers)
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers mustBe userAnswers
+      forAll(arbitrary[LocationOfGoodsType05]) {
+        locationOfGoods =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+            Some(locationOfGoods.copy(Address = None))
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result mustBe userAnswers
       }
     }
 
     "must return updated answers when the code from departure data can be found in service response" in {
-      val country = Country(CountryCode("GB"), "Great Britain")
-      when(service.getCountries()).thenReturn(Future.successful(SelectableList(Seq(country))))
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14], arbitrary[Country]) {
+        (locationOfGoods, address, country) =>
+          when(service.getCountries())
+            .thenReturn(Future.successful(SelectableList(Seq(country))))
 
-      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
-        Some(locationOfGoods.copy(Address = Some(locationOfGoods.Address.get.copy(country = "GB"))))
-      )(emptyUserAnswers)
-      userAnswers.get(CountryPage) mustBe None
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+            Some(locationOfGoods.copy(Address = Some(address.copy(country = country.code.code))))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(CountryPage) mustBe Some(country)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(CountryPage) mustBe Some(country)
       }
     }
   }
 
   "must return None when the code from departure data cannot be found in service response" in {
-    val country = Country(CountryCode("GB"), "Great Britain")
-    when(service.getCountries()).thenReturn(Future.successful(SelectableList(Seq(country))))
+    forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14], arbitrary[Country]) {
+      (locationOfGoods, address, country) =>
+        when(service.getCountries())
+          .thenReturn(Future.successful(SelectableList(Nil)))
 
-    val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
-      Some(locationOfGoods.copy(Address = Some(locationOfGoods.Address.get.copy(country = "FR"))))
-    )(emptyUserAnswers)
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          Some(locationOfGoods.copy(Address = Some(address.copy(country = country.code.code))))
+        )(emptyUserAnswers)
 
-    whenReady(transformer.transform(hc)(userAnswers)) {
-      updatedUserAnswers =>
-        updatedUserAnswers.get(CountryPage) mustBe None
+        val result = transformer.transform.apply(userAnswers).futureValue
+        result.get(CountryPage) mustBe None
     }
   }
 
   "must return failure if the service fails" in {
-    when(service.getCountries()).thenReturn(Future.failed(new RuntimeException("")))
+    forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14]) {
+      (locationOfGoods, address) =>
+        when(service.getCountries())
+          .thenReturn(Future.failed(new RuntimeException("")))
 
-    whenReady[Throwable, Assertion](transformer.transform(hc)(emptyUserAnswers).failed) {
-      _ mustBe an[Exception]
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          Some(locationOfGoods.copy(Address = Some(address)))
+        )(emptyUserAnswers)
+
+        whenReady[Throwable, Assertion](transformer.transform.apply(userAnswers).failed) {
+          _ mustBe an[Exception]
+        }
     }
   }
 }

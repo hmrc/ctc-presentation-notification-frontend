@@ -16,37 +16,37 @@
 
 package utils.transformer.representative
 
-import base.TestMessageData.{contactPhoneNumber, representative}
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
+import generated.{ContactPersonType05, RepresentativeType05}
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.representative.RepresentativePhoneNumberPage
 
-class RepresentativePhoneNumberTransformerSpec extends SpecBase {
+class RepresentativePhoneNumberTransformerSpec extends SpecBase with Generators {
   val transformer = new RepresentativePhoneNumberTransformer()
 
   "RepresentativePhoneNumberTransformer" - {
     "must return updated answers with RepresentativePhoneNumberPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(RepresentativePhoneNumberPage) mustBe None
+      forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05], nonEmptyString) {
+        (representative, contactPerson, phoneNumber) =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative.copy(ContactPerson = Some(contactPerson.copy(phoneNumber = phoneNumber))))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(RepresentativePhoneNumberPage) mustBe Some(contactPhoneNumber)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(RepresentativePhoneNumberPage).value mustBe phoneNumber
       }
     }
 
     "must not update if representative phone number is None" in {
-      val userAnswers =
-        emptyUserAnswers.copy(departureData =
-          TestMessageData.messageData.copy(
-            Representative = Some(representative.copy(ContactPerson = None))
-          )
-        )
+      forAll(arbitrary[RepresentativeType05]) {
+        representative =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative.copy(ContactPerson = None))
+          )(emptyUserAnswers)
 
-      userAnswers.get(RepresentativePhoneNumberPage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(RepresentativePhoneNumberPage) mustBe None
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(RepresentativePhoneNumberPage) mustBe None
       }
     }
   }

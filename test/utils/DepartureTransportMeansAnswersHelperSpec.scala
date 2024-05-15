@@ -17,21 +17,15 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.allOptionsNoneJsonValue
 import generators.Generators
-import models.messages.MessageData
+import models.Mode
 import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.InlandModePage
 import pages.transport.departureTransportMeans._
-import play.api.libs.json.Json
-
-import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -42,9 +36,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
         s"when $TransportMeansIdentificationNumberPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val userAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, mode, transportIndex)
+              val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, transportIndex)
               val result = helper.identificationNumberRow
               result mustBe None
           }
@@ -83,9 +75,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
       s"when $TransportMeansIdentificationPage undefined" in {
         forAll(arbitrary[Mode]) {
           mode =>
-            val userAnswers =
-              UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-            val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, mode, transportIndex)
+            val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, transportIndex)
             val result = helper.identificationType
             result mustBe None
         }
@@ -123,9 +113,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
       s"when $TransportMeansNationalityPage undefined" in {
         forAll(arbitrary[Mode]) {
           mode =>
-            val userAnswers =
-              UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-            val helper = new DepartureTransportMeansAnswersHelper(userAnswers, departureId, mode, transportIndex)
+            val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, transportIndex)
             val result = helper.nationality
             result mustBe None
         }

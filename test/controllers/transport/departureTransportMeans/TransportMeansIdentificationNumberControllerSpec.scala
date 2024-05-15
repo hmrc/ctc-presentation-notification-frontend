@@ -62,12 +62,8 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
     "must return Ok and the correct view for a get" in {
       forAll(arbitrary[TransportMeansIdentification]) {
         identifier =>
-          val userAnswers = setDepartureTransportMeansAnswersLens.set(
-            None
-          )(
-            emptyUserAnswers
-              .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
-          )
+          val userAnswers = emptyUserAnswers
+            .setValue(TransportMeansIdentificationPage(transportIndex), identifier)
 
           setExistingUserAnswers(userAnswers)
           val request = FakeRequest(GET, identificationNumberRoute)

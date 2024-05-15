@@ -17,33 +17,38 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.borderTransportMeans
+import generated.ActiveBorderTransportMeansType02
+import generators.Generators
 import models.Index
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.active.AddConveyanceReferenceYesNoPage
 
-class AddConveyanceReferenceYesNoTransformerTest extends SpecBase {
+class AddConveyanceReferenceYesNoTransformerTest extends SpecBase with Generators {
   val transformer = new AddConveyanceReferenceYesNoTransformer()
 
   "AddConveyanceReferenceYesNoTransformer" - {
 
-    "must skip transforming if there is no border means" in {
-      forAll(Gen.oneOf(Option(List()), None)) {
-        borderMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers mustBe userAnswers
-          }
+    "must skip transforming if there is no conveyance reference number" in {
+      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+        borderTransportMeans =>
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(conveyanceReferenceNumber = None))
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddConveyanceReferenceYesNoPage(Index(0))).value mustBe false
       }
     }
 
     "must return AddConveyanceReferenceYesNoPage Yes (true) when there is conveyance reference" in {
-      val userAnswers = setBorderMeansAnswersLens.set(Option(List(borderTransportMeans, borderTransportMeans)))(emptyUserAnswers)
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddConveyanceReferenceYesNoPage(Index(0))).get mustBe true
-          updatedUserAnswers.get(AddConveyanceReferenceYesNoPage(Index(1))).get mustBe true
+      forAll(arbitrary[ActiveBorderTransportMeansType02], nonEmptyString) {
+        (borderTransportMeans, conveyanceReferenceNumber) =>
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(conveyanceReferenceNumber = Some(conveyanceReferenceNumber)))
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddConveyanceReferenceYesNoPage(Index(0))).value mustBe true
       }
     }
   }

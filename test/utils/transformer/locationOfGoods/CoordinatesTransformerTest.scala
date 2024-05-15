@@ -17,21 +17,27 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.{GNSSType, LocationOfGoodsType05}
+import generators.Generators
+import models.Coordinates
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.CoordinatesPage
 
-class CoordinatesTransformerTest extends SpecBase {
+class CoordinatesTransformerTest extends SpecBase with Generators {
   val transformer = new CoordinatesTransformer()
 
   "CoordinatesTransformer" - {
 
     "must return updated answers with AdditionalIdentifierPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(CoordinatesPage) mustBe None
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[GNSSType]) {
+        (locationOfGoods, coordinates) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(GNSS = Some(coordinates)))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(CoordinatesPage) mustBe locationOfGoods.GNSS
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(CoordinatesPage).value mustBe Coordinates(coordinates.latitude, coordinates.longitude)
       }
     }
   }

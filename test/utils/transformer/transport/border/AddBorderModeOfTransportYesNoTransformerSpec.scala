@@ -17,32 +17,33 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
+import generators.Generators
 import pages.transport.border.AddBorderModeOfTransportYesNoPage
 
-class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase {
+class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase with Generators {
 
   val transformer = new AddBorderModeOfTransportYesNoTransformer
 
   "AddBorderModeOfTransportYesNoTransformer" - {
     "when border mode present must return updated answers with AddBorderModeOfTransportYesNoPage as true" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddBorderModeOfTransportYesNoPage) mustBe None
+      forAll(nonEmptyString) {
+        borderMode =>
+          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+            Some(borderMode)
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddBorderModeOfTransportYesNoPage) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddBorderModeOfTransportYesNoPage) mustBe Some(true)
       }
     }
 
     "when border mode not present must return updated answers with AddBorderModeOfTransportYesNoPage as false" in {
-      val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+        None
+      )(emptyUserAnswers)
 
-      userAnswers.get(AddBorderModeOfTransportYesNoPage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddBorderModeOfTransportYesNoPage) mustBe Some(false)
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(AddBorderModeOfTransportYesNoPage) mustBe Some(false)
     }
   }
 }

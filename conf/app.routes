@@ -36,7 +36,7 @@ POST       /representative/acting/:departureId                                co
 GET        /representative/change-acting/:departureId                         controllers.ActingAsRepresentativeController.onPageLoad(departureId: String, mode: Mode = CheckMode)
 POST       /representative/change-acting/:departureId                         controllers.ActingAsRepresentativeController.onSubmit(departureId: String, mode: Mode = CheckMode)
 
-GET        /:departureId                                                      controllers.IndexController.index(departureId: String)
+GET        /:departureId                                                      controllers.IndexController.redirect(departureId: String)
 
 GET        /check-answers/:departureId                                        controllers.CheckYourAnswersController.onPageLoad(departureId: String)
 POST       /check-answers/:departureId                                        controllers.CheckYourAnswersController.onSubmit(departureId: String)

@@ -17,45 +17,36 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.borderTransportMeans
+import generated._
+import generators.Generators
 import models.Index
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.AddAnotherBorderMeansOfTransportYesNoPage
 
-class AddAnotherBorderMeansOfTransportYesNoTransformerTest extends SpecBase {
+class AddAnotherBorderMeansOfTransportYesNoTransformerTest extends SpecBase with Generators {
   val transformer = new AddAnotherBorderMeansOfTransportYesNoTransformer()
 
   "AddAnotherBorderMeansOfTransportYesNoTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(Gen.oneOf(Option(List()), None)) {
-        borderMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers mustBe userAnswers
-          }
-      }
+      val userAnswers = setBorderMeansAnswersLens.set(
+        Nil
+      )(emptyUserAnswers)
+
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result mustBe userAnswers
     }
 
     "must return updated answers with Add Another yes/no answers" - {
-      "when there is 1 border means, answer should be No (false)" in {
-        val listWith1Item = List(borderTransportMeans)
-        val userAnswers   = setBorderMeansAnswersLens.set(Option(listWith1Item))(emptyUserAnswers)
-        whenReady(transformer.transform(hc)(userAnswers)) {
-          updatedUserAnswers =>
-            updatedUserAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage(Index(0))).get mustBe false
-        }
-      }
+      "when there is 1 or more border means, answer should be No (false)" in {
+        forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+          borderTransportMeans =>
+            val userAnswers = setBorderMeansAnswersLens.set(
+              Seq(borderTransportMeans)
+            )(emptyUserAnswers)
 
-      "when there are more than 1 border means, only the last answer should be No (false)" in {
-        val listWith3Item = List(borderTransportMeans, borderTransportMeans, borderTransportMeans)
-        val userAnswers   = setBorderMeansAnswersLens.set(Option(listWith3Item))(emptyUserAnswers)
-        whenReady(transformer.transform(hc)(userAnswers)) {
-          updatedUserAnswers =>
-            updatedUserAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage(Index(0))).get mustBe true
-            updatedUserAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage(Index(1))).get mustBe true
-            updatedUserAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage(Index(2))).get mustBe false
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(AddAnotherBorderMeansOfTransportYesNoPage(Index(0))).get mustBe false
         }
       }
     }

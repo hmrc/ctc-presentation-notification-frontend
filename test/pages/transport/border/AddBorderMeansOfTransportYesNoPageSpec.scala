@@ -18,14 +18,7 @@ package pages.transport.border
 
 import pages.behaviours.PageBehaviours
 import pages.sections.transport.border.BorderActiveListSection
-import pages.transport.border.active.{
-  AddConveyanceReferenceYesNoPage,
-  ConveyanceReferenceNumberPage,
-  CustomsOfficeActiveBorderPage,
-  IdentificationNumberPage,
-  IdentificationPage,
-  NationalityPage
-}
+import pages.transport.border.active._
 
 class AddBorderMeansOfTransportYesNoPageSpec extends PageBehaviours {
 

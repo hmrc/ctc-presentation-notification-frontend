@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.Mode
+import models.{Mode, RichCC015CType}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,7 +49,6 @@ class CustomsOfficeIdentifierController @Inject() (
     .async {
       implicit request =>
         val ie170CustomsOffice = request.userAnswers.get(CustomsOfficeIdentifierPage)
-
         customsOfficesService.getCustomsOfficesOfDepartureForCountry(request.userAnswers.departureData.countryOfDeparture).map {
           customsOfficeList =>
             val form = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
@@ -66,19 +65,21 @@ class CustomsOfficeIdentifierController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        customsOfficesService.getCustomsOfficesOfDepartureForCountry(request.userAnswers.departureData.countryOfDeparture).flatMap {
-          customsOfficeList =>
-            val form = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, customsOfficeList.values, mode))),
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeIdentifierPage, value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, mode))
-              )
-        }
+        customsOfficesService
+          .getCustomsOfficesOfDepartureForCountry(request.userAnswers.departureData.countryOfDeparture)
+          .flatMap {
+            customsOfficeList =>
+              val form = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
+              form
+                .bindFromRequest()
+                .fold(
+                  formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, customsOfficeList.values, mode))),
+                  value =>
+                    for {
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeIdentifierPage, value))
+                      _              <- sessionRepository.set(updatedAnswers)
+                    } yield Redirect(navigator.nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, mode))
+                )
+          }
     }
 }

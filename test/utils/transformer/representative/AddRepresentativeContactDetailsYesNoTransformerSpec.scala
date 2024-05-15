@@ -17,33 +17,37 @@
 package utils.transformer.representative
 
 import base.SpecBase
-import base.TestMessageData.representativeEori
-import models.messages.Representative
+import generated._
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.representative.AddRepresentativeContactDetailsYesNoPage
 
-class AddRepresentativeContactDetailsYesNoTransformerSpec extends SpecBase {
+class AddRepresentativeContactDetailsYesNoTransformerSpec extends SpecBase with Generators {
 
   val transformer = new AddRepresentativeContactDetailsYesNoTransformer()
 
   "AddRepresentativeContactDetailsYesNoTransformer" - {
     "when representative contact details is present must return updated answers with AddRepresentativeContactDetailsYesNoPage as true" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddRepresentativeContactDetailsYesNoPage) mustBe None
+      forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05]) {
+        (representative, contactPerson) =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative.copy(ContactPerson = Some(contactPerson)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddRepresentativeContactDetailsYesNoPage) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddRepresentativeContactDetailsYesNoPage) mustBe Some(true)
       }
     }
 
     "when representative contact details not present must return updated answers with AddRepresentativeContactDetailsYesNoPage as false" in {
-      val userAnswers = setRepresentativeOnUserAnswersLens.set(Option(Representative(representativeEori, "2", None)))(emptyUserAnswers)
+      forAll(arbitrary[RepresentativeType05]) {
+        representative =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative.copy(ContactPerson = None))
+          )(emptyUserAnswers)
 
-      userAnswers.get(AddRepresentativeContactDetailsYesNoPage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddRepresentativeContactDetailsYesNoPage) mustBe Some(false)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddRepresentativeContactDetailsYesNoPage) mustBe Some(false)
       }
     }
   }

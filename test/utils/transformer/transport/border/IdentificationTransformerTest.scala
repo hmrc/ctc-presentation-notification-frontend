@@ -17,11 +17,12 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.activeBorderTransportMeansIdentification
+import generated.ActiveBorderTransportMeansType02
+import generators.Generators
 import models.Index
 import models.reference.transport.border.active.Identification
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
 import pages.transport.border.active.IdentificationPage
 import services.MeansOfTransportIdentificationTypesActiveService
@@ -29,7 +30,7 @@ import services.MeansOfTransportIdentificationTypesActiveService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class IdentificationTransformerTest extends SpecBase {
+class IdentificationTransformerTest extends SpecBase with Generators {
   private val service     = mock[MeansOfTransportIdentificationTypesActiveService]
   private val transformer = new IdentificationTransformer(service)
 
@@ -39,55 +40,65 @@ class IdentificationTransformerTest extends SpecBase {
   "IdentificationTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(Gen.oneOf(Option(List()), None)) {
-        borderMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers mustBe userAnswers
-          }
+      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Identification]) {
+        (borderTransportMeans, identification) =>
+          when(service.getMeansOfTransportIdentificationTypesActive())
+            .thenReturn(Future.successful(Seq(identification)))
+
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(typeOfIdentification = None))
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(IdentificationPage(Index(0))) mustBe None
       }
     }
 
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        val identification = Identification(activeBorderTransportMeansIdentification, "description")
-        when(service.getMeansOfTransportIdentificationTypesActive()).thenReturn(Future.successful(Seq(identification)))
+        forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Identification]) {
+          (borderTransportMeans, identification) =>
+            when(service.getMeansOfTransportIdentificationTypesActive())
+              .thenReturn(Future.successful(Seq(identification)))
 
-        val userAnswers = emptyUserAnswers
-        val index       = Index(0)
-        userAnswers.get(IdentificationPage(index)) mustBe None
+            val userAnswers = setBorderMeansAnswersLens.set(
+              Seq(borderTransportMeans.copy(typeOfIdentification = Some(identification.code)))
+            )(emptyUserAnswers)
 
-        whenReady(transformer.transform(hc)(userAnswers)) {
-          updatedUserAnswers =>
-            updatedUserAnswers.get(IdentificationPage(index)) mustBe Some(identification)
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(IdentificationPage(Index(0))).value mustBe identification
         }
       }
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      val identification = Identification("something else", "description")
-      when(service.getMeansOfTransportIdentificationTypesActive()).thenReturn(Future.successful(Seq(identification)))
+      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Identification]) {
+        (borderTransportMeans, identification) =>
+          when(service.getMeansOfTransportIdentificationTypesActive())
+            .thenReturn(Future.successful(Nil))
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(IdentificationPage(index)) mustBe None
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(typeOfIdentification = Some(identification.code)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(IdentificationPage(index)) mustBe None
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(IdentificationPage(Index(0))) mustBe None
       }
     }
 
     "must return failure if the service fails" in {
-      when(service.getMeansOfTransportIdentificationTypesActive()).thenReturn(Future.failed(new RuntimeException("")))
+      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+        borderTransportMeans =>
+          when(service.getMeansOfTransportIdentificationTypesActive())
+            .thenReturn(Future.failed(new RuntimeException("")))
 
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(IdentificationPage(index)) mustBe None
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans)
+          )(emptyUserAnswers)
 
-      whenReady[Throwable, Assertion](transformer.transform(hc)(userAnswers).failed) {
-        _ mustBe an[Exception]
+          whenReady[Throwable, Assertion](transformer.transform.apply(userAnswers).failed) {
+            _ mustBe an[Exception]
+          }
       }
     }
   }

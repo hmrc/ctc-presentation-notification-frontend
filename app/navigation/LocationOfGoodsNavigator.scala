@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import config.Constants._
+import config.Constants.QualifierOfTheIdentification._
 import models._
 import navigation.LoadingNavigator._
 import pages._
@@ -127,7 +127,6 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
   private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     userAnswers.departureData.Consignment.PlaceOfLoading match {
       case Some(_) => locationPageNavigation(departureId, mode, userAnswers)
-
-      case None => AddUnLocodePage.route(userAnswers, departureId, mode)
+      case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
     }
 }

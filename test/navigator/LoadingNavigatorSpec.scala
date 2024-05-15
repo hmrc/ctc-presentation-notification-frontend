@@ -17,23 +17,23 @@
 package navigator
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, consignment, messageData, transitOperation}
-import config.Constants.NoSecurityDetails
+import config.Constants.AuthorisationTypeDeparture.ACR
+import config.Constants.DeclarationTypeSecurity._
+import generated._
 import generators.Generators
 import models._
-import models.messages.AuthorisationType.C521
-import models.messages.{Authorisation, AuthorisationType, MessageData}
 import models.reference.Country
 import navigation.LoadingNavigator
 import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading
 import pages.loading._
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
-import play.api.libs.json.Json
+import scalaxb.XMLCalendar
 
-import java.time.{Instant, LocalDate}
+import java.time.LocalDate
 
 class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -85,21 +85,31 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         }
 
         "to BorderMode of transport page when answer is No" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddExtraInformationYesNoPage, false)
-            .setValue(LimitDatePage, LocalDate.now())
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .setValue(AddExtraInformationYesNoPage, false)
+                .setValue(LimitDatePage, LocalDate.now())
+                .copy(departureData =
+                  answers.departureData.copy(
+                    TransitOperation = answers.departureData.TransitOperation.copy(security = "1"),
+                    Consignment = answers.departureData.Consignment.copy(containerIndicator = Some(Number1))
+                  )
+                )
 
-          navigator
-            .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(BorderModeOfTransportPage.route(userAnswers, departureId, mode).value)
+              navigator
+                .nextPage(AddExtraInformationYesNoPage, updatedAnswers, departureId, mode)
+                .mustBe(BorderModeOfTransportPage.route(updatedAnswers, departureId, mode).value)
+          }
         }
 
         "must go from CountryPage to LocationPage when limitDate exists" - {
           val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
 
           val userAnswersWithLimitDate = userAnswers.copy(
-            departureData =
-              messageData.copy(TransitOperation = transitOperation.copy(limitDate = Some("limitDate")), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
+            departureData = basicIe015.copy(
+              TransitOperation = basicIe015.TransitOperation.copy(limitDate = Some(XMLCalendar("2020-01-01T09:30:00")))
+            )
           )
 
           navigator
@@ -112,13 +122,15 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       "must go from LocationPage to LimitDatePage when limit date does not exist and is simplified" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersNoLimitDate = userAnswers.copy(
-          departureData = messageData.copy(TransitOperation = transitOperation.copy(limitDate = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
+          departureData = basicIe015.copy(
+            TransitOperation = basicIe015.TransitOperation.copy(limitDate = None),
+            Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))
+          )
         )
 
         navigator
           .nextPage(LocationPage, userAnswersNoLimitDate, departureId, mode)
           .mustBe(LimitDatePage.route(userAnswersNoLimitDate, departureId, mode).value)
-
       }
 
       "must go from LocationPage to BorderModePage when is simplified and limit date exists and container indicator exists" in {
@@ -126,10 +138,9 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
           .setValue(LimitDatePage, LocalDate.now())
         val userAnswersWithLimitDate = userAnswers.copy(
-          departureData = messageData.copy(
-            Consignment = consignment.copy(containerIndicator = Some("indicator")),
-            TransitOperation = transitOperation.copy(limitDate = Some("date")),
-            Authorisation = Some(Seq(Authorisation(C521, "1234")))
+          departureData = basicIe015.copy(
+            Consignment = basicIe015.Consignment.copy(containerIndicator = Some(Number1)),
+            TransitOperation = basicIe015.TransitOperation.copy(limitDate = Some(XMLCalendar("2020-01-01T09:30:00")))
           )
         )
 
@@ -142,9 +153,8 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       "must go from LocationPage to ContainerIndicatorPage when is NOT simplified and container indicator is empty" in {
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(
-            Consignment = consignment.copy(containerIndicator = None),
-            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          departureData = basicIe015.copy(
+            Consignment = basicIe015.Consignment.copy(containerIndicator = None)
           )
         )
 
@@ -157,9 +167,8 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(
-            Consignment = consignment.copy(containerIndicator = Some("indicator")),
-            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          departureData = basicIe015.copy(
+            Consignment = basicIe015.Consignment.copy(containerIndicator = Some(Number1))
           )
         )
 
@@ -173,7 +182,9 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
           .setValue(LimitDatePage, LocalDate.now())
         val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(Consignment = consignment.copy(containerIndicator = None), Authorisation = Some(Seq(Authorisation(C521, "1234"))))
+          departureData = basicIe015.copy(
+            Consignment = basicIe015.Consignment.copy(containerIndicator = None)
+          )
         )
 
         navigator
@@ -185,10 +196,9 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers.copy(
-          departureData = messageData.copy(
-            Consignment = consignment.copy(containerIndicator = Some("indicator")),
-            TransitOperation = transitOperation.copy(limitDate = None),
-            Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+          departureData = basicIe015.copy(
+            Consignment = basicIe015.Consignment.copy(containerIndicator = Some(Number1)),
+            TransitOperation = basicIe015.TransitOperation.copy(limitDate = None)
           )
         )
 
@@ -204,10 +214,9 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         "and security is 0" in {
           val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
           val userAnswersUpdated = userAnswers.copy(
-            departureData = messageData.copy(
-              Consignment = consignment.copy(containerIndicator = Some("indicator")),
-              TransitOperation = transitOperation.copy(limitDate = None, security = NoSecurityDetails),
-              Authorisation = Some(Seq(Authorisation(AuthorisationType.Other("C999"), "1234")))
+            departureData = basicIe015.copy(
+              Consignment = basicIe015.Consignment.copy(containerIndicator = Some(Number1)),
+              TransitOperation = basicIe015.TransitOperation.copy(limitDate = None, security = NoSecurityDetails)
             )
           )
 
@@ -223,9 +232,9 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         "to Unlocode page when answer is Yes and there is no existing UnLocode in either the 15/13/170" in {
 
-          val ie015WithNoUnLocodeUserAnswers =
-            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              .setValue(AddUnLocodeYesNoPage, true)
+          val ie015WithNoUnLocodeUserAnswers = emptyUserAnswers
+            .copy(departureData = basicIe015.copy(Consignment = basicIe015.Consignment.copy(PlaceOfLoading = None)))
+            .setValue(AddUnLocodeYesNoPage, true)
           navigator
             .nextPage(AddUnLocodeYesNoPage, ie015WithNoUnLocodeUserAnswers, departureId, mode)
             .mustBe(UnLocodePage.route(ie015WithNoUnLocodeUserAnswers, departureId, mode).value)
@@ -254,9 +263,8 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         "to Country page when answer is Yes and there is no existing Country in 15/13/170" in {
 
-          val ie015WithNoCountryUserAnswers =
-            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              .setValue(AddExtraInformationYesNoPage, true)
+          val ie015WithNoCountryUserAnswers = emptyUserAnswers
+            .setValue(AddExtraInformationYesNoPage, true)
           navigator
             .nextPage(AddExtraInformationYesNoPage, ie015WithNoCountryUserAnswers, departureId, mode)
             .mustBe(loading.CountryPage.route(ie015WithNoCountryUserAnswers, departureId, mode).value)
@@ -294,10 +302,9 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
       "must go from Unlocode page" - {
         "to AddExtraInformationPage when the AddExtraInformationPage does not exist in either the 13/15/170" in {
-          val ie015WithNoExtraInformationUserAnswers =
-            UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-              .setValue(AddUnLocodeYesNoPage, true)
-              .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+          val ie015WithNoExtraInformationUserAnswers = emptyUserAnswers
+            .setValue(AddUnLocodeYesNoPage, true)
+            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
           navigator
             .nextPage(UnLocodePage, ie015WithNoExtraInformationUserAnswers, departureId, mode)
             .mustBe(AddExtraInformationYesNoPage.route(ie015WithNoExtraInformationUserAnswers, departureId, mode).value)

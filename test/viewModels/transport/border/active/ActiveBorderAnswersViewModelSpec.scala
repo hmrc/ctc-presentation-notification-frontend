@@ -16,8 +16,8 @@
 
 package viewModels.transport.border.active
 
-import base.TestMessageData.{consignment, transitOperation}
-import base.{SpecBase, TestMessageData}
+import base.SpecBase
+import generated.CustomsOfficeOfTransitDeclaredType04
 import generators.Generators
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
@@ -43,19 +43,20 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
         "and add conveyance ref number is true" - {
           "and customs office of transit is not defined " - {
             "must return 6 rows and addAnotherLink is not defined" in {
-              forAll(arbitrarySecurityDetailsNonZeroType.arbitrary,
-                     arbitrary[Identification],
-                     nonEmptyString,
-                     arbitrary[CustomsOffice],
-                     arbitrary[Nationality],
-                     nonEmptyString
+              forAll(
+                arbitrarySecurityDetailsNonZeroType.arbitrary,
+                arbitrary[Identification],
+                nonEmptyString,
+                arbitrary[CustomsOffice],
+                arbitrary[Nationality],
+                nonEmptyString
               ) {
                 (securityType, identification, identificationNumber, office, nationality, conveyanceRefNumber) =>
                   val answers = emptyUserAnswers
                     .copy(departureData =
-                      TestMessageData.messageData.copy(
-                        TransitOperation = transitOperation.copy(security = securityType),
-                        CustomsOfficeOfTransitDeclared = None
+                      basicIe015.copy(
+                        TransitOperation = basicIe015.TransitOperation.copy(security = securityType),
+                        CustomsOfficeOfTransitDeclared = Nil
                       )
                     )
                     .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
@@ -73,25 +74,27 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 6
                   activeBorderSection.addAnotherLink must not be defined
-
               }
             }
           }
+
           "and customs office of transit is  defined " - {
             "must return 6 rows and addAnotherLink is defined" in {
-              forAll(arbitrarySecurityDetailsNonZeroType.arbitrary,
-                     arbitrary[Identification],
-                     nonEmptyString,
-                     arbitrary[CustomsOffice],
-                     arbitrary[Nationality],
-                     nonEmptyString
+              forAll(
+                arbitrarySecurityDetailsNonZeroType.arbitrary,
+                arbitrary[Identification],
+                nonEmptyString,
+                arbitrary[CustomsOffice],
+                arbitrary[Nationality],
+                arbitrary[CustomsOfficeOfTransitDeclaredType04]
               ) {
-                (securityType, identification, identificationNumber, office, nationality, conveyanceRefNumber) =>
+                (securityType, identification, identificationNumber, office, nationality, officeOfTransit) =>
                   val answers = emptyUserAnswers
                     .copy(departureData =
-                      TestMessageData.messageData.copy(
-                        Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                        TransitOperation = transitOperation.copy(security = securityType)
+                      basicIe015.copy(
+                        Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                        TransitOperation = basicIe015.TransitOperation.copy(security = securityType),
+                        CustomsOfficeOfTransitDeclared = Seq(officeOfTransit)
                       )
                     )
                     .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
@@ -109,27 +112,28 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 6
                   activeBorderSection.addAnotherLink mustBe defined
-
               }
             }
           }
         }
+
         "and add conveyance ref number is false" - {
           "and customs office of transit is not defined " - {
             "must return 5 rows and addAnotherLink is not defined" in {
-              forAll(arbitrarySecurityDetailsNonZeroType.arbitrary,
-                     arbitrary[Identification],
-                     nonEmptyString,
-                     arbitrary[CustomsOffice],
-                     arbitrary[Nationality]
+              forAll(
+                arbitrarySecurityDetailsNonZeroType.arbitrary,
+                arbitrary[Identification],
+                nonEmptyString,
+                arbitrary[CustomsOffice],
+                arbitrary[Nationality]
               ) {
                 (securityType, identification, identificationNumber, office, nationality) =>
                   val answers = emptyUserAnswers
                     .copy(departureData =
-                      TestMessageData.messageData.copy(
-                        Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                        TransitOperation = transitOperation.copy(security = securityType),
-                        CustomsOfficeOfTransitDeclared = None
+                      basicIe015.copy(
+                        Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                        TransitOperation = basicIe015.TransitOperation.copy(security = securityType),
+                        CustomsOfficeOfTransitDeclared = Nil
                       )
                     )
                     .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
@@ -146,24 +150,27 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 5
                   activeBorderSection.addAnotherLink must not be defined
-
               }
             }
           }
+
           "and customs office of transit is  defined " - {
             "must return 5 rows and addAnotherLink is defined" in {
-              forAll(arbitrarySecurityDetailsNonZeroType.arbitrary,
-                     arbitrary[Identification],
-                     nonEmptyString,
-                     arbitrary[CustomsOffice],
-                     arbitrary[Nationality]
+              forAll(
+                arbitrarySecurityDetailsNonZeroType.arbitrary,
+                arbitrary[Identification],
+                nonEmptyString,
+                arbitrary[CustomsOffice],
+                arbitrary[Nationality],
+                arbitrary[CustomsOfficeOfTransitDeclaredType04]
               ) {
-                (securityType, identification, identificationNumber, office, nationality) =>
+                (securityType, identification, identificationNumber, office, nationality, officeOfTransit) =>
                   val answers = emptyUserAnswers
                     .copy(departureData =
-                      TestMessageData.messageData.copy(
-                        Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                        TransitOperation = transitOperation.copy(security = securityType)
+                      basicIe015.copy(
+                        Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                        TransitOperation = basicIe015.TransitOperation.copy(security = securityType),
+                        CustomsOfficeOfTransitDeclared = Seq(officeOfTransit)
                       )
                     )
                     .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
@@ -180,29 +187,30 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 5
                   activeBorderSection.addAnotherLink mustBe defined
-
               }
             }
           }
         }
       }
+
       "when security type is either 1,2,3 and mode of transport is  air" - {
         "and customs office of transit is not defined " - {
           "must return 5 rows" in {
-            forAll(arbitrarySecurityDetailsNonZeroType.arbitrary,
-                   arbitrary[Identification],
-                   nonEmptyString,
-                   arbitrary[CustomsOffice],
-                   arbitrary[Nationality],
-                   nonEmptyString
+            forAll(
+              arbitrarySecurityDetailsNonZeroType.arbitrary,
+              arbitrary[Identification],
+              nonEmptyString,
+              arbitrary[CustomsOffice],
+              arbitrary[Nationality],
+              nonEmptyString
             ) {
               (securityType, identification, identificationNumber, office, nationality, conveyanceRefNumber) =>
                 val answers = emptyUserAnswers
                   .copy(departureData =
-                    TestMessageData.messageData.copy(
-                      Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                      TransitOperation = transitOperation.copy(security = securityType),
-                      CustomsOfficeOfTransitDeclared = None
+                    basicIe015.copy(
+                      Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType),
+                      CustomsOfficeOfTransitDeclared = Nil
                     )
                   )
                   .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
@@ -219,7 +227,6 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                 activeBorderSection.sectionTitle mustBe defined
                 activeBorderSection.rows.size mustBe 5
                 activeBorderSection.addAnotherLink must not be defined
-
             }
           }
         }
@@ -233,13 +240,15 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
         "add another link should be defined in section 2 and not 1" in {
           forAll(
             arbitrary[Identification],
-            arbitrary[Identification]
+            arbitrary[Identification],
+            arbitrary[CustomsOfficeOfTransitDeclaredType04]
           ) {
-            (identification1, identification2) =>
+            (identification1, identification2, officeOfTransit) =>
               val answers = emptyUserAnswers
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Consignment = consignment.copy(ActiveBorderTransportMeans = None)
+                  basicIe015.copy(
+                    Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                    CustomsOfficeOfTransitDeclared = Seq(officeOfTransit)
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification1)
@@ -256,11 +265,10 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               activeBorderSection2.sectionTitle mustBe Some("Border means of transport 2")
               activeBorderSection2.sectionTitle mustBe defined
               activeBorderSection2.addAnotherLink mustBe defined
-
           }
         }
-
       }
+
       "when ie15 customs office does not exist" - {
 
         "add another link should not be defined in section 2 and 1" in {
@@ -271,9 +279,9 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
             (identification1, identification2) =>
               val answers = emptyUserAnswers
                 .copy(departureData =
-                  TestMessageData.messageData.copy(
-                    Consignment = consignment.copy(ActiveBorderTransportMeans = None),
-                    CustomsOfficeOfTransitDeclared = None
+                  basicIe015.copy(
+                    Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
+                    CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
                 .setValue(IdentificationPage(Index(0)), identification1)
@@ -290,13 +298,9 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               activeBorderSection2.sectionTitle mustBe Some("Border means of transport 2")
               activeBorderSection2.sectionTitle mustBe defined
               activeBorderSection2.addAnotherLink must not be defined
-
           }
         }
-
       }
-
     }
-
   }
 }

@@ -17,36 +17,30 @@
 package utils
 
 import base.SpecBase
-import base.TestMessageData.{allOptionsNoneJsonValue, allOptionsNoneReducedDatasetTrueJsonValue}
+import generated._
 import generators.Generators
-import models.messages.MessageData
 import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
-import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
 import viewModels.Section
-
-import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "InlandModeAnswersHelper" - {
 
     "addInlandModeOfTransportYesNo" - {
-      "must return No when AddInlandModeOfTransportYesNo is false" - {
-        s"when $AddInlandModeOfTransportYesNoPage undefined" in {
+      "must return No" - {
+        s"when $AddInlandModeOfTransportYesNoPage is false" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val ie015WithNoAddInlandModeOfTransportYesNoUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                  .setValue(AddInlandModeOfTransportYesNoPage, false)
+              val userAnswers = emptyUserAnswers
+                .setValue(AddInlandModeOfTransportYesNoPage, false)
               val helper =
-                new InlandModeAnswersHelper(ie015WithNoAddInlandModeOfTransportYesNoUserAnswers, departureId, mode)
+                new InlandModeAnswersHelper(userAnswers, departureId, mode)
               val result = helper.inlandModeOfTransportYesNo.get
 
               result.key.value mustBe "Do you want to add an inland mode of transport?"
@@ -63,8 +57,8 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
         }
       }
 
-      "must return Yes when AddInlandModeOfTransportYesNo is true" - {
-        s"when $AddInlandModeOfTransportYesNoPage undefined" in {
+      "must return Yes" - {
+        s"when $AddInlandModeOfTransportYesNoPage is true" in {
           forAll(arbitrary[Mode], arbitrary[UserAnswers]) {
             (mode, userAnswers) =>
               val updatedAnswers = userAnswers.setValue(AddInlandModeOfTransportYesNoPage, true)
@@ -88,14 +82,11 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
     }
 
     "inlandMode" - {
-      "must return None when no inlandMode type " - {
+      "must return None" - {
         s"when $InlandModePage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val noInlandModeUserAnswers =
-                UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneJsonValue.as[MessageData])
-                  .removeValue(InlandModePage)
-              val helper = new InlandModeAnswersHelper(noInlandModeUserAnswers, departureId, mode)
+              val helper = new InlandModeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.inlandMode
               result mustBe None
           }
@@ -131,11 +122,9 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
       "must return None when reduced data set indicator is true" in {
         forAll(arbitrary[Mode]) {
           mode =>
-            val ie015withReducedDataSetFalseUserAnswers =
-              UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), allOptionsNoneReducedDatasetTrueJsonValue.as[MessageData])
-            val helper =
-              new InlandModeAnswersHelper(ie015withReducedDataSetFalseUserAnswers, departureId, mode)
-            val result = helper.buildInlandModeSection
+            val departureData = basicIe015.copy(TransitOperation = basicIe015.TransitOperation.copy(reducedDatasetIndicator = Number1))
+            val helper        = new InlandModeAnswersHelper(emptyUserAnswers.copy(departureData = departureData), departureId, mode)
+            val result        = helper.buildInlandModeSection
             result mustBe None
         }
       }
@@ -143,12 +132,14 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
       "must return Some(Section()) when reduced data set indicator is false" in {
         forAll(arbitrary[Mode], arbitraryInlandModeOfTransport.arbitrary) {
           (mode, inlandMode) =>
+            val departureData = basicIe015.copy(TransitOperation = basicIe015.TransitOperation.copy(reducedDatasetIndicator = Number0))
+
             val answers = emptyUserAnswers
+              .copy(departureData = departureData)
               .setValue(InlandModePage, inlandMode)
               .setValue(AddInlandModeOfTransportYesNoPage, true)
 
-            val helper =
-              new InlandModeAnswersHelper(answers, departureId, mode)
+            val helper = new InlandModeAnswersHelper(answers, departureId, mode)
             val result = helper.buildInlandModeSection
 
             val inlandModeYesNoRow = SummaryListRow(

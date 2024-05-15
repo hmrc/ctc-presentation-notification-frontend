@@ -17,21 +17,26 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated.{ContactPersonType06, LocationOfGoodsType05}
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.contact.PhoneNumberPage
 
-class PhoneNumberTransformerTest extends SpecBase {
+class PhoneNumberTransformerTest extends SpecBase with Generators {
   val transformer = new PhoneNumberTransformer()
 
   "PhoneNumberTransformer" - {
 
     "must return updated answers with PhoneNumberPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(PhoneNumberPage) mustBe None
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[ContactPersonType06]) {
+        (locationOfGoods, contactPerson) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(ContactPerson = Some(contactPerson)))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(PhoneNumberPage) mustBe locationOfGoods.ContactPerson.map(_.phoneNumber)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(PhoneNumberPage).value mustBe contactPerson.phoneNumber
       }
     }
   }

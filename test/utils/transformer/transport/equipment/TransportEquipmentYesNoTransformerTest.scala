@@ -17,31 +17,37 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
+import generated.TransportEquipmentType06
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 
-class TransportEquipmentYesNoTransformerTest extends SpecBase {
+class TransportEquipmentYesNoTransformerTest extends SpecBase with Generators {
 
   val transformer = new TransportEquipmentYesNoTransformer()
 
   "TransportEquipmentYesNoTransformer" - {
     "when transport equipment present must return updated answers with AddTransportEquipmentYesNoPage as true" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddTransportEquipmentYesNoPage) mustBe None
+      forAll(arbitrary[TransportEquipmentType06]) {
+        transportEquipment =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Seq(transportEquipment)
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddTransportEquipmentYesNoPage) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddTransportEquipmentYesNoPage) mustBe Some(true)
       }
     }
 
     "when transport equipment not present must return updated answers with AddTransportEquipmentYesNoPage as false" in {
-      val userAnswers = setTransportEquipmentLens.set(None)(emptyUserAnswers)
+      forAll(arbitrary[TransportEquipmentType06]) {
+        transportEquipment =>
+          val userAnswers = setTransportEquipmentLens.set(
+            Nil
+          )(emptyUserAnswers)
 
-      userAnswers.get(AddTransportEquipmentYesNoPage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddTransportEquipmentYesNoPage) mustBe Some(false)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddTransportEquipmentYesNoPage) mustBe Some(false)
       }
     }
   }

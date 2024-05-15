@@ -16,8 +16,8 @@
 
 package utils.transformer.transport.border
 
+import generated.ActiveBorderTransportMeansType02
 import models.UserAnswers
-import models.messages.ActiveBorderTransportMeans
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
@@ -26,12 +26,12 @@ import scala.concurrent.Future
 
 class AddBorderMeansOfTransportYesNoTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = ActiveBorderTransportMeans
+  override type ExtractedTypeInDepartureData = ActiveBorderTransportMeansType02
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.toList.flatten,
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans,
       generateCapturedAnswers = activeBorderTransportMeans => Seq((AddBorderMeansOfTransportYesNoPage, activeBorderTransportMeans.nonEmpty))
     )
 }

@@ -17,32 +17,35 @@
 package utils.transformer.representative
 
 import base.SpecBase
+import generated.RepresentativeType05
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.ActingAsRepresentativePage
 
-class ActingAsRepresentativeTransformerSpec extends SpecBase {
+class ActingAsRepresentativeTransformerSpec extends SpecBase with Generators {
 
   val transformer = new ActingAsRepresentativeTransformer()
 
   "ActingAsRepresentativeTransformer" - {
     "when representative details is present must return updated answers with ActingAsRepresentative page as true" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(ActingAsRepresentativePage) mustBe None
+      forAll(arbitrary[RepresentativeType05]) {
+        representative =>
+          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+            Some(representative)
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(ActingAsRepresentativePage) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(ActingAsRepresentativePage) mustBe Some(true)
       }
     }
 
     "when representative details not present must return updated answers with ActingAsRepresentative page as false" in {
-      val userAnswers = setRepresentativeOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setRepresentativeOnUserAnswersLens.set(
+        None
+      )(emptyUserAnswers)
 
-      userAnswers.get(ActingAsRepresentativePage) mustBe None
-
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(ActingAsRepresentativePage) mustBe Some(false)
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(ActingAsRepresentativePage) mustBe Some(false)
     }
   }
 }

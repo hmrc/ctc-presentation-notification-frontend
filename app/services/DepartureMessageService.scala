@@ -18,10 +18,10 @@ package services
 
 import cats.data.OptionT
 import connectors.DepartureMovementConnector
-import models.LocalReferenceNumber
+import generated.{CC013CType, CC015CType}
 import models.departureP5.MessageMetaData
 import models.departureP5.MessageType.{AmendmentSubmitted, DepartureNotification}
-import models.messages.Data
+import models.{LocalReferenceNumber, RichCC013CType}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -46,13 +46,20 @@ class DepartureMessageService @Inject() (departureMovementP5Connector: Departure
           .headOption
       )
 
-  def getDepartureData(departureId: String)(implicit
-    ec: ExecutionContext,
-    hc: HeaderCarrier
-  ): Future[Option[Data]] =
+  def getDepartureData(
+    departureId: String,
+    lrn: LocalReferenceNumber
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC015CType]] =
     (for {
       messageMetaData <- OptionT(getMessageMetaData(departureId))
-      message         <- OptionT.liftF(departureMovementP5Connector.getMessage(departureId, messageMetaData))
+      message <- messageMetaData.messageType match {
+        case DepartureNotification =>
+          OptionT.liftF(departureMovementP5Connector.getMessage[CC015CType](departureId, messageMetaData.id))
+        case AmendmentSubmitted =>
+          OptionT.liftF(departureMovementP5Connector.getMessage[CC013CType](departureId, messageMetaData.id).map(_.toCC015CType(lrn)))
+        case _ =>
+          OptionT[Future, CC015CType](Future.successful(None))
+      }
     } yield message).value
 
   def getLRN(departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] =

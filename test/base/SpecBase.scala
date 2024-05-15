@@ -16,17 +16,15 @@
 
 package base
 
-import base.TestMessageData.messageData
 import config.FrontendAppConfig
-import models.messages.LocationOfGoods
-import models.{EoriNumber, Index, LocalReferenceNumber, LocationType, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{BeforeAndAfterEach, EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{Page, QuestionPage}
+import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json.{Format, Json, Reads}
@@ -50,30 +48,13 @@ trait SpecBase
     with BeforeAndAfterEach
     with AppWithDefaultMockFixtures
     with MockitoSugar
-    with Lenses {
+    with Lenses
+    with TestMessageData {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val eoriNumber: EoriNumber     = EoriNumber("eoriNumber")
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), messageData)
-
-  val emptyLocationOfGoods: LocationOfGoods = LocationOfGoods(
-    typeOfLocation = "",
-    qualifierOfIdentification = "",
-    authorisationNumber = None,
-    additionalIdentifier = None,
-    UNLocode = None,
-    CustomsOffice = None,
-    GNSS = None,
-    EconomicOperator = None,
-    Address = None,
-    PostcodeAddress = None,
-    ContactPerson = None
-  )
-
-  case object TestBadPage extends Page
-
-  val UnknownIdentifier = "J"
+  def emptyUserAnswers: UserAnswers = UserAnswers(departureId, eoriNumber, lrn.value, Json.obj(), Instant.now(), basicIe015)
 
   val departureId: String = "651431d7e3b05b21"
 
@@ -87,9 +68,6 @@ trait SpecBase
   val transportIndex: Index                               = Index(0)
   val houseConsignmentIndex: Index                        = Index(0)
   val houseConsignmentDepartureTransportMeansIndex: Index = Index(0)
-
-  val locationTypes =
-    Seq(LocationType("A", "Designated location"), LocationType("B", "Authorised place"), LocationType("C", "Approved place"), LocationType("D", "Other"))
 
   def injector: Injector = app.injector
 

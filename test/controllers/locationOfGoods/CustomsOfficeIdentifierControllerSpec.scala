@@ -16,8 +16,9 @@
 
 package controllers.locationOfGoods
 
-import base.{AppWithDefaultMockFixtures, SpecBase, TestMessageData}
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
+import generated._
 import generators.Generators
 import models.reference.CountryCode
 import models.{NormalMode, SelectableList}
@@ -36,17 +37,21 @@ import scala.concurrent.Future
 
 class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val customsOfficeIdentifierRoute                = routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode).url
-  private val customsOffice1                                   = arbitraryCustomsOffice.arbitrary.sample.get
-  private val customsOffice2                                   = arbitraryCustomsOffice.arbitrary.sample.get
-  private val customsOfficeList                                = SelectableList(Seq(customsOffice1, customsOffice2))
-  private val formProvider                                     = new SelectableFormProvider()
-  private val form                                             = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
-  private val mode                                             = NormalMode
+  private lazy val customsOfficeIdentifierRoute = routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode).url
+  private val customsOffice1                    = arbitraryCustomsOffice.arbitrary.sample.get
+  private val customsOffice2                    = arbitraryCustomsOffice.arbitrary.sample.get
+  private val customsOfficeList                 = SelectableList(Seq(customsOffice1, customsOffice2))
+
+  private val formProvider = new SelectableFormProvider()
+  private val form         = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
+
+  private val mode = NormalMode
+
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
-  private val countryCode                                      = arbitrary[CountryCode].sample.value
-  private val departureData                                    = TestMessageData.messageData.copy(CustomsOfficeOfDeparture = s"${countryCode.code}00001")
-  private val baseAnswers                                      = emptyUserAnswers.copy(departureData = departureData)
+
+  private val countryCode = arbitrary[CountryCode].sample.value
+  private val ie015       = arbitrary[CC015CType].sample.value.copy(CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(s"${countryCode.code}00001"))
+  private val baseAnswers = emptyUserAnswers.copy(departureData = ie015)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

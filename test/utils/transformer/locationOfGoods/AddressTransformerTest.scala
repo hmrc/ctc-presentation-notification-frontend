@@ -17,21 +17,27 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import base.TestMessageData.locationOfGoods
+import generated._
+import generators.Generators
+import models.DynamicAddress
+import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.AddressPage
 
-class AddressTransformerTest extends SpecBase {
+class AddressTransformerTest extends SpecBase with Generators {
   val transformer = new AddressTransformer()
 
   "AddressTransformer" - {
 
     "must return updated answers with AddressPage" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddressPage) mustBe None
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14]) {
+        (locationOfGoods, address) =>
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .set(
+              Option(locationOfGoods.copy(Address = Some(address)))
+            )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddressPage) mustBe locationOfGoods.Address.map(_.toDynamicAddress)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddressPage).value mustBe DynamicAddress(address.streetAndNumber, address.city, address.postcode)
       }
     }
   }

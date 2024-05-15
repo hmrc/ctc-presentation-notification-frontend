@@ -17,8 +17,8 @@
 package viewModels.transport.equipment
 
 import base.SpecBase
+import generated.{CommodityType07, ConsignmentItemType09, HouseConsignmentType10}
 import generators.Generators
-import models.messages._
 import models.reference.Item
 import models.{Index, SelectableList}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -34,54 +34,52 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must filter list if there are items in two different transport equipments in UA" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo1",
-                1,
-                Commodity("item1")
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 100,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType07("item1")
               ),
-              ConsignmentItem(
-                "goodsItemNo2",
-                2,
-                Commodity("item2")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType07("item2")
               )
             )
           ),
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo3",
-                3,
-                Commodity("item3")
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 200,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo3",
+                declarationGoodsItemNumber = 3,
+                Commodity = CommodityType07("item3")
               ),
-              ConsignmentItem(
-                "goodsItemNo4",
-                4,
-                Commodity("item4")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo4",
+                declarationGoodsItemNumber = 4,
+                Commodity = CommodityType07("item4")
               )
             )
           )
         )
 
-        val updatedConsignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
-        val departureData: MessageData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
+        val updatedConsignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
+        val departureData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
 
         val userAnswers = emptyUserAnswers
-          .set(ItemPage(Index(0), Index(0)), Item(1, "item1"))
-          .success
-          .value
-          .set(ItemPage(Index(0), Index(1)), Item(2, "item2"))
-          .success
-          .value
-          .set(ItemPage(Index(1), Index(0)), Item(3, "item3"))
-          .success
-          .value
+          .setValue(ItemPage(Index(0), Index(0)), Item(1, "item1"))
+          .setValue(ItemPage(Index(0), Index(1)), Item(2, "item2"))
+          .setValue(ItemPage(Index(1), Index(0)), Item(3, "item3"))
           .copy(departureData = departureData)
 
         val result = SelectItemsViewModel.apply(userAnswers)
 
-        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(4, "item4"))), 4)
+        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(4, "item4"))))
 
         result mustBe expectedResult
       }
@@ -89,54 +87,52 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must filter list if there are items in two different transport equipments in UA without filtering selected item" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo1",
-                1,
-                Commodity("item1")
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 100,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType07("item1")
               ),
-              ConsignmentItem(
-                "goodsItemNo2",
-                2,
-                Commodity("item2")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType07("item2")
               )
             )
           ),
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo3",
-                3,
-                Commodity("item3")
+          HouseConsignmentType10(
+            sequenceNumber = "2",
+            grossMass = 200,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo3",
+                declarationGoodsItemNumber = 3,
+                Commodity = CommodityType07("item3")
               ),
-              ConsignmentItem(
-                "goodsItemNo4",
-                4,
-                Commodity("item4")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo4",
+                declarationGoodsItemNumber = 4,
+                Commodity = CommodityType07("item4")
               )
             )
           )
         )
 
-        val updatedConsignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
-        val departureData: MessageData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
+        val updatedConsignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
+        val departureData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
 
         val userAnswers = emptyUserAnswers
-          .set(ItemPage(Index(0), Index(0)), Item(1, "item1"))
-          .success
-          .value
-          .set(ItemPage(Index(0), Index(1)), Item(2, "item2"))
-          .success
-          .value
-          .set(ItemPage(Index(1), Index(0)), Item(3, "item3"))
-          .success
-          .value
+          .setValue(ItemPage(Index(0), Index(0)), Item(1, "item1"))
+          .setValue(ItemPage(Index(0), Index(1)), Item(2, "item2"))
+          .setValue(ItemPage(Index(1), Index(0)), Item(3, "item3"))
           .copy(departureData = departureData)
 
         val result = SelectItemsViewModel.apply(userAnswers, Some(Item(1, "item1")))
 
-        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(4, "item4"), Item(1, "item1"))), 4)
+        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(4, "item4"), Item(1, "item1"))))
 
         result mustBe expectedResult
       }
@@ -144,34 +140,34 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must filter list if there are items in a single transport equipment in UA" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo1",
-                1,
-                Commodity("item1")
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 100,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType07("item1")
               ),
-              ConsignmentItem(
-                "goodsItemNo2",
-                2,
-                Commodity("item2")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType07("item2")
               )
             )
           )
         )
 
-        val updatedConsignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
-        val departureData: MessageData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
+        val updatedConsignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
+        val departureData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
 
         val userAnswers = emptyUserAnswers
-          .set(ItemPage(Index(0), Index(0)), Item(1, "item1"))
-          .success
-          .value
+          .setValue(ItemPage(Index(0), Index(0)), Item(1, "item1"))
           .copy(departureData = departureData)
 
         val result = SelectItemsViewModel.apply(userAnswers)
 
-        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(2, "item2"))), 2)
+        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(2, "item2"))))
 
         result mustBe expectedResult
       }
@@ -179,20 +175,22 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must return empty list if no items" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignment(
-            List.empty
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 0,
+            ConsignmentItem = List.empty
           )
         )
 
-        val updatedConsignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
-        val departureData: MessageData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
+        val updatedConsignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
+        val departureData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
 
         val userAnswers = emptyUserAnswers
           .copy(departureData = departureData)
 
         val result = SelectItemsViewModel.apply(userAnswers)
 
-        val expectedResult = new SelectItemsViewModel(SelectableList(Seq.empty), 0)
+        val expectedResult = new SelectItemsViewModel(SelectableList(Seq.empty))
 
         result mustBe expectedResult
       }
@@ -200,48 +198,50 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must not filter list if there is a transport equipment section but with no items" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo1",
-                1,
-                Commodity("item1")
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 100,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType07("item1")
               ),
-              ConsignmentItem(
-                "goodsItemNo2",
-                2,
-                Commodity("item2")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType07("item2")
               )
             )
           ),
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo3",
-                3,
-                Commodity("item3")
+          HouseConsignmentType10(
+            sequenceNumber = "2",
+            grossMass = 200,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo3",
+                declarationGoodsItemNumber = 3,
+                Commodity = CommodityType07("item3")
               ),
-              ConsignmentItem(
-                "goodsItemNo4",
-                4,
-                Commodity("item4")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo4",
+                declarationGoodsItemNumber = 4,
+                Commodity = CommodityType07("item4")
               )
             )
           )
         )
 
-        val updatedConsignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
-        val departureData: MessageData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
+        val updatedConsignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
+        val departureData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
 
         val userAnswers = emptyUserAnswers
-          .set(SealIdentificationNumberPage(Index(0), Index(0)), "seal1")
-          .success
-          .value
+          .setValue(SealIdentificationNumberPage(Index(0), Index(0)), "seal1")
           .copy(departureData = departureData)
 
         val result = SelectItemsViewModel.apply(userAnswers)
 
-        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(1, "item1"), Item(2, "item2"), Item(3, "item3"), Item(4, "item4"))), 4)
+        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(1, "item1"), Item(2, "item2"), Item(3, "item3"), Item(4, "item4"))))
 
         result mustBe expectedResult
       }
@@ -249,50 +249,52 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must not filter list if there are no items in UA" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo1",
-                1,
-                Commodity("item1")
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 100,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType07("item1")
               ),
-              ConsignmentItem(
-                "goodsItemNo2",
-                2,
-                Commodity("item2")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType07("item2")
               )
             )
           ),
-          HouseConsignment(
-            List(
-              ConsignmentItem(
-                "goodsItemNo3",
-                3,
-                Commodity("item3")
+          HouseConsignmentType10(
+            sequenceNumber = "1",
+            grossMass = 0,
+            ConsignmentItem = Seq(
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo3",
+                declarationGoodsItemNumber = 3,
+                Commodity = CommodityType07("item3")
               ),
-              ConsignmentItem(
-                "goodsItemNo4",
-                4,
-                Commodity("item4")
+              ConsignmentItemType09(
+                goodsItemNumber = "goodsItemNo4",
+                declarationGoodsItemNumber = 4,
+                Commodity = CommodityType07("item4")
               )
             )
           )
         )
 
-        val updatedConsignment: Consignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
-        val departureData: MessageData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
+        val updatedConsignment = emptyUserAnswers.departureData.Consignment.copy(HouseConsignment = updatedHouseConsignment)
+        val departureData      = emptyUserAnswers.departureData.copy(Consignment = updatedConsignment)
 
         val userAnswers = emptyUserAnswers
           .copy(departureData = departureData)
 
         val result = SelectItemsViewModel.apply(userAnswers)
 
-        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(1, "item1"), Item(2, "item2"), Item(3, "item3"), Item(4, "item4"))), 4)
+        val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(1, "item1"), Item(2, "item2"), Item(3, "item3"), Item(4, "item4"))))
 
         result mustBe expectedResult
       }
-
     }
-
   }
 }

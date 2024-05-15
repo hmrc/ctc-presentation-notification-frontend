@@ -17,23 +17,26 @@
 package utils.transformer.transport.placeOfLoading
 
 import base.SpecBase
+import generated.PlaceOfLoadingType03
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import pages.loading.AddUnLocodeYesNoPage
 
-class AddUnLocodeYesNoTransformerTest extends SpecBase {
+class AddUnLocodeYesNoTransformerTest extends SpecBase with Generators {
 
   val transformer = new AddUnLocodeYesNoTransformer
 
   "AddUnLocodeYesNoTransformer" - {
     "must return updated answers with AddUnLocodeYesNo" in {
-      val userAnswers = emptyUserAnswers
-      userAnswers.get(AddUnLocodeYesNoPage) mustBe None
+      forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
+        (placeOfLoading, unLocode) =>
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+            Some(placeOfLoading.copy(UNLocode = Some(unLocode)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(AddUnLocodeYesNoPage) mustBe Some(true)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(AddUnLocodeYesNoPage) mustBe Some(true)
       }
-
     }
   }
-
 }

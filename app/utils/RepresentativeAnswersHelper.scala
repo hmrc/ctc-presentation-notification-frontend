@@ -23,18 +23,15 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.Section
 
-import scala.concurrent.ExecutionContext
-
 class RepresentativeAnswersHelper(
   userAnswers: UserAnswers,
   departureId: String,
   mode: Mode
-)(implicit messages: Messages, ec: ExecutionContext)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, departureId, mode) {
 
   def actingAsRepresentative: Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = ActingAsRepresentativePage,
-    optionalAnswer = userAnswers.get(ActingAsRepresentativePage),
     formatAnswer = formatAsYesOrNo,
     prefix = "actingRepresentative",
     id = Some("change-acting-as-representative")
@@ -42,7 +39,6 @@ class RepresentativeAnswersHelper(
 
   def eori: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = EoriPage,
-    optionalAnswer = userAnswers.get(EoriPage),
     formatAnswer = formatAsText,
     prefix = "representative.eori",
     id = Some("change-representative-eori")
@@ -50,7 +46,6 @@ class RepresentativeAnswersHelper(
 
   def addRepresentativeContactDetails(): Option[SummaryListRow] = buildRowWithAnswer[Boolean](
     page = AddRepresentativeContactDetailsYesNoPage,
-    optionalAnswer = userAnswers.get(AddRepresentativeContactDetailsYesNoPage),
     formatAnswer = formatAsYesOrNo,
     prefix = "addRepresentativeContactDetailsYesNo",
     id = Some("change-add-contact-details")
@@ -58,7 +53,6 @@ class RepresentativeAnswersHelper(
 
   def name: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = NamePage,
-    optionalAnswer = userAnswers.get(NamePage),
     formatAnswer = formatAsText,
     prefix = "representative.name",
     id = Some("change-representative-name")
@@ -66,7 +60,6 @@ class RepresentativeAnswersHelper(
 
   def phoneNumber: Option[SummaryListRow] = buildRowWithAnswer[String](
     page = RepresentativePhoneNumberPage,
-    optionalAnswer = userAnswers.get(RepresentativePhoneNumberPage),
     formatAnswer = formatAsText,
     prefix = "representative.representativeTelephoneNumber",
     id = Some("change-representative-phone-number")

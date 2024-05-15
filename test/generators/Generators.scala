@@ -26,7 +26,7 @@ import java.time._
 import scala.util.matching.Regex
 
 // scalastyle:off number.of.methods
-trait Generators extends UserAnswersGenerator with ModelGenerators with ViewModelGenerators {
+trait Generators extends UserAnswersGenerator with ModelGenerators with ViewModelGenerators with ScalaxbModelGenerators {
 
   lazy val stringMaxLength = 36
 

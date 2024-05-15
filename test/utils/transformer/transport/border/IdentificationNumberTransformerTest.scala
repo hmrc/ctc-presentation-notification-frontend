@@ -17,36 +17,38 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import base.TestMessageData.activeBorderTransportMeansIdentificationNumber
+import generated.ActiveBorderTransportMeansType02
+import generators.Generators
 import models.Index
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.active.IdentificationNumberPage
 
-class IdentificationNumberTransformerTest extends SpecBase {
-  val identificationNumber: String = activeBorderTransportMeansIdentificationNumber
-  val transformer                  = new IdentificationNumberTransformer()
+class IdentificationNumberTransformerTest extends SpecBase with Generators {
+  val transformer = new IdentificationNumberTransformer()
 
   "IdentificationNumberTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(Gen.oneOf(Option(List()), None)) {
-        borderMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(borderMeans)(emptyUserAnswers)
-          whenReady(transformer.transform(hc)(userAnswers)) {
-            updatedUserAnswers =>
-              updatedUserAnswers mustBe userAnswers
-          }
+      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+        borderTransportMeans =>
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(identificationNumber = None))
+          )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(IdentificationNumberPage(Index(0))) mustBe None
       }
     }
 
     "must return updated answers with IdentificationNumberPage" in {
-      val userAnswers = emptyUserAnswers
-      val index       = Index(0)
-      userAnswers.get(IdentificationNumberPage(index)) mustBe None
+      forAll(arbitrary[ActiveBorderTransportMeansType02], nonEmptyString) {
+        (borderTransportMeans, identificationNumber) =>
+          val userAnswers = setBorderMeansAnswersLens.set(
+            Seq(borderTransportMeans.copy(identificationNumber = Some(identificationNumber)))
+          )(emptyUserAnswers)
 
-      whenReady(transformer.transform(hc)(userAnswers)) {
-        updatedUserAnswers =>
-          updatedUserAnswers.get(IdentificationNumberPage(index)) mustBe Some(identificationNumber)
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(IdentificationNumberPage(Index(0))).value mustBe identificationNumber
       }
     }
   }
