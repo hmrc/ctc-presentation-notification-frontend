@@ -49,8 +49,6 @@ class CustomsOfficeIdentifierController @Inject() (
     .async {
       implicit request =>
         val ie170CustomsOffice = request.userAnswers.get(CustomsOfficeIdentifierPage)
-
-        // TODO - CTCP-3847
         customsOfficesService.getCustomsOfficesOfDepartureForCountry(request.userAnswers.departureData.countryOfDeparture).map {
           customsOfficeList =>
             val form = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
