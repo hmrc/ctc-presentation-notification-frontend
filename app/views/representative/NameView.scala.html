@@ -33,17 +33,19 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.NameController.onSubmit(departureId, mode), Symbol("autoComplete") -> "name") {
+    @formHelper(action = routes.NameController.onSubmit(departureId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-            heading = messages("representative.name.heading"),
-            caption = Some(messages("representative.caption")),
-            additionalHtml = messages("representative.name.paragraph").toParagraph
+                heading = messages("representative.name.heading"),
+                caption = Some(messages("representative.caption")),
+                additionalHtml = messages("representative.name.paragraph").toParagraph
             ),
+            inputType = "name",
+            autocomplete = Some("name"),
             inputClass = InputSize.Width20
         )
 
