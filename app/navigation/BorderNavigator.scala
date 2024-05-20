@@ -178,23 +178,20 @@ class BorderNavigator extends Navigator {
 
 object BorderNavigator {
 
-  private[navigation] def borderModeOfTransportPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] = {
-
-    val numberOfActiveBorderMeans: Int = userAnswers.get(BorderActiveListSection).map(_.value.length - 1).getOrElse(0)
-
-    if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isEmpty && userAnswers.departureData.hasSecurity)
+  private[navigation] def borderModeOfTransportPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+    if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isEmpty && userAnswers.departureData.hasSecurity) {
+      val numberOfActiveBorderMeans: Int = userAnswers.get(BorderActiveListSection).map(_.value.length - 1).getOrElse(0)
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
-    else containerIndicatorRouting(userAnswers, departureId, mode)
-  }
+    } else {
+      containerIndicatorRouting(userAnswers, departureId, mode)
+    }
 
   private[navigation] def containerIndicatorRouting(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     if (userAnswers.departureData.Consignment.containerIndicator.isDefined) {
       Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     } else {
       userAnswers.get(ContainerIndicatorPage) match {
-        case Some(true) =>
-          ContainerIdentificationNumberPage(Index(0))
-            .route(userAnswers, departureId, mode)
+        case Some(true)  => ContainerIdentificationNumberPage(Index(0)).route(userAnswers, departureId, mode)
         case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
         case None        => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       }

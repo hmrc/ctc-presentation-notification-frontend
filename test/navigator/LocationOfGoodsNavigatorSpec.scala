@@ -33,8 +33,6 @@ import pages.loading.CountryPage
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.transport.border.BorderModeOfTransportPage
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{CheckInformationPage, ContainerIndicatorPage, LimitDatePage}
 import pages.{MoreInformationPage, Page}
 import scalaxb.XMLCalendar
@@ -308,7 +306,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           (answers, placeOfLoading, limitDate) =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
-              .setValue(LimitDatePage, LocalDate.now())
               .copy(departureData =
                 answers.departureData.copy(
                   TransitOperation = answers.departureData.TransitOperation.copy(limitDate = Some(limitDate)),
@@ -325,27 +322,28 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from Add AddContactYesNo page to ContainerIdentificationNumberPage page when user selects no, Security is NoSecurityDetails, Add contact is false, Container Indicator is true" in {
-        forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
-          (answers, locationOfGoods, placeOfLoading) =>
+      "must go from Add AddContactYesNo page to CYA page when user selects no, Security is NoSecurityDetails, Add contact is false, Container Indicator is true" in {
+        forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+          (answers, locationOfGoods, placeOfLoading, limitDate) =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
-              .setValue(ContainerIndicatorPage, true)
-              .setValue(LimitDatePage, LocalDate.now())
               .copy(departureData =
                 answers.departureData.copy(
-                  TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
+                  TransitOperation = answers.departureData.TransitOperation.copy(
+                    security = NoSecurityDetails,
+                    limitDate = Some(limitDate)
+                  ),
                   Consignment = answers.departureData.Consignment.copy(
                     LocationOfGoods = Some(locationOfGoods),
                     PlaceOfLoading = Some(placeOfLoading),
-                    containerIndicator = None
+                    containerIndicator = Some(Number1)
                   )
                 )
               )
 
             navigator
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
 
@@ -528,32 +526,30 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
-      "must go from Add PhoneNumberPage page to ContainerIdentificationNumberPage page " +
+      "must go from Add PhoneNumberPage page to CYA page " +
         "when user selects No and POL & limit date exists and Container Indicator exists" +
         "and security is '0'" +
         "and active border means is present" +
         "and container indicator is '1'" in {
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
-            (answers, placeOfLoading) =>
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+            (answers, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
-                .setValue(ContainerIndicatorPage, true)
-                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   answers.departureData.copy(
                     TransitOperation = answers.departureData.TransitOperation.copy(
                       security = NoSecurityDetails,
-                      limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))
+                      limitDate = Some(limitDate)
                     ),
                     Consignment = answers.departureData.Consignment.copy(
-                      containerIndicator = None,
+                      containerIndicator = Some(Number1),
                       PlaceOfLoading = Some(placeOfLoading)
                     )
                   )
                 )
               navigator
                 .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(answers, departureId, mode).value)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       "must go from Add PhoneNumberPage page to AddTransportEquipmentYesNoPage " +
@@ -563,27 +559,25 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "and active border means is present" +
         "and container indicator is '0'" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
-            (answers, placeOfLoading) =>
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+            (answers, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
-                .setValue(ContainerIndicatorPage, false)
-                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   answers.departureData.copy(
                     TransitOperation = answers.departureData.TransitOperation.copy(
                       security = NoSecurityDetails,
-                      limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))
+                      limitDate = Some(limitDate)
                     ),
                     Consignment = answers.departureData.Consignment.copy(
-                      containerIndicator = None,
+                      containerIndicator = Some(Number0),
                       PlaceOfLoading = Some(placeOfLoading)
                     )
                   )
                 )
               navigator
                 .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(AddTransportEquipmentYesNoPage.route(answers, departureId, mode).value)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -592,17 +586,18 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "consignment contains LocationOfGoods, " +
         "Security is NoSecurityDetails, " +
         "Container Indicator is true" in {
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
-            (answers, locationOfGoods, placeOfLoading) =>
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+            (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
-                .setValue(ContainerIndicatorPage, true)
-                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   answers.departureData.copy(
-                    TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
+                    TransitOperation = answers.departureData.TransitOperation.copy(
+                      security = NoSecurityDetails,
+                      limitDate = Some(limitDate)
+                    ),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
-                      containerIndicator = None,
+                      containerIndicator = Some(Number1),
                       PlaceOfLoading = Some(placeOfLoading)
                     )
                   )
@@ -610,7 +605,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(MoreInformationPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -672,16 +667,16 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C521 AND limit date exists AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 5" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
-            (answers, locationOfGoods, placeOfLoading) =>
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+            (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
-                .setValue(ContainerIndicatorPage, None)
-                .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
-                .setValue(LimitDatePage, LocalDate.now())
                 .copy(departureData =
                   answers.departureData.copy(
                     Authorisation = Seq(AuthorisationType03("1", ACR, "")),
-                    TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
+                    TransitOperation = answers.departureData.TransitOperation.copy(
+                      security = NoSecurityDetails,
+                      limitDate = Some(limitDate)
+                    ),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
                       PlaceOfLoading = Some(placeOfLoading),
@@ -700,15 +695,17 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
-            (answers, locationOfGoods, placeOfLoading) =>
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+            (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
-                .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
                     Authorisation = Seq(AuthorisationType03("1", ACR, "")),
-                    TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
+                    TransitOperation = answers.departureData.TransitOperation.copy(
+                      security = NoSecurityDetails,
+                      limitDate = Some(limitDate)
+                    ),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
                       PlaceOfLoading = Some(placeOfLoading),
@@ -716,7 +713,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                     )
                   )
                 )
-                .setValue(LimitDatePage, LocalDate.now())
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
@@ -882,25 +878,26 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "consignment contains LocationOfGoods, " +
         "Security is NoSecurityDetails, " +
         "Container Indicator is true" in {
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
-            (answers, locationOfGoods, placeOfLoading) =>
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+            (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
-                .setValue(ContainerIndicatorPage, true)
                 .copy(departureData =
                   answers.departureData.copy(
-                    TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
+                    TransitOperation = answers.departureData.TransitOperation.copy(
+                      security = NoSecurityDetails,
+                      limitDate = Some(limitDate)
+                    ),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
-                      containerIndicator = None,
+                      containerIndicator = Some(Number1),
                       PlaceOfLoading = Some(placeOfLoading)
                     )
                   )
                 )
-                .setValue(LimitDatePage, LocalDate.now())
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex))
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 

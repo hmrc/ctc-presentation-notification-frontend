@@ -90,22 +90,37 @@ object LoadingNavigator {
 
   private[navigation] def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
     if (ua.departureData.isSimplified) {
-      ua.get(LimitDatePage) match {
-        case Some(_) =>
-          if (isContainerIndicatorMissing(ua)) {
-            ContainerIndicatorPage.route(ua, departureId, mode)
-          } else containerIndicatorPageNavigation(departureId, mode, ua)
-        case None => LimitDatePage.route(ua, departureId, mode)
+      if (isLimitDateMissing(ua, mode)) {
+        LimitDatePage.route(ua, departureId, mode)
+      } else {
+        if (isContainerIndicatorMissing(ua, mode)) {
+          ContainerIndicatorPage.route(ua, departureId, mode)
+        } else {
+          containerIndicatorPageNavigation(departureId, mode, ua)
+        }
       }
-    } else if (isContainerIndicatorMissing(ua)) {
+    } else if (isContainerIndicatorMissing(ua, mode)) {
       ContainerIndicatorPage.route(ua, departureId, mode)
-    } else containerIndicatorPageNavigation(departureId, mode, ua)
+    } else {
+      containerIndicatorPageNavigation(departureId, mode, ua)
+    }
 
-  private def isContainerIndicatorMissing(ua: UserAnswers) = ua.departureData.Consignment.containerIndicator.isEmpty && ua.get(ContainerIndicatorPage).isEmpty
+  private def isContainerIndicatorMissing(ua: UserAnswers, mode: Mode) =
+    mode match {
+      case NormalMode => ua.departureData.Consignment.containerIndicator.isEmpty
+      case CheckMode  => ua.get(ContainerIndicatorPage).isEmpty
+    }
+
+  private def isLimitDateMissing(ua: UserAnswers, mode: Mode) =
+    mode match {
+      case NormalMode => ua.departureData.TransitOperation.limitDate.isEmpty
+      case CheckMode  => ua.get(LimitDatePage).isEmpty
+    }
 
   private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
     if (ua.departureData.hasSecurity)
       BorderModeOfTransportPage.route(ua, departureId, mode)
-    else containerIndicatorRouting(ua, departureId, mode)
+    else
+      borderModeOfTransportPageNavigation(ua, departureId, mode)
 
 }

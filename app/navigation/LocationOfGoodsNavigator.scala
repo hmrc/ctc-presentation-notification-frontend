@@ -114,12 +114,8 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
 
   private def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     mode match {
-      case NormalMode =>
-        userAnswers.departureData.Consignment.PlaceOfLoading match {
-          case Some(_) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
-          case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
-        }
-      case CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case NormalMode => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
+      case CheckMode  => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
