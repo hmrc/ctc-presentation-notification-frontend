@@ -19,6 +19,7 @@ package models
 import generated.CC015CType
 import models.SensitiveFormats.SensitiveWrites
 import pages.QuestionPage
+import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -62,6 +63,8 @@ final case class UserAnswers(
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
   }
+
+  def purge: UserAnswers = this.copy(data = Json.obj())
 }
 
 object UserAnswers {

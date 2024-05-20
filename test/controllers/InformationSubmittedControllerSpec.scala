@@ -18,10 +18,13 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.UserAnswers
 import models.reference.CustomsOffice
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -44,7 +47,7 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
   "InformationSubmittedController" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET and purge the cache" in {
 
       when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
 
@@ -61,6 +64,9 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
       contentAsString(result) mustEqual
         view("ABCD1234567890123", customsOffice)(request, messages).toString
 
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -19,6 +19,7 @@ package controllers
 import controllers.actions.Actions
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.CustomsOfficesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.InformationSubmittedView
@@ -30,6 +31,7 @@ class InformationSubmittedController @Inject() (
   cc: MessagesControllerComponents,
   actions: Actions,
   view: InformationSubmittedView,
+  sessionRepository: SessionRepository,
   customsOfficesService: CustomsOfficesService
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
@@ -39,8 +41,12 @@ class InformationSubmittedController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestinationDeclared.referenceNumber).map {
-          customsOffice => Ok(view(request.userAnswers.lrn, customsOffice))
+        customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestinationDeclared.referenceNumber).flatMap {
+          customsOffice =>
+            sessionRepository.set(request.userAnswers.purge).map {
+              _ =>
+                Ok(view(request.userAnswers.lrn, customsOffice))
+            }
         }
     }
 }
