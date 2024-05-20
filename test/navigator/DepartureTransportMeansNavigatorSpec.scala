@@ -102,10 +102,10 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
-        "to session expired when AddAnotherTransportMeansPage does not exist" in {
+        "to tech difficulties when AddAnotherTransportMeansPage does not exist" in {
           navigator
             .nextPage(AddAnotherTransportMeansPage(transportIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 
@@ -206,10 +206,10 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
-        "to session expired when AddAnotherTransportMeansPage does not exist" in {
+        "to tech difficulties when AddAnotherTransportMeansPage does not exist" in {
           navigator
             .nextPage(AddAnotherTransportMeansPage(transportIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 

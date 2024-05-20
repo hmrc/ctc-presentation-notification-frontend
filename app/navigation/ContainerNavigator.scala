@@ -45,9 +45,8 @@ class ContainerNavigator @Inject() () extends Navigator {
   }
 
   private def containerIndicatorCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    ua.get(ContainerIndicatorPage) match {
-      case Some(true)  => Some(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(0)))
-      case Some(false) => Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-      case None        => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(ContainerIndicatorPage) map {
+      case true  => controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(0))
+      case false => controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode)
     }
 }

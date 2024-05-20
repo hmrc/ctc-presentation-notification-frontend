@@ -153,18 +153,16 @@ class BorderNavigator extends Navigator {
     }
 
   private def addConveyanceNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
-    ua.get(AddConveyanceReferenceYesNoPage(activeIndex)) match {
-      case Some(true)  => ConveyanceReferenceNumberPage(activeIndex).route(ua, departureId, mode)
-      case Some(false) => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddConveyanceReferenceYesNoPage(activeIndex)) flatMap {
+      case true  => ConveyanceReferenceNumberPage(activeIndex).route(ua, departureId, mode)
+      case false => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
     }
 
   private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
-    ua.get(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex)) match {
-      case Some(true)                       => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
-      case Some(false) if mode == CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case Some(false)                      => containerIndicatorRouting(ua, departureId, mode)
-      case _                                => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex)) flatMap {
+      case true                       => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
+      case false if mode == CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case false                      => containerIndicatorRouting(ua, departureId, mode)
     }
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =

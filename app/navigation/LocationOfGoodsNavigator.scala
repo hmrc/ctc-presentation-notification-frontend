@@ -93,19 +93,17 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     }
 
   private def addIdentifierYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(AddIdentifierYesNoPage) match {
-      case Some(true)  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
-      case Some(false) => AddContactYesNoPage.route(userAnswers, departureId, mode)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    userAnswers.get(AddIdentifierYesNoPage) flatMap {
+      case true  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
+      case false => AddContactYesNoPage.route(userAnswers, departureId, mode)
     }
 
   private def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     mode match {
       case NormalMode =>
-        userAnswers.get(AddContactYesNoPage) match {
-          case Some(true)  => NamePage.route(userAnswers, departureId, mode)
-          case Some(false) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
-          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+        userAnswers.get(AddContactYesNoPage) flatMap {
+          case true  => NamePage.route(userAnswers, departureId, mode)
+          case false => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
         }
       case CheckMode =>
         userAnswers.get(AddContactYesNoPage) match {

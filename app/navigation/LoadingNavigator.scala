@@ -69,11 +69,9 @@ class LoadingNavigator extends Navigator {
     }
 
   private def addExtraInformationYesNoNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
-    ua.get(AddExtraInformationYesNoPage) match {
-      case Some(true) =>
-        CountryPage.route(ua, departureId, NormalMode)
-      case Some(false) => locationPageNavigation(departureId, NormalMode, ua)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddExtraInformationYesNoPage) flatMap {
+      case true  => CountryPage.route(ua, departureId, NormalMode)
+      case false => locationPageNavigation(departureId, NormalMode, ua)
     }
 
   private def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =

@@ -61,10 +61,10 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), userAnswers, departureId, mode)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
-        "to session expired when AddAnotherBorderMeansOfTransportYesNoPage does not exist" in {
+        "to tech difficulties when AddAnotherBorderMeansOfTransportYesNoPage does not exist" in {
           navigator
             .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
 
       }
@@ -382,10 +382,10 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, NormalMode)
           .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, NormalMode, activeIndex))
       }
-      "to session expired when AddConveyanceReferenceYesNoPage does not exist" in {
+      "to tech difficulties when AddConveyanceReferenceYesNoPage does not exist" in {
         navigator
           .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
       }
 
       "when selected no on add conveyance number yes no" - {

@@ -236,10 +236,10 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from AddIdentifierYesNoPage to session expired when AddIdentifierYesNoPage does not exist" in {
+      "must go from AddIdentifierYesNoPage to tech difficulties when AddIdentifierYesNoPage does not exist" in {
         navigator
           .nextPage(AddIdentifierYesNoPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
       }
 
       "must go from Add AdditionalIdentifierYesNo page to AddContactYesNo page when user selects No" in {
@@ -284,10 +284,10 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
 
-      "must go from AddContactYesNoPage to session expired when AddContactYesNoPage does not exist" in {
+      "must go from AddContactYesNoPage to tech difficulties when AddContactYesNoPage does not exist" in {
         navigator
           .nextPage(AddContactYesNoPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
       }
 
       "must go from Add AddContactYesNo page to AddUnLocode page when user selects No and POL does not exist" in {

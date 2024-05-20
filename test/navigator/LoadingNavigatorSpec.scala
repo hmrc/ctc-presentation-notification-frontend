@@ -71,10 +71,10 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
       "must go from AddExtraInformationYesNoPage" - {
-        "to session expired when AddExtraInformationYesNoPage does not exist" in {
+        "to tech difficulties when AddExtraInformationYesNoPage does not exist" in {
           navigator
             .nextPage(AddExtraInformationYesNoPage, emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
 
         "to Country page when answer is Yes" in {

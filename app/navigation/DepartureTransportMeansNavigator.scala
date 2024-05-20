@@ -66,11 +66,11 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
     }
 
   private def addAnotherTransportMeansNavigation(ua: UserAnswers, departureId: String, transportIndex: Index): Option[Call] =
-    ua.get(AddAnotherTransportMeansPage(transportIndex)) match {
-      case Some(true) =>
-        Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex))
-      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddAnotherTransportMeansPage(transportIndex)) map {
+      case true =>
+        controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex)
+      case false =>
+        controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
     }
 
 }
