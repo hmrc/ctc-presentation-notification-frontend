@@ -35,7 +35,6 @@ import play.api.mvc.Call
 class BorderNavigator extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-
     case BorderModeOfTransportPage                              => ua => borderModeOfTransportPageNavigation(ua, departureId, mode)
     case IdentificationPage(activeIndex)                        => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
     case IdentificationNumberPage(activeIndex)                  => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
@@ -83,10 +82,9 @@ class BorderNavigator extends Navigator {
   private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
     ua.get(AddInlandModeOfTransportYesNoPage) match {
       case Some(true) =>
-        val ie015InlandMode = ua.departureData.Consignment.inlandModeOfTransport
-        (ua.get(InlandModePage), ie015InlandMode) match {
-          case (None, None) => Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, CheckMode))
-          case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        ua.get(InlandModePage) match {
+          case None => Some(controllers.transport.routes.InlandModeController.onPageLoad(departureId, CheckMode))
+          case _    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
@@ -129,10 +127,10 @@ class BorderNavigator extends Navigator {
         }
     }
 
-  private def borderModeOfTransportAlreadyAnswered(ua: UserAnswers, departureId: String) =
-    (ua.get(BorderModeOfTransportPage), ua.departureData.Consignment.modeOfTransportAtTheBorder) match {
-      case (None, None) => BorderModeOfTransportPage.route(ua, departureId, CheckMode)
-      case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+  private def borderModeOfTransportAlreadyAnswered(ua: UserAnswers, departureId: String): Option[Call] =
+    ua.get(BorderModeOfTransportPage) match {
+      case None => BorderModeOfTransportPage.route(ua, departureId, CheckMode)
+      case _    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   private def customsOfficeNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
@@ -169,10 +167,7 @@ class BorderNavigator extends Navigator {
     if (ua.departureData.CustomsOfficeOfTransitDeclared.nonEmpty) {
       Some(routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
     } else {
-      ua.get(ContainerIndicatorPage) match {
-        case Some(_) => containerIndicatorRouting(ua, departureId, mode)
-        case None    => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      }
+      containerIndicatorRouting(ua, departureId, mode)
     }
 }
 

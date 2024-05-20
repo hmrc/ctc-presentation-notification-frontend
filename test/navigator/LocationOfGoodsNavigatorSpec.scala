@@ -483,10 +483,11 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         val userAnswers = emptyUserAnswers.setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
         val userAnswersUpdated = userAnswers
           .copy(
-            departureData = userAnswers.departureData.copy(Consignment = userAnswers.departureData.Consignment.copy(containerIndicator = None))
+            departureData = userAnswers.departureData.copy(
+              Consignment = userAnswers.departureData.Consignment.copy(containerIndicator = Some(Number1))
+            )
           )
           .setValue(LimitDatePage, LocalDate.now())
-          .setValue(ContainerIndicatorPage, true)
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)

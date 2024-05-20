@@ -531,19 +531,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
-
-        "to CheckYourAnswers when Yes and there is an answer to border mode of transport in IE15/13" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddBorderModeOfTransportYesNoPage, true)
-            .copy(departureData =
-              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(modeOfTransportAtTheBorder = Some("test")))
-            )
-          navigator
-            .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
       }
 
       "must go from AddInlandModeYesNoPage" - {
@@ -581,19 +568,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
-
-        "to CheckYourAnswers when Yes and there is an answer to inlandMode in IE15/13" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddInlandModeOfTransportYesNoPage, true)
-            .copy(departureData =
-              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(inlandModeOfTransport = Some("test")))
-            )
-          navigator
-            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
       }
 
       "must go from InlandModePage" - {
@@ -622,19 +596,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           val userAnswers = emptyUserAnswers
             .setValue(AddInlandModeOfTransportYesNoPage, true)
             .setValue(InlandModePage, InlandMode("1", "Air"))
-          navigator
-            .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-
-        }
-
-        "to CheckYourAnswers when Yes and there is an answer to inlandMode in IE15/13" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddInlandModeOfTransportYesNoPage, true)
-            .copy(departureData =
-              emptyUserAnswers.departureData.copy(Consignment = emptyUserAnswers.departureData.Consignment.copy(inlandModeOfTransport = Some("test")))
-            )
           navigator
             .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))

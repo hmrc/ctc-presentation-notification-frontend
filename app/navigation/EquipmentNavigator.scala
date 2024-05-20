@@ -30,7 +30,7 @@ class EquipmentNavigator extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) => ua => addContainerIdentificationNumberYesNoRoute(ua, equipmentIndex, departureId, mode)
-    case ContainerIdentificationNumberPage(equipmentIndex)         => ua => checkProcedureAuthRoute(ua, departureId, mode, equipmentIndex)
+    case ContainerIdentificationNumberPage(equipmentIndex)         => ua => Some(checkProcedureAuthRoute(ua, departureId, mode, equipmentIndex))
     case AddTransportEquipmentYesNoPage                            => ua => addTransportEquipmentYesNoNormalRoute(ua, departureId, mode)
     case AddSealYesNoPage(equipmentIndex)                          => ua => addSealYesNoNormalRoute(ua, departureId, mode, equipmentIndex)
     case SealIdentificationNumberPage(equipmentIndex, _) =>
@@ -75,10 +75,8 @@ class EquipmentNavigator extends Navigator {
     ua.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) map {
       case true =>
         controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex)
-      case false if ua.departureData.isSimplified && ua.departureData.hasAuthC523 =>
-        controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0))
       case false =>
-        controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+        checkProcedureAuthRoute(ua, departureId, mode, equipmentIndex)
     }
 
   private def addContainerIdentificationNumberYesNoCheckRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
@@ -103,11 +101,11 @@ class EquipmentNavigator extends Navigator {
       case false                 => ItemPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
     }
 
-  private def checkProcedureAuthRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =
+  private def checkProcedureAuthRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Call =
     if (ua.departureData.isSimplified && ua.departureData.hasAuthC523) {
-      SealIdentificationNumberPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
+      controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0))
     } else {
-      AddSealYesNoPage(equipmentIndex).route(ua, departureId, mode)
+      controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
     }
 
   def addAnotherSealRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index): Option[Call] =
@@ -124,9 +122,9 @@ class EquipmentNavigator extends Navigator {
     }
 
   private def addTransportEquipmentYesNoNormalRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    ua.get(AddTransportEquipmentYesNoPage) match {
-      case Some(true) => checkProcedureAuthRoute(ua, departureId, mode, Index(0))
-      case _          => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    ua.get(AddTransportEquipmentYesNoPage) map {
+      case true  => checkProcedureAuthRoute(ua, departureId, mode, Index(0))
+      case false => controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
     }
 
   private def addAnotherTransportEquipmentRoute(ua: UserAnswers, equipmentIndex: Index, departureId: String, mode: Mode): Option[Call] =
@@ -135,10 +133,8 @@ class EquipmentNavigator extends Navigator {
         ua.get(ContainerIndicatorPage) match {
           case Some(true) =>
             controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, equipmentIndex)
-          case _ if ua.departureData.isSimplified && ua.departureData.hasAuthC523 =>
-            controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0))
           case _ =>
-            controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+            checkProcedureAuthRoute(ua, departureId, mode, equipmentIndex)
         }
       case false =>
         controllers.routes.CheckYourAnswersController.onPageLoad(departureId)

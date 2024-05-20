@@ -19,6 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import navigation.BorderNavigator.borderModeOfTransportPageNavigation
+import navigation.ContainerNavigator.containerIndicatorPageNavigation
 import pages._
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border._
@@ -30,15 +31,8 @@ import javax.inject.Inject
 class ContainerNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ContainerIndicatorPage => ua => containerIndicatorNavigation(ua, departureId, mode)
+    case ContainerIndicatorPage => ua => containerIndicatorPageNavigation(departureId, mode, ua)
   }
-
-  private def containerIndicatorNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    if (checkTransitOperationSecurity(userAnswers)) BorderModeOfTransportPage.route(userAnswers, departureId, mode)
-    else borderModeOfTransportPageNavigation(userAnswers, departureId, mode)
-
-  private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
-    ua.departureData.hasSecurity
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ContainerIndicatorPage => ua => containerIndicatorCheckRoute(ua, departureId, mode)
@@ -49,4 +43,13 @@ class ContainerNavigator @Inject() () extends Navigator {
       case true  => controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(0))
       case false => controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode)
     }
+}
+
+object ContainerNavigator {
+
+  def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+    if (ua.departureData.hasSecurity)
+      BorderModeOfTransportPage.route(ua, departureId, mode)
+    else
+      borderModeOfTransportPageNavigation(ua, departureId, mode)
 }

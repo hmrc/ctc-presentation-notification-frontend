@@ -19,7 +19,9 @@ package navigation
 import com.google.inject.Singleton
 import config.Constants.QualifierOfTheIdentification._
 import models._
+import navigation.ContainerNavigator.containerIndicatorPageNavigation
 import navigation.LoadingNavigator._
+import navigation.LocationOfGoodsNavigator.limitDatePageNavigator
 import pages._
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -79,13 +81,6 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
       case _                             => None
     }
 
-  private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
-    ua.get(ContainerIndicatorPage) match {
-      case Some(_) =>
-        containerIndicatorPageNavigation(departureId, mode, ua)
-      case None => ContainerIndicatorPage.route(ua, departureId, mode)
-    }
-
   def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.departureData.Consignment.LocationOfGoods match {
       case None    => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
@@ -122,5 +117,15 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     userAnswers.departureData.Consignment.PlaceOfLoading match {
       case Some(_) => locationPageNavigation(departureId, mode, userAnswers)
       case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
+    }
+}
+
+object LocationOfGoodsNavigator {
+
+  def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
+    if (isContainerIndicatorMissing(ua, mode)) {
+      ContainerIndicatorPage.route(ua, departureId, mode)
+    } else {
+      containerIndicatorPageNavigation(departureId, mode, ua)
     }
 }

@@ -18,11 +18,10 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
-import navigation.BorderNavigator._
 import navigation.LoadingNavigator._
+import navigation.LocationOfGoodsNavigator.limitDatePageNavigator
 import pages.Page
 import pages.loading._
-import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
@@ -93,19 +92,13 @@ object LoadingNavigator {
       if (isLimitDateMissing(ua, mode)) {
         LimitDatePage.route(ua, departureId, mode)
       } else {
-        if (isContainerIndicatorMissing(ua, mode)) {
-          ContainerIndicatorPage.route(ua, departureId, mode)
-        } else {
-          containerIndicatorPageNavigation(departureId, mode, ua)
-        }
+        limitDatePageNavigator(departureId, mode, ua)
       }
-    } else if (isContainerIndicatorMissing(ua, mode)) {
-      ContainerIndicatorPage.route(ua, departureId, mode)
     } else {
-      containerIndicatorPageNavigation(departureId, mode, ua)
+      limitDatePageNavigator(departureId, mode, ua)
     }
 
-  private def isContainerIndicatorMissing(ua: UserAnswers, mode: Mode) =
+  def isContainerIndicatorMissing(ua: UserAnswers, mode: Mode): Boolean =
     mode match {
       case NormalMode => ua.departureData.Consignment.containerIndicator.isEmpty
       case CheckMode  => ua.get(ContainerIndicatorPage).isEmpty
@@ -116,11 +109,4 @@ object LoadingNavigator {
       case NormalMode => ua.departureData.TransitOperation.limitDate.isEmpty
       case CheckMode  => ua.get(LimitDatePage).isEmpty
     }
-
-  private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.hasSecurity)
-      BorderModeOfTransportPage.route(ua, departureId, mode)
-    else
-      borderModeOfTransportPageNavigation(ua, departureId, mode)
-
 }

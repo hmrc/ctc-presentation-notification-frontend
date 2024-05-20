@@ -43,13 +43,11 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-
     case TransportMeansIdentificationPage(transportIndex)       => ua => transportMeansIdentificationNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansIdentificationNumberPage(transportIndex) => ua => transportMeansNumberNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansNationalityPage(_) =>
       _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, transportIndex)
-
   }
 
   private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
