@@ -17,6 +17,7 @@
 package controllers
 
 import cats.data.OptionT
+import controllers.actions.IdentifierAction
 import logging.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +31,7 @@ import scala.concurrent.ExecutionContext
 
 class InformationSubmittedController @Inject() (
   cc: MessagesControllerComponents,
+  identify: IdentifierAction,
   view: InformationSubmittedView,
   sessionRepository: SessionRepository,
   messageService: DepartureMessageService,
@@ -39,7 +41,7 @@ class InformationSubmittedController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad(departureId: String): Action[AnyContent] = Action.async {
+  def onPageLoad(departureId: String): Action[AnyContent] = identify.async {
     implicit request =>
       (
         for {
