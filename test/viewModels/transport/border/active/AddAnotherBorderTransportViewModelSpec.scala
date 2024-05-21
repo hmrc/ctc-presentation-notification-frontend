@@ -223,15 +223,15 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
                     CustomsOfficeOfTransitDeclared = Nil
                   )
                 )
+                .setValue(BorderModeOfTransportPage, BorderMode(Air, "test"))
                 .setValue(IdentificationPage(Index(0)), identification)
                 .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
-                .setValue(BorderModeOfTransportPage, BorderMode(Air, "test"))
 
               val result = new AddAnotherBorderTransportViewModelProvider().apply(userAnswers, departureId, NormalMode)
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"${identification.asString}",
+                  name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url,
                   removeUrl = None
                 )

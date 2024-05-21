@@ -795,8 +795,8 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             forAll(arbitrary[String](arbitrarySecurityDetailsNonZeroType), nonEmptyString, nonEmptyString) {
               (securityType, borderModeDesc, conveyanceRefNumber) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
                   .setValue(BorderModeOfTransportPage, BorderMode("4", borderModeDesc))
+                  .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
                   .copy(departureData =
                     basicIe015.copy(
                       TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
@@ -822,8 +822,8 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             forAll(arbitrary[String](arbitrarySecurityDetailsNonZeroType), nonEmptyString, nonEmptyString) {
               (securityType, borderModeDesc, conveyanceRefNumber) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
                   .setValue(BorderModeOfTransportPage, BorderMode("3", borderModeDesc))
+                  .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
                   .copy(departureData =
                     basicIe015.copy(
                       TransitOperation = basicIe015.TransitOperation.copy(security = securityType)

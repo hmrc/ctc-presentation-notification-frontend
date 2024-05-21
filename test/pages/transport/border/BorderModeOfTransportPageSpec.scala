@@ -16,12 +16,11 @@
 
 package pages.transport.border
 
-import models.Index
-import models.reference.Nationality
 import models.reference.TransportMode.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.transport.border.active.{IdentificationNumberPage, NationalityPage}
+import pages.sections.transport.border.BorderActiveListSection
+import play.api.libs.json.{JsArray, Json}
 
 class BorderModeOfTransportPageSpec extends PageBehaviours {
 
@@ -40,19 +39,14 @@ class BorderModeOfTransportPageSpec extends PageBehaviours {
         borderMode =>
           val userAnswers = emptyUserAnswers
             .setValue(AddBorderMeansOfTransportYesNoPage, true)
-            .setValue(NationalityPage(Index(0)), Nationality("GB", "United Kingdom"))
-            .setValue(IdentificationNumberPage(Index(0)), "12345")
+            .setValue(BorderActiveListSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
 
           val result = userAnswers.setValue(BorderModeOfTransportPage, borderMode)
 
           result.get(AddBorderModeOfTransportYesNoPage).value mustBe true
           result.get(AddBorderMeansOfTransportYesNoPage) mustNot be(defined)
-          result.get(NationalityPage(Index(0))) mustNot be(defined)
-          result.get(IdentificationNumberPage(Index(0))) mustNot be(defined)
-
+          result.get(BorderActiveListSection) mustNot be(defined)
       }
-
     }
   }
-
 }
