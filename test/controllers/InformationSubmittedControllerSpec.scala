@@ -17,68 +17,97 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generated._
 import generators.Generators
-import models.UserAnswers
 import models.reference.CustomsOffice
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CustomsOfficesService
+import services.{CustomsOfficesService, DepartureMessageService}
 import views.html.InformationSubmittedView
 
 import scala.concurrent.Future
 
 class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private lazy val declarationSubmittedRoute: String = routes.InformationSubmittedController.onPageLoad("651431d7e3b05b21").url
+  private lazy val declarationSubmittedRoute: String =
+    routes.InformationSubmittedController.onPageLoad(departureId).url
 
-  private val customsOffice = CustomsOffice("AB123", "BIRMINGHAM CONTAINERBASE", Some("+44 (0)121 345 6789"))
+  private val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficeService))
+      .overrides(
+        bind(classOf[DepartureMessageService]).toInstance(mockDepartureMessageService),
+        bind(classOf[CustomsOfficesService]).toInstance(mockCustomsOfficeService)
+      )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockDepartureMessageService)
+    reset(mockCustomsOfficeService)
+  }
 
   "InformationSubmittedController" - {
 
-    "must return OK and the correct view for a GET and purge the cache" in {
+    "must return OK and the correct view for a GET" in {
+      forAll(arbitrary[CC170CType], nonEmptyString, arbitrary[CustomsOffice]) {
+        (ie170, customsOfficeId, customsOffice) =>
+          beforeEach()
 
-      when(mockCustomsOfficeService.getCustomsOfficeById(any())(any())).thenReturn(Future.successful(customsOffice))
+          when(mockDepartureMessageService.getLRN(any())(any()))
+            .thenReturn(Future.successful(lrn))
 
-      setExistingUserAnswers(emptyUserAnswers)
+          when(mockDepartureMessageService.getIE170(any())(any(), any()))
+            .thenReturn(Future.successful(Some(ie170.copy(CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(customsOfficeId)))))
 
-      val request = FakeRequest(GET, declarationSubmittedRoute)
+          when(mockCustomsOfficeService.getCustomsOfficeById(any())(any()))
+            .thenReturn(Future.successful(customsOffice.copy(id = customsOfficeId)))
 
-      val result = route(app, request).value
+          when(mockSessionRepository.remove(any()))
+            .thenReturn(Future.successful(true))
 
-      val view = injector.instanceOf[InformationSubmittedView]
+          val request = FakeRequest(GET, declarationSubmittedRoute)
 
-      status(result) mustEqual OK
+          val result = route(app, request).value
 
-      contentAsString(result) mustEqual
-        view("ABCD1234567890123", customsOffice)(request, messages).toString
+          val view = injector.instanceOf[InformationSubmittedView]
 
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(lrn.value, customsOffice)(request, messages).toString
+
+          verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
+          verify(mockDepartureMessageService).getIE170(eqTo(departureId))(any(), any())
+          verify(mockCustomsOfficeService).getCustomsOfficeById(eqTo(customsOfficeId))(any())
+          verify(mockSessionRepository).remove(eqTo(departureId))
+      }
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
-      setNoExistingUserAnswers()
+    "must redirect to tech difficulties" - {
+      "when IE170 not found" in {
+        when(mockDepartureMessageService.getLRN(any())(any()))
+          .thenReturn(Future.successful(lrn))
 
-      val request = FakeRequest(GET, declarationSubmittedRoute)
+        when(mockDepartureMessageService.getIE170(any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
-      val result = route(app, request).value
+        val request = FakeRequest(GET, declarationSubmittedRoute)
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.routes.ErrorController.technicalDifficulties().url
+      }
     }
   }
 }

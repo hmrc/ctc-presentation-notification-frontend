@@ -17,20 +17,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import generated.{
-  CC015C,
-  CC015CType,
-  CORRELATION_IDENTIFIERSequence,
-  ConsignmentType20,
-  CustomsOfficeOfDepartureType03,
-  CustomsOfficeOfDestinationDeclaredType01,
-  HolderOfTheTransitProcedureType14,
-  MESSAGESequence,
-  MESSAGE_1Sequence,
-  MESSAGE_TYPESequence,
-  Number0,
-  TransitOperationType06
-}
+import generated.{CC015C, CC015CType, CORRELATION_IDENTIFIERSequence, ConsignmentType20, CustomsOfficeOfDepartureType03, CustomsOfficeOfDestinationDeclaredType01, HolderOfTheTransitProcedureType14, MESSAGESequence, MESSAGE_1Sequence, MESSAGE_TYPESequence, Number0, TransitOperationType06}
 import itbase.ItSpecBase
 import models.{EoriNumber, SensitiveFormats, UserAnswers}
 import play.api.libs.json.Json
@@ -195,6 +182,18 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
         getResult.lrn mustBe userAnswers.lrn
         getResult.data mustBe userAnswers.data
         getResult.departureData mustBe userAnswers.departureData
+      }
+    }
+
+    "remove" - {
+
+      "must remove document when given a valid departure ID" in {
+
+        repository.get("id1").futureValue mustBe defined
+
+        repository.remove("id1").futureValue
+
+        repository.get("id1").futureValue must not be defined
       }
     }
   }

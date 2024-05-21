@@ -18,11 +18,12 @@ package services
 
 import cats.data.OptionT
 import connectors.DepartureMovementConnector
-import generated.{CC013CType, CC015CType}
-import models.departureP5.MessageMetaData
-import models.departureP5.MessageType.{AmendmentSubmitted, DepartureNotification}
+import generated.{CC013CType, CC015CType, CC170CType}
+import models.departureP5.MessageType.{DeclarationAmendment, DeclarationData, PresentationForThePreLodgedDeclaration}
+import models.departureP5.{MessageMetaData, MessageType}
 import models.{LocalReferenceNumber, RichCC013CType}
 import play.api.Logging
+import scalaxb.XMLFormat
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -30,33 +31,39 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureMessageService @Inject() (departureMovementP5Connector: DepartureMovementConnector) extends Logging {
 
-  private def getMessageMetaData(departureId: String)(implicit
-    ec: ExecutionContext,
-    hc: HeaderCarrier
-  ): Future[Option[MessageMetaData]] =
+  private def getMessageMetaData(
+    departureId: String,
+    messageTypes: MessageType*
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
     departureMovementP5Connector
       .getMessages(departureId)
       .map(
         _.messages
-          .filter(
-            message => message.messageType == DepartureNotification || message.messageType == AmendmentSubmitted
-          )
+          .filter {
+            message => messageTypes.contains(message.messageType)
+          }
           .sortBy(_.received)
           .reverse
           .headOption
       )
+
+  def getIE170(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC170CType]] =
+    (for {
+      messageMetaData <- OptionT(getMessageMetaData(departureId, PresentationForThePreLodgedDeclaration))
+      message         <- OptionT.liftF(getMessage[CC170CType](departureId, messageMetaData.id))
+    } yield message).value
 
   def getDepartureData(
     departureId: String,
     lrn: LocalReferenceNumber
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC015CType]] =
     (for {
-      messageMetaData <- OptionT(getMessageMetaData(departureId))
+      messageMetaData <- OptionT(getMessageMetaData(departureId, DeclarationData, DeclarationAmendment))
       message <- messageMetaData.messageType match {
-        case DepartureNotification =>
-          OptionT.liftF(departureMovementP5Connector.getMessage[CC015CType](departureId, messageMetaData.id))
-        case AmendmentSubmitted =>
-          OptionT.liftF(departureMovementP5Connector.getMessage[CC013CType](departureId, messageMetaData.id).map(_.toCC015CType(lrn)))
+        case DeclarationData =>
+          OptionT.liftF(getMessage[CC015CType](departureId, messageMetaData.id))
+        case DeclarationAmendment =>
+          OptionT.liftF(getMessage[CC013CType](departureId, messageMetaData.id).map(_.toCC015CType(lrn)))
         case _ =>
           OptionT[Future, CC015CType](Future.successful(None))
       }
@@ -64,4 +71,7 @@ class DepartureMessageService @Inject() (departureMovementP5Connector: Departure
 
   def getLRN(departureId: String)(implicit hc: HeaderCarrier): Future[LocalReferenceNumber] =
     departureMovementP5Connector.getLRN(departureId)
+
+  private def getMessage[T](departureId: String, messageId: String)(implicit hc: HeaderCarrier, format: XMLFormat[T]): Future[T] =
+    departureMovementP5Connector.getMessage(departureId, messageId)
 }

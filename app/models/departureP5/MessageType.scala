@@ -19,28 +19,23 @@ package models.departureP5
 import models.WithName
 import play.api.libs.json.{__, Reads}
 
-sealed trait MessageType {
-  val dataPath: String
-}
+sealed trait MessageType
 
 object MessageType {
 
-  case object DepartureNotification extends MessageType {
-    override val dataPath: String = "CC015C"
-  }
+  case object DeclarationData extends MessageType
 
-  case object AmendmentSubmitted extends MessageType {
-    override val dataPath: String = "CC013C"
-  }
+  case object DeclarationAmendment extends MessageType
 
-  case class Other(status: String) extends WithName(status) with MessageType {
-    override val dataPath: String = status
-  }
+  case object PresentationForThePreLodgedDeclaration extends MessageType
+
+  case class Other(status: String) extends WithName(status) with MessageType
 
   implicit val reads: Reads[MessageType] =
     __.read[String].map {
-      case "IE015" => DepartureNotification
-      case "IE013" => AmendmentSubmitted
+      case "IE015" => DeclarationData
+      case "IE013" => DeclarationAmendment
+      case "IE170" => PresentationForThePreLodgedDeclaration
       case x       => Other(x)
     }
 }

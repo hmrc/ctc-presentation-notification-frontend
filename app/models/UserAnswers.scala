@@ -19,7 +19,6 @@ package models
 import generated.CC015CType
 import models.SensitiveFormats.SensitiveWrites
 import pages.QuestionPage
-import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats

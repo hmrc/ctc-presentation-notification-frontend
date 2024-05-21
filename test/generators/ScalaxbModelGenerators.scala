@@ -77,6 +77,25 @@ trait ScalaxbModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryCC170CType: Arbitrary[CC170CType] =
+    Arbitrary {
+      for {
+        messageSequence1            <- arbitrary[MESSAGESequence]
+        transitOperation            <- arbitrary[TransitOperationType24]
+        customsOfficeOfDeparture    <- arbitrary[CustomsOfficeOfDepartureType03]
+        holderOfTheTransitProcedure <- arbitrary[HolderOfTheTransitProcedureType19]
+        consignment                 <- arbitrary[ConsignmentType08]
+      } yield CC170CType(
+        messageSequence1 = messageSequence1,
+        TransitOperation = transitOperation,
+        CustomsOfficeOfDeparture = customsOfficeOfDeparture,
+        HolderOfTheTransitProcedure = holderOfTheTransitProcedure,
+        Representative = None,
+        Consignment = consignment,
+        attributes = Map.empty
+      )
+    }
+
   implicit lazy val arbitraryActiveBorderTransportMeansType02: Arbitrary[ActiveBorderTransportMeansType02] =
     Arbitrary {
       for {
@@ -182,6 +201,20 @@ trait ScalaxbModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryHolderOfTheTransitProcedureType19: Arbitrary[HolderOfTheTransitProcedureType19] =
+    Arbitrary {
+      for {
+        identificationNumber          <- Gen.option(nonEmptyString)
+        tirHolderIdentificationNumber <- Gen.option(nonEmptyString)
+        name                          <- Gen.option(nonEmptyString)
+      } yield HolderOfTheTransitProcedureType19(
+        identificationNumber = identificationNumber,
+        TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
+        name = name,
+        Address = None
+      )
+    }
+
   implicit lazy val arbitraryConsignmentType04: Arbitrary[ConsignmentType04] =
     Arbitrary {
       for {
@@ -212,6 +245,24 @@ trait ScalaxbModelGenerators {
         AdditionalReference = Nil,
         AdditionalInformation = Nil,
         TransportCharges = None,
+        HouseConsignment = Nil
+      )
+    }
+
+  implicit lazy val arbitraryConsignmentType08: Arbitrary[ConsignmentType08] =
+    Arbitrary {
+      for {
+        containerIndicator <- Gen.option(arbitrary[Flag])
+        locationOfGoods    <- arbitrary[LocationOfGoodsType03]
+      } yield ConsignmentType08(
+        containerIndicator = containerIndicator,
+        inlandModeOfTransport = None,
+        modeOfTransportAtTheBorder = None,
+        TransportEquipment = Nil,
+        LocationOfGoods = locationOfGoods,
+        DepartureTransportMeans = Nil,
+        ActiveBorderTransportMeans = Nil,
+        PlaceOfLoading = None,
         HouseConsignment = Nil
       )
     }
@@ -386,6 +437,26 @@ trait ScalaxbModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryLocationOfGoodsType03: Arbitrary[LocationOfGoodsType03] =
+    Arbitrary {
+      for {
+        typeOfLocation            <- nonEmptyString
+        qualifierOfIdentification <- nonEmptyString
+      } yield LocationOfGoodsType03(
+        typeOfLocation = typeOfLocation,
+        qualifierOfIdentification = qualifierOfIdentification,
+        authorisationNumber = None,
+        additionalIdentifier = None,
+        UNLocode = None,
+        CustomsOffice = None,
+        GNSS = None,
+        EconomicOperator = None,
+        Address = None,
+        PostcodeAddress = None,
+        ContactPerson = None
+      )
+    }
+
   implicit lazy val arbitraryLocationOfGoodsType05: Arbitrary[LocationOfGoodsType05] =
     Arbitrary {
       for {
@@ -511,6 +582,17 @@ trait ScalaxbModelGenerators {
         declarationAcceptanceDate = None,
         security = security,
         reducedDatasetIndicator = reducedDatasetIndicator
+      )
+    }
+
+  implicit lazy val arbitraryTransitOperationType24: Arbitrary[TransitOperationType24] =
+    Arbitrary {
+      for {
+        lrn       <- nonEmptyString
+        limitDate <- Gen.option(arbitrary[XMLGregorianCalendar])
+      } yield TransitOperationType24(
+        LRN = lrn,
+        limitDate = limitDate
       )
     }
 

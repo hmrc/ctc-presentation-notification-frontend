@@ -16,11 +16,13 @@
 
 package controllers
 
+import cats.data.OptionT
 import controllers.actions.Actions
+import logging.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CustomsOfficesService
+import services.{CustomsOfficesService, DepartureMessageService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.InformationSubmittedView
 
@@ -32,21 +34,25 @@ class InformationSubmittedController @Inject() (
   actions: Actions,
   view: InformationSubmittedView,
   sessionRepository: SessionRepository,
+  messageService: DepartureMessageService,
   customsOfficesService: CustomsOfficesService
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(departureId: String): Action[AnyContent] = actions
-    .requireData(departureId)
-    .async {
-      implicit request =>
-        customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestinationDeclared.referenceNumber).flatMap {
-          customsOffice =>
-            sessionRepository.set(request.userAnswers.purge).map {
-              _ =>
-                Ok(view(request.userAnswers.lrn, customsOffice))
-            }
-        }
-    }
+  def onPageLoad(departureId: String): Action[AnyContent] = Action.async {
+    implicit request =>
+      (
+        for {
+          lrn           <- OptionT.liftF(messageService.getLRN(departureId))
+          ie170         <- OptionT(messageService.getIE170(departureId))
+          customsOffice <- OptionT.liftF(customsOfficesService.getCustomsOfficeById(ie170.CustomsOfficeOfDeparture.referenceNumber))
+          _             <- OptionT.liftF(sessionRepository.remove(departureId))
+        } yield Ok(view(lrn.value, customsOffice))
+      ).getOrElse {
+        logger.warn(s"No IE170 message found for departure ID $departureId")
+        Redirect(controllers.routes.ErrorController.technicalDifficulties())
+      }
+  }
 }
