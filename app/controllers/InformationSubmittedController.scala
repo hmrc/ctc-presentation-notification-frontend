@@ -43,11 +43,10 @@ class InformationSubmittedController @Inject() (
     implicit request =>
       (
         for {
-          lrn           <- OptionT.liftF(messageService.getLRN(departureId))
           ie170         <- OptionT(messageService.getIE170(departureId))
           customsOffice <- OptionT.liftF(customsOfficesService.getCustomsOfficeById(ie170.CustomsOfficeOfDeparture.referenceNumber))
           _             <- OptionT.liftF(sessionRepository.remove(departureId))
-        } yield Ok(view(lrn.value, customsOffice))
+        } yield Ok(view(ie170.TransitOperation.LRN, customsOffice))
       ).getOrElse {
         logger.warn(s"No IE170 message found for departure ID $departureId")
         Redirect(controllers.routes.ErrorController.technicalDifficulties())

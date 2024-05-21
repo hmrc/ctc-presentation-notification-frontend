@@ -58,14 +58,17 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
       forAll(arbitrary[CC170CType], nonEmptyString, arbitrary[CustomsOffice]) {
-        (ie170, customsOfficeId, customsOffice) =>
+        (cc170cType, customsOfficeId, customsOffice) =>
           beforeEach()
 
-          when(mockDepartureMessageService.getLRN(any())(any()))
-            .thenReturn(Future.successful(lrn))
+          val transitOperation = cc170cType.TransitOperation.copy(LRN = lrn.value)
+          val ie170 = cc170cType.copy(
+            TransitOperation = transitOperation,
+            CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(customsOfficeId)
+          )
 
           when(mockDepartureMessageService.getIE170(any())(any(), any()))
-            .thenReturn(Future.successful(Some(ie170.copy(CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(customsOfficeId)))))
+            .thenReturn(Future.successful(Some(ie170)))
 
           when(mockCustomsOfficeService.getCustomsOfficeById(any())(any()))
             .thenReturn(Future.successful(customsOffice.copy(id = customsOfficeId)))
@@ -84,7 +87,6 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
           contentAsString(result) mustEqual
             view(lrn.value, customsOffice)(request, messages).toString
 
-          verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
           verify(mockDepartureMessageService).getIE170(eqTo(departureId))(any(), any())
           verify(mockCustomsOfficeService).getCustomsOfficeById(eqTo(customsOfficeId))(any())
           verify(mockSessionRepository).remove(eqTo(departureId))
@@ -93,9 +95,6 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must redirect to tech difficulties" - {
       "when IE170 not found" in {
-        when(mockDepartureMessageService.getLRN(any())(any()))
-          .thenReturn(Future.successful(lrn))
-
         when(mockDepartureMessageService.getIE170(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
