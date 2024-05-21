@@ -189,17 +189,5 @@ class UserAnswersSpec extends SpecBase {
         }
       }
     }
-
-    "purge" - {
-      "must return empty json object" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(TestPage, testPageAnswer)
-          .setValue(TestCleanupPage, testCleanupPageAnswer)
-          .setValue(TestPage, testPageAnswer2)
-
-        val result = userAnswers.purge
-        result.data mustBe Json.obj()
-      }
-    }
   }
 }

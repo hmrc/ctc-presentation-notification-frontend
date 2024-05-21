@@ -62,8 +62,6 @@ final case class UserAnswers(
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
   }
-
-  def purge: UserAnswers = this.copy(data = Json.obj())
 }
 
 object UserAnswers {

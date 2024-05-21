@@ -17,7 +17,6 @@
 package controllers
 
 import cats.data.OptionT
-import controllers.actions.Actions
 import logging.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,7 +30,6 @@ import scala.concurrent.ExecutionContext
 
 class InformationSubmittedController @Inject() (
   cc: MessagesControllerComponents,
-  actions: Actions,
   view: InformationSubmittedView,
   sessionRepository: SessionRepository,
   messageService: DepartureMessageService,
