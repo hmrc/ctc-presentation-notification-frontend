@@ -39,11 +39,10 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
     value match {
       case Some(_) =>
         userAnswers
-          .remove(AddBorderMeansOfTransportYesNoPage)
-          .flatMap(
-            _.remove(IdentificationNumberPage(Index(0)))
-              .flatMap(_.remove(NationalityPage(Index(0))))
-          )
+          .set(AddBorderModeOfTransportYesNoPage, true)
+          .flatMap(_.remove(AddBorderMeansOfTransportYesNoPage))
+          .flatMap(_.remove(IdentificationNumberPage(Index(0))))
+          .flatMap(_.remove(NationalityPage(Index(0))))
 
       case _ => super.cleanup(value, userAnswers)
     }

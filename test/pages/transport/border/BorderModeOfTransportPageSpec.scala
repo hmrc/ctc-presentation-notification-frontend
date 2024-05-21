@@ -45,6 +45,7 @@ class BorderModeOfTransportPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(BorderModeOfTransportPage, borderMode)
 
+          result.get(AddBorderModeOfTransportYesNoPage).value mustBe true
           result.get(AddBorderMeansOfTransportYesNoPage) mustNot be(defined)
           result.get(NationalityPage(Index(0))) mustNot be(defined)
           result.get(IdentificationNumberPage(Index(0))) mustNot be(defined)
