@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
-import pages.locationOfGoods.IdentificationPage
+import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage}
 import services.LocationOfGoodsIdentificationTypeService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,19 +45,39 @@ class IdentificationTransformerTest extends SpecBase with Generators {
       result mustBe userAnswers
     }
 
-    "must return updated answers when the identification from departure data can be found in service response" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationOfGoodsIdentification]) {
-        (locationOfGoods, identification) =>
-          when(service.getLocationOfGoodsIdentificationTypes(any())(any()))
-            .thenReturn(Future.successful(Seq(identification)))
+    "must return updated answers when the identification from departure data can be found in service response" - {
+      "when multiple identifier types returned" in {
+        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationOfGoodsIdentification], arbitrary[LocationOfGoodsIdentification]) {
+          (locationOfGoods, identification1, identification2) =>
+            when(service.getLocationOfGoodsIdentificationTypes(any())(any()))
+              .thenReturn(Future.successful(Seq(identification1, identification2)))
 
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
-              Some(locationOfGoods.copy(qualifierOfIdentification = identification.qualifier))
-            )(emptyUserAnswers)
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .set(
+                Some(locationOfGoods.copy(qualifierOfIdentification = identification1.qualifier))
+              )(emptyUserAnswers)
 
-          val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(IdentificationPage) mustBe Some(identification)
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(IdentificationPage) mustBe Some(identification1)
+            result.get(InferredIdentificationPage) must not be defined
+        }
+      }
+
+      "when one identifier type returned" in {
+        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationOfGoodsIdentification]) {
+          (locationOfGoods, identification) =>
+            when(service.getLocationOfGoodsIdentificationTypes(any())(any()))
+              .thenReturn(Future.successful(Seq(identification)))
+
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .set(
+                Some(locationOfGoods.copy(qualifierOfIdentification = identification.qualifier))
+              )(emptyUserAnswers)
+
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(IdentificationPage) must not be defined
+            result.get(InferredIdentificationPage) mustBe Some(identification)
+        }
       }
     }
   }

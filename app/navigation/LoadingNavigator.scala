@@ -18,12 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
-import navigation.BorderNavigator._
-import navigation.LoadingNavigator._
 import pages.Page
 import pages.loading._
-import pages.transport.border.BorderModeOfTransportPage
-import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
 @Singleton
@@ -69,11 +65,9 @@ class LoadingNavigator extends Navigator {
     }
 
   private def addExtraInformationYesNoNormalRoute(ua: UserAnswers, departureId: String): Option[Call] =
-    ua.get(AddExtraInformationYesNoPage) match {
-      case Some(true) =>
-        CountryPage.route(ua, departureId, NormalMode)
-      case Some(false) => locationPageNavigation(departureId, NormalMode, ua)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddExtraInformationYesNoPage) flatMap {
+      case true  => CountryPage.route(ua, departureId, NormalMode)
+      case false => locationPageNavigation(departureId, NormalMode, ua)
     }
 
   private def addExtraInformationYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
@@ -86,28 +80,4 @@ class LoadingNavigator extends Navigator {
         }
       case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
-}
-
-object LoadingNavigator {
-
-  private[navigation] def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.isSimplified) {
-      ua.get(LimitDatePage) match {
-        case Some(_) =>
-          if (isContainerIndicatorMissing(ua)) {
-            ContainerIndicatorPage.route(ua, departureId, mode)
-          } else containerIndicatorPageNavigation(departureId, mode, ua)
-        case None => LimitDatePage.route(ua, departureId, mode)
-      }
-    } else if (isContainerIndicatorMissing(ua)) {
-      ContainerIndicatorPage.route(ua, departureId, mode)
-    } else containerIndicatorPageNavigation(departureId, mode, ua)
-
-  private def isContainerIndicatorMissing(ua: UserAnswers) = ua.departureData.Consignment.containerIndicator.isEmpty && ua.get(ContainerIndicatorPage).isEmpty
-
-  private[navigation] def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.hasSecurity)
-      BorderModeOfTransportPage.route(ua, departureId, mode)
-    else containerIndicatorRouting(ua, departureId, mode)
-
 }

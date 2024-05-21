@@ -17,10 +17,10 @@
 package pages.transport.border
 
 import models.reference.TransportMode.BorderMode
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
-import pages.transport.border.active.{IdentificationNumberPage, NationalityPage}
+import pages.sections.transport.border.BorderActiveListSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -39,11 +39,9 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
     value match {
       case Some(_) =>
         userAnswers
-          .remove(AddBorderMeansOfTransportYesNoPage)
-          .flatMap(
-            _.remove(IdentificationNumberPage(Index(0)))
-              .flatMap(_.remove(NationalityPage(Index(0))))
-          )
+          .set(AddBorderModeOfTransportYesNoPage, true)
+          .flatMap(_.remove(AddBorderMeansOfTransportYesNoPage))
+          .flatMap(_.remove(BorderActiveListSection))
 
       case _ => super.cleanup(value, userAnswers)
     }
