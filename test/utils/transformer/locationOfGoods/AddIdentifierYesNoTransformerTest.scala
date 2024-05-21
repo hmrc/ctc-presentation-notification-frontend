@@ -22,37 +22,69 @@ import generators.Generators
 import models.LocationOfGoodsIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.locationOfGoods.{AddIdentifierYesNoPage, IdentificationPage}
+import pages.locationOfGoods.{AddIdentifierYesNoPage, IdentificationPage, InferredIdentificationPage}
 
 class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
   val transformer = new AddIdentifierYesNoTransformer()
 
   "AddIdentifierYesNoTransformer" - {
-    "must return AddIdentifierYesNoPage Yes (true) when there is additionalIdentifier and identification is X or Y" in {
-      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
-        (locationOfGoods, additionalIdentifier, identification) =>
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
-              Some(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
-            )(emptyUserAnswers)
-            .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
+    "must return AddIdentifierYesNoPage Yes (true) when there is additionalIdentifier" - {
+      "and identification is X or Y" in {
+        forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
+          (locationOfGoods, additionalIdentifier, identification) =>
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .set(
+                Some(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
+              )(emptyUserAnswers)
+              .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
-          val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddIdentifierYesNoPage).get mustBe true
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(AddIdentifierYesNoPage).get mustBe true
+        }
+      }
+
+      "and inferred identification is X or Y" in {
+        forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
+          (locationOfGoods, additionalIdentifier, identification) =>
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .set(
+                Some(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
+              )(emptyUserAnswers)
+              .setValue(InferredIdentificationPage, LocationOfGoodsIdentification(identification, "description"))
+
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(AddIdentifierYesNoPage).get mustBe true
+        }
       }
     }
 
-    "must return AddIdentifierYesNoPage No (false) when there is no additionalIdentifier and identification is X or Y" in {
-      forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
-        (locationOfGoods, identification) =>
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
-              Some(locationOfGoods.copy(additionalIdentifier = None))
-            )(emptyUserAnswers)
-            .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
+    "must return AddIdentifierYesNoPage No (false) when there is no additionalIdentifier" - {
+      "and identification is X or Y" in {
+        forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
+          (locationOfGoods, identification) =>
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .set(
+                Some(locationOfGoods.copy(additionalIdentifier = None))
+              )(emptyUserAnswers)
+              .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
-          val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddIdentifierYesNoPage).get mustBe false
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(AddIdentifierYesNoPage).get mustBe false
+        }
+      }
+
+      "and inferred identification is X or Y" in {
+        forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
+          (locationOfGoods, identification) =>
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .set(
+                Some(locationOfGoods.copy(additionalIdentifier = None))
+              )(emptyUserAnswers)
+              .setValue(InferredIdentificationPage, LocationOfGoodsIdentification(identification, "description"))
+
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(AddIdentifierYesNoPage).get mustBe false
+        }
       }
     }
 
