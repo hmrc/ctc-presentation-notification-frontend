@@ -51,15 +51,13 @@ class IdentificationController @Inject() (
     .requireData(departureId)
     .async {
       implicit request =>
-        val ie170Identification = request.userAnswers.get(IdentificationPage)
-
         getLocationType match {
           case Some(location) =>
             locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(location).flatMap {
               case identifier :: Nil =>
                 redirect(mode, InferredIdentificationPage, identifier, departureId)
               case identifiers =>
-                val preparedForm = ie170Identification match {
+                val preparedForm = request.userAnswers.get(IdentificationPage) match {
                   case None        => form(identifiers)
                   case Some(value) => form(identifiers).fill(value)
                 }
@@ -85,14 +83,10 @@ class IdentificationController @Inject() (
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 
   private def getLocationType(implicit request: DataRequest[AnyContent]): Option[String] =
-    request.userAnswers
-      .get(LocationTypePage)
-      .map(_.`type`)
-      .orElse(
-        request.userAnswers
-          .get(InferredLocationTypePage)
-          .map(_.`type`)
-      )
+    (
+      request.userAnswers.get(LocationTypePage) orElse
+        request.userAnswers.get(InferredLocationTypePage)
+    ).map(_.`type`)
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)

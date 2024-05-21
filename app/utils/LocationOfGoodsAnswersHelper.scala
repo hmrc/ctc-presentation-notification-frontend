@@ -148,11 +148,11 @@ class LocationOfGoodsAnswersHelper(
       countryTypeRow,
       address,
       postCodeAddress,
+      additionalIdentifierYesNo,
+      additionalIdentifierRow,
       locationOfGoodsContactYesNo,
       locationOfGoodsContactPersonName,
-      locationOfGoodsContactPersonNumber,
-      if (authorisationNumber.isDefined | eoriNumber.isDefined) additionalIdentifierYesNo else None,
-      additionalIdentifierRow
+      locationOfGoodsContactPersonNumber
     ).flatten
 
     Section(

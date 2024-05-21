@@ -43,13 +43,11 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-
     case TransportMeansIdentificationPage(transportIndex)       => ua => transportMeansIdentificationNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansIdentificationNumberPage(transportIndex) => ua => transportMeansNumberNavigation(ua, departureId, mode, transportIndex)
     case TransportMeansNationalityPage(_) =>
       _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case AddAnotherTransportMeansPage(transportIndex) => ua => addAnotherTransportMeansNavigation(ua, departureId, transportIndex)
-
   }
 
   private def transportMeansIdentificationNavigation(ua: UserAnswers, departureId: String, mode: Mode, transportIndex: Index): Option[Call] =
@@ -66,11 +64,11 @@ class DepartureTransportMeansNavigator @Inject() () extends Navigator {
     }
 
   private def addAnotherTransportMeansNavigation(ua: UserAnswers, departureId: String, transportIndex: Index): Option[Call] =
-    ua.get(AddAnotherTransportMeansPage(transportIndex)) match {
-      case Some(true) =>
-        Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex))
-      case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddAnotherTransportMeansPage(transportIndex)) map {
+      case true =>
+        controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex)
+      case false =>
+        controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
     }
 
 }

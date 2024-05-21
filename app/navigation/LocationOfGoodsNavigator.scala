@@ -19,11 +19,10 @@ package navigation
 import com.google.inject.Singleton
 import config.Constants.QualifierOfTheIdentification._
 import models._
-import navigation.LoadingNavigator._
 import pages._
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import pages.transport.{CheckInformationPage, ContainerIndicatorPage, LimitDatePage}
+import pages.transport.{CheckInformationPage, LimitDatePage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -44,7 +43,7 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case NamePage                                                                                 => ua => PhoneNumberPage.route(ua, departureId, mode)
     case CustomsOfficeIdentifierPage                                                              => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
     case PhoneNumberPage                                                                          => ua => phoneNumberPageNavigation(ua, departureId, mode)
-    case LimitDatePage                                                                            => ua => limitDatePageNavigator(departureId, mode, ua)
+    case LimitDatePage                                                                            => ua => limitDatePageNavigation(departureId, mode, ua)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -61,13 +60,13 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case CountryPage                                                                              => ua => AddressPage.route(ua, departureId, mode)
   }
 
-  def namePageNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+  private def namePageNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     (ua.get(PhoneNumberPage).isEmpty, ua.get(AddContactYesNoPage).contains(true)) match {
       case (true, true) => Some(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, mode))
       case _            => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
-  def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+  private def routeIdentificationPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     (userAnswers.get(IdentificationPage) orElse userAnswers.get(InferredIdentificationPage)).map(_.code).flatMap {
       case CustomsOfficeIdentifier       => Some(controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode))
       case EoriNumberIdentifier          => Some(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
@@ -79,33 +78,24 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
       case _                             => None
     }
 
-  private def limitDatePageNavigator(departureId: String, mode: Mode, ua: UserAnswers) =
-    ua.get(ContainerIndicatorPage) match {
-      case Some(_) =>
-        containerIndicatorPageNavigation(departureId, mode, ua)
-      case None => ContainerIndicatorPage.route(ua, departureId, mode)
-    }
-
-  def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
+  private def locationOfGoodsNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.departureData.Consignment.LocationOfGoods match {
       case None    => Some(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       case Some(_) => placeOfLoadingExistsRedirect(ua, departureId, mode)
     }
 
   private def addIdentifierYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    userAnswers.get(AddIdentifierYesNoPage) match {
-      case Some(true)  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
-      case Some(false) => AddContactYesNoPage.route(userAnswers, departureId, mode)
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    userAnswers.get(AddIdentifierYesNoPage) flatMap {
+      case true  => AdditionalIdentifierPage.route(userAnswers, departureId, mode)
+      case false => AddContactYesNoPage.route(userAnswers, departureId, mode)
     }
 
   private def addContactYesNoNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     mode match {
       case NormalMode =>
-        userAnswers.get(AddContactYesNoPage) match {
-          case Some(true)  => NamePage.route(userAnswers, departureId, mode)
-          case Some(false) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
-          case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+        userAnswers.get(AddContactYesNoPage) flatMap {
+          case true  => NamePage.route(userAnswers, departureId, mode)
+          case false => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
         }
       case CheckMode =>
         userAnswers.get(AddContactYesNoPage) match {
@@ -116,12 +106,8 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
 
   private def phoneNumberPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     mode match {
-      case NormalMode =>
-        userAnswers.departureData.Consignment.PlaceOfLoading match {
-          case Some(_) => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
-          case None    => AddUnLocodePage.route(userAnswers, departureId, mode)
-        }
-      case CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case NormalMode => placeOfLoadingExistsRedirect(userAnswers, departureId, mode)
+      case CheckMode  => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     }
 
   private def placeOfLoadingExistsRedirect(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =

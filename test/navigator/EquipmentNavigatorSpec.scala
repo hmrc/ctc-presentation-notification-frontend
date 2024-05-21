@@ -68,10 +68,10 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         }
 
-        "to session expired when AddContainerIdentificationNumberYesNoPage does not exist" in {
+        "to tech difficulties when AddContainerIdentificationNumberYesNoPage does not exist" in {
           navigator
             .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 
@@ -300,10 +300,10 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           }
         }
 
-        "to session expired when AddSealYesNoPage does not exist" in {
+        "to tech difficulties when AddSealYesNoPage does not exist" in {
           navigator
             .nextPage(AddSealYesNoPage(equipmentIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 
@@ -330,10 +330,10 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
             .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
         }
-        "to session expired when AddAnotherSealPage does not exist" in {
+        "to tech difficulties when AddAnotherSealPage does not exist" in {
           navigator
             .nextPage(AddAnotherSealPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 
@@ -414,10 +414,10 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
           }
         }
-        "to session expired when AddAnotherTransportEquipmentPage does not exist" in {
+        "to tech difficulties when AddAnotherTransportEquipmentPage does not exist" in {
           navigator
             .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 
@@ -653,10 +653,10 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                 .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
-        "to session expired when ApplyAnotherItemPage does not exist" in {
+        "to tech difficulties when ApplyAnotherItemPage does not exist" in {
           navigator
             .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 

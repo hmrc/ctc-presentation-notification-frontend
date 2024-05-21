@@ -18,10 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
-import navigation.BorderNavigator.borderModeOfTransportPageNavigation
 import pages._
 import pages.transport.ContainerIndicatorPage
-import pages.transport.border._
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -30,24 +28,16 @@ import javax.inject.Inject
 class ContainerNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ContainerIndicatorPage => ua => containerIndicatorNavigation(ua, departureId, mode)
+    case ContainerIndicatorPage => ua => containerIndicatorPageNavigation(departureId, mode, ua)
   }
-
-  private def containerIndicatorNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    if (checkTransitOperationSecurity(userAnswers)) BorderModeOfTransportPage.route(userAnswers, departureId, mode)
-    else borderModeOfTransportPageNavigation(userAnswers, departureId, mode)
-
-  private def checkTransitOperationSecurity(ua: UserAnswers): Boolean =
-    ua.departureData.hasSecurity
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ContainerIndicatorPage => ua => containerIndicatorCheckRoute(ua, departureId, mode)
   }
 
   private def containerIndicatorCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    ua.get(ContainerIndicatorPage) match {
-      case Some(true)  => Some(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(0)))
-      case Some(false) => Some(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-      case None        => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(ContainerIndicatorPage) map {
+      case true  => controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(0))
+      case false => controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode)
     }
 }

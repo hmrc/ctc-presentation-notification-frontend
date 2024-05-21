@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import models.{LocationType, RichCC015CType, UserAnswers}
-import pages.locationOfGoods.LocationTypePage
+import pages.locationOfGoods.{BaseLocationTypePage, InferredLocationTypePage, LocationTypePage}
 import services.LocationTypeService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
@@ -44,9 +44,13 @@ class LocationTypeTransformer @Inject() (service: LocationTypeService)(implicit
   private def generateCapturedAnswers(departureLocationTypes: Seq[String], refDataLocationTypes: Seq[LocationType]): Seq[CapturedAnswer] =
     departureLocationTypes.flatMap {
       departureLocationType =>
+        val page: BaseLocationTypePage = refDataLocationTypes.toList match {
+          case _ :: Nil => InferredLocationTypePage
+          case _        => LocationTypePage
+        }
         refDataLocationTypes
           .find(_.code == departureLocationType)
-          .map((LocationTypePage, _))
+          .map((page, _))
     }
 
 }

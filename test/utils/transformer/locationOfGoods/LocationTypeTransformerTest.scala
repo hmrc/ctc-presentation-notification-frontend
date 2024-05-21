@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.Assertion
-import pages.locationOfGoods.LocationTypePage
+import pages.locationOfGoods.{InferredLocationTypePage, LocationTypePage}
 import services.LocationTypeService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,18 +45,37 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
       result mustBe userAnswers
     }
 
-    "must return updated answers when the location type from departure data can be found in service response" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType]) {
-        (locationOfGoods, locationType) =>
-          when(service.getLocationTypes(any())(any()))
-            .thenReturn(Future.successful(Seq(locationType)))
+    "must return updated answers when the location type from departure data can be found in service response" - {
+      "when multiple location types returned" in {
+        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType], arbitrary[LocationType]) {
+          (locationOfGoods, locationType1, locationType2) =>
+            when(service.getLocationTypes(any())(any()))
+              .thenReturn(Future.successful(Seq(locationType1, locationType2)))
 
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
-            Some(locationOfGoods.copy(typeOfLocation = locationType.`type`))
-          )(emptyUserAnswers)
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+              Some(locationOfGoods.copy(typeOfLocation = locationType1.`type`))
+            )(emptyUserAnswers)
 
-          val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(LocationTypePage) mustBe Some(locationType)
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(LocationTypePage) mustBe Some(locationType1)
+            result.get(InferredLocationTypePage) must not be defined
+        }
+      }
+
+      "when one location type returned" in {
+        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType]) {
+          (locationOfGoods, locationType) =>
+            when(service.getLocationTypes(any())(any()))
+              .thenReturn(Future.successful(Seq(locationType)))
+
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+              Some(locationOfGoods.copy(typeOfLocation = locationType.`type`))
+            )(emptyUserAnswers)
+
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(LocationTypePage) must not be defined
+            result.get(InferredLocationTypePage) mustBe Some(locationType)
+        }
       }
     }
   }
