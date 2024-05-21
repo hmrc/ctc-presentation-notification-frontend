@@ -18,11 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
-import navigation.BorderNavigator.borderModeOfTransportPageNavigation
-import navigation.ContainerNavigator.containerIndicatorPageNavigation
 import pages._
 import pages.transport.ContainerIndicatorPage
-import pages.transport.border._
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -43,13 +40,4 @@ class ContainerNavigator @Inject() () extends Navigator {
       case true  => controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, Index(0))
       case false => controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode)
     }
-}
-
-object ContainerNavigator {
-
-  def containerIndicatorPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.hasSecurity)
-      BorderModeOfTransportPage.route(ua, departureId, mode)
-    else
-      borderModeOfTransportPageNavigation(ua, departureId, mode)
 }

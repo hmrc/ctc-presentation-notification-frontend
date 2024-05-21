@@ -21,14 +21,10 @@ import config.Constants.TransportModeCode._
 import controllers.transport.border.active.routes
 import models._
 import models.reference.TransportMode.BorderMode
-import navigation.BorderNavigator.{borderModeOfTransportPageNavigation, containerIndicatorRouting}
 import pages._
-import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border._
 import pages.transport.border.active._
-import pages.transport.equipment.AddTransportEquipmentYesNoPage
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
-import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
+import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
 import play.api.mvc.Call
 
 @Singleton
@@ -160,36 +156,13 @@ class BorderNavigator extends Navigator {
     ua.get(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex)) flatMap {
       case true                       => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
       case false if mode == CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case false                      => containerIndicatorRouting(ua, departureId, mode)
+      case false                      => containerIndicatorCapturedNavigation(ua, departureId, mode)
     }
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     if (ua.departureData.CustomsOfficeOfTransitDeclared.nonEmpty) {
       Some(routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
     } else {
-      containerIndicatorRouting(ua, departureId, mode)
+      containerIndicatorCapturedNavigation(ua, departureId, mode)
     }
-}
-
-object BorderNavigator {
-
-  private[navigation] def borderModeOfTransportPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isEmpty && userAnswers.departureData.hasSecurity) {
-      val numberOfActiveBorderMeans: Int = userAnswers.get(BorderActiveListSection).map(_.value.length - 1).getOrElse(0)
-      transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
-    } else {
-      containerIndicatorRouting(userAnswers, departureId, mode)
-    }
-
-  private[navigation] def containerIndicatorRouting(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    if (userAnswers.departureData.Consignment.containerIndicator.isDefined) {
-      Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    } else {
-      userAnswers.get(ContainerIndicatorPage) match {
-        case Some(true)  => ContainerIdentificationNumberPage(Index(0)).route(userAnswers, departureId, mode)
-        case Some(false) => AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode)
-        case None        => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      }
-    }
-
 }

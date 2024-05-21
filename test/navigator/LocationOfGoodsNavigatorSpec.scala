@@ -187,8 +187,9 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         )
         val simplifiedUserAnswers = userAnswers.copy(departureData = departureData)
 
-        val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
-        result.mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+        navigator
+          .nextPage(MoreInformationPage, simplifiedUserAnswers, departureId, mode)
+          .mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       }
 
       "redirect to LocationTypeController when locationOfGoods is None and is simplified" in {
@@ -199,8 +200,9 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         )
         val simplifiedUserAnswers = userAnswers.copy(departureData = departureData)
 
-        val result = navigator.locationOfGoodsNavigation(simplifiedUserAnswers, departureId, mode).get
-        result.mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+        navigator
+          .nextPage(MoreInformationPage, simplifiedUserAnswers, departureId, mode)
+          .mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       }
 
       "must go from EORI Page to Add Additional Identifier Yes No page" in {

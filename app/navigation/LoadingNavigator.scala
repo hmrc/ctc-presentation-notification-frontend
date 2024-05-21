@@ -18,11 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import models._
-import navigation.LoadingNavigator._
-import navigation.LocationOfGoodsNavigator.limitDatePageNavigator
 import pages.Page
 import pages.loading._
-import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import play.api.mvc.Call
 
 @Singleton
@@ -82,31 +79,5 @@ class LoadingNavigator extends Navigator {
 
         }
       case _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    }
-}
-
-object LoadingNavigator {
-
-  private[navigation] def locationPageNavigation(departureId: String, mode: Mode, ua: UserAnswers): Option[Call] =
-    if (ua.departureData.isSimplified) {
-      if (isLimitDateMissing(ua, mode)) {
-        LimitDatePage.route(ua, departureId, mode)
-      } else {
-        limitDatePageNavigator(departureId, mode, ua)
-      }
-    } else {
-      limitDatePageNavigator(departureId, mode, ua)
-    }
-
-  def isContainerIndicatorMissing(ua: UserAnswers, mode: Mode): Boolean =
-    mode match {
-      case NormalMode => ua.departureData.Consignment.containerIndicator.isEmpty
-      case CheckMode  => ua.get(ContainerIndicatorPage).isEmpty
-    }
-
-  private def isLimitDateMissing(ua: UserAnswers, mode: Mode) =
-    mode match {
-      case NormalMode => ua.departureData.TransitOperation.limitDate.isEmpty
-      case CheckMode  => ua.get(LimitDatePage).isEmpty
     }
 }

@@ -22,7 +22,7 @@ import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
-trait Navigator extends Logging {
+trait Navigator extends CommonNavigation with Logging {
   private type RouteMapping = PartialFunction[Page, UserAnswers => Option[Call]]
 
   protected def normalRoutes(departureId: String, mode: Mode): RouteMapping
