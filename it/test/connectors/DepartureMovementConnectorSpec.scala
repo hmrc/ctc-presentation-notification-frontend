@@ -134,12 +134,12 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
           List(
             MessageMetaData(
               LocalDateTime.parse("2022-11-11T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
-              MessageType.DepartureNotification,
+              MessageType.DeclarationData,
               "634982098f02f00b"
             ),
             MessageMetaData(
               LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
-              MessageType.AmendmentSubmitted,
+              MessageType.DeclarationAmendment,
               "634982098f02f00a"
             )
           )

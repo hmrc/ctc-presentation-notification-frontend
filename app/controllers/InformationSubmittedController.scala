@@ -16,10 +16,13 @@
 
 package controllers
 
-import controllers.actions.Actions
+import cats.data.OptionT
+import controllers.actions.IdentifierAction
+import logging.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsOfficesService
+import repositories.SessionRepository
+import services.{CustomsOfficesService, DepartureMessageService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.InformationSubmittedView
 
@@ -28,19 +31,27 @@ import scala.concurrent.ExecutionContext
 
 class InformationSubmittedController @Inject() (
   cc: MessagesControllerComponents,
-  actions: Actions,
+  identify: IdentifierAction,
   view: InformationSubmittedView,
+  sessionRepository: SessionRepository,
+  messageService: DepartureMessageService,
   customsOfficesService: CustomsOfficesService
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(departureId: String): Action[AnyContent] = actions
-    .requireData(departureId)
-    .async {
-      implicit request =>
-        customsOfficesService.getCustomsOfficeById(request.userAnswers.departureData.CustomsOfficeOfDestinationDeclared.referenceNumber).map {
-          customsOffice => Ok(view(request.userAnswers.lrn, customsOffice))
-        }
-    }
+  def onPageLoad(departureId: String): Action[AnyContent] = identify.async {
+    implicit request =>
+      (
+        for {
+          ie170         <- OptionT(messageService.getIE170(departureId))
+          customsOffice <- OptionT.liftF(customsOfficesService.getCustomsOfficeById(ie170.CustomsOfficeOfDeparture.referenceNumber))
+          _             <- OptionT.liftF(sessionRepository.remove(departureId))
+        } yield Ok(view(ie170.TransitOperation.LRN, customsOffice))
+      ).getOrElse {
+        logger.warn(s"No IE170 message found for departure ID $departureId")
+        Redirect(controllers.routes.ErrorController.technicalDifficulties())
+      }
+  }
 }
