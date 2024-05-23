@@ -49,7 +49,7 @@
             countdown = Some(renderConfig.countdownSeconds),
             keepAliveUrl = Some(routes.KeepAliveController.keepAlive(departureId).url),
             signOutUrl = Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    ))
+        ))
     }
 
     <meta name="format-detection" content="telephone=no" />
