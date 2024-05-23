@@ -77,7 +77,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   "must append service to feedback link" in {
     val link = getElementBySelector(doc, ".govuk-phase-banner__text > .govuk-link")
-    getElementHref(link) mustBe s"/contact/beta-feedback?service=CTCTraders&referrerUrl=$path"
+    getElementHref(link) mustBe s"http://localhost:9250/contact/beta-feedback?service=CTCTraders&referrerUrl=$path"
   }
 
   "must render accessibility statement link" in {
@@ -87,7 +87,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       .find(_.text() == "Accessibility statement")
       .get
 
-    getElementHref(link) mustBe s"/accessibility-statement/manage-transit-movements-p5?referrerUrl=$path"
+    getElementHref(link) mustBe s"http://localhost:12346/accessibility-statement/manage-transit-movements-p5?referrerUrl=$path"
   }
 
   "must not render language toggle" in {
@@ -98,7 +98,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     val link = getElementByClass(doc, "hmrc-report-technical-issue")
 
     assertElementContainsText(link, "Is this page not working properly? (opens in new tab)")
-    getElementHref(link) mustBe s"/contact/report-technical-problem?newTab=true&service=CTCTraders&referrerUrl=$path"
+    getElementHref(link) mustBe s"http://localhost:9250/contact/report-technical-problem?newTab=true&service=CTCTraders&referrerUrl=$path"
   }
 
   def pageWithTitle(args: Any*): Unit =
