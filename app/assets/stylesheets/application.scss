@@ -1,12 +1,5 @@
 @import "lib/govuk-frontend/dist/govuk/base";
 
-.js-visible {
-  display: none !important;
-}
-.js-enabled .js-visible {
-  display: inline-block !important;
-}
-
 .autocomplete__wrapper .autocomplete__dropdown-arrow-down {
   z-index: 0;
   pointer-events: none;
