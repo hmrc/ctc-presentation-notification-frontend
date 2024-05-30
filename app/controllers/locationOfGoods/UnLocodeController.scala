@@ -66,7 +66,7 @@ class UnLocodeController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
           value =>
-            service.doesUnLocodeExist(value).flatMap {
+            service.doesUnLocodeExist(value.toUpperCase).flatMap {
               case true =>
                 redirect(mode, value, departureId)
               case false =>
@@ -82,7 +82,7 @@ class UnLocodeController @Inject() (
     departureId: String
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(UnLocodePage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(UnLocodePage, value.toUpperCase))
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(UnLocodePage, updatedAnswers, departureId, mode))
 }
