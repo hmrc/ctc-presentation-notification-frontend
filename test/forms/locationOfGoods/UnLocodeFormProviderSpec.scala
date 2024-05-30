@@ -22,7 +22,7 @@ import forms.behaviours.StringFieldBehaviours
 import generators.Generators
 import models.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, Form, FormError}
 
 class UnLocodeFormProviderSpec extends StringFieldBehaviours with Generators {
 
@@ -72,5 +72,13 @@ class UnLocodeFormProviderSpec extends StringFieldBehaviours with Generators {
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
       length = exactUnLocodeLength
     )
+
+    "must convert string to uppercase" in {
+      val value = Gen.alphaNumStr.sample.value.toLowerCase.take(exactUnLocodeLength)
+
+      val result: Form[String] = form.bind(Map(fieldName -> value))
+      result.value.get mustBe value.toUpperCase
+      result.errors mustEqual Nil
+    }
   }
 }
