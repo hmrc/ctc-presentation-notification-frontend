@@ -1,6 +1,7 @@
 site.continue = Continue
 site.saveAndContinue = Save and continue
-site.service_name = Departure declarations - Manage your transit movements
+site.service_name = Manage your transit movements
+site.title.prefix = Departure declarations
 site.no = No
 site.yes = Yes
 site.edit = Change
