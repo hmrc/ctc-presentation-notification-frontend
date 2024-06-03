@@ -21,7 +21,7 @@ import logging.Logging
 import models.AuditType.PresentationNotification
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.submission.{AuditService, SubmissionService}
+import services.submission.{AuditService, MetricsService, SubmissionService}
 import uk.gov.hmrc.http.HttpReads.is2xx
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.PresentationNotificationAnswersViewModel.PresentationNotificationAnswersViewModelProvider
@@ -36,7 +36,8 @@ class CheckYourAnswersController @Inject() (
   viewModelProvider: PresentationNotificationAnswersViewModelProvider,
   view: CheckYourAnswersView,
   submissionService: SubmissionService,
-  auditService: AuditService
+  auditService: AuditService,
+  metricsService: MetricsService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -55,9 +56,11 @@ class CheckYourAnswersController @Inject() (
     implicit request =>
       submissionService.submit(request.userAnswers, departureId).map {
         response =>
+          val auditType = PresentationNotification
+          metricsService.increment(auditType.name, response)
           response.status match {
             case x if is2xx(x) =>
-              auditService.audit(PresentationNotification, request.userAnswers)
+              auditService.audit(auditType, request.userAnswers)
               Redirect(routes.InformationSubmittedController.onPageLoad(departureId))
             case x =>
               logger.error(s"Error submitting IE170: $x")
