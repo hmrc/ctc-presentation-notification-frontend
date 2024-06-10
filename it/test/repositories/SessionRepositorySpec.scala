@@ -17,7 +17,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import generated.{CC015C, CC015CType, CORRELATION_IDENTIFIERSequence, ConsignmentType20, CustomsOfficeOfDepartureType03, CustomsOfficeOfDestinationDeclaredType01, HolderOfTheTransitProcedureType14, MESSAGESequence, MESSAGE_1Sequence, MESSAGE_TYPESequence, Number0, TransitOperationType06}
+import generated._
 import itbase.ItSpecBase
 import models.{EoriNumber, SensitiveFormats, UserAnswers}
 import play.api.libs.json.Json

@@ -74,21 +74,17 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] =
     getCustomsOfficesForCountryAndRole(countryCode, "DEP")
 
-  def getCustomsSecurityAgreementAreaCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] =
-    getCountries("CountryCustomsSecurityAgreementArea")
-
-  def getCountryCodesCTC()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] =
-    getCountries("CountryCodesCTC")
-
   def getAddressPostcodeBasedCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] =
     getCountries("CountryAddressPostcodeBased")
 
-  def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CountryCode]] = {
+  def getCountriesWithoutZipCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CountryCode] = {
     val url = url"${config.referenceDataUrl}/lists/CountryWithoutZip"
     http
       .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[CountryCode]]
+      .map(_.head)
   }
 
   def getUnLocodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[UnLocode]] = {

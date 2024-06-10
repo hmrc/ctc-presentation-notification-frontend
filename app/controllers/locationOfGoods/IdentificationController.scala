@@ -18,7 +18,7 @@ package controllers.locationOfGoods
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.requests.{DataRequest, MandatoryDataRequest}
+import models.requests.MandatoryDataRequest
 import models.{LocationOfGoodsIdentification, Mode}
 import navigation.LocationOfGoodsNavigator
 import pages._
@@ -39,6 +39,7 @@ class IdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,
   locationOfGoodsIdentificationTypeService: LocationOfGoodsIdentificationTypeService,
   val controllerComponents: MessagesControllerComponents,
@@ -49,22 +50,19 @@ class IdentificationController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
+    .andThen(getMandatoryPage(LocationTypePage, InferredLocationTypePage))
     .async {
       implicit request =>
-        getLocationType match {
-          case Some(location) =>
-            locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(location).flatMap {
-              case identifier :: Nil =>
-                redirect(mode, InferredIdentificationPage, identifier, departureId)
-              case identifiers =>
-                val preparedForm = request.userAnswers.get(IdentificationPage) match {
-                  case None        => form(identifiers)
-                  case Some(value) => form(identifiers).fill(value)
-                }
-
-                Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
+        locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(request.arg.`type`).flatMap {
+          case identifier :: Nil =>
+            redirect(mode, InferredIdentificationPage, identifier, departureId)
+          case identifiers =>
+            val preparedForm = request.userAnswers.get(IdentificationPage) match {
+              case None        => form(identifiers)
+              case Some(value) => form(identifiers).fill(value)
             }
-          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+
+            Future.successful(Ok(view(preparedForm, departureId, identifiers, mode)))
         }
     }
 
@@ -82,30 +80,19 @@ class IdentificationController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(page, updatedAnswers, departureId, mode))
 
-  private def getLocationType(implicit request: DataRequest[AnyContent]): Option[String] =
-    (
-      request.userAnswers.get(LocationTypePage) orElse
-        request.userAnswers.get(InferredLocationTypePage)
-    ).map(_.`type`)
-
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
+    .andThen(getMandatoryPage(LocationTypePage, InferredLocationTypePage))
     .async {
       implicit request =>
-        getLocationType match {
-          case Some(location) =>
-            locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(location).flatMap {
-              locationOfGoodsIdentificationTypes =>
-                form(locationOfGoodsIdentificationTypes)
-                  .bindFromRequest()
-                  .fold(
-                    formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, locationOfGoodsIdentificationTypes, mode))),
-                    value => redirect(mode, IdentificationPage, value, departureId)
-                  )
-            }
-          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        locationOfGoodsIdentificationTypeService.getLocationOfGoodsIdentificationTypes(request.arg.`type`).flatMap {
+          locationOfGoodsIdentificationTypes =>
+            form(locationOfGoodsIdentificationTypes)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, locationOfGoodsIdentificationTypes, mode))),
+                value => redirect(mode, IdentificationPage, value, departureId)
+              )
         }
-
     }
-
 }
