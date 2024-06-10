@@ -17,13 +17,11 @@
 package controllers.locationOfGoods.contact
 
 import controllers.actions._
-import controllers.locationOfGoods.contact.PhoneNumberController.{getName, getNumber}
 import forms.TelephoneNumberFormProvider
 import models.Mode
-import models.requests.{DataRequest, MandatoryDataRequest}
+import models.requests.MandatoryDataRequest
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
-import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -39,6 +37,7 @@ class PhoneNumberController @Inject() (
   navigator: LocationOfGoodsNavigator,
   formProvider: TelephoneNumberFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: PhoneNumberView
 )(implicit ec: ExecutionContext)
@@ -46,37 +45,31 @@ class PhoneNumberController @Inject() (
     with I18nSupport {
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions
-    .requireData(departureId) {
+    .requireData(departureId)
+    .andThen(getMandatoryPage(NamePage)) {
       implicit request =>
-        getName match {
-          case Some(contactName) =>
-            val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-            val preparedForm = getNumber match {
-              case None        => form
-              case Some(value) => form.fill(value)
-            }
-            Ok(view(preparedForm, departureId, contactName, mode))
-          case None => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+        val contactName = request.arg
+        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
+        val preparedForm = request.userAnswers.get(PhoneNumberPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
         }
-
+        Ok(view(preparedForm, departureId, contactName, mode))
     }
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions
     .requireData(departureId)
+    .andThen(getMandatoryPage(NamePage))
     .async {
       implicit request =>
-        getName match {
-          case Some(contactName) =>
-            val form = formProvider("locationOfGoods.contactPhoneNumber", contactName)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
-                value => redirect(mode, value, departureId)
-              )
-          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-        }
-
+        val contactName = request.arg
+        val form        = formProvider("locationOfGoods.contactPhoneNumber", contactName)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, contactName, mode))),
+            value => redirect(mode, value, departureId)
+          )
     }
 
   private def redirect(
@@ -89,11 +82,4 @@ class PhoneNumberController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(PhoneNumberPage, updatedAnswers, departureId, mode))
 
-}
-
-object PhoneNumberController extends Logging {
-
-  private[contact] def getName(implicit request: DataRequest[AnyContent]): Option[String] = request.userAnswers.get(NamePage)
-
-  private[contact] def getNumber(implicit request: DataRequest[AnyContent]): Option[String] = request.userAnswers.get(PhoneNumberPage)
 }
