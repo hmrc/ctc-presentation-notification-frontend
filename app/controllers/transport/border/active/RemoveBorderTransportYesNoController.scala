@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{Index, Mode}
 import pages.sections.transport.border.BorderActiveSection
+import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -35,6 +36,7 @@ class RemoveBorderTransportYesNoController @Inject() (
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveBorderTransportYesNoView
 )(implicit ec: ExecutionContext)
@@ -48,19 +50,29 @@ class RemoveBorderTransportYesNoController @Inject() (
     controllers.transport.border.active.routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode)
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
-    .requireIndex(departureId, BorderActiveSection(activeIndex), addAnother(departureId, mode)) {
+    .requireIndex(departureId, BorderActiveSection(activeIndex), addAnother(departureId, mode))
+    .andThen(getMandatoryPage.getFirst(IdentificationPage(activeIndex)))
+    .andThen(getMandatoryPage.getSecond(IdentificationNumberPage(activeIndex))) {
       implicit request =>
-        Ok(view(form(activeIndex), departureId, mode, activeIndex))
+        val identification               = request.arg._1
+        val identificationNumber: String = request.arg._2
+        val insetText                    = s"$identification - $identificationNumber"
+        Ok(view(form(activeIndex), departureId, mode, activeIndex, insetText))
     }
 
   def onSubmit(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, BorderActiveSection(activeIndex), addAnother(departureId, mode))
+    .andThen(getMandatoryPage.getFirst(IdentificationPage(activeIndex)))
+    .andThen(getMandatoryPage.getSecond(IdentificationNumberPage(activeIndex)))
     .async {
       implicit request =>
+        val identification               = request.arg._1
+        val identificationNumber: String = request.arg._2
+        val insetText                    = s"$identification - $identificationNumber"
         form(activeIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, activeIndex))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, activeIndex, insetText))),
             value =>
               for {
                 updatedAnswers <-

@@ -16,6 +16,7 @@
 
 package pages.transport.border
 
+import generators.ModelGenerators
 import pages.behaviours.PageBehaviours
 import pages.sections.transport.border.BorderActiveListSection
 import pages.transport.border.active._
