@@ -17,13 +17,30 @@
 package models.removable
 
 import models.reference.transport.border.active.Identification
-import play.api.i18n.Messages
+import models.{Index, UserAnswers}
+import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.Reads
 
-case class TransportMeans(identification: Identification, identificationNumber: Option[String]) {
+case class TransportMeans(index: Index, identification: Identification, identificationNumber: Option[String]) {
 
-  def asString(implicit messages: Messages): String = identificationNumber match {
-    case Some(value) => s"${identification.asString} - $value"
-    case None        => identification.asString
+  def forRemoveDisplay: Option[String] = identificationNumber match {
+    case Some(number) => Some(s"$identification - $number")
+    case _            => Some(identification.toString)
+
   }
+}
 
+object TransportMeans {
+
+  def apply(userAnswers: UserAnswers, transportMeansIndex: Index): Option[TransportMeans] = {
+
+    implicit val reads: Reads[TransportMeans] = (
+      IdentificationPage(transportMeansIndex).path.read[Identification] and
+        IdentificationNumberPage(transportMeansIndex).path.readNullable[String]
+    ).apply {
+      (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
+    }
+    userAnswers.data.asOpt[TransportMeans]
+  }
 }

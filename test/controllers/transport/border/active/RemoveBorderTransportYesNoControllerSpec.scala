@@ -32,6 +32,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.transformer.Helper.userAnswers
 import views.html.transport.border.active.RemoveBorderTransportYesNoView
 
 class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with PageBehaviours {
@@ -59,7 +60,7 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
               .setValue(IdentificationPage(index), identificationType)
               .setValue(IdentificationNumberPage(index), idNumber)
           )
-          val insetText = s"$identificationType - $idNumber"
+          val insetText = Option(s"$identificationType - $idNumber")
           val request   = FakeRequest(GET, removeBorderTransportRoute)
 
           val result = route(app, request).value
@@ -166,11 +167,11 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
           )
 
-          val invalidAnswer = ""
-          val insetText     = TransportMeans(identification, Some(identificationNumber)).asString
-          val request       = FakeRequest(POST, removeBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
-          val filledForm    = form.bind(Map("value" -> invalidAnswer))
-          val result        = route(app, request).value
+          val invalidAnswer             = ""
+          val insetText: Option[String] = TransportMeans(index, identification, Some(identificationNumber)).forRemoveDisplay
+          val request                   = FakeRequest(POST, removeBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
+          val filledForm                = form.bind(Map("value" -> invalidAnswer))
+          val result                    = route(app, request).value
 
           status(result) mustEqual BAD_REQUEST
 

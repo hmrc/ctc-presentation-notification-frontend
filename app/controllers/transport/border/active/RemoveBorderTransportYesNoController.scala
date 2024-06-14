@@ -18,11 +18,10 @@ package controllers.transport.border.active
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.transport.border.active.Identification
 import models.removable.TransportMeans
-import models.{Index, Mode}
+import models.{Index, Mode, UserAnswers}
 import pages.sections.transport.border.BorderActiveSection
-import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
+import pages.transport.border.active.IdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -51,14 +50,14 @@ class RemoveBorderTransportYesNoController @Inject() (
   private def addAnother(departureId: String, mode: Mode): Call =
     controllers.transport.border.active.routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode)
 
+  private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): Option[String] =
+    TransportMeans(userAnswers, transportMeansIndex).flatMap(_.forRemoveDisplay)
+
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, BorderActiveSection(activeIndex), addAnother(departureId, mode))
     .andThen(getMandatoryPage(IdentificationPage(activeIndex))) {
       implicit request =>
-        val identification: Identification = request.arg
-        val number: Option[String]         = request.userAnswers.get(IdentificationNumberPage(activeIndex))
-        val insetText: String              = TransportMeans.apply(identification, number).asString
-
+        val insetText: Option[String] = formatInsetText(request.userAnswers, activeIndex)
         Ok(view(form(activeIndex), departureId, mode, activeIndex, insetText))
     }
 
@@ -67,9 +66,7 @@ class RemoveBorderTransportYesNoController @Inject() (
     .andThen(getMandatoryPage(IdentificationPage(activeIndex)))
     .async {
       implicit request =>
-        val identification: Identification = request.arg
-        val number: Option[String]         = request.userAnswers.get(IdentificationNumberPage(activeIndex))
-        val insetText: String              = TransportMeans.apply(identification, number).asString
+        val insetText: Option[String] = formatInsetText(request.userAnswers, activeIndex)
         form(activeIndex)
           .bindFromRequest()
           .fold(

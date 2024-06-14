@@ -28,7 +28,7 @@ class RemoveBorderTransportYesNoViewSpec extends YesNoViewBehaviours {
   val identificationType: Identification = Identification("code", "desc")
   val identificationNumber: String       = "1234"
 
-  val insetText: String = s"$identificationType - $identificationNumber"
+  val insetText: Option[String] = Option(s"$identificationType - $identificationNumber")
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[RemoveBorderTransportYesNoView].apply(form, departureId, NormalMode, index, insetText)(fakeRequest, messages)
