@@ -17,9 +17,9 @@
 package connectors
 
 import config.FrontendAppConfig
-import logging.Logging
 import models.LocalReferenceNumber
 import models.departureP5._
+import play.api.Logging
 import play.api.http.HeaderNames
 import play.api.http.HeaderNames.CONTENT_TYPE
 import scalaxb.XMLFormat
