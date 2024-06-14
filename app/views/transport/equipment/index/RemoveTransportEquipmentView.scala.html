@@ -23,7 +23,7 @@
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
-    govukInsetText : GovukInsetText,
+    insetText : InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -44,7 +44,7 @@
                 yesNoType = InputYesNoViewModel(
                     heading = messages("transport.equipment.index.removeTransportEquipment.heading", equipmentIndex.display),
                     caption = Some(messages("transport.caption")),
-                    additionalHtml = identificationNumber.map(x => govukInsetText(InsetText(content = Text(x))))
+                    additionalHtml = identificationNumber.map(insetText(_))
                     )
 )
 
