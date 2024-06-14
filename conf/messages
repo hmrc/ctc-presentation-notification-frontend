@@ -630,7 +630,7 @@ consignment.departureTransportMeans.identificationNumber.error.invalid = The ide
 consignment.departureTransportMeans.identificationNumber.change.hidden = the identification for the departure means of transport
 
 consignment.departureTransportMeans.removeDepartureTransportMeans.title = Are you sure you want to remove departure means of transport {0}?
-consignment.departureTransportMeans.removeDepartureTransportMeans.heading = Are you sure you want to remove departure means of transport {0}??
+consignment.departureTransportMeans.removeDepartureTransportMeans.heading = Are you sure you want to remove departure means of transport {0}?
 consignment.departureTransportMeans.removeDepartureTransportMeans.error.required = Select yes if you want to remove departure means of transport {0}
 
 consignment.departureTransportMeans.addAnotherTransportMeans.singular.title = You have added 1 departure means of transport
