@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{Index, Mode}
 import pages.sections.transport.equipment.EquipmentSection
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -50,17 +51,19 @@ class RemoveTransportEquipmentController @Inject() (
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, EquipmentSection(equipmentIndex), addAnother(departureId, mode)) {
       implicit request =>
-        Ok(view(form(equipmentIndex), departureId, mode, equipmentIndex))
+        val insetText: String = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)).getOrElse("")
+        Ok(view(form(equipmentIndex), departureId, mode, equipmentIndex, insetText))
     }
 
   def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, EquipmentSection(equipmentIndex), addAnother(departureId, mode))
     .async {
       implicit request =>
+        val insetText = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)).getOrElse("")
         form(equipmentIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex, insetText))),
             value =>
               for {
                 updatedAnswers <-

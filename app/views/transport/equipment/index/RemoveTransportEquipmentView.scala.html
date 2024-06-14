@@ -16,17 +16,18 @@
 
 @import controllers.transport.equipment.index.routes
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    inset: InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode, equipmentIndex: Index, insetText:String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.equipment.index.removeTransportEquipment.title", equipmentIndex.display),
@@ -37,13 +38,23 @@
 
         @errorSummary(form.errors)
 
-        @inputYesNo(
-            field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("transport.equipment.index.removeTransportEquipment.heading", equipmentIndex.display),
-                caption = Some(messages("transport.caption"))
+
+        @if(insetText.equals("")){
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = OrdinaryYesNo(
+                    heading = messages("transport.equipment.index.removeTransportEquipment.heading", equipmentIndex.display),
+                    caption = Some(messages("transport.caption")))
             )
-        )
+        } else {
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithAdditionalHtml(
+                    heading = messages("transport.equipment.index.removeTransportEquipment.heading", equipmentIndex.display),
+                    caption = Some(messages("transport.caption")),
+                    additionalHtml = inset(insetText))
+                    )
+        }
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
     }

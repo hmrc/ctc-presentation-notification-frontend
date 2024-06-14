@@ -25,9 +25,10 @@ import views.html.transport.equipment.index.RemoveTransportEquipmentView
 class RemoveTransportEquipmentViewSpec extends YesNoViewBehaviours {
 
   private val equipmentIdNumber = equipmentIndex.display
+  private val insetText         = "ContainerId1"
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveTransportEquipmentView].apply(form, departureId, NormalMode, equipmentIndex)(fakeRequest, messages)
+    injector.instanceOf[RemoveTransportEquipmentView].apply(form, departureId, NormalMode, equipmentIndex, insetText)(fakeRequest, messages)
 
   override val prefix: String = "transport.equipment.index.removeTransportEquipment"
 
@@ -40,6 +41,8 @@ class RemoveTransportEquipmentViewSpec extends YesNoViewBehaviours {
   behave like pageWithHeading(equipmentIdNumber)
 
   behave like pageWithRadioItems(args = Seq(equipmentIdNumber))
+
+  behave like pageWithInsetText("ContainerId1")
 
   behave like pageWithSubmitButton("Continue")
 }

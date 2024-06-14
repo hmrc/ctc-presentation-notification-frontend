@@ -31,7 +31,7 @@
 @(form: Form[Boolean], departureId: String, mode: Mode, transportIndex: Index, insetText: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.title"),
+    title = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.title", transportIndex.display),
     showBackLink = true
 ) {
 
@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.heading"),
+                heading = messages("consignment.departureTransportMeans.removeDepartureTransportMeans.heading", transportIndex.display),
                 caption = Some(messages("departureTransportMeans.subheading")),
                 additionalHtml = inset(insetText)
             )
