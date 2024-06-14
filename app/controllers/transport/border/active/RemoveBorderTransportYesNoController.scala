@@ -18,6 +18,8 @@ package controllers.transport.border.active
 
 import controllers.actions._
 import forms.YesNoFormProvider
+import models.reference.transport.border.active.Identification
+import models.removable.TransportMeans
 import models.{Index, Mode}
 import pages.sections.transport.border.BorderActiveSection
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
@@ -51,24 +53,23 @@ class RemoveBorderTransportYesNoController @Inject() (
 
   def onPageLoad(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, BorderActiveSection(activeIndex), addAnother(departureId, mode))
-    .andThen(getMandatoryPage.getFirst(IdentificationPage(activeIndex)))
-    .andThen(getMandatoryPage.getSecond(IdentificationNumberPage(activeIndex))) {
+    .andThen(getMandatoryPage(IdentificationPage(activeIndex))) {
       implicit request =>
-        val identification               = request.arg._1
-        val identificationNumber: String = request.arg._2
-        val insetText                    = s"$identification - $identificationNumber"
+        val identification: Identification = request.arg
+        val number: Option[String]         = request.userAnswers.get(IdentificationNumberPage(activeIndex))
+        val insetText: String              = TransportMeans.apply(identification, number).asString
+
         Ok(view(form(activeIndex), departureId, mode, activeIndex, insetText))
     }
 
   def onSubmit(departureId: String, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, BorderActiveSection(activeIndex), addAnother(departureId, mode))
-    .andThen(getMandatoryPage.getFirst(IdentificationPage(activeIndex)))
-    .andThen(getMandatoryPage.getSecond(IdentificationNumberPage(activeIndex)))
+    .andThen(getMandatoryPage(IdentificationPage(activeIndex)))
     .async {
       implicit request =>
-        val identification               = request.arg._1
-        val identificationNumber: String = request.arg._2
-        val insetText                    = s"$identification - $identificationNumber"
+        val identification: Identification = request.arg
+        val number: Option[String]         = request.userAnswers.get(IdentificationNumberPage(activeIndex))
+        val insetText: String              = TransportMeans.apply(identification, number).asString
         form(activeIndex)
           .bindFromRequest()
           .fold(

@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
 import models.reference.transport.border.active.Identification
+import models.removable.TransportMeans
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.verify
@@ -166,17 +167,14 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
           )
 
           val invalidAnswer = ""
-          val insetText     = s"$identification - $identificationNumber"
-
-          val request    = FakeRequest(POST, removeBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
-          val filledForm = form.bind(Map("value" -> invalidAnswer))
-
-          val result = route(app, request).value
+          val insetText     = TransportMeans(identification, Some(identificationNumber)).asString
+          val request       = FakeRequest(POST, removeBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
+          val filledForm    = form.bind(Map("value" -> invalidAnswer))
+          val result        = route(app, request).value
 
           status(result) mustEqual BAD_REQUEST
 
           val view = injector.instanceOf[RemoveBorderTransportYesNoView]
-
           contentAsString(result) mustEqual
             view(filledForm, departureId, mode, activeIndex, insetText)(request, messages).toString
       }
