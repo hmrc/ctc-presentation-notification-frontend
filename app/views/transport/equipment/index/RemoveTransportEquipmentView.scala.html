@@ -16,18 +16,19 @@
 
 @import controllers.transport.equipment.index.routes
 @import viewModels.components.InputYesNoViewModel._
+@import viewModels.components.InputYesNoViewModel
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
-    inset: InsetText,
+    govukInsetText : GovukInsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, equipmentIndex: Index, insetText:String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode, equipmentIndex: Index, identificationNumber:Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.equipment.index.removeTransportEquipment.title", equipmentIndex.display),
@@ -38,23 +39,14 @@
 
         @errorSummary(form.errors)
 
-
-        @if(insetText.equals("")){
             @inputYesNo(
                 field = form("value"),
-                yesNoType = OrdinaryYesNo(
-                    heading = messages("transport.equipment.index.removeTransportEquipment.heading", equipmentIndex.display),
-                    caption = Some(messages("transport.caption")))
-            )
-        } else {
-            @inputYesNo(
-                field = form("value"),
-                yesNoType = YesNoWithAdditionalHtml(
+                yesNoType = InputYesNoViewModel(
                     heading = messages("transport.equipment.index.removeTransportEquipment.heading", equipmentIndex.display),
                     caption = Some(messages("transport.caption")),
-                    additionalHtml = inset(insetText))
+                    additionalHtml = identificationNumber.map(x => govukInsetText(InsetText(content = Text(x))))
                     )
-        }
+)
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
     }

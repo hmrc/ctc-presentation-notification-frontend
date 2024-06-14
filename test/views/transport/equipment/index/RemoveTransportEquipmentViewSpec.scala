@@ -28,7 +28,7 @@ class RemoveTransportEquipmentViewSpec extends YesNoViewBehaviours {
   private val insetText         = "ContainerId1"
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveTransportEquipmentView].apply(form, departureId, NormalMode, equipmentIndex, insetText)(fakeRequest, messages)
+    injector.instanceOf[RemoveTransportEquipmentView].apply(form, departureId, NormalMode, equipmentIndex, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "transport.equipment.index.removeTransportEquipment"
 

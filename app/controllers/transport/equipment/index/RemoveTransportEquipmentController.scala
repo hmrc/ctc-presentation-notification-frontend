@@ -51,19 +51,19 @@ class RemoveTransportEquipmentController @Inject() (
   def onPageLoad(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, EquipmentSection(equipmentIndex), addAnother(departureId, mode)) {
       implicit request =>
-        val insetText: String = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)).getOrElse("")
-        Ok(view(form(equipmentIndex), departureId, mode, equipmentIndex, insetText))
+        val identificationNumber: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex))
+        Ok(view(form(equipmentIndex), departureId, mode, equipmentIndex, identificationNumber))
     }
 
   def onSubmit(departureId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(departureId, EquipmentSection(equipmentIndex), addAnother(departureId, mode))
     .async {
       implicit request =>
-        val insetText = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)).getOrElse("")
+        val identificationNumber: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex))
         form(equipmentIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex, insetText))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode, equipmentIndex, identificationNumber))),
             value =>
               for {
                 updatedAnswers <-

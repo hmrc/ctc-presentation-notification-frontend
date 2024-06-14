@@ -57,7 +57,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode, equipmentIndex, insetText)(request, messages).toString
+        view(form, departureId, mode, equipmentIndex, Some(insetText))(request, messages).toString
 
     }
 
@@ -128,7 +128,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[RemoveTransportEquipmentView]
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, mode, equipmentIndex, insetText)(request, messages).toString
+        view(boundForm, departureId, mode, equipmentIndex, Some(insetText))(request, messages).toString
 
     }
 
