@@ -43,4 +43,13 @@ object InputYesNoViewModel {
     additionalHtml: Html
   ) extends InputYesNoViewModel
       with AdditionalHtmlViewModel
+
+  def apply(
+    heading: String,
+    caption: Option[String],
+    additionalHtml: Option[Html]
+  ): InputYesNoViewModel = additionalHtml match {
+    case Some(value) => YesNoWithAdditionalHtml(heading, caption, value)
+    case None        => OrdinaryYesNo(heading, caption)
+  }
 }

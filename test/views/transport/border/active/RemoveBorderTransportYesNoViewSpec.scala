@@ -17,6 +17,7 @@
 package views.transport.border.active
 
 import models.NormalMode
+import models.reference.transport.border.active.Identification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -24,20 +25,27 @@ import views.html.transport.border.active.RemoveBorderTransportYesNoView
 
 class RemoveBorderTransportYesNoViewSpec extends YesNoViewBehaviours {
 
+  val identificationType: Identification = Identification("code", "desc")
+  val identificationNumber: String       = "1234"
+
+  val insetText: Option[String] = Option(s"$identificationType - $identificationNumber")
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveBorderTransportYesNoView].apply(form, departureId, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[RemoveBorderTransportYesNoView].apply(form, departureId, NormalMode, index, insetText)(fakeRequest, messages)
 
   override val prefix: String = "transport.border.active.removeBorderTransport"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(index.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Border means of transport")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(index.display)
 
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = Seq(index.display))
+
+  behave like pageWithInsetText(s"${identificationType.asString} - $identificationNumber")
 
   behave like pageWithSubmitButton("Continue")
 }

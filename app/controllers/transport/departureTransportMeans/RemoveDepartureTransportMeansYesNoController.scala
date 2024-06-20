@@ -43,8 +43,8 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form: Form[Boolean] =
-    formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans")
+  private def form(transportIndex: Index): Form[Boolean] =
+    formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans", transportIndex.display)
 
   private def addAnother(departureId: String, mode: Mode): Call =
     controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(
@@ -59,7 +59,7 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
         val identificationType   = request.arg
         val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
         val insetText            = TransportMeans(identificationType, identificationNumber).asString
-        Ok(view(form, departureId, mode, transportIndex, insetText))
+        Ok(view(form(transportIndex), departureId, mode, transportIndex, insetText))
     }
 
   def onSubmit(departureId: String, mode: Mode, transportIndex: Index): Action[AnyContent] = actions
@@ -70,7 +70,7 @@ class RemoveDepartureTransportMeansYesNoController @Inject() (
         val identificationType   = request.arg
         val identificationNumber = request.userAnswers.get(TransportMeansIdentificationNumberPage(transportIndex))
         val insetText            = TransportMeans(identificationType, identificationNumber).asString
-        form
+        form(transportIndex)
           .bindFromRequest()
           .fold(
             formWithErrors =>

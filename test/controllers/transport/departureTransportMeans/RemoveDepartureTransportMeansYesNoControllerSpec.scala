@@ -34,7 +34,7 @@ import views.html.transport.departureTransportMeans.RemoveDepartureTransportMean
 class RemoveDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans")
+  private val form         = formProvider("consignment.departureTransportMeans.removeDepartureTransportMeans", index.display)
   private val mode         = NormalMode
 
   private lazy val removeDepartureTransportMeansRoute =
