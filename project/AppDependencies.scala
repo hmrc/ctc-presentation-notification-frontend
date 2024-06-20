@@ -3,19 +3,19 @@ import sbt._
 
 object AppDependencies {
 
-  private val bootstrapVersion = "8.3.0"
-  private val hmrcMongoVersion = "1.6.0"
+  private val bootstrapVersion = "9.0.0"
+  private val hmrcMongoVersion = "2.1.0"
   private val catsVersion      = "2.9.0"
   private val monocleVersion   = "2.1.0"
   private val pekkoVersion = "1.0.2"
 
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                %% "bootstrap-frontend-play-30" % bootstrapVersion,
-    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "9.11.0",
+    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "10.1.0",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-30"         % hmrcMongoVersion,
     "com.chuusai"                %% "shapeless"                  % "2.3.12",
     "org.typelevel"              %% "cats-core"                  % "2.10.0",
-    "uk.gov.hmrc"                %% "crypto-json-play-30"        % "7.6.0",
+    "uk.gov.hmrc"                %% "crypto-json-play-30"        % "8.0.0",
     "org.apache.commons"          % "commons-text"               % "1.11.0",
     "com.github.julien-truffaut" %% "monocle-core"               % "2.1.0",
     "com.github.julien-truffaut" %% "monocle-macro"              % monocleVersion,
