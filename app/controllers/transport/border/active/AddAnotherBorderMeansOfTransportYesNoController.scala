@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherBorderTransportViewModelProvider,

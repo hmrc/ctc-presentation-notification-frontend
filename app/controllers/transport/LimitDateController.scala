@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LimitDateController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   formProvider: DateFormProvider,
   actions: Actions,

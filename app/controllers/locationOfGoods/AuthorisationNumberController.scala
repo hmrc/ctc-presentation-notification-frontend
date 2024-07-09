@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   formProvider: AuthorisationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
