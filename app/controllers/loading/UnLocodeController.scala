@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnLocodeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   formProvider: UnLocodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,

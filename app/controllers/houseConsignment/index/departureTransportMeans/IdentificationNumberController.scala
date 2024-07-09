@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: Navigator,
   formProvider: IdentificationNumberFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,

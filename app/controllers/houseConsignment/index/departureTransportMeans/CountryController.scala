@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CountryController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
   formProvider: SelectableFormProvider,

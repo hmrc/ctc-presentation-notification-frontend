@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportMeansIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
