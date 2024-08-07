@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EoriController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: RepresentativeNavigator,
   formProvider: EoriNumberFormProvider,
   actions: Actions,

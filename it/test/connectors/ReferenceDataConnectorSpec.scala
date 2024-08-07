@@ -118,6 +118,30 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
        |}
        |""".stripMargin
 
+  private val countryResponseJson: String =
+    s"""
+       |{
+       |  "_links": {
+       |    "self": {
+       |      "href": "/customs-reference-data/lists/CountryWithoutZip"
+       |    }
+       |  },
+       |  "meta": {
+       |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+       |    "snapshotDate": "2023-01-01"
+       |  },
+       |  "id": "CountryWithoutZip",
+       |  "data": [
+       |    {
+       |      "activeFrom": "2023-01-23",
+       |      "code": "GB",
+       |      "state": "valid",
+       |      "description": "United Kingdom"
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
+
   private val unLocodesResponseJson: String =
     """
       | {
@@ -592,58 +616,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
-    "getCustomsSecurityAgreementAreaCountries" - {
-      val url = s"/$baseUrl/lists/CountryCustomsSecurityAgreementArea"
-
-      "must return Seq of Country when successful" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(countriesResponseJson("CountryCustomsSecurityAgreementArea")))
-        )
-
-        val expectedResult = NonEmptySet.of(
-          Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
-        )
-
-        connector.getCustomsSecurityAgreementAreaCountries().futureValue mustEqual expectedResult
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getCustomsSecurityAgreementAreaCountries())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getCustomsSecurityAgreementAreaCountries())
-      }
-    }
-
-    "getCountryCodesCTC" - {
-      val url = s"/$baseUrl/lists/CountryCodesCTC"
-
-      "must return Seq of Country when successful" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(countriesResponseJson("CountryCodesCTC")))
-        )
-
-        val expectedResult = NonEmptySet.of(
-          Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
-        )
-
-        connector.getCountryCodesCTC().futureValue mustEqual expectedResult
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getCountryCodesCTC())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getCountryCodesCTC())
-      }
-    }
-
     "getAddressPostcodeBasedCountries" - {
       val url = s"/$baseUrl/lists/CountryAddressPostcodeBased"
 
@@ -670,29 +642,29 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
-    "getCountriesWithoutZip" - {
-      val url = s"/$baseUrl/lists/CountryWithoutZip"
+    "getCountriesWithoutZipCountry" - {
+      def url(countryId: String) = s"/$baseUrl/lists/CountryWithoutZip?data.code=$countryId"
 
       "must return Seq of Country when successful" in {
+        val countryId = "GB"
         server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
+          get(urlEqualTo(url(countryId)))
+            .willReturn(okJson(countryResponseJson))
         )
 
-        val expectedResult = NonEmptySet.of(
-          CountryCode("GB"),
-          CountryCode("AD")
-        )
+        val expectedResult = CountryCode(countryId)
 
-        connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
+        connector.getCountriesWithoutZipCountry(countryId).futureValue mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getCountriesWithoutZip())
+        val countryId = "AD"
+        checkNoReferenceDataFoundResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getCountriesWithoutZip())
+        val countryId = "AD"
+        checkErrorResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
       }
     }
 

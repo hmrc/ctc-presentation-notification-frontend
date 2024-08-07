@@ -17,8 +17,9 @@
 package services
 
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
-import models.reference.{Country, CountryCode}
+import models.reference.Country
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -29,9 +30,6 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   def getCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     getCountries("CountryCodesFullList")
 
-  def getTransitCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
-    getCountries("CountryCodesCommonTransit")
-
   def getAddressPostcodeBasedCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     getCountries("CountryAddressPostcodeBased")
 
@@ -40,11 +38,13 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
       .getCountries(listName)
       .map(_.toSelectableList)
 
-  def doesCountryRequireZip(country: CountryCode)(implicit hc: HeaderCarrier): Future[Boolean] =
-    getCountriesWithoutZip().map(!_.contains(country))
-
-  def getCountriesWithoutZip()(implicit hc: HeaderCarrier): Future[Seq[CountryCode]] =
+  def doesCountryRequireZip(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
-      .getCountriesWithoutZip()
-      .map(_.toSeq)
+      .getCountriesWithoutZipCountry(country.code.code)
+      .map {
+        _ => true
+      }
+      .recover {
+        case _: NoReferenceDataFoundException => false
+      }
 }

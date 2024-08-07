@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class InlandModeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   navigator: BorderNavigator,
   formProvider: EnumerableFormProvider,

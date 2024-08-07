@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   formProvider: ContainerIdentificationNumberFormProvider,
   navigator: EquipmentNavigator,
   actions: Actions,

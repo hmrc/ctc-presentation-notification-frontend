@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LocationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: LoadingNavigator,
   formProvider: LoadingLocationFormProvider,
   actions: Actions,
