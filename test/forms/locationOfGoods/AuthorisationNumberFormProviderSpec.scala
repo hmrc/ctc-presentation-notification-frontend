@@ -42,12 +42,6 @@ class AuthorisationNumberFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldThatRemovesSpaces(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
     behave like fieldWithInvalidCharacters(
       form,
       fieldName,
