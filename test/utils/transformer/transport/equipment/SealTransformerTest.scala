@@ -31,7 +31,7 @@ class SealTransformerTest extends SpecBase with Generators {
     "must return updated answers with SealIdentificationNumberPage if seals exist for the equipment" in {
       forAll(arbitrary[TransportEquipmentType06], arbitrary[SealType05]) {
         (transportEquipment, seal) =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(Seal = Seq(seal)))
           )(emptyUserAnswers)
 

@@ -67,7 +67,7 @@ class IndexController @Inject() (
     departureId: String,
     lrn: LocalReferenceNumber,
     departureData: CC015CType
-  )(implicit request: OptionalDataRequest[_]): Future[Boolean] = {
+  )(implicit request: OptionalDataRequest[?]): Future[Boolean] = {
     val userAnswers = UserAnswers(departureId, request.eoriNumber, lrn.value, JsObject.empty, dateTimeService.currentInstant, departureData)
     for {
       updatedUserAnswers <- departureDataTransformer.transform(userAnswers)

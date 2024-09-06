@@ -54,7 +54,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must return OK and the correct view for a GET" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, countryRoute)
 

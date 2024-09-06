@@ -41,7 +41,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
   "CustomsOfficeTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      val userAnswers = setBorderMeansAnswersLens.set(
+      val userAnswers = setBorderMeansAnswersLens.replace(
         Nil
       )(emptyUserAnswers)
 
@@ -56,7 +56,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
             when(service.getCustomsOfficesByMultipleIds(any())(any()))
               .thenReturn(Future.successful(Seq(customsOffice)))
 
-            val userAnswers = setBorderMeansAnswersLens.set(
+            val userAnswers = setBorderMeansAnswersLens.replace(
               Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = Some(customsOffice.id)))
             )(emptyUserAnswers)
 
@@ -72,7 +72,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
           when(service.getCustomsOfficesByMultipleIds(any())(any()))
             .thenReturn(Future.successful(Nil))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = Some(customsOffice.id)))
           )(emptyUserAnswers)
 
@@ -87,7 +87,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
           when(service.getCustomsOfficesByMultipleIds(any())(any()))
             .thenReturn(Future.failed(new RuntimeException("")))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans)
           )(emptyUserAnswers)
 

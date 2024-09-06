@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, activeIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.border.active.nationality.title"),

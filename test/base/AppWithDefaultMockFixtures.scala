@@ -35,7 +35,7 @@ import services.{CountriesService, CustomsOfficesService, NationalitiesService}
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
-  self: TestSuite with SpecBase =>
+  self: TestSuite & SpecBase =>
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
@@ -57,7 +57,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected def setNoExistingUserAnswers(): Unit = setUserAnswers(None)
 
   private def setUserAnswers(userAnswers: Option[UserAnswers]): Unit =
-    when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(userAnswers)
+    when(mockDataRetrievalActionProvider.apply(any())) `thenReturn` new FakeDataRetrievalAction(userAnswers)
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 

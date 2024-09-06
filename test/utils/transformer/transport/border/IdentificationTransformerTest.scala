@@ -45,7 +45,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
           when(service.getMeansOfTransportIdentificationTypesActive())
             .thenReturn(Future.successful(Seq(identification)))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(typeOfIdentification = None))
           )(emptyUserAnswers)
 
@@ -61,7 +61,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
             when(service.getMeansOfTransportIdentificationTypesActive())
               .thenReturn(Future.successful(Seq(identification)))
 
-            val userAnswers = setBorderMeansAnswersLens.set(
+            val userAnswers = setBorderMeansAnswersLens.replace(
               Seq(borderTransportMeans.copy(typeOfIdentification = Some(identification.code)))
             )(emptyUserAnswers)
 
@@ -77,7 +77,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
           when(service.getMeansOfTransportIdentificationTypesActive())
             .thenReturn(Future.successful(Nil))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(typeOfIdentification = Some(identification.code)))
           )(emptyUserAnswers)
 
@@ -92,7 +92,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
           when(service.getMeansOfTransportIdentificationTypesActive())
             .thenReturn(Future.failed(new RuntimeException("")))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans)
           )(emptyUserAnswers)
 

@@ -65,7 +65,7 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
 
     "when yes submitted" - {
       "must redirect to add another border transport and remove border transport at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers.setValue(BorderActiveSection(activeIndex), Json.obj())
 
         setExistingUserAnswers(userAnswers)
@@ -114,7 +114,7 @@ class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefa
 
       setExistingUserAnswers(emptyUserAnswers.setValue(BorderActiveSection(activeIndex), Json.obj()))
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, removeBorderTransportRoute)
         .withFormUrlEncodedBody(("value", "true"))

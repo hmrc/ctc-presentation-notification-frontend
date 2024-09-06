@@ -45,7 +45,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
           when(service.getNationalities())
             .thenReturn(Future.successful(SelectableList(Seq(nationality))))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(nationality = None))
           )(emptyUserAnswers)
 
@@ -61,7 +61,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
             when(service.getNationalities())
               .thenReturn(Future.successful(SelectableList(Seq(nationality))))
 
-            val userAnswers = setBorderMeansAnswersLens.set(
+            val userAnswers = setBorderMeansAnswersLens.replace(
               Seq(borderTransportMeans.copy(nationality = Some(nationality.code)))
             )(emptyUserAnswers)
 
@@ -77,7 +77,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
           when(service.getNationalities())
             .thenReturn(Future.successful(SelectableList(Nil)))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(nationality = Some(nationality.code)))
           )(emptyUserAnswers)
 
@@ -92,7 +92,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
           when(service.getNationalities())
             .thenReturn(Future.failed(new RuntimeException("")))
 
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans)
           )(emptyUserAnswers)
 

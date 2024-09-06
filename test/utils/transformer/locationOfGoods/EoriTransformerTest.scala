@@ -31,7 +31,7 @@ class EoriTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
         (locationOfGoods, eori) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(EconomicOperator = Some(EconomicOperatorType03(eori))))
             )(emptyUserAnswers)
 

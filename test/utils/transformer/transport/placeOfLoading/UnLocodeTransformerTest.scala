@@ -30,7 +30,7 @@ class UnLocodeTransformerTest extends SpecBase with Generators {
     "must return updated answers with UnLocodePage" in {
       forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
         (placeOfLoading, unLocode) =>
-          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(UNLocode = Some(unLocode)))
           )(emptyUserAnswers)
 

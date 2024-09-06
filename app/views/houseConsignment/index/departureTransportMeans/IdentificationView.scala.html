@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[TransportMeansIdentification], departureId: String, identifiers: Seq[TransportMeansIdentification], mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[TransportMeansIdentification], departureId: String, identifiers: Seq[TransportMeansIdentification], mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.departureTransportMeans.identification.title", houseConsignmentIndex.display),

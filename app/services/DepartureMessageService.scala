@@ -18,7 +18,7 @@ package services
 
 import cats.data.OptionT
 import connectors.DepartureMovementConnector
-import generated.{CC013CType, CC015CType, CC170CType}
+import generated.{CC013CType, CC015CType, CC170CType, Generated_CC013CTypeFormat, Generated_CC015CTypeFormat, Generated_CC170CTypeFormat}
 import models.departureP5.MessageType.{DeclarationAmendment, DeclarationData, PresentationForThePreLodgedDeclaration}
 import models.departureP5.{MessageMetaData, MessageType}
 import models.{LocalReferenceNumber, RichCC013CType}

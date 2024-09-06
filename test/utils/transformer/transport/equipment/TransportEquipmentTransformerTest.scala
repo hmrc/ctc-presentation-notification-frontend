@@ -31,7 +31,7 @@ class TransportEquipmentTransformerTest extends SpecBase with Generators {
     "must return updated answers with AddAnotherTransportEquipmentPage" in {
       forAll(arbitrary[TransportEquipmentType06]) {
         transportEquipment =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment)
           )(emptyUserAnswers)
 

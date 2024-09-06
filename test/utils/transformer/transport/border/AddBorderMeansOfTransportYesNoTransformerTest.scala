@@ -29,7 +29,7 @@ class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase with Genera
     "must return AddBorderMeansOfTransportYesNoPage Yes (true) when there is at least 1 border means" in {
       forAll(arbitrary[ActiveBorderTransportMeansType02]) {
         borderTransportMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans)
           )(emptyUserAnswers)
 
@@ -39,7 +39,7 @@ class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase with Genera
     }
 
     "must return AddBorderMeansOfTransportYesNoPage No (false) when there is no border means" in {
-      val userAnswers = setBorderMeansAnswersLens.set(
+      val userAnswers = setBorderMeansAnswersLens.replace(
         Nil
       )(emptyUserAnswers)
 

@@ -31,7 +31,7 @@ class AddConveyanceReferenceYesNoTransformerTest extends SpecBase with Generator
     "must skip transforming if there is no conveyance reference number" in {
       forAll(arbitrary[ActiveBorderTransportMeansType02]) {
         borderTransportMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(conveyanceReferenceNumber = None))
           )(emptyUserAnswers)
 
@@ -43,7 +43,7 @@ class AddConveyanceReferenceYesNoTransformerTest extends SpecBase with Generator
     "must return AddConveyanceReferenceYesNoPage Yes (true) when there is conveyance reference" in {
       forAll(arbitrary[ActiveBorderTransportMeansType02], nonEmptyString) {
         (borderTransportMeans, conveyanceReferenceNumber) =>
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(conveyanceReferenceNumber = Some(conveyanceReferenceNumber)))
           )(emptyUserAnswers)
 

@@ -32,7 +32,7 @@ class TransportMeansIdentificationNumberTransformerTest extends SpecBase with Ge
     "must return updated answers with TransportMeansIdentificationNumberPage" in {
       forAll(arbitrary[DepartureTransportMeansType03], nonEmptyString) {
         (departureTransportMeans, identificationNumber) =>
-          val userAnswers = setDepartureTransportMeansAnswersLens.set(
+          val userAnswers = setDepartureTransportMeansAnswersLens.replace(
             Seq(departureTransportMeans.copy(identificationNumber = Some(identificationNumber)))
           )(emptyUserAnswers)
 

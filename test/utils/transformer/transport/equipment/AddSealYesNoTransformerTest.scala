@@ -31,7 +31,7 @@ class AddSealYesNoTransformerTest extends SpecBase with Generators {
     "when seals present must return updated answers with AddSealYesNoPage as true" in {
       forAll(arbitrary[TransportEquipmentType06], arbitrary[SealType05]) {
         (transportEquipment, seal) =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(Seal = Seq(seal)))
           )(emptyUserAnswers)
 
@@ -43,7 +43,7 @@ class AddSealYesNoTransformerTest extends SpecBase with Generators {
     "when seals not present must return updated answers with AddSealYesNoPage as false" in {
       forAll(arbitrary[TransportEquipmentType06]) {
         transportEquipment =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(Seal = Nil))
           )(emptyUserAnswers)
 

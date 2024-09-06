@@ -81,7 +81,7 @@ class AddTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithDefa
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

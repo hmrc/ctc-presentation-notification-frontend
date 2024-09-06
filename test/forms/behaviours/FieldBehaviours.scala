@@ -24,21 +24,21 @@ import play.api.data.{Form, FormError}
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 
-  def fieldThatBindsValidData(form: Form[_], fieldName: String, validDataGenerator: Gen[String]): Unit =
+  def fieldThatBindsValidData(form: Form[?], fieldName: String, validDataGenerator: Gen[String]): Unit =
     "must bind valid data" in {
 
       forAll(validDataGenerator -> "validDataItem") {
-        dataItem: String =>
+        (dataItem: String) =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
           result.value.value mustBe dataItem
       }
     }
 
-  def fieldThatRemovesSpaces(form: Form[_], fieldName: String, validDataGenerator: Gen[String]): Unit =
+  def fieldThatRemovesSpaces(form: Form[?], fieldName: String, validDataGenerator: Gen[String]): Unit =
     "must bind valid data and remove spaces" in {
 
       forAll(validDataGenerator -> "validDataItem") {
-        dataItem: String =>
+        (dataItem: String) =>
           val dataItemWithSpaces = dataItem.foldLeft("")({
             case (acc, c) =>
               acc + " " + c.toString + " "
@@ -49,7 +49,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       }
     }
 
-  def mandatoryField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+  def mandatoryField(form: Form[?], fieldName: String, requiredError: FormError): Unit = {
 
     "must not bind when key is not present at all" in {
 
@@ -64,7 +64,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
-  def optionalField(form: Form[_], fieldName: String): Unit = {
+  def optionalField(form: Form[?], fieldName: String): Unit = {
 
     "must not bind when key is not present at all" in {
 

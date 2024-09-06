@@ -32,7 +32,7 @@ class AddressTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14]) {
         (locationOfGoods, address) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(Address = Some(address)))
             )(emptyUserAnswers)
 

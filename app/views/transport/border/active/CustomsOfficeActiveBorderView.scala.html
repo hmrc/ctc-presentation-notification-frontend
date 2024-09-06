@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[CustomsOffice], departureId: String, customsOffices: Seq[CustomsOffice], mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[CustomsOffice], departureId: String, customsOffices: Seq[CustomsOffice], mode: Mode, activeIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.border.active.customsOfficeActiveBorder.title"),

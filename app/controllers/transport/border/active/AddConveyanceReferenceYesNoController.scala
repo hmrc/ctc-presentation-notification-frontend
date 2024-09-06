@@ -71,7 +71,7 @@ class AddConveyanceReferenceYesNoController @Inject() (
     value: Boolean,
     departureId: String,
     activeIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConveyanceReferenceYesNoPage(activeIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

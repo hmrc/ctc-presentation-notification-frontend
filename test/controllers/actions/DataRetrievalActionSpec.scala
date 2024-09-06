@@ -40,7 +40,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures w
       .invokeBlock(
         IdentifierRequest(fakeRequest, eoriNumber),
         {
-          request: OptionalDataRequest[AnyContent] =>
+          (request: OptionalDataRequest[AnyContent]) =>
             f(request)
             Future.successful(Results.Ok)
         }
@@ -54,7 +54,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       "where there are no existing answers for this departureId" in {
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
+        when(mockSessionRepository.get(any())) `thenReturn` Future.successful(None)
 
         harness(departureId) {
           _.userAnswers must not be defined
@@ -67,7 +67,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures w
       "when there are existing answers for this departureId" in {
         forAll(arbitrary[CC015CType]) {
           ie015 =>
-            when(mockSessionRepository.get(any())) thenReturn Future.successful(
+            when(mockSessionRepository.get(any())) `thenReturn` Future.successful(
               Some(UserAnswers(departureId, eoriNumber, lrn.value, JsObject.empty, Instant.now(), ie015))
             )
 

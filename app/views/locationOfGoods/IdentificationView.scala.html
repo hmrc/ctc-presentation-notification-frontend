@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[LocationOfGoodsIdentification], departureId: String, identifiers: Seq[LocationOfGoodsIdentification], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[LocationOfGoodsIdentification], departureId: String, identifiers: Seq[LocationOfGoodsIdentification], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("locationOfGoods.identification.title"),

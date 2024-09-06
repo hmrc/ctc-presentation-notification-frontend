@@ -31,7 +31,7 @@ class AdditionalIdentifierTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
         (locationOfGoods, additionalIdentifier) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
             )(emptyUserAnswers)
 

@@ -5,15 +5,15 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "ctc-presentation-notification-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "3.5.0"
 ThisBuild / scalafmtOnCompile := true
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, ScalaxbPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .configs(A11yTest)
-  .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings): _*)
-  .settings(headerSettings(A11yTest): _*)
+  .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings) *)
+  .settings(headerSettings(A11yTest) *)
   .settings(automateHeaderSettings(A11yTest))
   .settings(
     name := appName,
@@ -38,7 +38,7 @@ lazy val microservice = Project(appName, file("."))
       "-feature",
       "-language:implicitConversions",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s",
+      "-Wconf:src=html/.*:s",
       "-Wconf:src=src_managed/.*:s"
     ),
     Concat.groups := Seq(
@@ -55,7 +55,7 @@ lazy val microservice = Project(appName, file("."))
     Compile / scalaxb / scalaxbPackageName := "generated"
   )
   .settings(resolvers += Resolver.jcenterRepo)
-  .settings(CodeCoverageSettings.settings: _*)
+  .settings(CodeCoverageSettings.settings *)
 
 lazy val it = project
   .enablePlugins(PlayScala)

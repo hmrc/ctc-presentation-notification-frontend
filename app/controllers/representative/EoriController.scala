@@ -71,7 +71,7 @@ class EoriController @Inject() (
     page: QuestionPage[String],
     value: String,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)

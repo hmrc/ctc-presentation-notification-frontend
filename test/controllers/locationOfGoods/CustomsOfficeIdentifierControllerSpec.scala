@@ -112,7 +112,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
   "must redirect to the next page when valid data is submitted" in {
 
     when(mockCustomsOfficesService.getCustomsOfficesOfDepartureForCountry(any())(any())).thenReturn(Future.successful(customsOfficeList))
-    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+    when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
     setExistingUserAnswers(baseAnswers)
 

@@ -16,7 +16,7 @@
 
 package viewModels.transport.border.active
 
-import config.Constants.TransportModeCode._
+import config.Constants.TransportModeCode.*
 import config.FrontendAppConfig
 import models.{Index, Mode, RichCC015CType, UserAnswers}
 import pages.sections.transport.border.BorderActiveListSection
@@ -26,8 +26,8 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.Content
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.{AddAnotherViewModel, ListItem}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import viewModels.{AddAnotherViewModel, ListItem, RichListItems}
 
 case class AddAnotherBorderTransportViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "transport.border.active.addAnotherBorderTransport"
@@ -39,7 +39,7 @@ case class AddAnotherBorderTransportViewModel(listItems: Seq[ListItem], onSubmit
 
 object AddAnotherBorderTransportViewModel {
 
-  class AddAnotherBorderTransportViewModelProvider() {
+  class AddAnotherBorderTransportViewModelProvider {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode)(implicit messages: Messages): AddAnotherBorderTransportViewModel = {
       val isSectionMandatory = userAnswers.get(BorderModeOfTransportPage).exists(_.code != Mail) ||

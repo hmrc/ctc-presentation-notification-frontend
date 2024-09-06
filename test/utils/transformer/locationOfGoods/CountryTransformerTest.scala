@@ -42,7 +42,7 @@ class CountryTransformerTest extends SpecBase with Generators {
     "must skip transforming if there is no country data" in {
       forAll(arbitrary[LocationOfGoodsType05]) {
         locationOfGoods =>
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
             Some(locationOfGoods.copy(Address = None))
           )(emptyUserAnswers)
 
@@ -57,7 +57,7 @@ class CountryTransformerTest extends SpecBase with Generators {
           when(service.getCountries())
             .thenReturn(Future.successful(SelectableList(Seq(country))))
 
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
             Some(locationOfGoods.copy(Address = Some(address.copy(country = country.code.code))))
           )(emptyUserAnswers)
 
@@ -73,7 +73,7 @@ class CountryTransformerTest extends SpecBase with Generators {
         when(service.getCountries())
           .thenReturn(Future.successful(SelectableList(Nil)))
 
-        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
           Some(locationOfGoods.copy(Address = Some(address.copy(country = country.code.code))))
         )(emptyUserAnswers)
 
@@ -88,7 +88,7 @@ class CountryTransformerTest extends SpecBase with Generators {
         when(service.getCountries())
           .thenReturn(Future.failed(new RuntimeException("")))
 
-        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
           Some(locationOfGoods.copy(Address = Some(address)))
         )(emptyUserAnswers)
 

@@ -34,7 +34,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
   implicit private val sensitiveFormats: SensitiveFormats = app.injector.instanceOf[SensitiveFormats]
 
-  override protected val repository = new SessionRepository(mongoComponent, config, dateTimeService)
+  override protected val repository: SessionRepository = new SessionRepository(mongoComponent, config, dateTimeService)
 
   private val ie015: CC015CType = CC015CType(
     messageSequence1 = MESSAGESequence(
@@ -144,18 +144,18 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
         val result = repository.get("id1").futureValue
 
-        result.value.id mustBe userAnswers1.id
-        result.value.eoriNumber mustBe userAnswers1.eoriNumber
-        result.value.lrn mustBe userAnswers1.lrn
-        result.value.data mustBe userAnswers1.data
-        result.value.departureData mustBe userAnswers1.departureData
+        result.value.id `mustBe` userAnswers1.id
+        result.value.eoriNumber `mustBe` userAnswers1.eoriNumber
+        result.value.lrn `mustBe` userAnswers1.lrn
+        result.value.data `mustBe` userAnswers1.data
+        result.value.departureData `mustBe` userAnswers1.departureData
       }
 
       "must return None when no UserAnswers match departure ID" in {
 
         val result = repository.get("id3").futureValue
 
-        result mustBe None
+        result `mustBe` None
       }
     }
 
@@ -176,12 +176,12 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
         val getResult = repository.get("id3").futureValue.value
 
-        setResult mustBe true
-        getResult.id mustBe userAnswers.id
-        getResult.eoriNumber mustBe userAnswers.eoriNumber
-        getResult.lrn mustBe userAnswers.lrn
-        getResult.data mustBe userAnswers.data
-        getResult.departureData mustBe userAnswers.departureData
+        setResult `mustBe` true
+        getResult.id `mustBe` userAnswers.id
+        getResult.eoriNumber `mustBe` userAnswers.eoriNumber
+        getResult.lrn `mustBe` userAnswers.lrn
+        getResult.data `mustBe` userAnswers.data
+        getResult.departureData `mustBe` userAnswers.departureData
       }
     }
 
@@ -189,11 +189,11 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
       "must remove document when given a valid departure ID" in {
 
-        repository.get("id1").futureValue mustBe defined
+        repository.get("id1").futureValue `mustBe` defined
 
         repository.remove("id1").futureValue
 
-        repository.get("id1").futureValue must not be defined
+        repository.get("id1").futureValue `must` not `be` defined
       }
     }
   }

@@ -31,7 +31,7 @@ class ContainerIdentificationNumberYesNoTransformerTest extends SpecBase with Ge
     "when container id present must return updated answers with AddContainerIdentificationNumberYesNoPage as true" in {
       forAll(arbitrary[TransportEquipmentType06], nonEmptyString) {
         (transportEquipment, containerIdentificationNumber) =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(containerIdentificationNumber = Some(containerIdentificationNumber)))
           )(emptyUserAnswers)
 
@@ -43,7 +43,7 @@ class ContainerIdentificationNumberYesNoTransformerTest extends SpecBase with Ge
     "when seals not present must return updated answers with AddContainerIdentificationNumberYesNoPage as false" in {
       forAll(arbitrary[TransportEquipmentType06]) {
         transportEquipment =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(containerIdentificationNumber = None))
           )(emptyUserAnswers)
 

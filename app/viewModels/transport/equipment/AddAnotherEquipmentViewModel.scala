@@ -28,7 +28,7 @@ import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
-import viewModels.{AddAnotherViewModel, ListItem}
+import viewModels.{AddAnotherViewModel, ListItem, RichListItems}
 
 case class AddAnotherEquipmentViewModel(
   override val listItems: Seq[ListItem],

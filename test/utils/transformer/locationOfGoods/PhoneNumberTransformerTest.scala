@@ -31,7 +31,7 @@ class PhoneNumberTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], arbitrary[ContactPersonType06]) {
         (locationOfGoods, contactPerson) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(ContactPerson = Some(contactPerson)))
             )(emptyUserAnswers)
 

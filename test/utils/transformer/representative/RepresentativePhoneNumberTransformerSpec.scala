@@ -29,7 +29,7 @@ class RepresentativePhoneNumberTransformerSpec extends SpecBase with Generators 
     "must return updated answers with RepresentativePhoneNumberPage" in {
       forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05], nonEmptyString) {
         (representative, contactPerson, phoneNumber) =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = Some(contactPerson.copy(phoneNumber = phoneNumber))))
           )(emptyUserAnswers)
 
@@ -41,7 +41,7 @@ class RepresentativePhoneNumberTransformerSpec extends SpecBase with Generators 
     "must not update if representative phone number is None" in {
       forAll(arbitrary[RepresentativeType05]) {
         representative =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = None))
           )(emptyUserAnswers)
 

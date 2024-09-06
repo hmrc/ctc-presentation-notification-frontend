@@ -20,7 +20,7 @@
 
 @this(mainTemplate: MainTemplate, formHelper: FormWithCSRF, heading: Heading, button: Button, headingCaption: HeadingCaption,answerSections: AnswerSections)
 
-@(lrn: String, departureId: String, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(lrn: String, departureId: String, sections: Seq[Section])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(title = messages("checkYourAnswers.title"), showBackLink = true) {
 

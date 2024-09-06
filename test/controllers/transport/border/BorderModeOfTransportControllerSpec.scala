@@ -63,7 +63,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(setModeOfTransportAtTheBorderOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setModeOfTransportAtTheBorderOnUserAnswersLens.replace(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, borderModeOfTransportRoute)
 
@@ -98,7 +98,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

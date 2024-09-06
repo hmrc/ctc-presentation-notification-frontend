@@ -64,6 +64,8 @@ class DynamicAddressFormProvider @Inject() extends Mappings {
             )
           }
         }
-      )(DynamicAddress.apply)(DynamicAddress.unapply)
+      )(DynamicAddress.apply)(
+        da => Some(Tuple.fromProductTyped(da))
+      )
     )
 }

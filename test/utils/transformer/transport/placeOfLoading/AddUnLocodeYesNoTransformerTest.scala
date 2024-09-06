@@ -30,7 +30,7 @@ class AddUnLocodeYesNoTransformerTest extends SpecBase with Generators {
     "must return updated answers with AddUnLocodeYesNo" in {
       forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
         (placeOfLoading, unLocode) =>
-          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(UNLocode = Some(unLocode)))
           )(emptyUserAnswers)
 

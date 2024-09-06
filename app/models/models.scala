@@ -145,7 +145,6 @@ package object models {
           val updatedJsArray = valueToRemoveFrom.value.slice(0, index) ++ valueToRemoveFrom.value.slice(index + 1, valueToRemoveFrom.value.size)
           JsSuccess(JsArray(updatedJsArray))
         case valueToRemoveFrom: JsArray => JsError(s"array index out of bounds: $index, $valueToRemoveFrom")
-        case _                          => JsError(s"cannot set an index on $valueToRemoveFrom")
       }
     }
 
@@ -161,7 +160,6 @@ package object models {
       }
     }
 
-    @nowarn("msg=Exhaustivity analysis reached max recursion depth, not all missing cases are reported.")
     @nowarn("msg=match may not be exhaustive")
     // scalastyle:off cyclomatic.complexity
     def remove(path: JsPath): JsResult[JsValue] =
@@ -176,7 +174,7 @@ package object models {
             .optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))
             .reads(oldValue)
             .flatMap {
-              opt: Option[JsValue] =>
+              (opt: Option[JsValue]) =>
                 opt
                   .map(JsSuccess(_))
                   .getOrElse {
@@ -226,7 +224,7 @@ package object models {
     def hasAuthC523: Boolean = value.Authorisation.exists(_.typeValue == SSE)
 
     private def isDataCompleteSimplified: Boolean = {
-      val options: List[Option[_]] = List(
+      val options: List[Option[?]] = List(
         value.TransitOperation.limitDate,
         value.Consignment.containerIndicator,
         value.Consignment.modeOfTransportAtTheBorder,
@@ -239,7 +237,7 @@ package object models {
     }
 
     private def isDataCompleteNormal: Boolean = {
-      val options: List[Option[_]] = List(
+      val options: List[Option[?]] = List(
         value.Consignment.containerIndicator,
         value.Consignment.modeOfTransportAtTheBorder,
         value.Consignment.TransportEquipment.toOption,

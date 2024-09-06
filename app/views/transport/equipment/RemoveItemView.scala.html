@@ -28,7 +28,7 @@ errorSummary: ErrorSummary,
 button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index, item: Item)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode, equipmentIndex: Index, itemIndex: Index, item: Item)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.equipment.removeItem.title", equipmentIndex.display),

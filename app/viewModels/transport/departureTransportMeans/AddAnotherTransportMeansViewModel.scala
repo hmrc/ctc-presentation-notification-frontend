@@ -16,7 +16,7 @@
 
 package viewModels.transport.departureTransportMeans
 
-import config.Constants.TransportModeCode._
+import config.Constants.TransportModeCode.*
 import config.FrontendAppConfig
 import models.{Index, Mode, NormalMode, TransportMeans, UserAnswers}
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
@@ -25,7 +25,7 @@ import pages.transport.departureTransportMeans.{TransportMeansIdentificationNumb
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
-import viewModels.{AddAnotherViewModel, ListItem}
+import viewModels.{AddAnotherViewModel, ListItem, RichListItems}
 
 case class AddAnotherTransportMeansViewModel(userAnswers: UserAnswers, listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "consignment.departureTransportMeans.addAnotherTransportMeans"

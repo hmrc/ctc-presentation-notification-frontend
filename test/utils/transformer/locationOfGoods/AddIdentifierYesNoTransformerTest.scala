@@ -33,7 +33,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
         forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
           (locationOfGoods, additionalIdentifier, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
-              .set(
+              .replace(
                 Some(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
               )(emptyUserAnswers)
               .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
@@ -47,7 +47,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
         forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
           (locationOfGoods, additionalIdentifier, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
-              .set(
+              .replace(
                 Some(locationOfGoods.copy(additionalIdentifier = Some(additionalIdentifier)))
               )(emptyUserAnswers)
               .setValue(InferredIdentificationPage, LocationOfGoodsIdentification(identification, "description"))
@@ -63,7 +63,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
         forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
           (locationOfGoods, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
-              .set(
+              .replace(
                 Some(locationOfGoods.copy(additionalIdentifier = None))
               )(emptyUserAnswers)
               .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
@@ -77,7 +77,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
         forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
           (locationOfGoods, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
-              .set(
+              .replace(
                 Some(locationOfGoods.copy(additionalIdentifier = None))
               )(emptyUserAnswers)
               .setValue(InferredIdentificationPage, LocationOfGoodsIdentification(identification, "description"))
@@ -92,7 +92,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], Gen.option(nonEmptyString)) {
         (locationOfGoods, additionalIdentifier) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Some(locationOfGoods.copy(additionalIdentifier = additionalIdentifier))
             )(emptyUserAnswers)
             .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "description"))

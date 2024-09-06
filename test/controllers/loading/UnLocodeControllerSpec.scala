@@ -53,9 +53,9 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   "UnLocode Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.replace(None)(emptyUserAnswers))
 
-      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(true)
+      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(GET, unLocodeRoute)
 
@@ -76,7 +76,7 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       setExistingUserAnswers(userAnswers)
 
-      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(true)
+      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(GET, unLocodeRoute)
 
@@ -96,7 +96,7 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(true)
+      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, unLocodeRoute)
         .withFormUrlEncodedBody(("value", "DEAAL"))
@@ -112,7 +112,7 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) thenReturn Future.successful(false)
+      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) `thenReturn` Future.successful(false)
 
       val request   = FakeRequest(POST, unLocodeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))

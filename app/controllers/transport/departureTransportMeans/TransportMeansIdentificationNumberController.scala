@@ -79,7 +79,7 @@ class TransportMeansIdentificationNumberController @Inject() (
     departureId: String,
     mode: Mode,
     transportIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationNumberPage(transportIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
