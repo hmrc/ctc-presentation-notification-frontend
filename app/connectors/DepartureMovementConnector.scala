@@ -16,7 +16,7 @@
 
 package connectors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.LocalReferenceNumber
 import models.departureP5._
 import play.api.Logging
@@ -35,16 +35,19 @@ import scala.xml.{NodeSeq, XML}
 
 class DepartureMovementConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2
+  http: HttpClientV2,
+  phaseConfig: PhaseConfig
 )(implicit ec: ExecutionContext)
     extends HttpReadsTry
     with Logging {
 
-  private def jsonHeader: (String, String) =
-    HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json"
+  private val version = phaseConfig.values.apiVersion
 
-  private def xmlHeader: (String, String) =
-    HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+xml"
+  private val jsonHeader: (String, String) =
+    HeaderNames.ACCEPT -> s"application/vnd.hmrc.$version+json"
+
+  private val xmlHeader: (String, String) =
+    HeaderNames.ACCEPT -> s"application/vnd.hmrc.$version+xml"
 
   def getMessages(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DepartureMessages] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/departures/$departureId/messages"
