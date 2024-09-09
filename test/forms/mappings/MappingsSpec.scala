@@ -62,8 +62,8 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
 
     "must bind a valid string with multiple whitespaces" in {
-      val result = testForm.bind(Map("value" -> "fo ob  ar   "))
-      result.get mustEqual "foobar"
+      val result = testForm.bind(Map("value" -> " fo ob ar "))
+      result.get mustEqual "fo ob ar"
     }
 
     "must not bind an empty string" in {

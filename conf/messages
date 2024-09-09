@@ -140,7 +140,7 @@ locationOfGoods.authorisationNumber.checkYourAnswersLabel = Authorisation number
 locationOfGoods.authorisationNumber.change.hidden = the authorisation number for the location of goods
 locationOfGoods.authorisationNumber.error.required = Enter the authorisation number for the location of goods
 locationOfGoods.authorisationNumber.error.length = The authorisation number must be 35 characters or less
-locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z and numbers 0 to 9
+locationOfGoods.authorisationNumber.error.invalid = The authorisation number must only include letters a to z, numbers 0 to 9 and spaces
 locationOfGoods.authorisationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 
 locationOfGoods.country.title = In which country is the location of goods?
