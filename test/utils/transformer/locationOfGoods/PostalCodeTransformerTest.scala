@@ -32,7 +32,7 @@ class PostalCodeTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02]) {
         (locationOfGoods, postcodeAddress) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(PostcodeAddress = Some(postcodeAddress)))
             )(emptyUserAnswers)
 

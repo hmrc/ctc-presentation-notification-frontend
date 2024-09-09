@@ -76,7 +76,7 @@ class AddAnotherTransportMeansController @Inject() (
     mode: Mode,
     value: Boolean,
     transportIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportMeansPage(transportIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

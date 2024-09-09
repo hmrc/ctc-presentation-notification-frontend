@@ -26,7 +26,7 @@
     button: Button
 )
 
-@(form: Form[String], departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.equipment.index.seals.sealIdentificationNumber.title"),

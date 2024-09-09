@@ -40,7 +40,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
       "must return Some(Row)" in {
         forAll(arbitrary[Mode], nonEmptyString) {
           (mode, departureCustomsOfficeRefNumber) =>
-            val userAnswers = setCustomsOfficeDepartureReferenceLens.set(departureCustomsOfficeRefNumber)(emptyUserAnswers)
+            val userAnswers = setCustomsOfficeDepartureReferenceLens.replace(departureCustomsOfficeRefNumber)(emptyUserAnswers)
             val helper      = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
             val result      = helper.customsOfficeDeparture.get
 

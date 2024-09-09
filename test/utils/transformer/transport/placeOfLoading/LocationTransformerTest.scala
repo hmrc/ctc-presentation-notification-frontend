@@ -29,7 +29,7 @@ class LocationTransformerTest extends SpecBase with Generators {
     "must return updated answers with LocationPage" in {
       forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
         (placeOfLoading, location) =>
-          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(location = Some(location)))
           )(emptyUserAnswers)
 

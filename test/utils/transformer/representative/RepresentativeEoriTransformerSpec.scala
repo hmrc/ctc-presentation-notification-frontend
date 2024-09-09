@@ -29,7 +29,7 @@ class RepresentativeEoriTransformerSpec extends SpecBase with Generators {
     "must return updated answers with representative EoriPage" in {
       forAll(arbitrary[RepresentativeType05], nonEmptyString) {
         (representative, eori) =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(identificationNumber = eori))
           )(emptyUserAnswers)
 
@@ -39,7 +39,7 @@ class RepresentativeEoriTransformerSpec extends SpecBase with Generators {
     }
 
     "must not update if representative eori is None" in {
-      val userAnswers = setRepresentativeOnUserAnswersLens.set(
+      val userAnswers = setRepresentativeOnUserAnswersLens.replace(
         None
       )(emptyUserAnswers)
 

@@ -32,7 +32,7 @@ class CoordinatesTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], arbitrary[GNSSType]) {
         (locationOfGoods, coordinates) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(GNSS = Some(coordinates)))
             )(emptyUserAnswers)
 

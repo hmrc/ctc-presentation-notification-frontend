@@ -74,7 +74,7 @@ object UserAnswers {
       (__ \ "data").read[JsObject](sensitiveFormats.jsObjectReads) and
       (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads) and
       (__ \ "departureData").read[CC015CType](sensitiveFormats.cc015cReads)
-  )(UserAnswers.apply _)
+  )(UserAnswers.apply)
 
   val auditWrites: OWrites[UserAnswers] =
     writes(SensitiveWrites())
@@ -89,7 +89,9 @@ object UserAnswers {
       (__ \ "data").write[JsObject](sensitiveWrites.jsObjectWrites) and
       (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites) and
       (__ \ "departureData").write[CC015CType](sensitiveWrites.cc015cTypeWrites)
-  )(unlift(UserAnswers.unapply))
+  )(
+    ua => Tuple.fromProductTyped(ua)
+  )
 
   implicit def format(implicit sensitiveFormats: SensitiveFormats): Format[UserAnswers] =
     Format(reads, writes)

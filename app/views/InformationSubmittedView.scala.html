@@ -24,7 +24,7 @@
     govukPanel: GovukPanel
 )
 
-@(lrn: String, officeOfDestination: CustomsOffice)(implicit request: Request[_], messages: Messages)
+@(lrn: String, officeOfDestination: CustomsOffice)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("information.sent.title"),

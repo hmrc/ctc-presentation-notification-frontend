@@ -20,6 +20,7 @@ import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
+import models.reference.RichComparison
 
 case class Identification(code: String, description: String) extends Radioable[Identification] {
 

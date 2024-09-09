@@ -71,7 +71,7 @@ class AddBorderModeOfTransportYesNoController @Inject() (
     mode: Mode,
     value: Boolean,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddBorderModeOfTransportYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)

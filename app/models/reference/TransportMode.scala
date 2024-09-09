@@ -29,7 +29,7 @@ trait TransportMode[T] extends Radioable[T] {
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
   def isOneOf(codes: String*): Boolean    = codes.contains(code)
-  def isNotOneOf(codes: String*): Boolean = !isOneOf(codes: _*)
+  def isNotOneOf(codes: String*): Boolean = !isOneOf(codes *)
 }
 
 object TransportMode {

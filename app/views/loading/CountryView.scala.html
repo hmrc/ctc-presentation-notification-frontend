@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[Country], departureId: String, countries: Seq[Country], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], departureId: String, countries: Seq[Country], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("loading.country.title"),

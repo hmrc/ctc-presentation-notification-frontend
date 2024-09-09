@@ -45,7 +45,7 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, additionalIdentifierRoute)
 
@@ -82,7 +82,7 @@ class AdditionalIdentifierControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, additionalIdentifierRoute)
         .withFormUrlEncodedBody(("value", "ab12"))

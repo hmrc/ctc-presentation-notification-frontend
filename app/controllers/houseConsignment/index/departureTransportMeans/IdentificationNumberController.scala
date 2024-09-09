@@ -86,7 +86,7 @@ class IdentificationNumberController @Inject() (
     departureId: String,
     houseConsignmentIndex: Index,
     departureTransportMeansIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(IdentificationNumberPage(houseConsignmentIndex, departureTransportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -26,7 +26,7 @@
     button: Button
 )
 
-@(form: Form[String], departureId: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("locationOfGoods.eori.title"),

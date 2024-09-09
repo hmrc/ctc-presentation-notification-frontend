@@ -52,6 +52,8 @@ class CoordinatesFormProvider @Inject() extends Mappings {
               )
             )
         }
-      )(Coordinates.apply)(Coordinates.unapply)
+      )(Coordinates.apply)(
+        co => Some(Tuple.fromProductTyped(co))
+      )
     )
 }

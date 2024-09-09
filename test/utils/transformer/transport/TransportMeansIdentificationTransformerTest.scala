@@ -47,7 +47,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
             when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
               .thenReturn(Future.successful(NonEmptySet.of(identification)))
 
-            val userAnswers = setDepartureTransportMeansAnswersLens.set(
+            val userAnswers = setDepartureTransportMeansAnswersLens.replace(
               Seq(departureTransportMeans.copy(typeOfIdentification = Some(identification.`type`)))
             )(emptyUserAnswers)
 
@@ -65,7 +65,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
           when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
             .thenReturn(Future.successful(NonEmptySet.of(identification)))
 
-          val userAnswers = setDepartureTransportMeansAnswersLens.set(
+          val userAnswers = setDepartureTransportMeansAnswersLens.replace(
             Seq(departureTransportMeans.copy(typeOfIdentification = Some(identificationCode)))
           )(emptyUserAnswers)
 

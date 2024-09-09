@@ -27,7 +27,7 @@ class ContainerIndicatorTransformerTest extends SpecBase with Generators {
   "ContainerIndicatorPageTransformer" - {
     "must return updated answers with ContainerIndicatorPage" - {
       "when true" in {
-        val userAnswers = setContainerIndicatorOnUserAnswersLens.set(
+        val userAnswers = setContainerIndicatorOnUserAnswersLens.replace(
           Some(Number1)
         )(emptyUserAnswers)
 
@@ -36,7 +36,7 @@ class ContainerIndicatorTransformerTest extends SpecBase with Generators {
       }
 
       "when false" in {
-        val userAnswers = setContainerIndicatorOnUserAnswersLens.set(
+        val userAnswers = setContainerIndicatorOnUserAnswersLens.replace(
           Some(Number0)
         )(emptyUserAnswers)
 
@@ -46,7 +46,7 @@ class ContainerIndicatorTransformerTest extends SpecBase with Generators {
     }
 
     "must not update if ContainerIndicatorPage is None" in {
-      val userAnswers = setContainerIndicatorOnUserAnswersLens.set(
+      val userAnswers = setContainerIndicatorOnUserAnswersLens.replace(
         None
       )(emptyUserAnswers)
 

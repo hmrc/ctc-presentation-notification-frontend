@@ -38,7 +38,7 @@ trait UserAnswersGenerator extends TryValues {
         id         <- arbitrary[String]
         eoriNumber <- arbitrary[EoriNumber]
         lrn        <- nonEmptyString
-        data       <- Gen.const(Map[QuestionPage[_], JsValue]())
+        data       <- Gen.const(Map[QuestionPage[?], JsValue]())
         ie015Data  <- arbitrary[CC015CType]
       } yield UserAnswers(
         id = id,

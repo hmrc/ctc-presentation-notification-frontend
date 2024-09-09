@@ -65,15 +65,15 @@ class ContainerIdentificationNumberController @Inject() (
 
   }
 
-  private def form(equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+  private def form(equipmentIndex: Index)(implicit request: DataRequest[?]): Form[String] =
     formProvider("transport.equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
 
-  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfEquipments = request.userAnswers.get(EquipmentsSection).length
     (0 until numberOfEquipments)
       .map(Index(_))
       .filterNot(_ == equipmentIndex)
-      .map(ContainerIdentificationNumberPage)
+      .map(ContainerIdentificationNumberPage.apply)
       .flatMap(request.userAnswers.get(_))
   }
 
@@ -82,7 +82,7 @@ class ContainerIdentificationNumberController @Inject() (
     value: String,
     departureId: String,
     equipmentIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(equipmentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

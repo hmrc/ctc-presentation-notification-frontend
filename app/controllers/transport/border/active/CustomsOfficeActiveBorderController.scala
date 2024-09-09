@@ -83,7 +83,7 @@ class CustomsOfficeActiveBorderController @Inject() (
     value: CustomsOffice,
     departureId: String,
     activeIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeActiveBorderPage(activeIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

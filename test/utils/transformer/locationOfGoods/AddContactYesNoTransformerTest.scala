@@ -33,7 +33,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
         (locationOfGoods, contactPerson) =>
           val userAnswers =
             setLocationOfGoodsOnUserAnswersLens
-              .set(
+              .replace(
                 Some(locationOfGoods.copy(ContactPerson = Some(contactPerson)))
               )(emptyUserAnswers)
               .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "description"))
@@ -48,7 +48,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05]) {
         locationOfGoods =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(ContactPerson = None))
             )(emptyUserAnswers)
             .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "EoriIdentifier"))
@@ -63,7 +63,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
         (locationOfGoods, person) =>
           val userAnswers =
             setLocationOfGoodsOnUserAnswersLens
-              .set(Option(locationOfGoods.copy(ContactPerson = person)))(emptyUserAnswers)
+              .replace(Option(locationOfGoods.copy(ContactPerson = person)))(emptyUserAnswers)
               .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "CustomsOfficeIdentifier"))
 
           val result = transformer.transform.apply(userAnswers).futureValue

@@ -20,10 +20,10 @@ object CodeCoverageSettings {
     "generated.*"
   )
 
-  val settings: Seq[Setting[_]] = Seq(
+  val settings: Seq[Setting[?]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 85,
-    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageFailOnMinimum := false, // TODO set coverageFailOnMinimum true after https://github.com/scoverage/sbt-scoverage/issues/550 is fixed and released
     ScoverageKeys.coverageHighlighting := true
   )
 }

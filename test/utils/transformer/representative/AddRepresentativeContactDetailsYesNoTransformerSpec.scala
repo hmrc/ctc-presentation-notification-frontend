@@ -30,7 +30,7 @@ class AddRepresentativeContactDetailsYesNoTransformerSpec extends SpecBase with 
     "when representative contact details is present must return updated answers with AddRepresentativeContactDetailsYesNoPage as true" in {
       forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05]) {
         (representative, contactPerson) =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = Some(contactPerson)))
           )(emptyUserAnswers)
 
@@ -42,7 +42,7 @@ class AddRepresentativeContactDetailsYesNoTransformerSpec extends SpecBase with 
     "when representative contact details not present must return updated answers with AddRepresentativeContactDetailsYesNoPage as false" in {
       forAll(arbitrary[RepresentativeType05]) {
         representative =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = None))
           )(emptyUserAnswers)
 

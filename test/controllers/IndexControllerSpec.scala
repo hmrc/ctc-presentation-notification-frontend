@@ -72,19 +72,19 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
             setNoExistingUserAnswers()
 
-            when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+            when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
               Future.successful(lrn)
 
-            when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+            when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
               Future.successful(Some(ie015))
 
-            when(departureDataTransformer.transform(any())(any())) thenReturn
+            when(departureDataTransformer.transform(any())(any())) `thenReturn`
               Future.successful(emptyUserAnswers)
 
-            when(mockSessionRepository.get(any())) thenReturn
+            when(mockSessionRepository.get(any())) `thenReturn`
               Future.successful(None)
 
-            when(mockSessionRepository.set(any())) thenReturn
+            when(mockSessionRepository.set(any())) `thenReturn`
               Future.successful(true)
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -108,13 +108,13 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
           val request = FakeRequest(GET, indexRoute)
 
-          when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+          when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
             Future.successful(lrn)
 
-          when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+          when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
             Future.successful(Some(completeIe015))
 
-          when(mockSessionRepository.get(any())) thenReturn
+          when(mockSessionRepository.get(any())) `thenReturn`
             Future.successful(Some(emptyUserAnswers))
 
           val result = route(app, request).value
@@ -138,13 +138,13 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
               val request = FakeRequest(GET, indexRoute)
 
-              when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+              when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
                 Future.successful(lrn)
 
-              when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+              when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
                 Future.successful(Some(ie015))
 
-              when(mockSessionRepository.get(any())) thenReturn
+              when(mockSessionRepository.get(any())) `thenReturn`
                 Future.successful(Some(emptyUserAnswers))
 
               val result = route(app, request).value
@@ -168,13 +168,13 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         val request = FakeRequest(GET, indexRoute)
 
-        when(mockDepartureMessageService.getLRN(any())(any())) thenReturn
+        when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
           Future.successful(lrn)
 
-        when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) thenReturn
+        when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
           Future.successful(None)
 
-        when(mockSessionRepository.get(any())) thenReturn
+        when(mockSessionRepository.get(any())) `thenReturn`
           Future.successful(Some(emptyUserAnswers))
 
         val result = route(app, request).value

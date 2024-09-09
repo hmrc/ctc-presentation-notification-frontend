@@ -80,7 +80,7 @@ class ApplyAnotherItemController @Inject() (
     value: Boolean,
     equipmentIndex: Index,
     itemIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplyAnotherItemPage(equipmentIndex, itemIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

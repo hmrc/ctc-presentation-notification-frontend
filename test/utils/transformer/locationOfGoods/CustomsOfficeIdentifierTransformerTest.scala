@@ -43,7 +43,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
     "must skip transforming if there is no customs office data" in {
       forAll(arbitrary[LocationOfGoodsType05]) {
         locationOfGoods =>
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
             Some(locationOfGoods.copy(CustomsOffice = None))
           )(emptyUserAnswers)
 
@@ -58,7 +58,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
           when(service.getCustomsOfficesOfDepartureForCountry(any())(any()))
             .thenReturn(Future.successful(SelectableList(Seq(customsOffice))))
 
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
             Some(locationOfGoods.copy(CustomsOffice = Some(CustomsOfficeType02(customsOffice.id))))
           )(emptyUserAnswers)
 
@@ -74,7 +74,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
         when(service.getCustomsOfficesOfDepartureForCountry(any())(any()))
           .thenReturn(Future.successful(SelectableList(Seq())))
 
-        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
           Some(locationOfGoods.copy(CustomsOffice = Some(CustomsOfficeType02(customsOffice.id))))
         )(emptyUserAnswers)
 
@@ -89,7 +89,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
         when(service.getCustomsOfficesOfDepartureForCountry(any())(any()))
           .thenReturn(Future.failed(new RuntimeException("")))
 
-        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
           Some(locationOfGoods.copy(CustomsOffice = Some(CustomsOfficeType02(customsOffice.id))))
         )(emptyUserAnswers)
 

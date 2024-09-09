@@ -40,7 +40,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/$listName"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Country]]
   }
 
@@ -49,7 +49,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Country]]
       .map(_.head)
   }
@@ -82,7 +82,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[CountryCode]]
       .map(_.head)
   }
@@ -91,7 +91,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/UnLocodeExtended"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[UnLocode]]
   }
 
@@ -100,7 +100,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.unLocodeExtendedCode" -> unLocode))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[UnLocode]]
       .map(_.head)
   }
@@ -109,7 +109,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/Nationality"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Nationality]]
   }
 
@@ -118,7 +118,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Nationality]]
       .map(_.head)
   }
@@ -127,7 +127,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/SpecificCircumstanceIndicatorCode"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[SpecificCircumstanceIndicator]]
   }
 
@@ -135,7 +135,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TypeOfLocation"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[LocationType]]
   }
 
@@ -144,7 +144,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.type" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[LocationType]]
       .map(_.head)
   }
@@ -153,7 +153,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/QualifierOfTheIdentification"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[LocationOfGoodsIdentification]]
   }
 
@@ -166,7 +166,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[T]]
   }
 
@@ -174,7 +174,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Identification]]
   }
 
@@ -183,7 +183,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Identification]]
       .map(_.head)
   }
@@ -192,7 +192,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[TransportMeansIdentification]]
   }
 
@@ -203,7 +203,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.type" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[TransportMeansIdentification]]
       .map(_.head)
   }
@@ -242,8 +242,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/CustomsOffices"
     http
       .get(url)
-      .transform(_.withQueryStringParameters(queryParams: _*))
-      .setHeader(version2Header: _*)
+      .transform(_.withQueryStringParameters(queryParams *))
+      .setHeader(version2Header *)
       .execute[NonEmptySet[CustomsOffice]]
   }
 
@@ -259,7 +259,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException(url)
             case JsSuccess(head :: tail, _) =>
-              NonEmptySet.of(head, tail: _*)
+              NonEmptySet.of(head, tail *)
             case JsError(errors) =>
               throw JsResultException(errors)
           }

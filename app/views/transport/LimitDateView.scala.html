@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[LocalDate], mode: Mode, departureId: String, maxDate: String, customsOfficeString: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[LocalDate], mode: Mode, departureId: String, maxDate: String, customsOfficeString: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.limit.date.title", customsOfficeString),

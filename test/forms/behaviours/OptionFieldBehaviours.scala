@@ -22,7 +22,7 @@ import play.api.data.{Form, FormError}
 
 class OptionFieldBehaviours extends FieldBehaviours with Generators {
 
-  def optionsField[T <: Radioable[T]](form: Form[_], fieldName: String, validValues: Seq[T], invalidError: FormError): Unit = {
+  def optionsField[T <: Radioable[T]](form: Form[?], fieldName: String, validValues: Seq[T], invalidError: FormError): Unit = {
 
     "must bind all valid values" in {
 

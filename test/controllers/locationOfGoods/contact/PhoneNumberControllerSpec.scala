@@ -47,7 +47,7 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   "TelephoneNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers).setValue(NamePage, contactName))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers).setValue(NamePage, contactName))
 
       val request = FakeRequest(GET, telephoneNumberRoute)
 
@@ -88,7 +88,7 @@ class PhoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         .setValue(NamePage, contactName)
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, telephoneNumberRoute)
         .withFormUrlEncodedBody(("value", validAnswer))

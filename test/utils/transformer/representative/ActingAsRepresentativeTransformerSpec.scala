@@ -30,7 +30,7 @@ class ActingAsRepresentativeTransformerSpec extends SpecBase with Generators {
     "when representative details is present must return updated answers with ActingAsRepresentative page as true" in {
       forAll(arbitrary[RepresentativeType05]) {
         representative =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative)
           )(emptyUserAnswers)
 
@@ -40,7 +40,7 @@ class ActingAsRepresentativeTransformerSpec extends SpecBase with Generators {
     }
 
     "when representative details not present must return updated answers with ActingAsRepresentative page as false" in {
-      val userAnswers = setRepresentativeOnUserAnswersLens.set(
+      val userAnswers = setRepresentativeOnUserAnswersLens.replace(
         None
       )(emptyUserAnswers)
 

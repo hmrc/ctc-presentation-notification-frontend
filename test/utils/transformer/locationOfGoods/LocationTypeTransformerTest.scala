@@ -40,7 +40,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
   "LocationTypeTransformer" - {
 
     "must skip transforming if there is no location type" in {
-      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers)
       val result      = transformer.transform.apply(userAnswers).futureValue
       result mustBe userAnswers
     }
@@ -52,7 +52,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
             when(service.getLocationTypes(any())(any()))
               .thenReturn(Future.successful(Seq(locationType1, locationType2)))
 
-            val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
               Some(locationOfGoods.copy(typeOfLocation = locationType1.`type`))
             )(emptyUserAnswers)
 
@@ -68,7 +68,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
             when(service.getLocationTypes(any())(any()))
               .thenReturn(Future.successful(Seq(locationType)))
 
-            val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
               Some(locationOfGoods.copy(typeOfLocation = locationType.`type`))
             )(emptyUserAnswers)
 
@@ -86,7 +86,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
         when(service.getLocationTypes(any())(any()))
           .thenReturn(Future.successful(Nil))
 
-        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
           Some(locationOfGoods.copy(typeOfLocation = locationType.`type`))
         )(emptyUserAnswers)
 
@@ -101,7 +101,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
         when(service.getLocationTypes(any())(any()))
           .thenReturn(Future.failed(new RuntimeException("")))
 
-        val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(
+        val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
           Some(locationOfGoods)
         )(emptyUserAnswers)
 

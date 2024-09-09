@@ -45,7 +45,7 @@ class CountryTransformerTest extends SpecBase with Generators {
           when(service.getCountries()(any()))
             .thenReturn(Future.successful(SelectableList(Seq(country))))
 
-          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(country = Some(country.code.code)))
           )(emptyUserAnswers)
 

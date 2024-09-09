@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[String], departureId: String, mode: Mode, activeIndex: Index, identificationType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode, activeIndex: Index, identificationType: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.border.active.identificationNumber.title"),

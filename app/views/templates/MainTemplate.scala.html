@@ -40,7 +40,7 @@
     canSignOut: Boolean = true,
     showBackLink: Boolean = false,
     departureId: Option[String] = None
-)(mainContent: Html)(implicit request: Request[_], messages: Messages)
+)(mainContent: Html)(implicit request: Request[?], messages: Messages)
 
 @headScripts = {
     @if(canSignOut) {

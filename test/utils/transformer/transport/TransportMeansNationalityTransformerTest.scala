@@ -46,7 +46,7 @@ class TransportMeansNationalityTransformerTest extends SpecBase with Generators 
             when(nationalitiesService.getNationalities())
               .thenReturn(Future.successful(SelectableList(List(nationality))))
 
-            val userAnswers = setDepartureTransportMeansAnswersLens.set(
+            val userAnswers = setDepartureTransportMeansAnswersLens.replace(
               Seq(departureTransportMeans.copy(nationality = Some(nationality.code)))
             )(emptyUserAnswers)
 
@@ -62,7 +62,7 @@ class TransportMeansNationalityTransformerTest extends SpecBase with Generators 
           when(nationalitiesService.getNationalities())
             .thenReturn(Future.successful(SelectableList(Nil)))
 
-          val userAnswers = setDepartureTransportMeansAnswersLens.set(
+          val userAnswers = setDepartureTransportMeansAnswersLens.replace(
             Seq(departureTransportMeans.copy(nationality = Some(nationality.code)))
           )(emptyUserAnswers)
 

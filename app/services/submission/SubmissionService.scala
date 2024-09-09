@@ -74,7 +74,7 @@ class SubmissionService @Inject() (
     userAnswers.data.as[CC170CType]
   }
 
-  def attributes: Map[String, DataRecord[_]] =
+  def attributes: Map[String, DataRecord[?]] =
     Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS5u461Value.toString, scope)))
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDeparture: String): MESSAGESequence =
@@ -121,13 +121,13 @@ class SubmissionService @Inject() (
       NamePage.path.read[String] and
         RepresentativePhoneNumberPage.path.read[String] and
         None
-    )(ContactPersonType05.apply _)
+    )(ContactPersonType05.apply)
 
     (
       EoriPage.path.read[String] and
         ("2": Reads[String]) and
         __.readNullableSafe[ContactPersonType05]
-    )(RepresentativeType05.apply _)
+    )(RepresentativeType05.apply)
   }
 
   implicit val consignmentReads: Reads[ConsignmentType08] =
@@ -163,7 +163,7 @@ class SubmissionService @Inject() (
     import pages.locationOfGoods._
 
     implicit val customsOfficeReads: Reads[CustomsOfficeType02] =
-      CustomsOfficeIdentifierPage.path.read[CustomsOffice].map(_.id).map(CustomsOfficeType02)
+      CustomsOfficeIdentifierPage.path.read[CustomsOffice].map(_.id).map(CustomsOfficeType02.apply)
 
     implicit val gnssReads: Reads[GNSSType] =
       CoordinatesPage.path.read[Coordinates].map {
@@ -171,7 +171,7 @@ class SubmissionService @Inject() (
       }
 
     implicit val economicOperatorReads: Reads[EconomicOperatorType03] =
-      EoriPage.path.read[String].map(EconomicOperatorType03)
+      EoriPage.path.read[String].map(EconomicOperatorType03.apply)
 
     implicit val addressReads: Reads[AddressType14] = (
       AddressPage.path.read[DynamicAddress] and
@@ -202,7 +202,7 @@ class SubmissionService @Inject() (
         NamePage.path.read[String] and
           PhoneNumberPage.path.read[String] and
           None
-      )(ContactPersonType06.apply _)
+      )(ContactPersonType06.apply)
     }
 
     for {
@@ -294,7 +294,7 @@ class SubmissionService @Inject() (
       UnLocodePage.path.readNullable[String] and
         CountryPage.path.readNullable[Country].map(_.map(_.code.code)) and
         LocationPage.path.readNullable[String]
-    )(PlaceOfLoadingType03.apply _)
+    )(PlaceOfLoadingType03.apply)
   }
 
   def houseConsignmentReads(hcIndex: Index): Reads[HouseConsignmentType06] = {

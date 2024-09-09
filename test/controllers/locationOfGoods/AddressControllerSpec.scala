@@ -63,7 +63,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
+        setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.replace(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value
@@ -84,7 +84,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         val userAnswers = emptyUserAnswers
           .setValue(CountryPage, country)
-        setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(userAnswers))
+        setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.replace(None)(userAnswers))
 
         val request = FakeRequest(GET, addressRoute)
         val result  = route(app, request).value
@@ -170,7 +170,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(false))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val userAnswers = emptyUserAnswers
         .setValue(CountryPage, country)

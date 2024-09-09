@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[Nationality], departureId: String, nationalityList: Seq[Nationality], mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Nationality], departureId: String, nationalityList: Seq[Nationality], mode: Mode, houseConsignmentIndex: Index, departureTransportMeansIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.departureTransportMeans.country.title", houseConsignmentIndex.display),

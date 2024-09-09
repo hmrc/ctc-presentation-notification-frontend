@@ -24,7 +24,7 @@ import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
-import viewModels.{AddAnotherViewModel, ListItem}
+import viewModels.{AddAnotherViewModel, ListItem, RichListItems}
 
 case class AddAnotherSealViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
   override val prefix: String = "transport.equipment.index.addAnotherSeal"

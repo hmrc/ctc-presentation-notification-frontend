@@ -30,7 +30,7 @@ class TransportEquipmentYesNoTransformerTest extends SpecBase with Generators {
     "when transport equipment present must return updated answers with AddTransportEquipmentYesNoPage as true" in {
       forAll(arbitrary[TransportEquipmentType06]) {
         transportEquipment =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment)
           )(emptyUserAnswers)
 
@@ -42,7 +42,7 @@ class TransportEquipmentYesNoTransformerTest extends SpecBase with Generators {
     "when transport equipment not present must return updated answers with AddTransportEquipmentYesNoPage as false" in {
       forAll(arbitrary[TransportEquipmentType06]) {
         transportEquipment =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Nil
           )(emptyUserAnswers)
 

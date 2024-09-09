@@ -47,7 +47,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" in {
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
-      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.set(None)(userAnswers))
+      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.replace(None)(userAnswers))
 
       val request = FakeRequest(GET, locationRoute)
       val result  = route(app, request).value
@@ -85,7 +85,7 @@ class LocationControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, locationRoute)
         .withFormUrlEncodedBody(("value", "Test"))
