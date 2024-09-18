@@ -55,7 +55,7 @@ class ItemTransformerTest extends SpecBase with Generators {
             )
           )
 
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(GoodsReference = Seq(goodsReference.copy(declarationGoodsItemNumber = 1))))
           )(emptyUserAnswers.copy(departureData = ie015))
 

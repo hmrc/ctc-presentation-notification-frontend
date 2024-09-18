@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EoriController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: RepresentativeNavigator,
   formProvider: EoriNumberFormProvider,
   actions: Actions,
@@ -71,7 +71,7 @@ class EoriController @Inject() (
     page: QuestionPage[String],
     value: String,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)

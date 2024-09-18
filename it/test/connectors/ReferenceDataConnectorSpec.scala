@@ -62,7 +62,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |      "activeFrom": "2019-01-01",
       |      "id": "GB1",
       |      "name": "testName1",
-      |      "LanguageCode": "EN",
+      |      "languageCode": "EN",
       |      "countryId": "GB",
       |      "eMailAddress": "foo@andorra.ad",
       |      "roles": [
@@ -76,7 +76,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |      "activeFrom": "2019-01-01",
       |      "id": "GB2",
       |      "name": "testName2",
-      |      "LanguageCode": "ES",
+      |      "languageCode": "ES",
       |      "countryId": "GB",
       |      "roles": [
       |        {
@@ -721,7 +721,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
   }
 
-  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[?]): Assertion = {
     server.stubFor(
       get(urlEqualTo(url))
         .willReturn(okJson(emptyResponseJson))
@@ -732,7 +732,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
   }
 
-  private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
+  private def checkErrorResponse(url: String, result: => Future[?]): Assertion = {
     val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {

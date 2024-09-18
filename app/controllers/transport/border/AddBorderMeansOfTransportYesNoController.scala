@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddBorderMeansOfTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: BorderNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -69,7 +69,7 @@ class AddBorderMeansOfTransportYesNoController @Inject() (
     mode: Mode,
     value: Boolean,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddBorderMeansOfTransportYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -29,7 +29,7 @@
    button: Button
 )
 
-@(form: Form[InlandMode], departureId: String, inlandModesOfTransport: Seq[InlandMode], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[InlandMode], departureId: String, inlandModesOfTransport: Seq[InlandMode], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
    title = messages("transport.inlandModeOfTransport.title"),

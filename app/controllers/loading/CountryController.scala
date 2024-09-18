@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CountryController @Inject() (
   override val messagesApi: MessagesApi,
-  val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: LoadingNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -77,7 +77,7 @@ class CountryController @Inject() (
     mode: Mode,
     value: Country,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryPage, value))
       _              <- sessionRepository.set(updatedAnswers)

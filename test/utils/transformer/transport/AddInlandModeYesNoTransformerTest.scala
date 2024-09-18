@@ -28,7 +28,7 @@ class AddInlandModeYesNoTransformerTest extends SpecBase with Generators {
     "when inland mode present must return updated answers with AddInlandModeYesNoPage as true" in {
       forAll(nonEmptyString) {
         inlandMode =>
-          val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+          val userAnswers = setInlandModeOfTransportOnUserAnswersLens.replace(
             Some(inlandMode)
           )(emptyUserAnswers)
 
@@ -38,7 +38,7 @@ class AddInlandModeYesNoTransformerTest extends SpecBase with Generators {
     }
 
     "when inland mode not present must return updated answers with AddInlandModeYesNoPage as false" in {
-      val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+      val userAnswers = setInlandModeOfTransportOnUserAnswersLens.replace(
         None
       )(emptyUserAnswers)
 

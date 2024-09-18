@@ -28,7 +28,7 @@ class RichJsObjectSpec extends AnyFreeSpec with Matchers {
 
       val updatedJsonResult: JsResult[JsObject] = originalJson.removeObjectStandard(JsPath \ "age")
 
-      updatedJsonResult shouldBe a[JsSuccess[_]]
+      updatedJsonResult shouldBe a[JsSuccess[?]]
       val updatedJson = updatedJsonResult.get
       updatedJson shouldEqual Json.obj("name" -> "John", "address" -> Json.obj("city" -> "New York"))
     }
@@ -38,7 +38,7 @@ class RichJsObjectSpec extends AnyFreeSpec with Matchers {
 
       val updatedJsonResult: JsResult[JsObject] = originalJson.removeObjectStandard(JsPath \ "nonexistent")
 
-      updatedJsonResult shouldBe a[JsSuccess[_]]
+      updatedJsonResult shouldBe a[JsSuccess[?]]
       val updatedJson = updatedJsonResult.get
       updatedJson shouldEqual originalJson // No change expected
     }
@@ -48,7 +48,7 @@ class RichJsObjectSpec extends AnyFreeSpec with Matchers {
 
       val updatedJsonResult: JsResult[JsObject] = originalJson.removeObjectStandard(JsPath)
 
-      updatedJsonResult shouldBe a[JsSuccess[_]]
+      updatedJsonResult shouldBe a[JsSuccess[?]]
       val updatedJson = updatedJsonResult.get
       updatedJson shouldEqual originalJson // No change expected
     }
@@ -58,7 +58,7 @@ class RichJsObjectSpec extends AnyFreeSpec with Matchers {
 
       val updatedJsonResult: JsResult[JsObject] = originalJson.removeObjectStandard(JsPath \ "person" \ "age")
 
-      updatedJsonResult shouldBe a[JsSuccess[_]]
+      updatedJsonResult shouldBe a[JsSuccess[?]]
       val updatedJson = updatedJsonResult.get
       updatedJson shouldEqual Json.obj("person" -> Json.obj("name" -> "John"))
     }
@@ -68,7 +68,7 @@ class RichJsObjectSpec extends AnyFreeSpec with Matchers {
 
       val updatedJsonResult: JsResult[JsObject] = originalJson.removeObjectStandard(JsPath \ "nonexistent")
 
-      updatedJsonResult shouldBe a[JsSuccess[_]]
+      updatedJsonResult shouldBe a[JsSuccess[?]]
       val updatedJson = updatedJsonResult.get
       updatedJson shouldEqual originalJson // No change expected
     }
@@ -78,7 +78,7 @@ class RichJsObjectSpec extends AnyFreeSpec with Matchers {
 
       val updatedJsonResult: JsResult[JsObject] = originalJson.removeObjectStandard(JsPath)
 
-      updatedJsonResult shouldBe a[JsSuccess[_]]
+      updatedJsonResult shouldBe a[JsSuccess[?]]
       val updatedJson = updatedJsonResult.get
       updatedJson shouldEqual originalJson // No change expected
     }
@@ -88,7 +88,7 @@ class RichJsObjectSpec extends AnyFreeSpec with Matchers {
 
       val updatedJsonResult: JsResult[JsObject] = originalJson.removeObjectStandard(JsPath \ "nested")
 
-      updatedJsonResult shouldBe a[JsSuccess[_]]
+      updatedJsonResult shouldBe a[JsSuccess[?]]
       val updatedJson = updatedJsonResult.get
       updatedJson shouldEqual Json.obj() // Empty object expected
     }

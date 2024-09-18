@@ -31,7 +31,7 @@ class AuthorisationNumberTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
         (locationOfGoods, authorisationNumber) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(authorisationNumber = Some(authorisationNumber)))
             )(emptyUserAnswers)
 

@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddArrivalDateYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -70,7 +70,7 @@ class AddArrivalDateYesNoController @Inject() (
     mode: Mode,
     value: Boolean,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddArrivalDateYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -42,7 +42,7 @@ class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase with Generators
           when(service.getBorderModes())
             .thenReturn(Future.successful(Seq(borderMode)))
 
-          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.replace(
             Some(borderMode.code)
           )(emptyUserAnswers)
 
@@ -57,7 +57,7 @@ class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase with Generators
           when(service.getBorderModes())
             .thenReturn(Future.successful(Seq(borderMode)))
 
-          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.replace(
             None
           )(emptyUserAnswers)
 

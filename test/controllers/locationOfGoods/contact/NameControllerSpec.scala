@@ -46,7 +46,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, nameRoute)
 
@@ -83,7 +83,7 @@ class NameControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, nameRoute)
         .withFormUrlEncodedBody(("value", "test string"))

@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   formProvider: NameFormProvider,
   actions: Actions,
@@ -68,7 +68,7 @@ class NameController @Inject() (
     mode: Mode,
     value: String,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: BorderNavigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -80,7 +80,7 @@ class IdentificationController @Inject() (
                   Future.successful(
                     BadRequest(view(formWithErrors, departureId, identificationTypeList, mode, index))
                   ),
-                value => redirect(mode, IdentificationPage, value, departureId, index)
+                value => redirect(mode, IdentificationPage.apply, value, departureId, index)
               )
         }
     }
@@ -91,7 +91,7 @@ class IdentificationController @Inject() (
     value: Identification,
     departureId: String,
     index: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page(index), value))
       _              <- sessionRepository.set(updatedAnswers)

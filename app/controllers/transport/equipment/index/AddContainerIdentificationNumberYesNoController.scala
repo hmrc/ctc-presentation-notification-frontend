@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddContainerIdentificationNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: EquipmentNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -70,7 +70,7 @@ class AddContainerIdentificationNumberYesNoController @Inject() (
     value: Boolean,
     departureId: String,
     equipmentIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddContainerIdentificationNumberYesNoPage(equipmentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -31,7 +31,7 @@
     departureId: String,
     mode: Mode,
     countries: Seq[Country]
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("locationOfGoods.postalCode.title"),

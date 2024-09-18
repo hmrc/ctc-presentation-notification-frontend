@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package logging
+package config
 
-import play.api.Logger
+import config.PhaseConfig.PostTransitionConfig
 
-trait Logging {
+class PostTransitionModule extends Module {
 
-  protected val logger: Logger = Logger(s"application.${this.getClass.getCanonicalName}")
+  override def configure(): Unit = {
+    super.configure()
+
+    bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
+  }
 }

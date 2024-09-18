@@ -31,7 +31,7 @@ class IdentificationNumberTransformerTest extends SpecBase with Generators {
     "must skip transforming if there is no border means" in {
       forAll(arbitrary[ActiveBorderTransportMeansType02]) {
         borderTransportMeans =>
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(identificationNumber = None))
           )(emptyUserAnswers)
 
@@ -43,7 +43,7 @@ class IdentificationNumberTransformerTest extends SpecBase with Generators {
     "must return updated answers with IdentificationNumberPage" in {
       forAll(arbitrary[ActiveBorderTransportMeansType02], nonEmptyString) {
         (borderTransportMeans, identificationNumber) =>
-          val userAnswers = setBorderMeansAnswersLens.set(
+          val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(identificationNumber = Some(identificationNumber)))
           )(emptyUserAnswers)
 

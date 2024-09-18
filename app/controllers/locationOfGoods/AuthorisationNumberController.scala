@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   formProvider: AuthorisationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -72,7 +72,7 @@ class AuthorisationNumberController @Inject() (
     mode: Mode,
     value: String,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AuthorisationNumberPage, value))
       _              <- sessionRepository.set(updatedAnswers)

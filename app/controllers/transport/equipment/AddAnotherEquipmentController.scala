@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -78,7 +78,7 @@ class AddAnotherEquipmentController @Inject() (
     mode: Mode,
     value: Boolean,
     activeIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportEquipmentPage(activeIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

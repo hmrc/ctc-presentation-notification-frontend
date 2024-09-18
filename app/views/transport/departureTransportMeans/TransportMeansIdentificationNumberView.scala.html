@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[String], departureId: String, mode: Mode, identificationType: String, transportIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], departureId: String, mode: Mode, identificationType: String, transportIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("consignment.departureTransportMeans.identificationNumber.title"),

@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LocationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: LoadingNavigator,
   formProvider: LoadingLocationFormProvider,
   actions: Actions,
@@ -46,7 +46,7 @@ class LocationController @Inject() (
     with I18nSupport
     with Logging {
 
-  private def countryName(implicit request: DataRequest[_]): String =
+  private def countryName(implicit request: DataRequest[?]): String =
     request.userAnswers.get(CountryPage).map(_.description).getOrElse("")
 
   def onPageLoad(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId) {
@@ -74,7 +74,7 @@ class LocationController @Inject() (
     mode: Mode,
     value: String,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(LocationPage, value))
       _              <- sessionRepository.set(updatedAnswers)

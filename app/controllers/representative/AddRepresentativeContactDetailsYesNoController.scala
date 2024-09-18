@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddRepresentativeContactDetailsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: RepresentativeNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -70,7 +70,7 @@ class AddRepresentativeContactDetailsYesNoController @Inject() (
     mode: Mode,
     value: Boolean,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddRepresentativeContactDetailsYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)

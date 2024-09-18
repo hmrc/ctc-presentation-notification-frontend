@@ -81,7 +81,7 @@ package object controllers {
       }
 
     def writeToSession()(implicit
-      dataRequest: MandatoryDataRequest[_],
+      dataRequest: MandatoryDataRequest[?],
       sessionRepository: SessionRepository,
       ex: ExecutionContext
     ): Future[Write[A]] = writeToSession(dataRequest.userAnswers)

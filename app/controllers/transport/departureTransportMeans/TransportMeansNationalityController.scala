@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportMeansNationalityController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: DepartureTransportMeansNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -79,7 +79,7 @@ class TransportMeansNationalityController @Inject() (
     departureId: String,
     mode: Mode,
     transportIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansNationalityPage(transportIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

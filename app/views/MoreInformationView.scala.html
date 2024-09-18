@@ -19,7 +19,7 @@
 
 @this(mainTemplate: MainTemplate, formHelper: FormWithCSRF, heading: Heading, button: Button, headingCaption: HeadingCaption)
 
-@(lrn: String, departureId: String)(implicit request: Request[_], messages: Messages)
+@(lrn: String, departureId: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(title = messages("moreInformation.title"), showBackLink = true) {
 

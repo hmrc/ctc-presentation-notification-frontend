@@ -17,9 +17,9 @@
 package navigation
 
 import controllers.routes
-import logging.Logging
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.Page
+import play.api.Logging
 import play.api.mvc.Call
 
 trait Navigator extends CommonNavigation with Logging {

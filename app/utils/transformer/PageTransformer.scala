@@ -65,7 +65,7 @@ trait PageTransformer {
   )(implicit ec: ExecutionContext, writes: Writes[DomainModelType], reads: Reads[DomainModelType]): Future[UserAnswers] = Option
     .when(shouldTransform(userAnswers)) {
       fetchReferenceData().flatMap {
-        dataFromRefDB: Seq[DomainModelType] =>
+        (dataFromRefDB: Seq[DomainModelType]) =>
           val dataFromDepartureData = extractDataFromDepartureData(userAnswers)
           val capturedAnswers       = generateCapturedAnswers(dataFromDepartureData, dataFromRefDB)
           Future.fromTry(collectAllCapturedAnswers(userAnswers, capturedAnswers))

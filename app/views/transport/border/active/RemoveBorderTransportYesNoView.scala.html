@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, activeIndex: Index, insetTextString: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode, activeIndex: Index, insetTextString: Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.border.active.removeBorderTransport.title", activeIndex.display),

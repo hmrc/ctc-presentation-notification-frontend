@@ -31,7 +31,7 @@ class ContainerIdentificationNumberTransformerTest extends SpecBase with Generat
     "must return updated answers with ContainerIdentificationNumberPage if container id exist for the equipment" in {
       forAll(arbitrary[TransportEquipmentType06], nonEmptyString) {
         (transportEquipment, containerIdentificationNumber) =>
-          val userAnswers = setTransportEquipmentLens.set(
+          val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(containerIdentificationNumber = Some(containerIdentificationNumber)))
           )(emptyUserAnswers)
 

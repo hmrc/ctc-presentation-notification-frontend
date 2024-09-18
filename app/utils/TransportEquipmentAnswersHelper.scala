@@ -24,7 +24,7 @@ import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPag
 import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewModels.{Link, Section}
+import viewModels.{Link, RichSection, Section}
 
 class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,

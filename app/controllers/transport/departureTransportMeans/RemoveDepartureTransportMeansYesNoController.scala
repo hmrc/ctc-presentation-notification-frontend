@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveDepartureTransportMeansYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,

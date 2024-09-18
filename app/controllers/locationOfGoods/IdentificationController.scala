@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -74,7 +74,7 @@ class IdentificationController @Inject() (
     page: QuestionPage[LocationOfGoodsIdentification],
     value: LocationOfGoodsIdentification,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)

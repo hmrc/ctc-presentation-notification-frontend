@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnLocodeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   formProvider: UnLocodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -82,7 +82,7 @@ class UnLocodeController @Inject() (
     mode: Mode,
     value: String,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(UnLocodePage, value))
       _              <- sessionRepository.set(updatedAnswers)

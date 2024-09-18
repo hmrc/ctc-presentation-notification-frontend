@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BorderModeOfTransportController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: BorderNavigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -83,7 +83,7 @@ class BorderModeOfTransportController @Inject() (
     page: QuestionPage[BorderMode],
     value: BorderMode,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)

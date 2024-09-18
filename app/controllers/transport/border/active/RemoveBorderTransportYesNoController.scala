@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveBorderTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,

@@ -73,7 +73,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         )
 
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeItemRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -99,7 +99,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         )
 
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeItemRoute)
           .withFormUrlEncodedBody(("value", "false"))

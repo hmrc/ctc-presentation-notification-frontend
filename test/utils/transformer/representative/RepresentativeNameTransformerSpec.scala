@@ -29,7 +29,7 @@ class RepresentativeNameTransformerSpec extends SpecBase with Generators {
     "must return updated answers with representative NamePage" in {
       forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05], nonEmptyString) {
         (representative, contactPerson, name) =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = Some(contactPerson.copy(name = name))))
           )(emptyUserAnswers)
 
@@ -41,7 +41,7 @@ class RepresentativeNameTransformerSpec extends SpecBase with Generators {
     "must not update if representative name is None" in {
       forAll(arbitrary[RepresentativeType05]) {
         representative =>
-          val userAnswers = setRepresentativeOnUserAnswersLens.set(
+          val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = None))
           )(emptyUserAnswers)
 

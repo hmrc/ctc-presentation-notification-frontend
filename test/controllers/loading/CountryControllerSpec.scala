@@ -56,7 +56,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must return OK and the correct view for a GET" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setPlaceOfLoadingOnUserAnswersLens.replace(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, countryRoute)
       val result  = route(app, request).value
@@ -92,7 +92,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherSealController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   navigator: EquipmentNavigator,
@@ -77,7 +77,7 @@ class AddAnotherSealController @Inject() (
     departureId: String,
     equipmentIndex: Index,
     sealIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSealPage(equipmentIndex, sealIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddExtraInformationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: LoadingNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -72,7 +72,7 @@ class AddExtraInformationYesNoController @Inject() (
     mode: Mode,
     value: Boolean,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AddExtraInformationYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)

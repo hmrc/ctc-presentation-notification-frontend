@@ -43,7 +43,7 @@ class InlandModeTransformerTest extends SpecBase with Generators {
             when(service.getInlandModes())
               .thenReturn(Future.successful(Seq(inlandMode)))
 
-            val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+            val userAnswers = setInlandModeOfTransportOnUserAnswersLens.replace(
               Some(inlandMode.code)
             )(emptyUserAnswers)
 
@@ -59,7 +59,7 @@ class InlandModeTransformerTest extends SpecBase with Generators {
           when(service.getInlandModes())
             .thenReturn(Future.successful(Nil))
 
-          val userAnswers = setInlandModeOfTransportOnUserAnswersLens.set(
+          val userAnswers = setInlandModeOfTransportOnUserAnswersLens.replace(
             Some(inlandMode.code)
           )(emptyUserAnswers)
 

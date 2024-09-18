@@ -40,7 +40,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
   "IdentificationTransformer" - {
 
     "must skip transforming if there is no qualifier identification" in {
-      val userAnswers = setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers)
+      val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers)
       val result      = transformer.transform.apply(userAnswers).futureValue
       result mustBe userAnswers
     }
@@ -53,7 +53,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
               .thenReturn(Future.successful(Seq(identification1, identification2)))
 
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
-              .set(
+              .replace(
                 Some(locationOfGoods.copy(qualifierOfIdentification = identification1.qualifier))
               )(emptyUserAnswers)
 
@@ -70,7 +70,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
               .thenReturn(Future.successful(Seq(identification)))
 
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
-              .set(
+              .replace(
                 Some(locationOfGoods.copy(qualifierOfIdentification = identification.qualifier))
               )(emptyUserAnswers)
 
@@ -89,7 +89,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
           .thenReturn(Future.successful(Seq()))
 
         val userAnswers = setLocationOfGoodsOnUserAnswersLens
-          .set(
+          .replace(
             Some(locationOfGoods.copy(qualifierOfIdentification = identification.qualifier))
           )(emptyUserAnswers)
 
@@ -105,7 +105,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
           .thenReturn(Future.failed(new RuntimeException("")))
 
         val userAnswers = setLocationOfGoodsOnUserAnswersLens
-          .set(
+          .replace(
             Some(locationOfGoods)
           )(emptyUserAnswers)
 

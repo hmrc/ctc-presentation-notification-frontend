@@ -31,7 +31,7 @@ class UnLocodeTransformerTest extends SpecBase with Generators {
       forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
         (locationOfGoods, unLocode) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .set(
+            .replace(
               Option(locationOfGoods.copy(UNLocode = Some(unLocode)))
             )(emptyUserAnswers)
 

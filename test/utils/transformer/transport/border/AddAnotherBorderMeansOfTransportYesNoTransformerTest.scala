@@ -29,7 +29,7 @@ class AddAnotherBorderMeansOfTransportYesNoTransformerTest extends SpecBase with
   "AddAnotherBorderMeansOfTransportYesNoTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      val userAnswers = setBorderMeansAnswersLens.set(
+      val userAnswers = setBorderMeansAnswersLens.replace(
         Nil
       )(emptyUserAnswers)
 
@@ -41,7 +41,7 @@ class AddAnotherBorderMeansOfTransportYesNoTransformerTest extends SpecBase with
       "when there is 1 or more border means, answer should be No (false)" in {
         forAll(arbitrary[ActiveBorderTransportMeansType02]) {
           borderTransportMeans =>
-            val userAnswers = setBorderMeansAnswersLens.set(
+            val userAnswers = setBorderMeansAnswersLens.replace(
               Seq(borderTransportMeans)
             )(emptyUserAnswers)
 

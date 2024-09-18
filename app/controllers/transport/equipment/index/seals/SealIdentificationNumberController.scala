@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SealIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   formProvider: SealIdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -66,10 +66,10 @@ class SealIdentificationNumberController @Inject() (
 
     }
 
-  private def form(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
+  private def form(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]) =
     formProvider("transport.equipment.index.seals.sealIdentificationNumber", otherSealIdentificationNumbers(equipmentIndex, sealIndex))
 
-  private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
     (0 until numberOfSeals)
       .filterNot(_ == sealIndex.position)
@@ -85,7 +85,7 @@ class SealIdentificationNumberController @Inject() (
     departureId: String,
     equipmentIndex: Index,
     sealIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -110,7 +110,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
 
           setExistingUserAnswers(userAnswers)
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
           val request = FakeRequest(POST, identificationNumberRoute)
             .withFormUrlEncodedBody(("value", validAnswer))

@@ -66,7 +66,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         setExistingUserAnswers(emptyUserAnswers.setValue(EquipmentSection(equipmentIndex), Json.obj()))
 
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeTransportEquipmentRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -92,7 +92,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         )
 
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeTransportEquipmentRoute)
           .withFormUrlEncodedBody(("value", "false"))

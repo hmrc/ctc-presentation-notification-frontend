@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class InlandModeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   navigator: BorderNavigator,
   formProvider: EnumerableFormProvider,
@@ -91,7 +91,7 @@ class InlandModeController @Inject() (
     page: QuestionPage[InlandMode],
     value: InlandMode,
     departureId: String
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
       _              <- sessionRepository.set(updatedAnswers)

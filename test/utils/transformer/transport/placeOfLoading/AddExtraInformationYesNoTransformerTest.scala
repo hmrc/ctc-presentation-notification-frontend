@@ -29,7 +29,7 @@ class AddExtraInformationYesNoTransformerTest extends SpecBase with Generators {
     "must return updated answers with AddExtraInformationYesNo" in {
       forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
         (placeOfLoading, country) =>
-          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.set(
+          val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(country = Some(country)))
           )(emptyUserAnswers)
 

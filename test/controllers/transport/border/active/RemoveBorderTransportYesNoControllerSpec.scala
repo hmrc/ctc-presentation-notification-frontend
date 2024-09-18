@@ -32,7 +32,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.transformer.Helper.userAnswers
 import views.html.transport.border.active.RemoveBorderTransportYesNoView
 
 class RemoveBorderTransportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with PageBehaviours {

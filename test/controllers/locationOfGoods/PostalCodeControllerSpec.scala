@@ -57,7 +57,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
 
-      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.set(None)(emptyUserAnswers))
+      setExistingUserAnswers(setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers))
 
       val request = FakeRequest(GET, postalCodeRoute)
       val result  = route(app, request).value
@@ -102,7 +102,7 @@ class PostalCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockCountriesService.getAddressPostcodeBasedCountries()(any())).thenReturn(Future.successful(countryList))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

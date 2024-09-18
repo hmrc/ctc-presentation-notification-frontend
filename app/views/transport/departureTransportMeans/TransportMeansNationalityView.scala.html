@@ -28,7 +28,7 @@
         button: Button
 )
 
-@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, transportIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Nationality], departureId: String, nationalities: Seq[Nationality], mode: Mode, transportIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("consignment.departureTransportMeans.nationality.title"),

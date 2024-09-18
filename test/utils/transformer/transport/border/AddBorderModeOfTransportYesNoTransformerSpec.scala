@@ -28,7 +28,7 @@ class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase with Generat
     "when border mode present must return updated answers with AddBorderModeOfTransportYesNoPage as true" in {
       forAll(nonEmptyString) {
         borderMode =>
-          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+          val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.replace(
             Some(borderMode)
           )(emptyUserAnswers)
 
@@ -38,7 +38,7 @@ class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase with Generat
     }
 
     "when border mode not present must return updated answers with AddBorderModeOfTransportYesNoPage as false" in {
-      val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.set(
+      val userAnswers = setModeOfTransportAtTheBorderOnUserAnswersLens.replace(
         None
       )(emptyUserAnswers)
 

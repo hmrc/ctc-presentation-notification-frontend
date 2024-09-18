@@ -29,7 +29,7 @@ class LimitDateTransformerTest extends SpecBase with Generators {
   "LimitDateTransformer" - {
     "must return updated answers with LimitDatePage" in {
       val limitDate = XMLCalendar("2022-02-03T08:45:00.000000")
-      val userAnswers = setLimitDateLens.set(
+      val userAnswers = setLimitDateLens.replace(
         Some(limitDate)
       )(emptyUserAnswers)
 
@@ -38,7 +38,7 @@ class LimitDateTransformerTest extends SpecBase with Generators {
     }
 
     "must not update if limit date is None" in {
-      val userAnswers = setLimitDateLens.set(
+      val userAnswers = setLimitDateLens.replace(
         None
       )(emptyUserAnswers)
 
