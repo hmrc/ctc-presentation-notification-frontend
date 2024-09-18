@@ -18,7 +18,7 @@ package controllers.transport.departureTransportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.border.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
@@ -40,7 +40,7 @@ class TransportMeansIdentificationNumberControllerSpec extends SpecBase with App
 
   private val prefix = "consignment.departureTransportMeans.identificationNumber"
 
-  private val formProvider = new IdentificationNumberFormProvider()
+  private val formProvider = new DepartureTransportMeansIdentificationNumberFormProvider()
   private val form         = formProvider(prefix)
   private val mode         = NormalMode
 

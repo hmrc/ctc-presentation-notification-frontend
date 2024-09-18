@@ -18,7 +18,7 @@ package controllers.houseConsignment.index.departureTransportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.border.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
@@ -38,7 +38,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
   private val prefix = "houseConsignment.index.departureTransportMeans.identificationNumber"
 
-  private val formProvider = new IdentificationNumberFormProvider()
+  private val formProvider = new DepartureTransportMeansIdentificationNumberFormProvider()
   private val form         = formProvider(prefix, houseConsignmentIndex.display)
   private val mode         = NormalMode
 
