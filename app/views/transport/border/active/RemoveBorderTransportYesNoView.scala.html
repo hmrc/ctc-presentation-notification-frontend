@@ -16,20 +16,22 @@
 
 @import controllers.transport.border.active.routes
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
+    insetText: InsetText,
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, mode: Mode, activeIndex: Index)(implicit request: Request[?], messages: Messages)
+@(form: Form[Boolean], departureId: String, mode: Mode, activeIndex: Index, insetTextString: Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.border.active.removeBorderTransport.title"),
+    title = messages("transport.border.active.removeBorderTransport.title", activeIndex.display),
     showBackLink = true
 ) {
 
@@ -39,9 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("transport.border.active.removeBorderTransport.heading"),
-                caption = Some(messages("transport.border.subheading"))
+            yesNoType = InputYesNoViewModel(
+                heading = messages("transport.border.active.removeBorderTransport.heading", activeIndex.display),
+                caption = Some(messages("transport.border.subheading")),
+                additionalHtml = insetTextString.map(insetText(_))
             )
         )
 

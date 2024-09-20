@@ -25,6 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import pages.sections.transport.equipment.EquipmentSection
+import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,6 +35,7 @@ import scala.concurrent.Future
 
 class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val insetText                          = "ContainerId"
   private val formProvider                       = new YesNoFormProvider()
   private val form                               = formProvider("transport.equipment.index.removeTransportEquipment", equipmentIndex.display)
   private val mode                               = NormalMode
@@ -42,8 +44,11 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
   "RemoveTransportEquipment Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      setExistingUserAnswers(emptyUserAnswers.setValue(EquipmentSection(equipmentIndex), Json.obj()))
-
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(EquipmentSection(equipmentIndex), Json.obj())
+          .setValue(ContainerIdentificationNumberPage(index), "ContainerId")
+      )
       val request = FakeRequest(GET, removeTransportEquipmentRoute)
       val result  = route(app, request).value
 
@@ -52,7 +57,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, departureId, mode, equipmentIndex)(request, messages).toString
+        view(form, departureId, mode, equipmentIndex, Some(insetText))(request, messages).toString
 
     }
 
@@ -80,7 +85,11 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
       }
 
       "when no is submitted" in {
-        setExistingUserAnswers(emptyUserAnswers.setValue(EquipmentSection(equipmentIndex), Json.obj()))
+        setExistingUserAnswers(
+          emptyUserAnswers
+            .setValue(EquipmentSection(equipmentIndex), Json.obj())
+            .setValue(ContainerIdentificationNumberPage(index), "ContainerId")
+        )
 
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
@@ -103,7 +112,11 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      setExistingUserAnswers(emptyUserAnswers.setValue(EquipmentSection(equipmentIndex), Json.obj()))
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(EquipmentSection(equipmentIndex), Json.obj())
+          .setValue(ContainerIdentificationNumberPage(index), "ContainerId")
+      )
 
       val request   = FakeRequest(POST, removeTransportEquipmentRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -115,7 +128,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[RemoveTransportEquipmentView]
 
       contentAsString(result) mustEqual
-        view(boundForm, departureId, mode, equipmentIndex)(request, messages).toString
+        view(boundForm, departureId, mode, equipmentIndex, Some(insetText))(request, messages).toString
 
     }
 

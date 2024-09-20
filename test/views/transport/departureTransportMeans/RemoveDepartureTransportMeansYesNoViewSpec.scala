@@ -38,15 +38,15 @@ class RemoveDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "consignment.departureTransportMeans.removeDepartureTransportMeans"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(index.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Departure means of transport")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(index.display)
 
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = Seq(index.display))
 
   behave like pageWithInsetText(s"${identificationType.asString} - ${identificationNumber.get}")
 

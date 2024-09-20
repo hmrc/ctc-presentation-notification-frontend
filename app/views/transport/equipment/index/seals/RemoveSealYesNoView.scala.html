@@ -16,12 +16,13 @@
 
 @import controllers.transport.equipment.index.seals.routes
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    inset: InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -39,9 +40,11 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("transport.equipment.index.seals.transport.equipment.removeSeal.heading", sealIdNumber),
-                caption = Some(messages("transport.caption"))
+                caption = Some(messages("transport.caption")),
+                additionalHtml = inset(sealIdNumber)
+
             )
         )
 

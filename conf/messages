@@ -393,10 +393,10 @@ transport.border.active.addAnotherBorderTransport.hidden = Do you want to add an
 transport.border.active.addAnotherBorderTransport.hint = Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.
 transport.border.active.addAnotherBorderTransport.maxLimit.label = You cannot add any more border means of transport. To add another, you need to remove one first.
 
-transport.border.active.removeBorderTransport.title = Are you sure you want to remove this border means of transport?
-transport.border.active.removeBorderTransport.heading = Are you sure you want to remove this border means of transport?
+transport.border.active.removeBorderTransport.title = Are you sure you want to remove border means of transport {0}?
+transport.border.active.removeBorderTransport.heading = Are you sure you want to remove border means of transport {0}?
 transport.border.active.removeBorderTransport.checkYourAnswersLabel = Are you sure you want to remove this border means of transport?
-transport.border.active.removeBorderTransport.error.required = Select yes if you want to remove this border means of transport
+transport.border.active.removeBorderTransport.error.required = Select yes if you want to remove border means of transport {0}
 transport.border.active.removeBorderTransport.change.hidden = if you want to remove this border means of transport
 
 transport.border.addBorderModeOfTransport.title = Do you want to add a border mode of transport?
@@ -454,9 +454,9 @@ transport.equipment.index.addContainerIdentificationNumberYesNo.checkYourAnswers
 transport.equipment.index.addContainerIdentificationNumberYesNo.change.hidden = if you want to add an identification number
 transport.equipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
 
-transport.equipment.index.seals.transport.equipment.removeSeal.title = Are you sure you want to remove seal {0}?
-transport.equipment.index.seals.transport.equipment.removeSeal.heading = Are you sure you want to remove seal {0}?
-transport.equipment.index.seals.transport.equipment.removeSeal.error.required = Select yes if you want to remove seal {0}
+transport.equipment.index.seals.transport.equipment.removeSeal.title = Are you sure you want to remove this seal?
+transport.equipment.index.seals.transport.equipment.removeSeal.heading = Are you sure you want to remove this seal?
+transport.equipment.index.seals.transport.equipment.removeSeal.error.required = Select yes if you want to remove this seal
 
 transport.equipment.index.containerIdentificationNumber.title = What is the container identification number?
 transport.equipment.index.containerIdentificationNumber.heading = What is the container identification number?
@@ -630,9 +630,9 @@ consignment.departureTransportMeans.identificationNumber.error.required = Enter 
 consignment.departureTransportMeans.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
 consignment.departureTransportMeans.identificationNumber.change.hidden = the identification for the departure means of transport
 
-consignment.departureTransportMeans.removeDepartureTransportMeans.title = Are you sure you want to remove this departure means of transport?
-consignment.departureTransportMeans.removeDepartureTransportMeans.heading = Are you sure you want to remove this departure means of transport?
-consignment.departureTransportMeans.removeDepartureTransportMeans.error.required = Select yes if you want to remove this departure means of transport
+consignment.departureTransportMeans.removeDepartureTransportMeans.title = Are you sure you want to remove departure means of transport {0}?
+consignment.departureTransportMeans.removeDepartureTransportMeans.heading = Are you sure you want to remove departure means of transport {0}?
+consignment.departureTransportMeans.removeDepartureTransportMeans.error.required = Select yes if you want to remove departure means of transport {0}
 
 consignment.departureTransportMeans.addAnotherTransportMeans.singular.title = You have added 1 departure means of transport
 consignment.departureTransportMeans.addAnotherTransportMeans.plural.title = You have added {0} departure means of transport
