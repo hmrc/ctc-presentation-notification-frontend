@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.departureTransportMeans
 
 import controllers.actions._
-import forms.border.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.Navigator
@@ -36,7 +36,7 @@ class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  formProvider: IdentificationNumberFormProvider,
+  formProvider: DepartureTransportMeansIdentificationNumberFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,

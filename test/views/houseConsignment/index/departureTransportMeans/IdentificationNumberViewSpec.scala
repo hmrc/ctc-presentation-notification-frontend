@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.departureTransportMeans
 
-import forms.border.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import models.NormalMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
@@ -33,7 +33,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   private val identificationType = arbitrary[TransportMeansIdentification].sample.value
 
-  override def form: Form[String] = new IdentificationNumberFormProvider()(prefix, houseConsignmentIndex.display)
+  override def form: Form[String] = new DepartureTransportMeansIdentificationNumberFormProvider()(prefix, houseConsignmentIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector

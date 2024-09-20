@@ -16,7 +16,7 @@
 
 package views.transport.departureTransportMeans
 
-import forms.border.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import models.NormalMode
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.{Arbitrary, Gen}
@@ -28,7 +28,7 @@ import views.html.transport.departureTransportMeans.TransportMeansIdentification
 
 class TransportMeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new IdentificationNumberFormProvider()(prefix)
+  override def form: Form[String] = new DepartureTransportMeansIdentificationNumberFormProvider()(prefix)
 
   val identificationType: TransportMeansIdentification = TransportMeansIdentification("80", "European vessel identification number (ENI Code)")
 

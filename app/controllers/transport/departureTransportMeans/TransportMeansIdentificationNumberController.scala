@@ -17,7 +17,7 @@
 package controllers.transport.departureTransportMeans
 
 import controllers.actions._
-import forms.border.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
 import navigation.DepartureTransportMeansNavigator
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportMeansIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  formProvider: IdentificationNumberFormProvider,
+  formProvider: DepartureTransportMeansIdentificationNumberFormProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   navigator: DepartureTransportMeansNavigator,
