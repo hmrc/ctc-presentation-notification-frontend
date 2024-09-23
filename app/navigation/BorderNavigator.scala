@@ -72,7 +72,7 @@ class BorderNavigator extends Navigator {
   private def inlandModeCheckRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     ua.get(InlandModePage).map(_.code) match {
       case Some(Mail) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case _          => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)))
+      case _ => Some(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, Index(0)))
     }
 
   private def addInlandModeYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =

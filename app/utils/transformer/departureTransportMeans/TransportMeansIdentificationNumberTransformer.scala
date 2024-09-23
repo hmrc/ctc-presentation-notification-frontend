@@ -33,7 +33,7 @@ class TransportMeansIdentificationNumberTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans,
-      generateCapturedAnswers = departureMeans => {
+      generateCapturedAnswers = departureMeans =>
         departureMeans.zipWithIndex.flatMap {
           case (departureMeans, index) =>
             val transportIndex = Index(index)
@@ -42,6 +42,5 @@ class TransportMeansIdentificationNumberTransformer extends PageTransformer {
                 (TransportMeansIdentificationNumberPage(transportIndex), identificationNumber)
             }
         }
-      }
     )
 }

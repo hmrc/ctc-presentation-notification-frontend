@@ -33,7 +33,7 @@ class ContainerIdentificationNumberTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment,
-      generateCapturedAnswers = transportEquipments => {
+      generateCapturedAnswers = transportEquipments =>
         transportEquipments.zipWithIndex.flatMap {
           case (transportEquipment, index) =>
             val equipmentIndex = Index(index)
@@ -42,6 +42,5 @@ class ContainerIdentificationNumberTransformer extends PageTransformer {
                 (ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber)
             }
         }
-      }
     )
 }

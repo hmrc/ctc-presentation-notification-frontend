@@ -33,12 +33,11 @@ class ActingAsRepresentativeTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = x => Seq(x.departureData.Representative),
-      generateCapturedAnswers = value => {
+      generateCapturedAnswers = value =>
         value
           .map {
             representative =>
               (ActingAsRepresentativePage, representative.isDefined)
           }
-      }
     )
 }

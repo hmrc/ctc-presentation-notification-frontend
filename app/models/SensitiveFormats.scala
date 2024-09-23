@@ -56,7 +56,7 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter & 
     }
   }
 
-  val cc015cWrites: Writes[CC015CType] = {
+  val cc015cWrites: Writes[CC015CType] =
     if (encryptionEnabled) {
       JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap {
         cc015cType =>
@@ -65,7 +65,6 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter & 
     } else {
       SensitiveFormats.nonSensitiveCc015cTypeWrites
     }
-  }
 }
 
 object SensitiveFormats {

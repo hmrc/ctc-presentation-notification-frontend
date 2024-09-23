@@ -55,7 +55,7 @@ class AnswersHelper(
       answer = formatAnswer(answer),
       id = id,
       call = call,
-      args = args *
+      args = args*
     )
 
   protected def buildLink[T](section: Section[JsArray], doesSectionExistInDepartureData: Boolean)(link: => Link): Option[Link] =

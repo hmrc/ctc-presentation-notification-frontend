@@ -37,7 +37,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  implicit val dataRequest: DataRequest[AnyContent]                    = DataRequest[AnyContent](request = FakeRequest("", ""), eoriNumber = EoriNumber("123"), emptyUserAnswers)
+  implicit val dataRequest: DataRequest[AnyContent] = DataRequest[AnyContent](request = FakeRequest("", ""), eoriNumber = EoriNumber("123"), emptyUserAnswers)
   private val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
 
   private val service = new MeansOfTransportIdentificationTypesService(mockRefDataConnector, mockTransportModeCodesService)

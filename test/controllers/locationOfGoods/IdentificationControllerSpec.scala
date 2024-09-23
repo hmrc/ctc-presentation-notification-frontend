@@ -43,10 +43,10 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   val ids: Seq[LocationOfGoodsIdentification] =
     Gen.containerOfN[Seq, LocationOfGoodsIdentification](2, arbitrary[LocationOfGoodsIdentification]).sample.value
-  private val id1                                                                     = ids.head
-  private val formProvider                                                            = new EnumerableFormProvider()
-  private val form                                                                    = formProvider[LocationOfGoodsIdentification]("locationOfGoods.identification", ids)
-  private val mode                                                                    = NormalMode
+  private val id1          = ids.head
+  private val formProvider = new EnumerableFormProvider()
+  private val form         = formProvider[LocationOfGoodsIdentification]("locationOfGoods.identification", ids)
+  private val mode         = NormalMode
   private val mockLocationIdentifierService: LocationOfGoodsIdentificationTypeService = mock[LocationOfGoodsIdentificationTypeService]
   private val page                                                                    = Gen.oneOf(LocationTypePage, InferredLocationTypePage).sample.value
   private val locationType                                                            = arbitrary[LocationType].sample.value

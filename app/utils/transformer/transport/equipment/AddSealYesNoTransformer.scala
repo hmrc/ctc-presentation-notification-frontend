@@ -33,12 +33,11 @@ class AddSealYesNoTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment,
-      generateCapturedAnswers = transportEquipments => {
+      generateCapturedAnswers = transportEquipments =>
         transportEquipments.zipWithIndex
           .map {
             case (transportEquipment, index) =>
               (AddSealYesNoPage(Index(index)), transportEquipment.Seal.nonEmpty)
           }
-      }
     )
 }

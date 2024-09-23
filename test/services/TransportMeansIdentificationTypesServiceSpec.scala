@@ -34,7 +34,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
 
   private val mockRefDataConnector: ReferenceDataConnector             = mock[ReferenceDataConnector]
   private val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
-  private val service                                                  = new TransportMeansIdentificationTypesService(mockRefDataConnector, mockTransportModeCodesService)
+  private val service = new TransportMeansIdentificationTypesService(mockRefDataConnector, mockTransportModeCodesService)
 
   private val identification1 = TransportMeansIdentification("41", "Registration number of an aircraft")
   private val identification2 = TransportMeansIdentification("40", "IATA flight number")

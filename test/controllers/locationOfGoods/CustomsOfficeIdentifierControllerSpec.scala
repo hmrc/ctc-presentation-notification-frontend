@@ -85,6 +85,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
       verify(mockCustomsOfficesService).getCustomsOfficesOfDepartureForCountry(eqTo(countryCode.code))(any())
     }
   }
+
   "must populate the view correctly on a GET when the question has previously been answered" in {
 
     when(mockCustomsOfficesService.getCustomsOfficesOfDepartureForCountry(any())(any())).thenReturn(Future.successful(customsOfficeList))

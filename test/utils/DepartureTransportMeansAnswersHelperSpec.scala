@@ -108,6 +108,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
       }
     }
   }
+
   "nationality type row" - {
     "must return None when no nationality in 170" - {
       s"when $TransportMeansNationalityPage undefined" in {

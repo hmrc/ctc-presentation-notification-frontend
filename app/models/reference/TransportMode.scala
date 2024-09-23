@@ -29,7 +29,7 @@ trait TransportMode[T] extends Radioable[T] {
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
   def isOneOf(codes: String*): Boolean    = codes.contains(code)
-  def isNotOneOf(codes: String*): Boolean = !isOneOf(codes *)
+  def isNotOneOf(codes: String*): Boolean = !isOneOf(codes*)
 }
 
 object TransportMode {
@@ -41,9 +41,7 @@ object TransportMode {
   object InlandMode extends DynamicEnumerableType[InlandMode] {
     implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
-    implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => {
-      (x, y).compareBy(_.code)
-    }
+    implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
   }
 
   case class BorderMode(code: String, description: String) extends TransportMode[BorderMode] {
@@ -53,8 +51,6 @@ object TransportMode {
   object BorderMode extends DynamicEnumerableType[BorderMode] {
     implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
-    implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => {
-      (x, y).compareBy(_.code)
-    }
+    implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => (x, y).compareBy(_.code)
   }
 }

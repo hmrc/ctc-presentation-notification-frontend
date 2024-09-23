@@ -32,5 +32,5 @@ case class RemoveTransportEquipmentPage(equipmentIndex: Index) extends QuestionP
   override def route(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
     Some(routes.RemoveTransportEquipmentController.onPageLoad(departureId, mode, equipmentIndex))
 
-  //TODO add ContainerIdentificationNumber clean up
+  // TODO add ContainerIdentificationNumber clean up
 }

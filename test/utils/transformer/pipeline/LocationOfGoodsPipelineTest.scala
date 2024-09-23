@@ -61,7 +61,7 @@ class LocationOfGoodsPipelineTest extends SpecBase {
       val uaWithAuthorisationNumber     = mock[UserAnswers]
       val uaWithEori                    = mock[UserAnswers]
 
-      //Ensure the order of these transformers otherwise cleanup logic after setting page will cause loosing some answers
+      // Ensure the order of these transformers otherwise cleanup logic after setting page will cause loosing some answers
       when(locationTypeTransformer.transform(hc)).thenReturn(verifyTransformer(expect = userAnswers, `return` = uaWithLocationType))
       when(locationOfGoodsIdentificationTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithLocationType, `return` = uaWithIdentification))
       when(customsOfficeIdentifierTransformer.transform(hc))

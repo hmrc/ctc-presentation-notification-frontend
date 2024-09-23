@@ -33,12 +33,11 @@ class AddRepresentativeContactDetailsYesNoTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = x => Seq(x.departureData.Representative.flatMap(_.ContactPerson)),
-      generateCapturedAnswers = value => {
+      generateCapturedAnswers = value =>
         value
           .map {
             contactDetails =>
               (AddRepresentativeContactDetailsYesNoPage, contactDetails.isDefined)
           }
-      }
     )
 }
