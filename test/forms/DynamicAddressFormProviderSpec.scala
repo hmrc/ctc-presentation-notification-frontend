@@ -39,7 +39,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
   "when postal code is required" - {
 
     val isPostalCodeRequired = true
-    val form                 = formProvider.apply(prefix, isPostalCodeRequired, args *)
+    val form                 = formProvider.apply(prefix, isPostalCodeRequired, args*)
 
     ".numberAndStreet" - {
 
@@ -48,7 +48,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
       val maxNumberAndStreetLength = 70
 
       running(app) {
-        val form = app.injector.instanceOf[DynamicAddressFormProvider].apply(prefix, isPostalCodeRequired, args *)
+        val form = app.injector.instanceOf[DynamicAddressFormProvider].apply(prefix, isPostalCodeRequired, args*)
 
         behave like fieldThatBindsValidData(
           form = form,
@@ -148,7 +148,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
     "when postal code is not required" - {
 
       val isPostalCodeRequired = false
-      val form                 = formProvider.apply(prefix, isPostalCodeRequired, args *)
+      val form                 = formProvider.apply(prefix, isPostalCodeRequired, args*)
 
       ".numberAndStreet" - {
 
@@ -156,7 +156,7 @@ class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase
         val maxNumberAndStreetLength = 70
 
         running(app) {
-          val form = app.injector.instanceOf[DynamicAddressFormProvider].apply(prefix, isPostalCodeRequired, args *)
+          val form = app.injector.instanceOf[DynamicAddressFormProvider].apply(prefix, isPostalCodeRequired, args*)
 
           behave like fieldThatBindsValidData(
             form = form,

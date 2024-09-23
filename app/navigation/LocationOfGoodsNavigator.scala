@@ -31,13 +31,13 @@ import javax.inject.Inject
 class LocationOfGoodsNavigator @Inject() () extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case LocationTypePage | InferredLocationTypePage                                              => ua => IdentificationPage.route(ua, departureId, mode)
-    case IdentificationPage | InferredIdentificationPage                                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
-    case CountryPage                                                                              => ua => AddressPage.route(ua, departureId, mode)
-    case MoreInformationPage                                                                      => ua => locationOfGoodsNavigation(ua, departureId, mode)
-    case CheckInformationPage                                                                     => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case EoriPage | AuthorisationNumberPage                                                       => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
-    case AddIdentifierYesNoPage                                                                   => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
+    case LocationTypePage | InferredLocationTypePage     => ua => IdentificationPage.route(ua, departureId, mode)
+    case IdentificationPage | InferredIdentificationPage => ua => routeIdentificationPageNavigation(ua, departureId, mode)
+    case CountryPage                                     => ua => AddressPage.route(ua, departureId, mode)
+    case MoreInformationPage                             => ua => locationOfGoodsNavigation(ua, departureId, mode)
+    case CheckInformationPage                            => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case EoriPage | AuthorisationNumberPage              => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
+    case AddIdentifierYesNoPage                          => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)
     case AddContactYesNoPage                                                                      => ua => addContactYesNoNavigation(ua, departureId, mode)
     case NamePage                                                                                 => ua => PhoneNumberPage.route(ua, departureId, mode)
@@ -47,17 +47,17 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case LimitDatePage                                                                            => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case LocationTypePage | InferredLocationTypePage                                              => ua => IdentificationPage.route(ua, departureId, mode)
-    case AddIdentifierYesNoPage                                                                   => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
-    case EoriPage | AuthorisationNumberPage                                                       => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
+    case LimitDatePage                               => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case LocationTypePage | InferredLocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
+    case AddIdentifierYesNoPage                      => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
+    case EoriPage | AuthorisationNumberPage          => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
     case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)
     case CustomsOfficeIdentifierPage                                                              => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
-    case IdentificationPage | InferredIdentificationPage                                          => ua => routeIdentificationPageNavigation(ua, departureId, mode)
-    case AddContactYesNoPage                                                                      => ua => addContactYesNoNavigation(ua, departureId, mode)
-    case NamePage                                                                                 => ua => namePageNavigation(ua, departureId, mode)
-    case PhoneNumberPage                                                                          => ua => phoneNumberPageNavigation(ua, departureId, mode)
-    case CountryPage                                                                              => ua => AddressPage.route(ua, departureId, mode)
+    case IdentificationPage | InferredIdentificationPage => ua => routeIdentificationPageNavigation(ua, departureId, mode)
+    case AddContactYesNoPage                             => ua => addContactYesNoNavigation(ua, departureId, mode)
+    case NamePage                                        => ua => namePageNavigation(ua, departureId, mode)
+    case PhoneNumberPage                                 => ua => phoneNumberPageNavigation(ua, departureId, mode)
+    case CountryPage                                     => ua => AddressPage.route(ua, departureId, mode)
   }
 
   private def namePageNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =

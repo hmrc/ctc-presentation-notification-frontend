@@ -33,12 +33,11 @@ class AddBorderModeOfTransportYesNoTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = x => Seq(x.departureData.Consignment),
-      generateCapturedAnswers = value => {
+      generateCapturedAnswers = value =>
         value
           .map {
             consignment =>
               (AddBorderModeOfTransportYesNoPage, consignment.modeOfTransportAtTheBorder.nonEmpty)
           }
-      }
     )
 }

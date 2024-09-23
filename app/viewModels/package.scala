@@ -20,9 +20,10 @@ package object viewModels {
 
   implicit class RichListItems(value: Seq[ListItem]) {
 
-    /**
-      * @param predicate If true, the section is mandatory. If false, the section is optional.
-      * @return The original list with removeUrl removed if there is only one list item and the section is mandatory.
+    /** @param predicate
+      *   If true, the section is mandatory. If false, the section is optional.
+      * @return
+      *   The original list with removeUrl removed if there is only one list item and the section is mandatory.
       */
     def checkRemoveLinks(predicate: Boolean): Seq[ListItem] =
       value match {

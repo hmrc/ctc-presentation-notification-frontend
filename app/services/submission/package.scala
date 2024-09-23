@@ -37,9 +37,11 @@ package object submission {
       value
         .readWithDefault(JsArray())
         .map {
-          _.value.zipWithIndex.flatMap {
-            case (jsValue, index) => jsValue.validate[T](reads(Index(index))).asOpt
-          }.toSeq
+          _.value.zipWithIndex
+            .flatMap {
+              case (jsValue, index) => jsValue.validate[T](reads(Index(index))).asOpt
+            }
+            .toSeq
         }
 
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =

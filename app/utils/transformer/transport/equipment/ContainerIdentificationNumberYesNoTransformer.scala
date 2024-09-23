@@ -33,12 +33,11 @@ class ContainerIdentificationNumberYesNoTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment,
-      generateCapturedAnswers = transportEquipments => {
+      generateCapturedAnswers = transportEquipments =>
         transportEquipments.zipWithIndex
           .map {
             case (transportEquipment, index) =>
               (AddContainerIdentificationNumberYesNoPage(Index(index)), transportEquipment.containerIdentificationNumber.nonEmpty)
           }
-      }
     )
 }

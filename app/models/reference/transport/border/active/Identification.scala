@@ -33,7 +33,5 @@ case class Identification(code: String, description: String) extends Radioable[I
 object Identification extends DynamicEnumerableType[Identification] {
   implicit val format: Format[Identification] = Json.format[Identification]
 
-  implicit val order: Order[Identification] = (x: Identification, y: Identification) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[Identification] = (x: Identification, y: Identification) => (x, y).compareBy(_.code)
 }

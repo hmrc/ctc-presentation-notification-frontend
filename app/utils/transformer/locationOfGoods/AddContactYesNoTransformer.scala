@@ -29,7 +29,7 @@ class AddContactYesNoTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
   override type ExtractedTypeInDepartureData = ContactPersonType06
 
-  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+  override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.ContactPerson).toSeq,
@@ -40,5 +40,4 @@ class AddContactYesNoTransformer extends PageTransformer {
           Seq((AddContactYesNoPage, contactPerson.nonEmpty))
         }
     )
-  }
 }

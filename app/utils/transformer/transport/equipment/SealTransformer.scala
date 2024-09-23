@@ -33,7 +33,7 @@ class SealTransformer extends PageTransformer {
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment,
-      generateCapturedAnswers = transportEquipments => {
+      generateCapturedAnswers = transportEquipments =>
         transportEquipments.zipWithIndex
           .flatMap {
             case (transportEquipment, equipmentIndex) =>
@@ -42,6 +42,5 @@ class SealTransformer extends PageTransformer {
                   (SealIdentificationNumberPage(Index(equipmentIndex), Index(sealIndex)), seal.identifier)
               }
           }
-      }
     )
 }

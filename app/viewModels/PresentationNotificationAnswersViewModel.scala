@@ -59,7 +59,7 @@ object PresentationNotificationAnswersViewModel {
 
       val representativeHelper = new RepresentativeAnswersHelper(userAnswers, departureId, mode)
 
-      val activeBorderTransportMeansSectionFuture: Future[Seq[Section]] = {
+      val activeBorderTransportMeansSectionFuture: Future[Seq[Section]] =
         userAnswers.get(BorderActiveListSection) match {
           case None =>
             Future.successful(
@@ -81,22 +81,24 @@ object PresentationNotificationAnswersViewModel {
                 .toSeq
             )
         }
-      }
 
-      val departureTransportMeansSections: Seq[Section] = {
+      val departureTransportMeansSections: Seq[Section] =
         userAnswers.get(InlandModePage).map(_.code) match {
           case Some(Mail) =>
             Seq.empty
           case _ =>
             userAnswers
               .get(TransportMeansListSection)
-              .map(_.value.zipWithIndex.map {
-                case (_, i) =>
-                  new DepartureTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(i)).buildDepartureTransportMeansSection
-              }.toSeq)
+              .map(
+                _.value.zipWithIndex
+                  .map {
+                    case (_, i) =>
+                      new DepartureTransportMeansAnswersHelper(userAnswers, departureId, mode, Index(i)).buildDepartureTransportMeansSection
+                  }
+                  .toSeq
+              )
               .getOrElse(Seq.empty)
         }
-      }
 
       val firstSection = Section(
         rows = Seq(
