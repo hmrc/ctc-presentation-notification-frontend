@@ -192,15 +192,11 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
         val expectedResult = CC015CType(
           messageSequence1 = MESSAGESequence(
             messageSender = "message sender",
-            messagE_1Sequence2 = MESSAGE_1Sequence(
-              messageRecipient = "NTA.GB",
-              preparationDateAndTime = XMLCalendar("2022-01-22T07:43:36"),
-              messageIdentification = "messageId"
-            ),
-            messagE_TYPESequence3 = MESSAGE_TYPESequence(
-              messageType = CC015C
-            ),
-            correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence()
+            messageRecipient = "NTA.GB",
+            preparationDateAndTime = XMLCalendar("2022-01-22T07:43:36"),
+            messageIdentification = "messageId",
+            messageType = CC015C,
+            correlationIdentifier = None
           ),
           TransitOperation = TransitOperationType06(
             LRN = "HnVr",
@@ -269,15 +265,11 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
         val expectedResult = CC013CType(
           messageSequence1 = MESSAGESequence(
             messageSender = "message sender",
-            messagE_1Sequence2 = MESSAGE_1Sequence(
-              messageRecipient = "NTA.GB",
-              preparationDateAndTime = XMLCalendar("2022-01-22T07:43:36"),
-              messageIdentification = "messageId"
-            ),
-            messagE_TYPESequence3 = MESSAGE_TYPESequence(
-              messageType = CC015C
-            ),
-            correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence()
+            messageRecipient = "NTA.GB",
+            preparationDateAndTime = XMLCalendar("2022-01-22T07:43:36"),
+            messageIdentification = "messageId",
+            messageType = CC015C,
+            correlationIdentifier = None
           ),
           TransitOperation = TransitOperationType04(
             LRN = Some("HnVr"),

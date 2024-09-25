@@ -348,7 +348,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val updatedUserAnswers =
                 userAnswers.copy(departureData =
-                  basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", SSE, "1234"), AuthorisationType03("2", ACR, "1234")))
+                  basicIe015.copy(Authorisation = Seq(AuthorisationType03(BigInt(1), SSE, "1234"), AuthorisationType03(BigInt(2), ACR, "1234")))
                 )
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
@@ -389,7 +389,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
-                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
+                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(BigInt(1), ACR, "1234"))))
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
@@ -425,7 +425,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
-                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
+                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(BigInt(1), ACR, "1234"))))
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
@@ -458,7 +458,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
 
               val updatedUserAnswers =
-                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))))
+                userAnswers.copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(BigInt(1), ACR, "1234"))))
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 

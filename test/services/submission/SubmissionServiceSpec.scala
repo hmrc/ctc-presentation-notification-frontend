@@ -84,17 +84,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         result mustBe MESSAGESequence(
           messageSender = eoriNumber.value,
-          messagE_1Sequence2 = MESSAGE_1Sequence(
-            messageRecipient = "NTA.GB",
-            preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-            messageIdentification = "foo"
-          ),
-          messagE_TYPESequence3 = MESSAGE_TYPESequence(
-            messageType = CC170C
-          ),
-          correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-            correlationIdentifier = None
-          )
+          messageRecipient = "NTA.GB",
+          preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
+          messageIdentification = "foo",
+          messageType = CC170C,
+          correlationIdentifier = None
         )
       }
 
@@ -103,17 +97,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         result mustBe MESSAGESequence(
           messageSender = eoriNumber.value,
-          messagE_1Sequence2 = MESSAGE_1Sequence(
-            messageRecipient = "NTA.XI",
-            preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-            messageIdentification = "foo"
-          ),
-          messagE_TYPESequence3 = MESSAGE_TYPESequence(
-            messageType = CC170C
-          ),
-          correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-            correlationIdentifier = None
-          )
+          messageRecipient = "NTA.XI",
+          preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
+          messageIdentification = "foo",
+          messageType = CC170C,
+          correlationIdentifier = None
         )
       }
     }
@@ -350,29 +338,29 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
           result.TransportEquipment mustBe Seq(
             TransportEquipmentType06(
-              sequenceNumber = "1",
+              sequenceNumber = BigInt(1),
               containerIdentificationNumber = Some("cin1"),
               numberOfSeals = 2,
               Seal = Seq(
-                SealType05("1", "sin11"),
-                SealType05("2", "sin12")
+                SealType05(BigInt(1), "sin11"),
+                SealType05(BigInt(2), "sin12")
               ),
               GoodsReference = Seq(
-                GoodsReferenceType02("1", 11),
-                GoodsReferenceType02("2", 12)
+                GoodsReferenceType02(BigInt(1), 11),
+                GoodsReferenceType02(BigInt(2), 12)
               )
             ),
             TransportEquipmentType06(
-              sequenceNumber = "2",
+              sequenceNumber = BigInt(2),
               containerIdentificationNumber = Some("cin2"),
               numberOfSeals = 2,
               Seal = Seq(
-                SealType05("1", "sin21"),
-                SealType05("2", "sin22")
+                SealType05(BigInt(1), "sin21"),
+                SealType05(BigInt(2), "sin22")
               ),
               GoodsReference = Seq(
-                GoodsReferenceType02("1", 21),
-                GoodsReferenceType02("2", 22)
+                GoodsReferenceType02(BigInt(1), 21),
+                GoodsReferenceType02(BigInt(2), 22)
               )
             )
           )
@@ -383,13 +371,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
           result.DepartureTransportMeans mustBe Seq(
             DepartureTransportMeansType05(
-              sequenceNumber = "1",
+              sequenceNumber = BigInt(1),
               typeOfIdentification = "dtmtoi1",
               identificationNumber = "dtmin1",
               nationality = "dtmn1"
             ),
             DepartureTransportMeansType05(
-              sequenceNumber = "2",
+              sequenceNumber = BigInt(2),
               typeOfIdentification = "dtmtoi2",
               identificationNumber = "dtmin2",
               nationality = "dtmn2"
@@ -398,7 +386,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
           result.ActiveBorderTransportMeans mustBe Seq(
             ActiveBorderTransportMeansType03(
-              sequenceNumber = "1",
+              sequenceNumber = BigInt(1),
               customsOfficeAtBorderReferenceNumber = "abtmcoabrn1",
               typeOfIdentification = "abtmtoi1",
               identificationNumber = "abtmin1",
@@ -406,7 +394,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               conveyanceReferenceNumber = Some("abtmcrn1")
             ),
             ActiveBorderTransportMeansType03(
-              sequenceNumber = "2",
+              sequenceNumber = BigInt(2),
               customsOfficeAtBorderReferenceNumber = "abtmcoabrn2",
               typeOfIdentification = "abtmtoi2",
               identificationNumber = "abtmin2",
@@ -425,16 +413,16 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
           result.HouseConsignment mustBe Seq(
             HouseConsignmentType06(
-              sequenceNumber = "1",
+              sequenceNumber = BigInt(1),
               DepartureTransportMeans = Seq(
                 DepartureTransportMeansType05(
-                  sequenceNumber = "1",
+                  sequenceNumber = BigInt(1),
                   typeOfIdentification = "dtmtoi11",
                   identificationNumber = "dtmin11",
                   nationality = "dtmn11"
                 ),
                 DepartureTransportMeansType05(
-                  sequenceNumber = "2",
+                  sequenceNumber = BigInt(2),
                   typeOfIdentification = "dtmtoi12",
                   identificationNumber = "dtmin12",
                   nationality = "dtmn12"
@@ -442,16 +430,16 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
             ),
             HouseConsignmentType06(
-              sequenceNumber = "2",
+              sequenceNumber = BigInt(2),
               DepartureTransportMeans = Seq(
                 DepartureTransportMeansType05(
-                  sequenceNumber = "1",
+                  sequenceNumber = BigInt(1),
                   typeOfIdentification = "dtmtoi21",
                   identificationNumber = "dtmin21",
                   nationality = "dtmn21"
                 ),
                 DepartureTransportMeansType05(
-                  sequenceNumber = "2",
+                  sequenceNumber = BigInt(2),
                   typeOfIdentification = "dtmtoi22",
                   identificationNumber = "dtmin22",
                   nationality = "dtmn22"
@@ -476,7 +464,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             ),
             HouseConsignment = Seq(
               HouseConsignmentType06(
-                sequenceNumber = "1",
+                sequenceNumber = BigInt(1),
                 DepartureTransportMeans = Nil
               )
             )
@@ -500,11 +488,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val result = userAnswers.getValue(EquipmentSection(equipmentIndex)).as[TransportEquipmentType06](reads)
 
         result mustBe TransportEquipmentType06(
-          sequenceNumber = equipmentIndex.sequenceNumber,
+          sequenceNumber = BigInt(equipmentIndex.sequenceNumber),
           containerIdentificationNumber = Some("containerIdentification"),
           numberOfSeals = 1,
-          Seal = Seq(SealType05(sealIndex.sequenceNumber, "sealIdentification")),
-          GoodsReference = Seq(GoodsReferenceType02(itemIndex.sequenceNumber, 5))
+          Seal = Seq(SealType05(BigInt(sealIndex.sequenceNumber), "sealIdentification")),
+          GoodsReference = Seq(GoodsReferenceType02(BigInt(itemIndex.sequenceNumber), 5))
         )
       }
     }
@@ -658,7 +646,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = userAnswers.getValue(TransportMeansSection(transportIndex)).as[DepartureTransportMeansType05](reads)
 
             result mustBe DepartureTransportMeansType05(
-              sequenceNumber = "1",
+              sequenceNumber = BigInt(1),
               typeOfIdentification = typeOfIdentification.code,
               identificationNumber = identificationNumber,
               nationality = nationality.code
@@ -685,7 +673,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = userAnswers.getValue(BorderActiveSection(activeIndex)).as[ActiveBorderTransportMeansType03](reads)
 
             result mustBe ActiveBorderTransportMeansType03(
-              sequenceNumber = "1",
+              sequenceNumber = BigInt(1),
               customsOfficeAtBorderReferenceNumber = customsOffice.id,
               typeOfIdentification = typeOfIdentification.code,
               identificationNumber = identificationNumber,
@@ -759,16 +747,16 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = userAnswers.getValue(HouseConsignmentSection(houseConsignmentIndex)).as[HouseConsignmentType06](reads)
 
             result mustBe HouseConsignmentType06(
-              sequenceNumber = "1",
+              sequenceNumber = BigInt(1),
               DepartureTransportMeans = Seq(
                 DepartureTransportMeansType05(
-                  sequenceNumber = "1",
+                  sequenceNumber = BigInt(1),
                   typeOfIdentification = typeOfIdentification1.code,
                   identificationNumber = identificationNumber1,
                   nationality = nationality1.code
                 ),
                 DepartureTransportMeansType05(
-                  sequenceNumber = "2",
+                  sequenceNumber = BigInt(2),
                   typeOfIdentification = typeOfIdentification2.code,
                   identificationNumber = identificationNumber2,
                   nationality = nationality2.code

@@ -39,17 +39,11 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
   private val ie015: CC015CType = CC015CType(
     messageSequence1 = MESSAGESequence(
       messageSender = "",
-      messagE_1Sequence2 = MESSAGE_1Sequence(
-        messageRecipient = "",
-        preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
-        messageIdentification = ""
-      ),
-      messagE_TYPESequence3 = MESSAGE_TYPESequence(
-        messageType = CC015C
-      ),
-      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-        correlationIdentifier = None
-      )
+      messageRecipient = "",
+      preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
+      messageIdentification = "",
+      messageType = CC015C,
+      correlationIdentifier = None
     ),
     TransitOperation = TransitOperationType06(
       LRN = "",
