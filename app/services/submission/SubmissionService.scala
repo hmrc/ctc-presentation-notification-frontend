@@ -148,7 +148,7 @@ class SubmissionService @Inject() (
         case _                                            => placeOfLoading
       },
       HouseConsignment = houseConsignments match {
-        case Nil => Seq(HouseConsignmentType06(BigInt("1"), Nil))
+        case Nil => Seq(HouseConsignmentType06(1, Nil))
         case _   => houseConsignments
       }
     )
@@ -234,7 +234,7 @@ class SubmissionService @Inject() (
       identificationNumber <- (__ \ TransportMeansIdentificationNumberPage(index).toString).read[String]
       nationality          <- (__ \ TransportMeansNationalityPage(index).toString).read[Nationality]
     } yield DepartureTransportMeansType05(
-      sequenceNumber = BigInt(index.sequenceNumber),
+      sequenceNumber = index.display,
       typeOfIdentification = typeOfIdentification.code,
       identificationNumber = identificationNumber,
       nationality = nationality.code
@@ -251,7 +251,7 @@ class SubmissionService @Inject() (
       nationality                          <- (__ \ NationalityPage(index).toString).read[Nationality]
       conveyanceReferenceNumber            <- (__ \ ConveyanceReferenceNumberPage(index).toString).readNullable[String]
     } yield ActiveBorderTransportMeansType03(
-      sequenceNumber = BigInt(index.sequenceNumber),
+      sequenceNumber = index.display,
       customsOfficeAtBorderReferenceNumber = customsOfficeAtBorderReferenceNumber.id,
       typeOfIdentification = typeOfIdentification.code,
       identificationNumber = identificationNumber,
@@ -268,18 +268,18 @@ class SubmissionService @Inject() (
     def sealReads(sealIndex: Index): Reads[SealType05] =
       (__ \ SealIdentificationNumberPage(equipmentIndex, sealIndex).toString)
         .read[String]
-        .map(SealType05(BigInt(sealIndex.sequenceNumber), _))
+        .map(SealType05(sealIndex.display, _))
 
     def goodsReferenceReads(itemIndex: Index): Reads[GoodsReferenceType02] =
       __.read[Item]
         .map(_.declarationGoodsItemNumber)
-        .map(GoodsReferenceType02(BigInt(itemIndex.sequenceNumber), _))
+        .map(GoodsReferenceType02(itemIndex.display, _))
 
     for {
       containerIdNo   <- (__ \ ContainerIdentificationNumberPage(equipmentIndex).toString).readNullable[String]
       seals           <- (__ \ SealsSection(equipmentIndex).toString).readArray[SealType05](sealReads)
       goodsReferences <- (__ \ ItemsSection(equipmentIndex).toString).readArray[GoodsReferenceType02](goodsReferenceReads)
-    } yield TransportEquipmentType06(BigInt(equipmentIndex.sequenceNumber), containerIdNo, seals.length, seals, goodsReferences)
+    } yield TransportEquipmentType06(equipmentIndex.display, containerIdNo, seals.length, seals, goodsReferences)
   }
 
   implicit val placeOfLoadingReads: Reads[PlaceOfLoadingType03] = {
@@ -303,7 +303,7 @@ class SubmissionService @Inject() (
         identificationNumber <- (__ \ IdentificationNumberPage(hcIndex, dtmIndex).toString).read[String]
         nationality          <- (__ \ CountryPage(hcIndex, dtmIndex).toString).read[Nationality]
       } yield DepartureTransportMeansType05(
-        sequenceNumber = BigInt(dtmIndex.sequenceNumber),
+        sequenceNumber = dtmIndex.display,
         typeOfIdentification = typeOfIdentification.code,
         identificationNumber = identificationNumber,
         nationality = nationality.code
@@ -313,7 +313,7 @@ class SubmissionService @Inject() (
     (__ \ DepartureTransportMeansListSection(hcIndex).toString).readArray[DepartureTransportMeansType05](departureTransportMeansReads).map {
       departureTransportMeans =>
         HouseConsignmentType06(
-          sequenceNumber = BigInt(hcIndex.sequenceNumber),
+          sequenceNumber = hcIndex.display,
           DepartureTransportMeans = departureTransportMeans
         )
     }

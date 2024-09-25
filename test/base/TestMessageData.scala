@@ -145,7 +145,7 @@ trait TestMessageData {
       AdditionalSupplyChainActor = Nil,
       TransportEquipment = Seq(
         TransportEquipmentType06(
-          sequenceNumber = BigInt("1"),
+          sequenceNumber = 1,
           containerIdentificationNumber = None,
           numberOfSeals = 0,
           Seal = Nil,
@@ -171,7 +171,7 @@ trait TestMessageData {
       CountryOfRoutingOfConsignment = Nil,
       ActiveBorderTransportMeans = Seq(
         ActiveBorderTransportMeansType02(
-          sequenceNumber = BigInt("1"),
+          sequenceNumber = 1,
           customsOfficeAtBorderReferenceNumber = None,
           typeOfIdentification = None,
           identificationNumber = None,

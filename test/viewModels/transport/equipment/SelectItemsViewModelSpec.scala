@@ -35,32 +35,32 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(1),
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = CommodityType07("item1")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(2),
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
                 Commodity = CommodityType07("item2")
               )
             )
           ),
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 200,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(3),
+                goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
                 Commodity = CommodityType07("item3")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(4),
+                goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
                 Commodity = CommodityType07("item4")
               )
@@ -88,32 +88,32 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(1),
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = CommodityType07("item1")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(2),
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
                 Commodity = CommodityType07("item2")
               )
             )
           ),
           HouseConsignmentType10(
-            sequenceNumber = BigInt(2),
+            sequenceNumber = 2,
             grossMass = 200,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(3),
+                goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
                 Commodity = CommodityType07("item3")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(4),
+                goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
                 Commodity = CommodityType07("item4")
               )
@@ -141,16 +141,16 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(1),
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = CommodityType07("item1")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(2),
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
                 Commodity = CommodityType07("item2")
               )
@@ -176,7 +176,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 0,
             ConsignmentItem = List.empty
           )
@@ -199,32 +199,32 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(1),
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = CommodityType07("item1")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(2),
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
                 Commodity = CommodityType07("item2")
               )
             )
           ),
           HouseConsignmentType10(
-            sequenceNumber = BigInt(2),
+            sequenceNumber = 2,
             grossMass = 200,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(3),
+                goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
                 Commodity = CommodityType07("item3")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(4),
+                goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
                 Commodity = CommodityType07("item4")
               )
@@ -250,32 +250,32 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val updatedHouseConsignment = Seq(
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(1),
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = CommodityType07("item1")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(2),
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
                 Commodity = CommodityType07("item2")
               )
             )
           ),
           HouseConsignmentType10(
-            sequenceNumber = BigInt(1),
+            sequenceNumber = 1,
             grossMass = 0,
             ConsignmentItem = Seq(
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(3),
+                goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
                 Commodity = CommodityType07("item3")
               ),
               ConsignmentItemType09(
-                goodsItemNumber = BigInt(4),
+                goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
                 Commodity = CommodityType07("item4")
               )
