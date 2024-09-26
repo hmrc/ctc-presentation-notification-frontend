@@ -61,8 +61,8 @@ trait ModelGenerators {
   implicit lazy val arbitraryLocationType: Arbitrary[LocationType] =
     Arbitrary {
       for {
-        locationType <- Gen.alphaNumStr
-        description  <- Gen.alphaNumStr
+        locationType <- nonEmptyString
+        description  <- nonEmptyString
       } yield LocationType(locationType, description)
     }
 
@@ -75,8 +75,8 @@ trait ModelGenerators {
   implicit lazy val arbitraryLocationOfGoodsIdentification: Arbitrary[LocationOfGoodsIdentification] =
     Arbitrary {
       for {
-        qualifier   <- Gen.alphaNumStr
-        description <- Gen.alphaNumStr
+        qualifier   <- nonEmptyString
+        description <- nonEmptyString
       } yield LocationOfGoodsIdentification(qualifier, description)
     }
 
