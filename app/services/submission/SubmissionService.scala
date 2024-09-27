@@ -80,17 +80,11 @@ class SubmissionService @Inject() (
   def messageSequence(eoriNumber: EoriNumber, officeOfDeparture: String): MESSAGESequence =
     MESSAGESequence(
       messageSender = eoriNumber.value,
-      messagE_1Sequence2 = MESSAGE_1Sequence(
-        messageRecipient = s"NTA.${officeOfDeparture.take(2)}",
-        preparationDateAndTime = dateTimeService.currentDateTime,
-        messageIdentification = messageIdentificationService.randomIdentifier
-      ),
-      messagE_TYPESequence3 = MESSAGE_TYPESequence(
-        messageType = CC170C
-      ),
-      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-        correlationIdentifier = None
-      )
+      messageRecipient = s"NTA.${officeOfDeparture.take(2)}",
+      preparationDateAndTime = dateTimeService.currentDateTime,
+      messageIdentification = messageIdentificationService.randomIdentifier,
+      messageType = CC170C,
+      correlationIdentifier = None
     )
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType24] =
@@ -154,7 +148,7 @@ class SubmissionService @Inject() (
         case _                                            => placeOfLoading
       },
       HouseConsignment = houseConsignments match {
-        case Nil => Seq(HouseConsignmentType06("1", Nil))
+        case Nil => Seq(HouseConsignmentType06(1, Nil))
         case _   => houseConsignments
       }
     )
@@ -240,7 +234,7 @@ class SubmissionService @Inject() (
       identificationNumber <- (__ \ TransportMeansIdentificationNumberPage(index).toString).read[String]
       nationality          <- (__ \ TransportMeansNationalityPage(index).toString).read[Nationality]
     } yield DepartureTransportMeansType05(
-      sequenceNumber = index.sequenceNumber,
+      sequenceNumber = index.display,
       typeOfIdentification = typeOfIdentification.code,
       identificationNumber = identificationNumber,
       nationality = nationality.code
@@ -257,7 +251,7 @@ class SubmissionService @Inject() (
       nationality                          <- (__ \ NationalityPage(index).toString).read[Nationality]
       conveyanceReferenceNumber            <- (__ \ ConveyanceReferenceNumberPage(index).toString).readNullable[String]
     } yield ActiveBorderTransportMeansType03(
-      sequenceNumber = index.sequenceNumber,
+      sequenceNumber = index.display,
       customsOfficeAtBorderReferenceNumber = customsOfficeAtBorderReferenceNumber.id,
       typeOfIdentification = typeOfIdentification.code,
       identificationNumber = identificationNumber,
@@ -274,18 +268,18 @@ class SubmissionService @Inject() (
     def sealReads(sealIndex: Index): Reads[SealType05] =
       (__ \ SealIdentificationNumberPage(equipmentIndex, sealIndex).toString)
         .read[String]
-        .map(SealType05(sealIndex.sequenceNumber, _))
+        .map(SealType05(sealIndex.display, _))
 
     def goodsReferenceReads(itemIndex: Index): Reads[GoodsReferenceType02] =
       __.read[Item]
         .map(_.declarationGoodsItemNumber)
-        .map(GoodsReferenceType02(itemIndex.sequenceNumber, _))
+        .map(GoodsReferenceType02(itemIndex.display, _))
 
     for {
       containerIdNo   <- (__ \ ContainerIdentificationNumberPage(equipmentIndex).toString).readNullable[String]
       seals           <- (__ \ SealsSection(equipmentIndex).toString).readArray[SealType05](sealReads)
       goodsReferences <- (__ \ ItemsSection(equipmentIndex).toString).readArray[GoodsReferenceType02](goodsReferenceReads)
-    } yield TransportEquipmentType06(equipmentIndex.sequenceNumber, containerIdNo, seals.length, seals, goodsReferences)
+    } yield TransportEquipmentType06(equipmentIndex.display, containerIdNo, seals.length, seals, goodsReferences)
   }
 
   implicit val placeOfLoadingReads: Reads[PlaceOfLoadingType03] = {
@@ -309,7 +303,7 @@ class SubmissionService @Inject() (
         identificationNumber <- (__ \ IdentificationNumberPage(hcIndex, dtmIndex).toString).read[String]
         nationality          <- (__ \ CountryPage(hcIndex, dtmIndex).toString).read[Nationality]
       } yield DepartureTransportMeansType05(
-        sequenceNumber = dtmIndex.sequenceNumber,
+        sequenceNumber = dtmIndex.display,
         typeOfIdentification = typeOfIdentification.code,
         identificationNumber = identificationNumber,
         nationality = nationality.code
@@ -319,7 +313,7 @@ class SubmissionService @Inject() (
     (__ \ DepartureTransportMeansListSection(hcIndex).toString).readArray[DepartureTransportMeansType05](departureTransportMeansReads).map {
       departureTransportMeans =>
         HouseConsignmentType06(
-          sequenceNumber = hcIndex.sequenceNumber,
+          sequenceNumber = hcIndex.display,
           DepartureTransportMeans = departureTransportMeans
         )
     }

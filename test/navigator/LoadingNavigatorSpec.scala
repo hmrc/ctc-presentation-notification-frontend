@@ -124,7 +124,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         val userAnswersNoLimitDate = userAnswers.copy(
           departureData = basicIe015.copy(
             TransitOperation = basicIe015.TransitOperation.copy(limitDate = None),
-            Authorisation = Seq(AuthorisationType03("1", ACR, "1234"))
+            Authorisation = Seq(AuthorisationType03(1, ACR, "1234"))
           )
         )
 

@@ -419,7 +419,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .copy(departureData =
                 answers.departureData.copy(
                   TransitOperation = answers.departureData.TransitOperation.copy(limitDate = None),
-                  Authorisation = Seq(AuthorisationType03("1", ACR, "1234")),
+                  Authorisation = Seq(AuthorisationType03(1, ACR, "1234")),
                   Consignment = answers.departureData.Consignment.copy(
                     PlaceOfLoading = Some(placeOfLoading)
                   )
@@ -439,7 +439,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .copy(departureData =
                 answers.departureData.copy(
                   TransitOperation = answers.departureData.TransitOperation.copy(limitDate = None),
-                  Authorisation = Seq(AuthorisationType03("1", ACR, "1234")),
+                  Authorisation = Seq(AuthorisationType03(1, ACR, "1234")),
                   Consignment = answers.departureData.Consignment.copy(
                     PlaceOfLoading = Some(placeOfLoading)
                   )
@@ -458,7 +458,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .copy(departureData =
                 answers.departureData.copy(
                   TransitOperation = answers.departureData.TransitOperation.copy(limitDate = None),
-                  Authorisation = Seq(AuthorisationType03("1", ACR, "1234")),
+                  Authorisation = Seq(AuthorisationType03(1, ACR, "1234")),
                   Consignment = answers.departureData.Consignment.copy(
                     PlaceOfLoading = Some(placeOfLoading)
                   )
@@ -623,7 +623,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", SSE, "")),
+                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
@@ -650,7 +650,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", SSE, "")),
+                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
@@ -675,7 +675,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               val updatedAnswers = answers
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", ACR, "")),
+                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(
                       security = NoSecurityDetails,
                       limitDate = Some(limitDate)
@@ -704,7 +704,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(ContainerIndicatorPage, None)
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", ACR, "")),
+                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(
                       security = NoSecurityDetails,
                       limitDate = Some(limitDate)
@@ -734,7 +734,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", SSE, "")),
+                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
@@ -764,7 +764,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", SSE, "")),
+                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       containerIndicator = Some(Number1),
@@ -795,7 +795,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", ACR, "")),
+                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
                     TransitOperation =
                       answers.departureData.TransitOperation.copy(security = NoSecurityDetails, limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))),
                     Consignment = answers.departureData.Consignment.copy(
@@ -827,7 +827,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", SSE, "")),
+                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       containerIndicator = Some(Number1),
@@ -860,7 +860,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03("1", ACR, "")),
+                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
                     TransitOperation =
                       answers.departureData.TransitOperation.copy(security = NoSecurityDetails, limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))),
                     Consignment = answers.departureData.Consignment.copy(
@@ -919,7 +919,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                       security = NoSecurityDetails,
                       limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))
                     ),
-                    Authorisation = Seq(AuthorisationType03("1", ACR, "")),
+                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
                     Consignment = answers.departureData.Consignment.copy(
                       PlaceOfLoading = Some(placeOfLoading),
                       containerIndicator = Some(Number1)
@@ -945,7 +945,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .copy(departureData =
                   answers.departureData.copy(
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
-                    Authorisation = Seq(AuthorisationType03("1", SSE, "")),
+                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
                     Consignment = answers.departureData.Consignment.copy(
                       PlaceOfLoading = Some(placeOfLoading),
                       containerIndicator = Some(Number1)
@@ -1089,7 +1089,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 Consignment = answers.departureData.Consignment.copy(
                   PlaceOfLoading = Some(placeOfLoading)
                 ),
-                Authorisation = Seq(AuthorisationType03("1", ACR, ""))
+                Authorisation = Seq(AuthorisationType03(1, ACR, ""))
               )
             )
             navigator
