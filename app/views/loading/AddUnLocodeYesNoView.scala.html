@@ -43,7 +43,8 @@
                 heading = messages("loading.addUnLocodeYesNo.heading"),
                 caption = Some(messages("placeOfLoading.caption")),
                 additionalHtml = messages("loading.addUnLocodeYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(HtmlContent(messages("loading.addUnLocodeYesNo.hint")))
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
