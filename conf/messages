@@ -253,7 +253,8 @@ loading.addUnLocodeYesNo.heading = Do you want to add a UN/LOCODE for the place 
 loading.addUnLocodeYesNo.checkYourAnswersLabel = Do you want to add a UN/LOCODE for the place of loading?
 loading.addUnLocodeYesNo.change.hidden = if you want a UN/LOCODE for the place of loading
 loading.addUnLocodeYesNo.error.required = Select yes if you want to add a UN/LOCODE for the place of loading
-loading.addUnLocodeYesNo.paragraph = This is a 5-character code used to identify where the goods are loaded, such as a port or clearance depot.
+loading.addUnLocodeYesNo.paragraph = The United Nations Code for Trade and Transport Locations (UN/LOCODE) is a 5-character code. It is used to identify where the goods are loaded, such as a port or clearance depot.
+loading.addUnLocodeYesNo.hint = Adding a UN/LOCODE is optional.
 
 loading.unLocode.title = What is the UN/LOCODE for the place of loading?
 loading.unLocode.heading = What is the UN/LOCODE for the place of loading?
