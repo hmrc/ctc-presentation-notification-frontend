@@ -43,7 +43,8 @@
                 heading = messages("addRepresentativeContactDetailsYesNo.heading"),
                 caption = Some(messages("representative.caption")),
                 additionalHtml = messages("addRepresentativeContactDetailsYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("addRepresentativeContactDetailsYesNo.hint")))
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))

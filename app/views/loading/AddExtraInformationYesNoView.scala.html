@@ -43,7 +43,8 @@
                 heading = messages("loading.addExtraInformationYesNo.heading"),
                 caption = Some(messages("placeOfLoading.caption")),
                 additionalHtml = messages("loading.addExtraInformationYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("loading.addExtraInformationYesNo.hint")))
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
