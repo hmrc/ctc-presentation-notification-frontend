@@ -39,6 +39,8 @@ class AddBorderMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is the means of transport used from a UK port or airport to another customs territory.")
 
+  behave like pageWithHint("Adding identification is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

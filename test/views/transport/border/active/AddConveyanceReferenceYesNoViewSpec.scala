@@ -39,6 +39,8 @@ class AddConveyanceReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is a unique reference provided by the carrier to identify the means of transport.")
 
+  behave like pageWithHint("Adding a conveyance reference number is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

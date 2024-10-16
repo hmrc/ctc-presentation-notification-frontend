@@ -43,7 +43,8 @@
                 heading = messages("transport.border.active.addConveyanceReference.heading"),
                 caption = Some(messages("transport.border.subheading")),
                 additionalHtml = messages("transport.border.active.addConveyanceReference.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("transport.border.active.addConveyanceReference.hint")))
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))

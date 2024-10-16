@@ -39,6 +39,8 @@ class AddArrivalDateYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is the latest date you expect the transit to arrive.")
 
+  behave like pageWithHint("Adding an arrival date is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

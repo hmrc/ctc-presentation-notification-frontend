@@ -39,6 +39,8 @@ class AddRepresentativeContactDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This includes your name and phone number for if Customs have any queries.")
 
+  behave like pageWithHint("Adding your details is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

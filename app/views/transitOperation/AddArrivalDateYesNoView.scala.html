@@ -43,7 +43,8 @@
                 heading = messages("transitOperation.addArrivalDateYesNo.heading"),
                 caption = Some(messages("arrivalDate.caption")),
                 additionalHtml = messages("transitOperation.addArrivalDateYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("transitOperation.addArrivalDateYesNo.hint")))
         )
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
