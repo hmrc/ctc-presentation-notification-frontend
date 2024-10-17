@@ -41,13 +41,8 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:src=html/.*:s",
       "-Wconf:src=src_managed/.*:s"
     ),
-    Concat.groups := Seq(
-      "javascripts/application.js" -> group(Seq("javascripts/app.js"))
-    ),
-    uglifyCompressOptions := Seq("unused=false", "dead_code=false", "warnings=false"),
-    Assets / pipelineStages := Seq(digest, concat, uglify),
-    ThisBuild / useSuperShell := false,
-    uglify / includeFilter := GlobFilter("application.js")
+    Assets / pipelineStages := Seq(digest),
+    ThisBuild / useSuperShell := false
   )
   .settings(
     Compile / scalaxb / scalaxbXsdSource := new File("./conf/xsd"),
