@@ -41,10 +41,7 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:src=html/.*:s",
       "-Wconf:src=src_managed/.*:s"
     ),
-    Concat.groups := Seq(
-      "javascripts/application.js" -> group(Seq("javascripts/app.js"))
-    ),
-    Assets / pipelineStages := Seq(digest, concat),
+    Assets / pipelineStages := Seq(digest),
     ThisBuild / useSuperShell := false
   )
   .settings(
