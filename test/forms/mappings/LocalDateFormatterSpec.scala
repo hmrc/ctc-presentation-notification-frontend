@@ -47,9 +47,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -63,9 +63,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> s"${date.getDayOfMonth.toString}   ",
-          "valueMonth" -> s"${date.getMonthValue.toString}   ",
-          "valueYear"  -> s"${date.getYear.toString}   "
+          "value.day"   -> s"${date.getDayOfMonth.toString}   ",
+          "value.month" -> s"${date.getMonthValue.toString}   ",
+          "value.year"  -> s"${date.getYear.toString}   "
         )
 
         val result = form.bind(data)
@@ -86,9 +86,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> "",
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> "",
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -102,9 +102,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date", invalidField -> "invalid field") {
       (date, field) =>
         val data = Map(
-          "valueDay"   -> field,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> field,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -118,9 +118,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> "",
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> "",
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -134,9 +134,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid data", invalidField -> "invalid field") {
       (date, field) =>
         val data = Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> field,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> field,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -150,9 +150,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid data", invalidField -> "invalid field") {
       (date, field) =>
         val data = Map(
-          "valueDay"   -> "",
-          "valueMonth" -> field,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> "",
+          "value.month" -> field,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -169,9 +169,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid data", invalidField -> "invalid field") {
       (date, field) =>
         val data = Map(
-          "valueDay"   -> field,
-          "valueMonth" -> "",
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> field,
+          "value.month" -> "",
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -188,9 +188,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> ""
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> ""
         )
 
         val result = form.bind(data)
@@ -204,9 +204,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid data", invalidField -> "invalid field") {
       (date, field) =>
         val data = Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> field
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> field
         )
 
         val result = form.bind(data)
@@ -220,9 +220,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> "",
-          "valueMonth" -> "",
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> "",
+          "value.month" -> "",
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -236,9 +236,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> "",
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> ""
+          "value.day"   -> "",
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> ""
         )
 
         val result = form.bind(data)
@@ -252,9 +252,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> "",
-          "valueYear"  -> ""
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> "",
+          "value.year"  -> ""
         )
 
         val result = form.bind(data)
@@ -268,9 +268,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid month") {
       (date, day, month) =>
         val data = Map(
-          "valueDay"   -> day,
-          "valueMonth" -> month,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> day,
+          "value.month" -> month,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
@@ -284,9 +284,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid year") {
       (date, day, year) =>
         val data = Map(
-          "valueDay"   -> day,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> year
+          "value.day"   -> day,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> year
         )
 
         val result = form.bind(data)
@@ -300,9 +300,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date", invalidField -> "invalid month", invalidField -> "invalid year") {
       (date, month, year) =>
         val data = Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> month,
-          "valueYear"  -> year
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> month,
+          "value.year"  -> year
         )
 
         val result = form.bind(data)
@@ -316,9 +316,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(invalidField -> "valid day", invalidField -> "invalid month", invalidField -> "invalid year") {
       (day, month, year) =>
         val data = Map(
-          "valueDay"   -> day,
-          "valueMonth" -> month,
-          "valueYear"  -> year
+          "value.day"   -> day,
+          "value.month" -> month,
+          "value.year"  -> year
         )
 
         val result = form.bind(data)
@@ -330,9 +330,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
   "must fail to bind an invalid date" in {
 
     val data = Map(
-      "valueDay"   -> "30",
-      "valueMonth" -> "2",
-      "valueYear"  -> "2018"
+      "value.day"   -> "30",
+      "value.month" -> "2",
+      "value.year"  -> "2018"
     )
 
     val result = form.bind(data)
@@ -348,9 +348,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       date =>
         val filledForm = form.fill(date)
 
-        filledForm("valueDay").value.value mustEqual date.getDayOfMonth.toString
-        filledForm("valueMonth").value.value mustEqual date.getMonthValue.toString
-        filledForm("valueYear").value.value mustEqual date.getYear.toString
+        filledForm("value.day").value.value mustEqual date.getDayOfMonth.toString
+        filledForm("value.month").value.value mustEqual date.getMonthValue.toString
+        filledForm("value.year").value.value mustEqual date.getYear.toString
     }
   }
 }

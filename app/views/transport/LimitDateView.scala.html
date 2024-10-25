@@ -40,7 +40,7 @@
         @errorSummary(form)
 
         @inputDate(
-            form = form,
+            field = form("value"),
             dateType = DateInputWithAdditionalHtml(
                 heading = messages("transport.limit.date.heading", customsOfficeString),
                 caption = Some(messages("arrivalDate.caption")),
