@@ -71,12 +71,11 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       "must go from Border mode of transport page" - {
 
-        "when security is in set 1,2,3 and active border transport is not present navigate to Identification page" in {
+        "when security is in set 1,2,3 to Identification page" in {
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIndicatorPage, true)
             .copy(departureData =
               basicIe015.copy(
-                Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
                 TransitOperation = basicIe015.TransitOperation.copy(security = EntrySummaryDeclarationSecurityDetails)
               )
             )
@@ -85,90 +84,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .mustBe(
               controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, NormalMode, equipmentIndex)
             )
-        }
-
-        "when security is in set 1,2,3 and active border transport is present" - {
-          "and containerIndicator is true navigate to ContainerIdentificationNumber page " in {
-
-            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
-              (activeBorderTransportMeans, securityType) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ContainerIndicatorPage, true)
-                  .copy(departureData =
-                    basicIe015.copy(
-                      Consignment = basicIe015.Consignment.copy(
-                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
-                        containerIndicator = None
-                      ),
-                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
-                    )
-                  )
-                navigator
-                  .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                  .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(userAnswers, departureId, mode).value)
-            }
-          }
-
-          "and containerIndicator is false navigate to AddTransportEquipmentYesNo page " in {
-
-            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
-              (activeBorderTransportMeans, securityType) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ContainerIndicatorPage, false)
-                  .copy(departureData =
-                    basicIe015.copy(
-                      Consignment = basicIe015.Consignment.copy(
-                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
-                        containerIndicator = None
-                      ),
-                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
-                    )
-                  )
-                navigator
-                  .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                  .mustBe(AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode).value)
-            }
-          }
-
-          "and container indicator is not captured in IE170 navigate to check your answers page " in {
-
-            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
-              (activeBorderTransportMeans, securityType) =>
-                val userAnswers = emptyUserAnswers
-                  .copy(departureData =
-                    basicIe015.copy(
-                      Consignment = basicIe015.Consignment.copy(
-                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
-                        containerIndicator = None
-                      ),
-                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
-                    )
-                  )
-                navigator
-                  .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-            }
-          }
-
-          "and container indicator is captured in IE013/15 navigate to check your answers page " in {
-
-            forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[String](arbitrarySecurityDetailsNonZeroType)) {
-              (activeBorderTransportMeans, securityType) =>
-                val userAnswers = emptyUserAnswers
-                  .copy(departureData =
-                    basicIe015.copy(
-                      Consignment = basicIe015.Consignment.copy(
-                        ActiveBorderTransportMeans = Seq(activeBorderTransportMeans),
-                        containerIndicator = Some(Number1)
-                      ),
-                      TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
-                    )
-                  )
-                navigator
-                  .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-            }
-          }
         }
 
         "when security is NoSecurityDetails and active border transport is present " - {
@@ -649,7 +564,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .setValue(BorderModeOfTransportPage, borderModeOfTransport)
                 .copy(departureData =
                   basicIe015.copy(
-                    Consignment = basicIe015.Consignment.copy(ActiveBorderTransportMeans = Nil),
                     TransitOperation = basicIe015.TransitOperation.copy(security = securityType)
                   )
                 )

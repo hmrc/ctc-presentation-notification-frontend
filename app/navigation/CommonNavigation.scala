@@ -28,7 +28,7 @@ import play.api.mvc.Call
 trait CommonNavigation {
 
   protected def borderModeOfTransportPageNavigation(userAnswers: UserAnswers, departureId: String, mode: Mode): Option[Call] =
-    if (userAnswers.departureData.Consignment.ActiveBorderTransportMeans.isEmpty && userAnswers.departureData.hasSecurity) {
+    if (userAnswers.departureData.hasSecurity) {
       val numberOfActiveBorderMeans: Int = userAnswers.get(BorderActiveListSection).map(_.value.length - 1).getOrElse(0)
       transport.border.active.IdentificationPage(Index(numberOfActiveBorderMeans)).route(userAnswers, departureId, mode)
     } else {
