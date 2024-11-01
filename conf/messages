@@ -19,10 +19,6 @@ site.email.subject = NCTS Phase 5 - Help with testing
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
-date.day.capitalized = Day
-date.month.capitalized = Month
-date.year.capitalized = Year
-
 unauthorised.title = You cannot use this service
 unauthorised.heading = You cannot use this service
 unauthorised.paragraph1 = You must have an account with an activated EORI number.
