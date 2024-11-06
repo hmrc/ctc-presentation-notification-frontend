@@ -49,6 +49,9 @@ class IndexController @Inject() (
       (for {
         lrn           <- OptionT.liftF(service.getLRN(departureId))
         departureData <- OptionT(service.getDepartureData(departureId, lrn))
+        additionalDeclarationType = departureData.TransitOperation.additionalDeclarationType
+        canSubmitPresentationNotification <- OptionT.liftF(service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType))
+        if canSubmitPresentationNotification
         _ <- OptionT.liftF(
           request.userAnswers match {
             case Some(userAnswers) => sessionRepository.set(userAnswers)

@@ -29,6 +29,12 @@ object MessageType {
 
   case object PresentationForThePreLodgedDeclaration extends MessageType
 
+  case object PositiveAcknowledgement extends MessageType
+
+  case object AmendmentAcceptance extends MessageType
+
+  case object ControlDecisionNotification extends MessageType
+
   case class Other(status: String) extends WithName(status) with MessageType
 
   implicit val reads: Reads[MessageType] =
@@ -36,6 +42,9 @@ object MessageType {
       case "IE015" => DeclarationData
       case "IE013" => DeclarationAmendment
       case "IE170" => PresentationForThePreLodgedDeclaration
+      case "IE928" => PositiveAcknowledgement
+      case "IE004" => AmendmentAcceptance
+      case "IE060" => ControlDecisionNotification
       case x       => Other(x)
     }
 }

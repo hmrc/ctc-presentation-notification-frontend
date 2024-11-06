@@ -16,11 +16,13 @@
 
 package generators
 
+import models.*
 import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
-import models._
-import models.reference.TransportMode._
-import models.reference._
+import models.departureP5.MessageType
+import models.departureP5.MessageType.*
+import models.reference.*
+import models.reference.TransportMode.*
 import models.reference.transport.border.active
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
@@ -223,4 +225,20 @@ trait ModelGenerators {
       url    <- nonEmptyString
     } yield Call(method, url)
   }
+
+  implicit lazy val arbitraryMessageType: Arbitrary[MessageType] =
+    Arbitrary {
+      for {
+        value <- nonEmptyString
+        result <- Gen.oneOf(
+          DeclarationData,
+          DeclarationAmendment,
+          PresentationForThePreLodgedDeclaration,
+          PositiveAcknowledgement,
+          AmendmentAcceptance,
+          ControlDecisionNotification,
+          Other(value)
+        )
+      } yield result
+    }
 }

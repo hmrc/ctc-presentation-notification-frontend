@@ -69,4 +69,9 @@ object Constants {
     val ACR = "C521"
     val SSE = "C523"
   }
+
+  object AdditionalDeclarationType {
+    val Standard  = "A"
+    val PreLodged = "D"
+  }
 }

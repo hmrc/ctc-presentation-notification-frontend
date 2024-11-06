@@ -16,11 +16,12 @@
 
 package models.departureP5
 
+import models.MessageStatus
 import play.api.libs.json.{__, Reads}
 
 import java.time.LocalDateTime
 
-case class MessageMetaData(received: LocalDateTime, messageType: MessageType, id: String)
+case class MessageMetaData(received: LocalDateTime, messageType: MessageType, id: String, status: MessageStatus)
 
 object MessageMetaData {
 
@@ -29,7 +30,8 @@ object MessageMetaData {
     (
       (__ \ "received").read[LocalDateTime] and
         (__ \ "type").read[MessageType] and
-        (__ \ "id").read[String]
+        (__ \ "id").read[String] and
+        (__ \ "status").read[MessageStatus]
     )(MessageMetaData.apply)
   }
 }

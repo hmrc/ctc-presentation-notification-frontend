@@ -72,20 +72,23 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
             setNoExistingUserAnswers()
 
-            when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
-              Future.successful(lrn)
+            when(mockDepartureMessageService.getLRN(any())(any()))
+              .thenReturn(Future.successful(lrn))
 
-            when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
-              Future.successful(Some(ie015))
+            when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any()))
+              .thenReturn(Future.successful(Some(ie015)))
 
-            when(departureDataTransformer.transform(any())(any())) `thenReturn`
-              Future.successful(emptyUserAnswers)
+            when(mockDepartureMessageService.canSubmitPresentationNotification(any(), any(), any())(any(), any()))
+              .thenReturn(Future.successful(true))
 
-            when(mockSessionRepository.get(any())) `thenReturn`
-              Future.successful(None)
+            when(departureDataTransformer.transform(any())(any()))
+              .thenReturn(Future.successful(emptyUserAnswers))
 
-            when(mockSessionRepository.set(any())) `thenReturn`
-              Future.successful(true)
+            when(mockSessionRepository.get(any()))
+              .thenReturn(Future.successful(None))
+
+            when(mockSessionRepository.set(any()))
+              .thenReturn(Future.successful(true))
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
 
@@ -97,6 +100,10 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
             verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
             verify(mockDepartureMessageService).getDepartureData(eqTo(departureId), eqTo(lrn))(any(), any())
+            verify(mockDepartureMessageService).canSubmitPresentationNotification(eqTo(departureId),
+                                                                                  eqTo(lrn),
+                                                                                  eqTo(ie015.TransitOperation.additionalDeclarationType)
+            )(any(), any())
             verify(mockSessionRepository).set(userAnswersCaptor.capture())
             userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
         }
@@ -104,18 +111,23 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
       "must redirect to onward route when there are UserAnswers" - {
         "and data is complete" in {
+          val ie015 = completeIe015
+
           setExistingUserAnswers(emptyUserAnswers)
 
           val request = FakeRequest(GET, indexRoute)
 
-          when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
-            Future.successful(lrn)
+          when(mockDepartureMessageService.getLRN(any())(any()))
+            .thenReturn(Future.successful(lrn))
 
-          when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
-            Future.successful(Some(completeIe015))
+          when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any()))
+            .thenReturn(Future.successful(Some(ie015)))
 
-          when(mockSessionRepository.get(any())) `thenReturn`
-            Future.successful(Some(emptyUserAnswers))
+          when(mockDepartureMessageService.canSubmitPresentationNotification(any(), any(), any())(any(), any()))
+            .thenReturn(Future.successful(true))
+
+          when(mockSessionRepository.get(any()))
+            .thenReturn(Future.successful(Some(emptyUserAnswers)))
 
           val result = route(app, request).value
 
@@ -124,7 +136,15 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           redirectLocation(result).value mustEqual withCompleteDataNextPage
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+          verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
+          verify(mockDepartureMessageService).getDepartureData(eqTo(departureId), eqTo(lrn))(any(), any())
+          verify(mockDepartureMessageService).canSubmitPresentationNotification(eqTo(departureId),
+                                                                                eqTo(lrn),
+                                                                                eqTo(ie015.TransitOperation.additionalDeclarationType)
+          )(any(), any())
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
+
           userAnswersCaptor.getValue.lrn mustBe lrn.value
           userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
           userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
@@ -138,14 +158,17 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
               val request = FakeRequest(GET, indexRoute)
 
-              when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
-                Future.successful(lrn)
+              when(mockDepartureMessageService.getLRN(any())(any()))
+                .thenReturn(Future.successful(lrn))
 
-              when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
-                Future.successful(Some(ie015))
+              when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any()))
+                .thenReturn(Future.successful(Some(ie015)))
 
-              when(mockSessionRepository.get(any())) `thenReturn`
-                Future.successful(Some(emptyUserAnswers))
+              when(mockDepartureMessageService.canSubmitPresentationNotification(any(), any(), any())(any(), any()))
+                .thenReturn(Future.successful(true))
+
+              when(mockSessionRepository.get(any()))
+                .thenReturn(Future.successful(Some(emptyUserAnswers)))
 
               val result = route(app, request).value
 
@@ -154,7 +177,15 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
               redirectLocation(result).value mustEqual withIncompleteDataNextPage
 
               val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+              verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
+              verify(mockDepartureMessageService).getDepartureData(eqTo(departureId), eqTo(lrn))(any(), any())
+              verify(mockDepartureMessageService).canSubmitPresentationNotification(eqTo(departureId),
+                                                                                    eqTo(lrn),
+                                                                                    eqTo(ie015.TransitOperation.additionalDeclarationType)
+              )(any(), any())
               verify(mockSessionRepository).set(userAnswersCaptor.capture())
+
               userAnswersCaptor.getValue.lrn mustBe lrn.value
               userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
               userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
@@ -162,26 +193,62 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         }
       }
 
-      "must redirect to the technical difficulties route when there is an issue retrieving the data" in {
+      "must redirect to the technical difficulties route" - {
+        "when there is an issue retrieving the data" in {
+          setExistingUserAnswers(emptyUserAnswers)
 
-        setExistingUserAnswers(emptyUserAnswers)
+          val request = FakeRequest(GET, indexRoute)
 
-        val request = FakeRequest(GET, indexRoute)
+          when(mockDepartureMessageService.getLRN(any())(any()))
+            .thenReturn(Future.successful(lrn))
 
-        when(mockDepartureMessageService.getLRN(any())(any())) `thenReturn`
-          Future.successful(lrn)
+          when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any()))
+            .thenReturn(Future.successful(None))
 
-        when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any())) `thenReturn`
-          Future.successful(None)
+          val result = route(app, request).value
 
-        when(mockSessionRepository.get(any())) `thenReturn`
-          Future.successful(Some(emptyUserAnswers))
+          status(result) mustEqual SEE_OTHER
 
-        val result = route(app, request).value
+          redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
 
-        status(result) mustEqual SEE_OTHER
+          verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
+          verify(mockDepartureMessageService).getDepartureData(eqTo(departureId), eqTo(lrn))(any(), any())
+          verify(mockDepartureMessageService, never()).canSubmitPresentationNotification(any(), any(), any())(any(), any())
+          verifyNoInteractions(mockSessionRepository)
+        }
 
-        redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+        "when movement is not in a state where presentation notification can be submitted" in {
+          forAll(arbitrary[CC015CType]) {
+            ie015 =>
+              beforeEach()
+              setExistingUserAnswers(emptyUserAnswers)
+
+              val request = FakeRequest(GET, indexRoute)
+
+              when(mockDepartureMessageService.getLRN(any())(any()))
+                .thenReturn(Future.successful(lrn))
+
+              when(mockDepartureMessageService.getDepartureData(any(), eqTo(lrn))(any(), any()))
+                .thenReturn(Future.successful(Some(ie015)))
+
+              when(mockDepartureMessageService.canSubmitPresentationNotification(any(), any(), any())(any(), any()))
+                .thenReturn(Future.successful(false))
+
+              val result = route(app, request).value
+
+              status(result) mustEqual SEE_OTHER
+
+              redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+
+              verify(mockDepartureMessageService).getLRN(eqTo(departureId))(any())
+              verify(mockDepartureMessageService).getDepartureData(eqTo(departureId), eqTo(lrn))(any(), any())
+              verify(mockDepartureMessageService).canSubmitPresentationNotification(eqTo(departureId),
+                                                                                    eqTo(lrn),
+                                                                                    eqTo(ie015.TransitOperation.additionalDeclarationType)
+              )(any(), any())
+              verifyNoInteractions(mockSessionRepository)
+          }
+        }
       }
     }
   }

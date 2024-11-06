@@ -17,14 +17,15 @@
 package services
 
 import base.SpecBase
+import config.Constants.AdditionalDeclarationType
 import connectors.DepartureMovementConnector
 import generated.{CC013CType, CC015CType, CC170CType}
 import generators.Generators
-import models.RichCC013CType
-import models.departureP5.MessageType.{DeclarationAmendment, DeclarationData, PresentationForThePreLodgedDeclaration}
+import models.{MessageStatus, RichCC013CType}
+import models.departureP5.MessageType.*
 import models.departureP5.{DepartureMessages, MessageMetaData}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
@@ -67,10 +68,10 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
               beforeEach()
 
               val ie015MetaData: MessageMetaData =
-                MessageMetaData(LocalDateTime.now(), DeclarationData, "id1")
+                MessageMetaData(LocalDateTime.now(), DeclarationData, "id1", MessageStatus.Success)
 
               val ie013MetaData: MessageMetaData =
-                MessageMetaData(LocalDateTime.now().plusDays(1), DeclarationAmendment, "id2")
+                MessageMetaData(LocalDateTime.now().plusDays(1), DeclarationAmendment, "id2", MessageStatus.Success)
 
               val departureMessages: DepartureMessages = DepartureMessages(List(ie015MetaData, ie013MetaData))
 
@@ -90,7 +91,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
               beforeEach()
 
               val ie015MetaData: MessageMetaData =
-                MessageMetaData(LocalDateTime.now(), DeclarationData, "id1")
+                MessageMetaData(LocalDateTime.now(), DeclarationData, "id1", MessageStatus.Success)
 
               val departureMessages: DepartureMessages = DepartureMessages(List(ie015MetaData))
 
@@ -113,7 +114,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
             beforeEach()
 
             val ie170MetaData: MessageMetaData =
-              MessageMetaData(LocalDateTime.now(), PresentationForThePreLodgedDeclaration, "id1")
+              MessageMetaData(LocalDateTime.now(), PresentationForThePreLodgedDeclaration, "id1", MessageStatus.Success)
 
             val departureMessages: DepartureMessages = DepartureMessages(List(ie170MetaData))
 
@@ -124,6 +125,125 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
             verify(mockConnector).getMessage(eqTo(departureId), eqTo("id1"))(any(), any())
+        }
+      }
+    }
+
+    "canSubmitPresentationNotification" - {
+      "must return false" - {
+        "when IE015/IE013 has a standard (A) additional declaration type" in {
+          val result = service.canSubmitPresentationNotification(departureId, lrn, AdditionalDeclarationType.Standard).futureValue
+
+          result.mustBe(false)
+
+          verifyNoInteractions(mockConnector)
+        }
+
+        "when IE013/IE015 has a pre-lodged (D) additional declaration type" - {
+          "and head message is not one of IE928, IE004, IE060" in {
+            val time = LocalDateTime.now()
+
+            val messages = DepartureMessages(
+              List(
+                MessageMetaData(time, DeclarationData, "1", MessageStatus.Success)
+              )
+            )
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(messages))
+
+            val result = service.canSubmitPresentationNotification(departureId, lrn, AdditionalDeclarationType.PreLodged).futureValue
+
+            result.mustBe(false)
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+          }
+        }
+      }
+
+      "must return true" - {
+        "when IE013/IE015 has a pre-lodged (D) additional declaration type" - {
+
+          val additionalDeclarationType = AdditionalDeclarationType.PreLodged
+
+          "and head message is IE928" in {
+            val time = LocalDateTime.now()
+
+            val messages = DepartureMessages(
+              List(
+                MessageMetaData(time, DeclarationData, "1", MessageStatus.Success),
+                MessageMetaData(time.plusDays(1), PositiveAcknowledgement, "2", MessageStatus.Success)
+              )
+            )
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(messages))
+
+            val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
+
+            result.mustBe(true)
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+          }
+
+          "and head message is IE004" in {
+            val time = LocalDateTime.now()
+
+            val messages = DepartureMessages(
+              List(
+                MessageMetaData(time, DeclarationData, "1", MessageStatus.Success),
+                MessageMetaData(time.plusDays(1), PositiveAcknowledgement, "2", MessageStatus.Success),
+                MessageMetaData(time.plusDays(2), DeclarationAmendment, "3", MessageStatus.Success),
+                MessageMetaData(time.plusDays(3), AmendmentAcceptance, "4", MessageStatus.Success)
+              )
+            )
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(messages))
+
+            val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
+
+            result.mustBe(true)
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+          }
+
+          "and head message is IE060" in {
+            val time = LocalDateTime.now()
+
+            val messages = DepartureMessages(
+              List(
+                MessageMetaData(time, DeclarationData, "1", MessageStatus.Success),
+                MessageMetaData(time.plusDays(1), PositiveAcknowledgement, "2", MessageStatus.Success),
+                MessageMetaData(time.plusDays(2), ControlDecisionNotification, "3", MessageStatus.Success)
+              )
+            )
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(messages))
+
+            val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
+
+            result.mustBe(true)
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+          }
+
+          "and head message is failed IE170" in {
+            val time = LocalDateTime.now()
+
+            val messages = DepartureMessages(
+              List(
+                MessageMetaData(time, DeclarationData, "1", MessageStatus.Success),
+                MessageMetaData(time.plusDays(1), PositiveAcknowledgement, "2", MessageStatus.Success),
+                MessageMetaData(time.plusDays(2), PresentationForThePreLodgedDeclaration, "2", MessageStatus.Failed)
+              )
+            )
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(messages))
+
+            val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
+
+            result.mustBe(true)
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+          }
         }
       }
     }
