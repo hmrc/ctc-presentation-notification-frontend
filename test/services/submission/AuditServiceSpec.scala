@@ -44,7 +44,7 @@ class AuditServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "audit" - {
     "must audit event" - {
-      "ArrivalNotification" in {
+      "PresentationNotification" in {
         val service = app.injector.instanceOf[AuditService]
 
         val userAnswers = emptyUserAnswers
