@@ -16,11 +16,11 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import generated._
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import generated.*
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.LocalReferenceNumber
 import models.departureP5.{DepartureMessages, MessageMetaData, MessageType}
+import models.{LocalReferenceNumber, MessageStatus}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.OK
@@ -135,12 +135,14 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
             MessageMetaData(
               LocalDateTime.parse("2022-11-11T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
               MessageType.DeclarationData,
-              "634982098f02f00b"
+              "634982098f02f00b",
+              MessageStatus.Success
             ),
             MessageMetaData(
               LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
               MessageType.DeclarationAmendment,
-              "634982098f02f00a"
+              "634982098f02f00a",
+              MessageStatus.Success
             )
           )
         )

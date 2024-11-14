@@ -17,11 +17,12 @@
 package services
 
 import cats.data.OptionT
+import config.Constants.AdditionalDeclarationType.*
 import connectors.DepartureMovementConnector
-import generated.{CC013CType, CC015CType, CC170CType, Generated_CC013CTypeFormat, Generated_CC015CTypeFormat, Generated_CC170CTypeFormat}
-import models.departureP5.MessageType.{DeclarationAmendment, DeclarationData, PresentationForThePreLodgedDeclaration}
+import generated.*
+import models.departureP5.MessageType.*
 import models.departureP5.{MessageMetaData, MessageType}
-import models.{LocalReferenceNumber, RichCC013CType}
+import models.{LocalReferenceNumber, MessageStatus, RichCC013CType}
 import play.api.Logging
 import scalaxb.XMLFormat
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,21 +32,25 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureMessageService @Inject() (departureMovementP5Connector: DepartureMovementConnector) extends Logging {
 
+  private def getMessages(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[List[MessageMetaData]] =
+    departureMovementP5Connector
+      .getMessages(departureId)
+      .map {
+        _.messages
+          .filterNot(_.status == MessageStatus.Failed)
+          .sortBy(_.received)
+          .reverse
+      }
+
   private def getMessageMetaData(
     departureId: String,
     messageTypes: MessageType*
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
-    departureMovementP5Connector
-      .getMessages(departureId)
-      .map(
-        _.messages
-          .filter {
-            message => messageTypes.contains(message.messageType)
-          }
-          .sortBy(_.received)
-          .reverse
-          .headOption
-      )
+    getMessages(departureId).map {
+      _.find {
+        message => messageTypes.contains(message.messageType)
+      }
+    }
 
   def getIE170(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC170CType]] =
     (for {
@@ -74,4 +79,24 @@ class DepartureMessageService @Inject() (departureMovementP5Connector: Departure
 
   private def getMessage[T](departureId: String, messageId: String)(implicit hc: HeaderCarrier, format: XMLFormat[T]): Future[T] =
     departureMovementP5Connector.getMessage(departureId, messageId)
+
+  // To reduce the overhead we call this once in the IndexController rather than repeatedly through an action
+  // Otherwise we would have to fetch the LRN and IE013/IE015 each time
+  def canSubmitPresentationNotification(
+    departureId: String,
+    lrn: LocalReferenceNumber,
+    additionalDeclarationType: String
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+    additionalDeclarationType match
+      case PreLodged =>
+        getMessages(departureId).map {
+          _.map(_.messageType) match {
+            case PositiveAcknowledgement :: _     => true
+            case AmendmentAcceptance :: _         => true
+            case ControlDecisionNotification :: _ => true
+            case _                                => false
+          }
+        }
+      case _ =>
+        Future.successful(false)
 }

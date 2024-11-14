@@ -16,26 +16,51 @@
 
 package models.departureP5
 
-import models.WithName
 import play.api.libs.json.{__, Reads}
 
-sealed trait MessageType
+sealed trait MessageType {
+
+  val value: String
+
+  override def toString: String = value
+}
 
 object MessageType {
 
-  case object DeclarationData extends MessageType
+  case object DeclarationData extends MessageType {
+    override val value: String = "IE015"
+  }
 
-  case object DeclarationAmendment extends MessageType
+  case object DeclarationAmendment extends MessageType {
+    override val value: String = "IE013"
+  }
 
-  case object PresentationForThePreLodgedDeclaration extends MessageType
+  case object PresentationForThePreLodgedDeclaration extends MessageType {
+    override val value: String = "IE170"
+  }
 
-  case class Other(status: String) extends WithName(status) with MessageType
+  case object PositiveAcknowledgement extends MessageType {
+    override val value: String = "IE928"
+  }
+
+  case object AmendmentAcceptance extends MessageType {
+    override val value: String = "IE004"
+  }
+
+  case object ControlDecisionNotification extends MessageType {
+    override val value: String = "IE060"
+  }
+
+  case class Other(value: String) extends MessageType
 
   implicit val reads: Reads[MessageType] =
     __.read[String].map {
-      case "IE015" => DeclarationData
-      case "IE013" => DeclarationAmendment
-      case "IE170" => PresentationForThePreLodgedDeclaration
-      case x       => Other(x)
+      case DeclarationData.value                        => DeclarationData
+      case DeclarationAmendment.value                   => DeclarationAmendment
+      case PresentationForThePreLodgedDeclaration.value => PresentationForThePreLodgedDeclaration
+      case PositiveAcknowledgement.value                => PositiveAcknowledgement
+      case AmendmentAcceptance.value                    => AmendmentAcceptance
+      case ControlDecisionNotification.value            => ControlDecisionNotification
+      case value                                        => Other(value)
     }
 }
