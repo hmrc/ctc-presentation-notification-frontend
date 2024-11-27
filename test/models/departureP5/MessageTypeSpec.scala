@@ -57,6 +57,11 @@ class MessageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
           result mustBe ControlDecisionNotification
         }
 
+        "when IE056" in {
+          val result = JsString("IE056").as[MessageType]
+          result mustBe RejectionFromOfficeOfDeparture
+        }
+
         "when something else" in {
           forAll(nonEmptyString) {
             value =>

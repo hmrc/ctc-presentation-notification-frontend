@@ -232,7 +232,28 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
               List(
                 MessageMetaData(time, DeclarationData, "1", MessageStatus.Success),
                 MessageMetaData(time.plusDays(1), PositiveAcknowledgement, "2", MessageStatus.Success),
-                MessageMetaData(time.plusDays(2), PresentationForThePreLodgedDeclaration, "2", MessageStatus.Failed)
+                MessageMetaData(time.plusDays(2), PresentationForThePreLodgedDeclaration, "3", MessageStatus.Failed)
+              )
+            )
+
+            when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(messages))
+
+            val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
+
+            result.mustBe(true)
+
+            verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
+          }
+
+          "and head message is IE056" in {
+            val time = LocalDateTime.now()
+
+            val messages = DepartureMessages(
+              List(
+                MessageMetaData(time, DeclarationData, "1", MessageStatus.Success),
+                MessageMetaData(time.plusDays(1), PositiveAcknowledgement, "2", MessageStatus.Success),
+                MessageMetaData(time.plusDays(2), PresentationForThePreLodgedDeclaration, "3", MessageStatus.Success),
+                MessageMetaData(time.plusDays(3), RejectionFromOfficeOfDeparture, "4", MessageStatus.Success)
               )
             )
 

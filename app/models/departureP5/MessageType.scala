@@ -51,6 +51,10 @@ object MessageType {
     override val value: String = "IE060"
   }
 
+  case object RejectionFromOfficeOfDeparture extends MessageType {
+    override val value: String = "IE056"
+  }
+
   case class Other(value: String) extends MessageType
 
   implicit val reads: Reads[MessageType] =
@@ -61,6 +65,7 @@ object MessageType {
       case PositiveAcknowledgement.value                => PositiveAcknowledgement
       case AmendmentAcceptance.value                    => AmendmentAcceptance
       case ControlDecisionNotification.value            => ControlDecisionNotification
+      case RejectionFromOfficeOfDeparture.value         => RejectionFromOfficeOfDeparture
       case value                                        => Other(value)
     }
 }
