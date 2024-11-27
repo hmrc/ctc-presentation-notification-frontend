@@ -91,10 +91,11 @@ class DepartureMessageService @Inject() (departureMovementP5Connector: Departure
       case PreLodged =>
         getMessages(departureId).map {
           _.map(_.messageType) match {
-            case PositiveAcknowledgement :: _     => true
-            case AmendmentAcceptance :: _         => true
-            case ControlDecisionNotification :: _ => true
-            case _                                => false
+            case PositiveAcknowledgement :: _        => true
+            case AmendmentAcceptance :: _            => true
+            case ControlDecisionNotification :: _    => true
+            case RejectionFromOfficeOfDeparture :: _ => true
+            case _                                   => false
           }
         }
       case _ =>
