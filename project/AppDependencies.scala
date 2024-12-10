@@ -1,3 +1,4 @@
+import play.sbt.PlayImport.ehcache
 import sbt.*
 
 object AppDependencies {
@@ -6,7 +7,7 @@ object AppDependencies {
   private val hmrcMongoVersion = "2.3.0"
   private val catsVersion      = "2.9.0"
   private val monocleVersion   = "3.3.0"
-  private val pekkoVersion = "1.0.3"
+  private val pekkoVersion     = "1.0.3"
 
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                %% "bootstrap-frontend-play-30" % bootstrapVersion,
@@ -18,7 +19,8 @@ object AppDependencies {
     "dev.optics"                 %% "monocle-core"               % monocleVersion,
     "dev.optics"                 %% "monocle-macro"              % monocleVersion,
     "org.apache.pekko"           %% "pekko-actor"                % pekkoVersion,
-    "javax.xml.bind"              % "jaxb-api"                   % "2.3.1"
+    "javax.xml.bind"              % "jaxb-api"                   % "2.3.1",
+    ehcache
   )
 
   val test: Seq[ModuleID] = Seq(
