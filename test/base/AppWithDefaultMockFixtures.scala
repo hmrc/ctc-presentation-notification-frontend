@@ -16,16 +16,17 @@
 
 package base
 
-import controllers.actions._
+import controllers.actions.*
 import models.UserAnswers
-import navigation._
-import navigator._
+import navigation.*
+import navigator.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
 import play.api.Application
+import play.api.cache.AsyncCacheApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
@@ -77,6 +78,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
+        bind[AsyncCacheApi].to[FakeAsyncCacheApi],
         bind[Navigator].toInstance(fakeNavigator),
         bind[LoadingNavigator].toInstance(fakeLoadingNavigator),
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),

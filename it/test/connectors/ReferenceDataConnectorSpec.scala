@@ -17,15 +17,16 @@
 package connectors
 
 import cats.data.NonEmptySet
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.LocationType
 import models.reference.TransportMode.{BorderMode, InlandMode}
-import models.reference._
+import models.reference.*
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.cache.AsyncCacheApi
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,7 +42,13 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       conf = "microservice.services.customs-reference-data.port" -> server.port()
     )
 
+  private lazy val asyncCacheApi: AsyncCacheApi      = app.injector.instanceOf[AsyncCacheApi]
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    asyncCacheApi.removeAll().futureValue
+  }
 
   private val customsOfficesResponseJson: String =
     """
@@ -311,7 +318,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCustomsOfficesForIds" - {
-      def url = s"/$baseUrl/lists/CustomsOffices?data.id=GB2&data.id=GB1"
+      def url = s"/$baseUrl/lists/CustomsOffices?data.id=GB1&data.id=GB2"
       val ids = Seq("GB1", "GB2")
 
       "must return a successful future response with a sequence of CustomsOffices" in {
