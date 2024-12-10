@@ -1,4 +1,4 @@
-import play.sbt.PlayImport.ehcache
+import play.sbt.PlayImport.caffeine
 import sbt.*
 
 object AppDependencies {
@@ -20,7 +20,7 @@ object AppDependencies {
     "dev.optics"                 %% "monocle-macro"              % monocleVersion,
     "org.apache.pekko"           %% "pekko-actor"                % pekkoVersion,
     "javax.xml.bind"              % "jaxb-api"                   % "2.3.1",
-    ehcache
+    caffeine
   )
 
   val test: Seq[ModuleID] = Seq(
