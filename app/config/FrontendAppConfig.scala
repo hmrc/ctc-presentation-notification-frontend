@@ -55,6 +55,8 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   lazy val cacheTtl: Int           = config.get[Int]("mongodb.timeToLiveInSeconds")
   lazy val replaceIndexes: Boolean = config.get[Boolean]("feature-flags.replace-indexes")
 
+  val asyncCacheApiExpiration: Int = config.get[Int]("async-cache-api.expiration")
+
   val signOutUrl: String = config.get[String]("urls.logoutContinue") + config.get[String]("urls.feedback")
 
   val encryptionKey: String                                       = config.get[String]("encryption.key")

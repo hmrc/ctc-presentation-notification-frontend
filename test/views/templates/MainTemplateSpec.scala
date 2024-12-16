@@ -35,7 +35,8 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
   implicit private lazy val request: FakeRequest[AnyContent] = FakeRequest("GET", path)
 
   "when not in trader test" - {
-    val app = new GuiceApplicationBuilder()
+    val app = super
+      .guiceApplicationBuilder()
       .configure("trader-test.enabled" -> false)
       .build()
 
@@ -74,7 +75,8 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
   }
 
   "when in trader test" - {
-    val app = new GuiceApplicationBuilder()
+    val app = super
+      .guiceApplicationBuilder()
       .configure("trader-test.enabled" -> true)
       .build()
 
