@@ -16,22 +16,35 @@
 
 package utils.transformer.locationOfGoods
 
+import models.reference.Country
 import models.{PostalCodeAddress, RichPostcodeAddressType02, UserAnswers}
 import pages.locationOfGoods.PostalCodePage
+import services.CountriesService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
 
-import scala.concurrent.Future
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class PostalCodeTransformer extends PageTransformer {
+class PostalCodeTransformer @Inject() (countriesService: CountriesService)(implicit ec: ExecutionContext) extends PageTransformer {
   override type DomainModelType              = PostalCodeAddress
   override type ExtractedTypeInDepartureData = PostalCodeAddress
 
-  // TODO - do reference data call here for address country
+  private def findCountryDesc(countries: Seq[Country], code: String) = countries.find(_.code.code == code).map(_.description).getOrElse("")
+
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    transformFromDeparture(
-      userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods.flatMap(_.PostcodeAddress.map(_.toPostalCode)).toSeq,
-      generateCapturedAnswers = _.map((PostalCodePage, _))
-    )
+    countriesService.getCountries().flatMap {
+      countryList =>
+        transformFromDeparture(
+          userAnswers = userAnswers,
+          extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods
+            .flatMap(
+              _.PostcodeAddress.map(
+                address => address.toPostalCode(findCountryDesc(countryList.values, address.country))
+              )
+            )
+            .toSeq,
+          generateCapturedAnswers = _.map((PostalCodePage, _))
+        )
+    }
 }

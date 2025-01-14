@@ -28,9 +28,5 @@ class IdentificationPageSpec extends PageBehaviours {
     beSettable[Identification](IdentificationPage(index))
 
     beRemovable[Identification](IdentificationPage(index))
-
-    "cleanup" - {
-      // TODO Add clean-up test
-    }
   }
 }

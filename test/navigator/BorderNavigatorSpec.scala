@@ -575,7 +575,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         }
 
-        // TODO: Change more information page to other page when created
         "to more add active border transport means page when security is 0 and active border transport is present " in {
 
           forAll(arbitrary[ActiveBorderTransportMeansType02]) {

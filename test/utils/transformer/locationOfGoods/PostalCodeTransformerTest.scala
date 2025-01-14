@@ -19,25 +19,47 @@ package utils.transformer.locationOfGoods
 import base.SpecBase
 import generated.{LocationOfGoodsType05, PostcodeAddressType02}
 import generators.Generators
-import models.RichPostcodeAddressType02
+import models.reference.{Country, CountryCode}
+import models.{RichPostcodeAddressType02, SelectableList}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.PostalCodePage
+import services.CountriesService
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class PostalCodeTransformerTest extends SpecBase with Generators {
-  val transformer = new PostalCodeTransformer()
+  val countryService = mock[CountriesService]
+  val transformer    = new PostalCodeTransformer(countryService)
 
   "PostalCodeTransformer" - {
 
     "must return updated answers with PostalCodePage" in {
       forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02]) {
         (locationOfGoods, postcodeAddress) =>
+          when(countryService.getCountries()).thenReturn(Future.successful(SelectableList(Seq(Country(CountryCode(postcodeAddress.country), "description")))))
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(
               Option(locationOfGoods.copy(PostcodeAddress = Some(postcodeAddress)))
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(PostalCodePage).value mustBe postcodeAddress.toPostalCode
+          result.get(PostalCodePage).value mustBe postcodeAddress.toPostalCode("description")
+      }
+    }
+
+    "must use add country description if country code not found" in {
+      forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02]) {
+        (locationOfGoods, postcodeAddress) =>
+          when(countryService.getCountries()).thenReturn(Future.successful(SelectableList(Seq())))
+          val userAnswers = setLocationOfGoodsOnUserAnswersLens
+            .replace(
+              Option(locationOfGoods.copy(PostcodeAddress = Some(postcodeAddress)))
+            )(emptyUserAnswers)
+
+          val result = transformer.transform.apply(userAnswers).futureValue
+          result.get(PostalCodePage).value mustBe postcodeAddress.toPostalCode("")
       }
     }
   }

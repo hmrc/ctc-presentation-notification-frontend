@@ -349,11 +349,10 @@ package object models {
 
   implicit class RichPostcodeAddressType02(value: PostcodeAddressType02) {
 
-    // TODO - this isn't great...
-    def toPostalCode: PostalCodeAddress = PostalCodeAddress(
+    def toPostalCode(countryDescription: String): PostalCodeAddress = PostalCodeAddress(
       streetNumber = value.houseNumber.getOrElse(""),
       postalCode = value.postcode,
-      country = Country(CountryCode(value.country), "")
+      country = Country(CountryCode(value.country), countryDescription)
     )
   }
 
