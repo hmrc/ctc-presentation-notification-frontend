@@ -16,6 +16,7 @@
 
 package pages.transport.departureTransportMeans
 
+import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
 
@@ -30,7 +31,19 @@ class TransportMeansIdentificationPageSpec extends PageBehaviours {
     beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage(transportIndex))
 
     "cleanup" - {
-      // TODO Add clean-up test
+      "must remove TransportMeansNationalityPage and TransportMeansIdentificationNumberPage" in {
+        forAll(arbitraryTransportMeansIdentification.arbitrary) {
+          identification =>
+            val userAnswers = emptyUserAnswers
+              .setValue(TransportMeansIdentificationNumberPage(transportIndex), "identificationNumber")
+              .setValue(TransportMeansNationalityPage(transportIndex), Nationality("AR", "Argentina"))
+
+            val result = userAnswers.setValue(TransportMeansIdentificationPage(transportIndex), identification)
+
+            result.get(TransportMeansIdentificationNumberPage(activeIndex)) must not be defined
+            result.get(TransportMeansNationalityPage(activeIndex)) must not be defined
+        }
+      }
     }
   }
 }

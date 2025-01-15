@@ -28,9 +28,5 @@ class TransportMeansNationalityPageSpec extends PageBehaviours {
     beSettable[Nationality](TransportMeansNationalityPage(transportIndex))
 
     beRemovable[Nationality](TransportMeansNationalityPage(transportIndex))
-
-    "cleanup" - {
-      // TODO Add clean-up test
-    }
   }
 }

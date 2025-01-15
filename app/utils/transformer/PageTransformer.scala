@@ -56,7 +56,6 @@ trait PageTransformer {
           accTry.flatMap(_.set(capturedAnswer._1, capturedAnswer._2))
       }
 
-  // TODO - can we refactor to use an ID to get a particular DomainModelType rather than getting the entire list?
   def transformFromDepartureWithRefData(
     userAnswers: UserAnswers,
     fetchReferenceData: () => Future[Seq[DomainModelType]],
