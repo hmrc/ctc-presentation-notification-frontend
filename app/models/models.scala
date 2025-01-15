@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import config.Constants.AuthorisationTypeDeparture._
-import config.Constants.DeclarationTypeSecurity._
-import generated._
-import models.reference.{Country, CountryCode, Item}
-import play.api.libs.json._
+import config.Constants.AuthorisationTypeDeparture.*
+import config.Constants.DeclarationTypeSecurity.*
+import generated.*
+import models.reference.{Country, Item}
+import play.api.libs.json.*
 import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
@@ -349,10 +349,10 @@ package object models {
 
   implicit class RichPostcodeAddressType02(value: PostcodeAddressType02) {
 
-    def toPostalCode(countryDescription: String): PostalCodeAddress = PostalCodeAddress(
-      streetNumber = value.houseNumber.getOrElse(""),
+    def toPostalCode(country: Country): PostalCodeAddress = PostalCodeAddress(
+      streetNumber = value.houseNumber.getOrElse("NA"), // this is because we failed to model C0382 in the IE015 and IE170
       postalCode = value.postcode,
-      country = Country(CountryCode(value.country), countryDescription)
+      country = country
     )
   }
 

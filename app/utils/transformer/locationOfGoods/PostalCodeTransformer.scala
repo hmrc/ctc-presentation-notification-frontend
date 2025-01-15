@@ -16,7 +16,6 @@
 
 package utils.transformer.locationOfGoods
 
-import models.reference.Country
 import models.{PostalCodeAddress, RichPostcodeAddressType02, UserAnswers}
 import pages.locationOfGoods.PostalCodePage
 import services.CountriesService
@@ -30,20 +29,17 @@ class PostalCodeTransformer @Inject() (countriesService: CountriesService)(impli
   override type DomainModelType              = PostalCodeAddress
   override type ExtractedTypeInDepartureData = PostalCodeAddress
 
-  private def findCountryDesc(countries: Seq[Country], code: String) = countries.find(_.code.code == code).map(_.description).getOrElse("")
-
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     countriesService.getCountries().flatMap {
       countryList =>
         transformFromDeparture(
           userAnswers = userAnswers,
-          extractDataFromDepartureData = _.departureData.Consignment.LocationOfGoods
-            .flatMap(
-              _.PostcodeAddress.map(
-                address => address.toPostalCode(findCountryDesc(countryList.values, address.country))
-              )
-            )
-            .toSeq,
+          extractDataFromDepartureData = userAnswers =>
+            (for {
+              locationOfGoods <- userAnswers.departureData.Consignment.LocationOfGoods
+              address         <- locationOfGoods.PostcodeAddress
+              country         <- countryList.values.find(_.code.code == address.country)
+            } yield address.toPostalCode(country)).toSeq,
           generateCapturedAnswers = _.map((PostalCodePage, _))
         )
     }

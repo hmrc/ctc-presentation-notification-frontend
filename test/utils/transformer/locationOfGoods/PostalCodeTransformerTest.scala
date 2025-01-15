@@ -20,7 +20,7 @@ import base.SpecBase
 import generated.{LocationOfGoodsType05, PostcodeAddressType02}
 import generators.Generators
 import models.reference.{Country, CountryCode}
-import models.{RichPostcodeAddressType02, SelectableList}
+import models.{PostalCodeAddress, SelectableList}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.PostalCodePage
@@ -35,21 +35,53 @@ class PostalCodeTransformerTest extends SpecBase with Generators {
 
   "PostalCodeTransformer" - {
 
-    "must return updated answers with PostalCodePage" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02]) {
-        (locationOfGoods, postcodeAddress) =>
-          when(countryService.getCountries()).thenReturn(Future.successful(SelectableList(Seq(Country(CountryCode(postcodeAddress.country), "description")))))
-          val userAnswers = setLocationOfGoodsOnUserAnswersLens
-            .replace(
-              Option(locationOfGoods.copy(PostcodeAddress = Some(postcodeAddress)))
-            )(emptyUserAnswers)
+    "must return updated answers with PostalCodePage" - {
+      "when house number is defined" in {
+        forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02], nonEmptyString) {
+          (locationOfGoods, postcodeAddress, houseNumber) =>
+            val country = Country(CountryCode(postcodeAddress.country), "description")
 
-          val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(PostalCodePage).value mustBe postcodeAddress.toPostalCode("description")
+            when(countryService.getCountries()).thenReturn(Future.successful(SelectableList(Seq(country))))
+
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .replace(
+                Option(locationOfGoods.copy(PostcodeAddress = Some(postcodeAddress.copy(houseNumber = Some(houseNumber)))))
+              )(emptyUserAnswers)
+
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(PostalCodePage).value mustBe
+              PostalCodeAddress(
+                streetNumber = houseNumber,
+                postalCode = postcodeAddress.postcode,
+                country = country
+              )
+        }
+      }
+
+      "when house number is undefined" in {
+        forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02]) {
+          (locationOfGoods, postcodeAddress) =>
+            val country = Country(CountryCode(postcodeAddress.country), "description")
+
+            when(countryService.getCountries()).thenReturn(Future.successful(SelectableList(Seq(country))))
+
+            val userAnswers = setLocationOfGoodsOnUserAnswersLens
+              .replace(
+                Option(locationOfGoods.copy(PostcodeAddress = Some(postcodeAddress.copy(houseNumber = None))))
+              )(emptyUserAnswers)
+
+            val result = transformer.transform.apply(userAnswers).futureValue
+            result.get(PostalCodePage).value mustBe
+              PostalCodeAddress(
+                streetNumber = "NA",
+                postalCode = postcodeAddress.postcode,
+                country = country
+              )
+        }
       }
     }
 
-    "must use add country description if country code not found" in {
+    "must return none if country code not found" in {
       forAll(arbitrary[LocationOfGoodsType05], arbitrary[PostcodeAddressType02]) {
         (locationOfGoods, postcodeAddress) =>
           when(countryService.getCountries()).thenReturn(Future.successful(SelectableList(Seq())))
@@ -59,7 +91,7 @@ class PostalCodeTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(PostalCodePage).value mustBe postcodeAddress.toPostalCode("")
+          result.get(PostalCodePage) mustBe None
       }
     }
   }
