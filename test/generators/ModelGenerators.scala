@@ -17,7 +17,7 @@
 package generators
 
 import models.*
-import models.AddressLine.{City, NumberAndStreet, PostalCode, StreetNumber}
+import models.AddressLine.{City, NumberAndStreet, PostalCode}
 import models.StringFieldRegex.{coordinatesLatitudeMaxRegex, coordinatesLongitudeMaxRegex}
 import models.departureP5.MessageType
 import models.departureP5.MessageType.*
@@ -104,15 +104,6 @@ trait ModelGenerators {
       for {
         id <- nonEmptyString
       } yield id
-    }
-
-  implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
-    Arbitrary {
-      for {
-        streetNumber <- stringsWithMaxLength(StreetNumber.length, Gen.alphaNumChar)
-        postalCode   <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
-        country      <- arbitrary[Country]
-      } yield PostalCodeAddress(streetNumber, postalCode, country)
     }
 
   implicit lazy val arbitraryNationality: Arbitrary[Nationality] =

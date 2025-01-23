@@ -20,7 +20,7 @@ import base.SpecBase
 import config.Constants.QualifierOfTheIdentification._
 import generators.Generators
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, PostalCodeAddress}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods._
@@ -37,8 +37,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
     LocationOfGoodsIdentification(EoriNumberIdentifier, "EoriNumber"),
     LocationOfGoodsIdentification(AuthorisationNumberIdentifier, "AuthorisationNumberIdentifier"),
     LocationOfGoodsIdentification(UnlocodeIdentifier, "UnlocodeIdentifier"),
-    LocationOfGoodsIdentification(CoordinatesIdentifier, "CoordinatesIdentifier"),
-    LocationOfGoodsIdentification(PostalCodeIdentifier, "PostalCode")
+    LocationOfGoodsIdentification(CoordinatesIdentifier, "CoordinatesIdentifier")
   )
 
   val identificationsExcludingAddress: Seq[LocationOfGoodsIdentification] = Seq(
@@ -46,8 +45,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
     LocationOfGoodsIdentification(EoriNumberIdentifier, "EoriNumber"),
     LocationOfGoodsIdentification(AuthorisationNumberIdentifier, "AuthorisationNumberIdentifier"),
     LocationOfGoodsIdentification(UnlocodeIdentifier, "UnlocodeIdentifier"),
-    LocationOfGoodsIdentification(CoordinatesIdentifier, "CoordinatesIdentifier"),
-    LocationOfGoodsIdentification(PostalCodeIdentifier, "PostalCode")
+    LocationOfGoodsIdentification(CoordinatesIdentifier, "CoordinatesIdentifier")
   )
 
   "LocationOfGoodsAnswersHelper" - {
@@ -452,41 +450,6 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
               mode =>
                 val helper = new LocationOfGoodsAnswersHelper(emptyUserAnswers, departureId, mode)
                 val result = helper.address
-                result mustBe None
-            }
-          }
-        }
-      }
-
-      "postCodeAddress" - {
-        "must return Some(Row)" - {
-          s"when postCodeAddress defined in the ie170" in {
-            forAll(arbitrary[Mode], arbitrary[PostalCodeAddress]) {
-              (mode, addressData) =>
-                val answers = emptyUserAnswers
-                  .setValue(PostalCodePage, addressData)
-                val helper = new LocationOfGoodsAnswersHelper(answers, departureId, mode)
-                val result = helper.postCodeAddress
-
-                result.get.key.value mustBe "Postal code"
-                result.get.value.value mustBe addressData.toString
-                val actions = result.get.actions.get.items
-                actions.size mustBe 1
-                val action = actions.head
-                action.content.value mustBe "Change"
-                action.href mustBe controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode).url
-                action.visuallyHiddenText.get mustBe "the address for the location of goods"
-                action.id mustBe "change-location-of-goods-postalCode"
-            }
-          }
-        }
-
-        "must return None" - {
-          "when postCodeAddress undefined" in {
-            forAll(arbitrary[Mode]) {
-              mode =>
-                val helper = new LocationOfGoodsAnswersHelper(emptyUserAnswers, departureId, mode)
-                val result = helper.postCodeAddress
                 result mustBe None
             }
           }

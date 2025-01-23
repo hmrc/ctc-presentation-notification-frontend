@@ -38,7 +38,6 @@ class LocationOfGoodsPipeline @Inject() (
   locationTypeTransformer: LocationTypeTransformer,
   nameTransformer: NameTransformer,
   phoneNumberTransformer: PhoneNumberTransformer,
-  postalCodeTransformer: PostalCodeTransformer,
   unLocodeTransformer: UnLocodeTransformer
 )(implicit ec: ExecutionContext) {
 
@@ -51,7 +50,6 @@ class LocationOfGoodsPipeline @Inject() (
       phoneNumberTransformer.transform andThen
       countryTransformer.transform andThen
       addressTransformer.transform andThen
-      postalCodeTransformer.transform andThen
       coordinatesTransformer.transform andThen
       addIdentifierYesNoTransformer.transform andThen
       additionalIdentifierTransformer.transform andThen

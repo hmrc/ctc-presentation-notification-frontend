@@ -158,15 +158,6 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode))
         }
 
-        "when PostalCodeIdentifier" in {
-          val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(PostalCodeIdentifier, "identifier")
-
-          val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
-          navigator
-            .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode))
-        }
-
         "when unknown identifier" in {
           val UnknownIdentifier                    = "J"
           val value: LocationOfGoodsIdentification = LocationOfGoodsIdentification(UnknownIdentifier, "unknownIdentifier")
@@ -258,8 +249,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           AdditionalIdentifierPage,
           CoordinatesPage,
           UnLocodePage,
-          AddressPage,
-          PostalCodePage
+          AddressPage
         ) foreach (
           page =>
             s"when page is $page" in {
@@ -1003,13 +993,13 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       }
 
-      "must go from IdentificationPage to check your answers page" in {
+      "must go from IdentificationPage to appropriate route page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.setValue(IdentificationPage, LocationOfGoodsIdentification(PostalCodeIdentifier, s"$PostalCodeIdentifier - desc"))
+            val updatedAnswers = answers.setValue(IdentificationPage, LocationOfGoodsIdentification(CoordinatesIdentifier, s"$CoordinatesIdentifier - desc"))
             navigator
               .nextPage(IdentificationPage, updatedAnswers, departureId, CheckMode)
-              .mustBe(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, CheckMode))
+              .mustBe(controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, CheckMode))
         }
 
       }

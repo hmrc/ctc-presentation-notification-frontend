@@ -23,7 +23,7 @@ import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference._
 import models.reference.transport.border.active.{Identification => ABTMIdentification}
 import models.reference.transport.transportMeans.{TransportMeansIdentification => DTMIdentification}
-import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress}
+import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -512,7 +512,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val eori                      = Gen.alphaNumStr.sample.value
         val country                   = arbitrary[Country].sample.value
         val address                   = arbitrary[DynamicAddress].sample.value
-        val postcodeAddress           = arbitrary[PostalCodeAddress].sample.value
         val name                      = Gen.alphaNumStr.sample.value
         val phoneNumber               = Gen.alphaNumStr.sample.value
 
@@ -528,7 +527,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             .setValue(EoriPage, eori)
             .setValue(CountryPage, country)
             .setValue(AddressPage, address)
-            .setValue(PostalCodePage, postcodeAddress)
             .setValue(contact.NamePage, name)
             .setValue(contact.PhoneNumberPage, phoneNumber)
 
@@ -563,13 +561,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 postcode = address.postalCode,
                 city = address.city,
                 country = country.code.code
-              )
-            ),
-            PostcodeAddress = Some(
-              PostcodeAddressType02(
-                houseNumber = Some(postcodeAddress.streetNumber),
-                postcode = postcodeAddress.postalCode,
-                country = postcodeAddress.country.code.code
               )
             ),
             ContactPerson = Some(
