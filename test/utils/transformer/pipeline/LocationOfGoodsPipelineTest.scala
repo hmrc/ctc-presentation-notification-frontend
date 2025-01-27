@@ -42,7 +42,6 @@ class LocationOfGoodsPipelineTest extends SpecBase {
       val locationTypeTransformer                  = mock[LocationTypeTransformer]
       val nameTransformer                          = mock[NameTransformer]
       val phoneNumberTransformer                   = mock[PhoneNumberTransformer]
-      val postalCodeTransformer                    = mock[PostalCodeTransformer]
       val unLocodeTransformer                      = mock[UnLocodeTransformer]
 
       val userAnswers                   = mock[UserAnswers]
@@ -54,7 +53,6 @@ class LocationOfGoodsPipelineTest extends SpecBase {
       val uaWithPhoneNumber             = mock[UserAnswers]
       val uaWithCountry                 = mock[UserAnswers]
       val uaWithAddress                 = mock[UserAnswers]
-      val uaWithPostalCode              = mock[UserAnswers]
       val uaWithCoordinates             = mock[UserAnswers]
       val uaWithAddIdentifierYesNo      = mock[UserAnswers]
       val uaWithAdditionalIdentifier    = mock[UserAnswers]
@@ -71,8 +69,7 @@ class LocationOfGoodsPipelineTest extends SpecBase {
       when(phoneNumberTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithName, `return` = uaWithPhoneNumber))
       when(countryTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithPhoneNumber, `return` = uaWithCountry))
       when(addressTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithCountry, `return` = uaWithAddress))
-      when(postalCodeTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithAddress, `return` = uaWithPostalCode))
-      when(coordinatesTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithPostalCode, `return` = uaWithCoordinates))
+      when(coordinatesTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithAddress, `return` = uaWithCoordinates))
       when(addIdentifierYesNoTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithCoordinates, `return` = uaWithAddIdentifierYesNo))
       when(additionalIdentifierTransformer.transform(hc))
         .thenReturn(verifyTransformer(expect = uaWithAddIdentifierYesNo, `return` = uaWithAdditionalIdentifier))
@@ -95,7 +92,6 @@ class LocationOfGoodsPipelineTest extends SpecBase {
         locationTypeTransformer,
         nameTransformer,
         phoneNumberTransformer,
-        postalCodeTransformer,
         unLocodeTransformer
       )
 
@@ -114,7 +110,6 @@ class LocationOfGoodsPipelineTest extends SpecBase {
       verify(locationTypeTransformer, times(1)).transform(hc)
       verify(nameTransformer, times(1)).transform(hc)
       verify(phoneNumberTransformer, times(1)).transform(hc)
-      verify(postalCodeTransformer, times(1)).transform(hc)
       verify(unLocodeTransformer, times(1)).transform(hc)
     }
   }

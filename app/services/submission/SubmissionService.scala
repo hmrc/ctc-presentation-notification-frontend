@@ -20,7 +20,7 @@ import connectors.DepartureMovementConnector
 import generated._
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.{Country, CustomsOffice, Item, Nationality}
-import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, PostalCodeAddress, UserAnswers}
+import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, UserAnswers}
 import pages.sections.houseConsignment.HouseConsignmentListSection
 import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
@@ -180,16 +180,6 @@ class SubmissionService @Inject() (
         )
     }
 
-    implicit val postcodeAddressReads: Reads[PostcodeAddressType02] =
-      PostalCodePage.path.read[PostalCodeAddress].map {
-        address =>
-          PostcodeAddressType02(
-            houseNumber = Some(address.streetNumber),
-            postcode = address.postalCode,
-            country = address.country.code.code
-          )
-      }
-
     implicit val contactPersonReads: Reads[ContactPersonType06] = {
       import contact._
       (
@@ -209,7 +199,6 @@ class SubmissionService @Inject() (
       gnss                      <- __.readNullableSafe[GNSSType]
       economicOperator          <- __.readNullableSafe[EconomicOperatorType03]
       address                   <- __.readNullableSafe[AddressType14]
-      postcodeAddress           <- __.readNullableSafe[PostcodeAddressType02]
       contactPerson             <- __.readNullableSafe[ContactPersonType06]
     } yield LocationOfGoodsType03(
       typeOfLocation = typeOfLocation.code,
@@ -221,7 +210,6 @@ class SubmissionService @Inject() (
       GNSS = gnss,
       EconomicOperator = economicOperator,
       Address = address,
-      PostcodeAddress = postcodeAddress,
       ContactPerson = contactPerson
     )
   }

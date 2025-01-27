@@ -17,7 +17,7 @@
 package utils
 
 import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, PostalCodeAddress, UserAnswers}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages
@@ -129,13 +129,6 @@ class LocationOfGoodsAnswersHelper(
     id = Some("change-location-of-goods-address")
   )
 
-  def postCodeAddress: Option[SummaryListRow] = buildRowWithAnswer[PostalCodeAddress](
-    page = PostalCodePage,
-    formatAnswer = formatAsPostalCode,
-    prefix = "locationOfGoods.postalCode",
-    id = Some("change-location-of-goods-postalCode")
-  )
-
   def locationOfGoodsSection: Section = {
     val rows: Seq[SummaryListRow] = Seq(
       locationTypeRow,
@@ -147,7 +140,6 @@ class LocationOfGoodsAnswersHelper(
       coordinates,
       countryTypeRow,
       address,
-      postCodeAddress,
       additionalIdentifierYesNo,
       additionalIdentifierRow,
       locationOfGoodsContactYesNo,

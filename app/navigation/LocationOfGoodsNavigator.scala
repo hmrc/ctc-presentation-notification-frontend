@@ -38,12 +38,12 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case CheckInformationPage                            => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
     case EoriPage | AuthorisationNumberPage              => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
     case AddIdentifierYesNoPage                          => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
-    case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)
-    case AddContactYesNoPage                                                                      => ua => addContactYesNoNavigation(ua, departureId, mode)
-    case NamePage                                                                                 => ua => PhoneNumberPage.route(ua, departureId, mode)
-    case CustomsOfficeIdentifierPage                                                              => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
-    case PhoneNumberPage                                                                          => ua => phoneNumberPageNavigation(ua, departureId, mode)
-    case LimitDatePage                                                                            => ua => limitDatePageNavigation(departureId, mode, ua)
+    case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage => ua => AddContactYesNoPage.route(ua, departureId, mode)
+    case AddContactYesNoPage                                                     => ua => addContactYesNoNavigation(ua, departureId, mode)
+    case NamePage                                                                => ua => PhoneNumberPage.route(ua, departureId, mode)
+    case CustomsOfficeIdentifierPage                                             => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
+    case PhoneNumberPage                                                         => ua => phoneNumberPageNavigation(ua, departureId, mode)
+    case LimitDatePage                                                           => ua => limitDatePageNavigation(departureId, mode, ua)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -51,13 +51,13 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
     case LocationTypePage | InferredLocationTypePage => ua => IdentificationPage.route(ua, departureId, mode)
     case AddIdentifierYesNoPage                      => ua => addIdentifierYesNoNavigation(ua, departureId, mode)
     case EoriPage | AuthorisationNumberPage          => ua => AddIdentifierYesNoPage.route(ua, departureId, mode)
-    case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage | PostalCodePage => ua => AddContactYesNoPage.route(ua, departureId, mode)
-    case CustomsOfficeIdentifierPage                                                              => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
-    case IdentificationPage | InferredIdentificationPage => ua => routeIdentificationPageNavigation(ua, departureId, mode)
-    case AddContactYesNoPage                             => ua => addContactYesNoNavigation(ua, departureId, mode)
-    case NamePage                                        => ua => namePageNavigation(ua, departureId, mode)
-    case PhoneNumberPage                                 => ua => phoneNumberPageNavigation(ua, departureId, mode)
-    case CountryPage                                     => ua => AddressPage.route(ua, departureId, mode)
+    case AdditionalIdentifierPage | CoordinatesPage | UnLocodePage | AddressPage => ua => AddContactYesNoPage.route(ua, departureId, mode)
+    case CustomsOfficeIdentifierPage                                             => ua => placeOfLoadingExistsRedirect(ua, departureId, mode)
+    case IdentificationPage | InferredIdentificationPage                         => ua => routeIdentificationPageNavigation(ua, departureId, mode)
+    case AddContactYesNoPage                                                     => ua => addContactYesNoNavigation(ua, departureId, mode)
+    case NamePage                                                                => ua => namePageNavigation(ua, departureId, mode)
+    case PhoneNumberPage                                                         => ua => phoneNumberPageNavigation(ua, departureId, mode)
+    case CountryPage                                                             => ua => AddressPage.route(ua, departureId, mode)
   }
 
   private def namePageNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
@@ -74,7 +74,6 @@ class LocationOfGoodsNavigator @Inject() () extends Navigator {
       case CoordinatesIdentifier         => Some(controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode))
       case UnlocodeIdentifier            => Some(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode))
       case AddressIdentifier             => Some(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode))
-      case PostalCodeIdentifier          => Some(controllers.locationOfGoods.routes.PostalCodeController.onPageLoad(departureId, mode))
       case _                             => None
     }
 

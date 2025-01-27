@@ -40,10 +40,8 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
   private val authorisationNumber: LocationOfGoodsIdentification     = LocationOfGoodsIdentification(AuthorisationNumberIdentifier, "test4")
   private val coordinatesIdentifier: LocationOfGoodsIdentification   = LocationOfGoodsIdentification(CoordinatesIdentifier, "test5")
   private val addressIdentifier: LocationOfGoodsIdentification       = LocationOfGoodsIdentification(AddressIdentifier, "test6")
-  private val postalCode: LocationOfGoodsIdentification              = LocationOfGoodsIdentification(PostalCodeIdentifier, "test7")
 
   private val identifiers = NonEmptySet.of(
-    postalCode,
     unlocodeIdentifier,
     customsOfficeIdentifier,
     coordinatesIdentifier,
@@ -83,7 +81,6 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
             .thenReturn(Future.successful(identifiers))
           val locationType = LocationType(ApprovedPlace, "Approved place")
           service.getLocationOfGoodsIdentificationTypes(locationType.`type`).futureValue mustBe Seq(
-            postalCode,
             unlocodeIdentifier,
             coordinatesIdentifier,
             eoriNumberIdentifier,
@@ -97,7 +94,6 @@ class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeA
             .thenReturn(Future.successful(identifiers))
           val locationType = LocationType(Other, "Other")
           service.getLocationOfGoodsIdentificationTypes(locationType.`type`).futureValue mustBe Seq(
-            postalCode,
             unlocodeIdentifier,
             coordinatesIdentifier,
             addressIdentifier

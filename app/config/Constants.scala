@@ -45,7 +45,6 @@ object Constants {
   }
 
   object QualifierOfTheIdentification {
-    val PostalCodeIdentifier          = "T"
     val UnlocodeIdentifier            = "U"
     val CustomsOfficeIdentifier       = "V"
     val CoordinatesIdentifier         = "W"
