@@ -70,7 +70,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         server.stubFor(
           get(urlEqualTo(s"/movements/departures/$departureId"))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
             .willReturn(okJson(responseJson.toString()))
         )
 
@@ -149,7 +149,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         server.stubFor(
           get(urlEqualTo(s"/movements/departures/$departureId/messages"))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
             .willReturn(okJson(responseJson.toString()))
         )
 
@@ -224,7 +224,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         server.stubFor(
           get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId/body"))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+xml"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+xml"))
             .willReturn(ok(xml.toString()))
         )
 
@@ -298,7 +298,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         server.stubFor(
           get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId/body"))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+xml"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+xml"))
             .willReturn(ok(xml.toString()))
         )
 
@@ -318,7 +318,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
         server.stubFor(
           post(urlEqualTo(s"/movements/departures/$departureId/messages"))
             .withRequestBody(equalTo(body.toString()))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
             .withHeader("Content-Type", equalTo("application/xml"))
             .willReturn(aResponse().withStatus(OK))
         )
