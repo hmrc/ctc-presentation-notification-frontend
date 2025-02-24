@@ -23,6 +23,7 @@ import models.{Index, UserAnswers}
 import pages.transport.departureTransportMeans.TransportMeansIdentificationPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
+import services.RichResponses
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +38,7 @@ class TransportMeansIdentificationTransformer @Inject() (referenceDataConnector:
   def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
-      fetchReferenceData = () => referenceDataConnector.getMeansOfTransportIdentificationTypes().map(_.toList),
+      fetchReferenceData = () => referenceDataConnector.getMeansOfTransportIdentificationTypes().map(_.resolve()).map(_.toList),
       extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
       generateCapturedAnswers = generateCapturedAnswers
     )

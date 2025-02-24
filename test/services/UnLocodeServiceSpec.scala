@@ -46,7 +46,7 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
         val unLocodeItem = UnLocode(unLocode, "Place D")
 
         when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
-          .thenReturn(Future.successful(unLocodeItem))
+          .thenReturn(Future.successful(Right(unLocodeItem)))
 
         service.doesUnLocodeExist(unLocode).futureValue mustBe true
         verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())
@@ -58,7 +58,7 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       val unLocode = "ABCDE"
 
       when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
-        .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+        .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
       service.doesUnLocodeExist(unLocode).futureValue mustBe false
       verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())

@@ -45,7 +45,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
         forAll(arbitrary[DepartureTransportMeansType03], arbitrary[TransportMeansIdentification]) {
           (departureTransportMeans, identification) =>
             when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
-              .thenReturn(Future.successful(NonEmptySet.of(identification)))
+              .thenReturn(Future.successful(Right(NonEmptySet.of(identification))))
 
             val userAnswers = setDepartureTransportMeansAnswersLens.replace(
               Seq(departureTransportMeans.copy(typeOfIdentification = Some(identification.`type`)))
@@ -63,7 +63,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
           val identification = TransportMeansIdentification("foo", "desc")
 
           when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
-            .thenReturn(Future.successful(NonEmptySet.of(identification)))
+            .thenReturn(Future.successful(Right(NonEmptySet.of(identification))))
 
           val userAnswers = setDepartureTransportMeansAnswersLens.replace(
             Seq(departureTransportMeans.copy(typeOfIdentification = Some(identificationCode)))

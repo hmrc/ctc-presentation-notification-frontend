@@ -39,11 +39,13 @@ class TransportMeansIdentificationTypesService @Inject() (referenceDataConnector
     case Some(InlandMode(_, _)) =>
       referenceDataConnector
         .getMeansOfTransportIdentificationTypes()
+        .map(_.resolve())
         .map(_.toSeq)
         .flatMap(filter(_, index, Future.successful(inlandModeOfTransport)))
     case None =>
       referenceDataConnector
         .getMeansOfTransportIdentificationTypes()
+        .map(_.resolve())
         .map(_.toSeq)
         .flatMap(
           filter(
