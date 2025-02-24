@@ -33,15 +33,18 @@ class CustomsOfficesService @Inject() (
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfTransitForCountry(countryCode)
+      .map(_.resolve())
       .map(_.toSelectableList)
 
   def getCustomsOfficeById(id: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
     referenceDataConnector
       .getCustomsOfficeForId(id)
+      .map(_.resolve())
 
   def getCustomsOfficesByMultipleIds(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesForIds(ids)
+      .map(_.resolve())
       .map(_.toSeq)
 
   def getCustomsOfficesOfDestinationForCountry(
@@ -49,6 +52,7 @@ class CustomsOfficesService @Inject() (
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfDestinationForCountry(countryCode)
+      .map(_.resolve())
       .map(_.toSelectableList)
 
   def getCustomsOfficesOfExitForCountry(
@@ -56,6 +60,7 @@ class CustomsOfficesService @Inject() (
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfExitForCountry(countryCode)
+      .map(_.resolve())
       .map(_.toSelectableList)
 
   def getCustomsOfficesOfDepartureForCountry(
@@ -63,6 +68,6 @@ class CustomsOfficesService @Inject() (
   )(implicit hc: HeaderCarrier): Future[SelectableList[CustomsOffice]] =
     referenceDataConnector
       .getCustomsOfficesOfDepartureForCountry(countryCode)
+      .map(_.resolve())
       .map(_.toSelectableList)
-
 }

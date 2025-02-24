@@ -49,7 +49,7 @@ class LocationTypeServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted location types" - {
         "when is not simplified" in {
           when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
-            .thenReturn(Future.successful(lts))
+            .thenReturn(Future.successful(Right(lts)))
 
           service.getLocationTypes(isSimplified = false).futureValue mustBe
             Seq(lt4, lt2, lt1)
@@ -59,7 +59,7 @@ class LocationTypeServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         "when is simplified" in {
           when(mockRefDataConnector.getTypesOfLocation()(any(), any()))
-            .thenReturn(Future.successful(lts))
+            .thenReturn(Future.successful(Right(lts)))
 
           service.getLocationTypes(isSimplified = true).futureValue mustBe
             Seq(lt3)

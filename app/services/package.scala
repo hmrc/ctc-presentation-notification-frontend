@@ -15,6 +15,7 @@
  */
 
 import cats.data.NonEmptySet
+import connectors.ReferenceDataConnector.*
 import models.{Selectable, SelectableList}
 
 package object services {
@@ -29,5 +30,30 @@ package object services {
 
     def toSeq: Seq[T] =
       value.toNonEmptyList.toList
+  }
+
+  implicit class RichResponses[T](value: Responses[T]) {
+
+    def resolve(): NonEmptySet[T] =
+      value match {
+        case Right(value) => value
+        case Left(ex)     => throw ex
+      }
+  }
+
+  implicit class RichResponse[T](value: Response[T]) {
+
+    def isDefined: Boolean =
+      value match {
+        case Right(value)                           => true
+        case Left(_: NoReferenceDataFoundException) => false
+        case Left(ex)                               => throw ex
+      }
+
+    def resolve(): T =
+      value match {
+        case Right(value) => value
+        case Left(ex)     => throw ex
+      }
   }
 }

@@ -56,7 +56,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         val inlandMode = InlandMode("1", "Bus")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(identification1)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(identification1))))
 
         service.getMeansOfTransportIdentificationTypes(Some(inlandMode)).futureValue mustBe
           Seq(identification1)
@@ -69,10 +69,10 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         val inlandMode = InlandMode("1", "Bus")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(identification1)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(identification1))))
 
         when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(inlandMode)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(inlandMode))))
 
         when(mockTransportModeCodesService.getInlandModes()(any()))
           .thenReturn(Future.successful(Seq(inlandMode)))
