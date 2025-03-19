@@ -16,8 +16,8 @@
 
 package controllers.transport.border.active
 
-import controllers.actions._
-import forms.SelectableFormProvider
+import controllers.actions.*
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import models.reference.CustomsOffice
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode, RichCC015CType, SelectableList}
@@ -39,7 +39,7 @@ class CustomsOfficeActiveBorderController @Inject() (
   sessionRepository: SessionRepository,
   navigator: BorderNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CustomsOfficeFormProvider,
   customsOfficesService: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsOfficeActiveBorderView

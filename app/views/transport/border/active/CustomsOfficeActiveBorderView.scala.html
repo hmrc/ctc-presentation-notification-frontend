@@ -15,6 +15,7 @@
  *@
 
 @import controllers.transport.border.active.routes
+@import forms.SelectableFormProvider.CustomsOfficeFormProvider.field
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("transport.border.active.customsOfficeActiveBorder.heading"),
                 caption = Some(messages("transport.border.subheading")),

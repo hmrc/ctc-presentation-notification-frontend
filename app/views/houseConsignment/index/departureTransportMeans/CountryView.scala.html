@@ -15,6 +15,7 @@
  *@
 
 @import controllers.houseConsignment.index.departureTransportMeans.routes
+@import forms.SelectableFormProvider.CountryFormProvider.field
 @import models.reference.Nationality
 @import models.Selectable
 @import models.Selectable._
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("houseConsignment.index.departureTransportMeans.country.heading", houseConsignmentIndex.display),
                 caption = Some(messages("departureMeansOfTransport.caption"))

@@ -16,7 +16,7 @@
 
 package views.transport.equipment
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.ItemFormProvider
 import forms.behaviours.InputSelectViewBehaviours
 import models.reference.Item
 import models.{Index, NormalMode, SelectableList}
@@ -28,7 +28,11 @@ import views.html.transport.equipment.SelectItemsView
 
 class SelectItemsViewSpec extends InputSelectViewBehaviours[Item] {
 
-  override def form: Form[Item] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new ItemFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[Item] = formProvider.apply(prefix, SelectableList(values))
 
   private val viewModel = SelectItemsViewModel(emptyUserAnswers)
 

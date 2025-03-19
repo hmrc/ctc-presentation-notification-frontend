@@ -16,11 +16,11 @@
 
 package controllers.transport.departureTransportMeans
 
-import controllers.actions._
-import forms.SelectableFormProvider
-import models.{Index, Mode}
+import controllers.actions.*
+import forms.SelectableFormProvider.CountryFormProvider
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
+import models.{Index, Mode}
 import navigation.DepartureTransportMeansNavigator
 import pages.transport.departureTransportMeans.TransportMeansNationalityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +38,7 @@ class TransportMeansNationalityController @Inject() (
   sessionRepository: SessionRepository,
   navigator: DepartureTransportMeansNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansNationalityView

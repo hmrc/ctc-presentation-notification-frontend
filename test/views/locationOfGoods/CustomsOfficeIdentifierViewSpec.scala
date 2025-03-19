@@ -16,7 +16,7 @@
 
 package views.locationOfGoods
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import forms.behaviours.InputSelectViewBehaviours
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
@@ -27,7 +27,11 @@ import views.html.locationOfGoods.CustomsOfficeIdentifierView
 
 class CustomsOfficeIdentifierViewSpec extends InputSelectViewBehaviours[CustomsOffice] {
 
-  override def form: Form[CustomsOffice] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new CustomsOfficeFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[CustomsOffice] = formProvider.apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
     injector.instanceOf[CustomsOfficeIdentifierView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)

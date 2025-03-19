@@ -16,8 +16,8 @@
 
 package controllers.loading
 
-import controllers.actions._
-import forms.SelectableFormProvider
+import controllers.actions.*
+import forms.SelectableFormProvider.CountryFormProvider
 import models.Mode
 import models.reference.Country
 import models.requests.MandatoryDataRequest
@@ -38,7 +38,7 @@ class CountryController @Inject() (
   sessionRepository: SessionRepository,
   navigator: LoadingNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView

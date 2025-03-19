@@ -17,9 +17,9 @@
 package controllers.houseConsignment.index.departureTransportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.houseConsignment.index.departureTransportMeans.{routes => departureTransportMeansRoutes}
+import controllers.houseConsignment.index.departureTransportMeans.routes as departureTransportMeansRoutes
 import controllers.routes
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
@@ -28,7 +28,7 @@ import pages.houseConsignment.index.departureTransportMeans.CountryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.NationalitiesService
 import views.html.houseConsignment.index.departureTransportMeans.CountryView
 
@@ -40,9 +40,11 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val nationality2    = arbitraryNationality.arbitrary.sample.value
   private val nationalityList = SelectableList(Seq(nationality1, nationality2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CountryFormProvider()
   private val form         = formProvider("houseConsignment.index.departureTransportMeans.country", nationalityList, houseConsignmentIndex.display)
-  private val mode         = NormalMode
+  private val field        = formProvider.field
+
+  private val mode = NormalMode
 
   private lazy val countryRoute =
     departureTransportMeansRoutes.CountryController.onPageLoad(departureId, mode, houseConsignmentIndex, houseConsignmentDepartureTransportMeansIndex).url
@@ -81,7 +83,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> nationality1.code))
+      val filledForm = form.bind(Map(field -> nationality1.code))
 
       val view = injector.instanceOf[CountryView]
 
@@ -100,7 +102,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, countryRoute)
-        .withFormUrlEncodedBody(("value", nationality1.code))
+        .withFormUrlEncodedBody((field, nationality1.code))
 
       val result = route(app, request).value
 
@@ -114,8 +116,8 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, countryRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, countryRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -146,7 +148,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, countryRoute)
-        .withFormUrlEncodedBody(("value", nationality1.code))
+        .withFormUrlEncodedBody((field, nationality1.code))
 
       val result = route(app, request).value
 

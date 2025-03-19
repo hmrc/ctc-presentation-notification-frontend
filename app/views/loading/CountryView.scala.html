@@ -15,6 +15,7 @@
  *@
 
 @import controllers.loading.routes
+@import forms.SelectableFormProvider.CountryFormProvider.field
 @import models.reference.Country
 @import models.Selectable
 @import models.Selectable._
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("loading.country.heading"),
                 caption = Some(messages("placeOfLoading.caption"))

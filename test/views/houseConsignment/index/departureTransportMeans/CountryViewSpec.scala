@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.departureTransportMeans
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import forms.behaviours.InputSelectViewBehaviours
 import models.reference.Nationality
 import models.{NormalMode, SelectableList}
@@ -27,7 +27,11 @@ import views.html.houseConsignment.index.departureTransportMeans.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Nationality] {
 
-  override def form: Form[Nationality] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new CountryFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[Nationality] = formProvider.apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[Nationality]): HtmlFormat.Appendable =
     injector
