@@ -44,9 +44,11 @@
                 heading = messages("locationOfGoods.locationType.heading"),
                 caption = Some(messages("locationOfGoods.caption")),
                 additionalHtml = {
-                    Html(
-                        messages("locationOfGoods.locationType.p1").toParagraphString +
-                        messages("locationOfGoods.locationType.p2").toParagraphString
+                    HtmlFormat.fill(
+                        Seq(
+                            messages("locationOfGoods.locationType.p1").toParagraph,
+                            messages("locationOfGoods.locationType.p2").toParagraph
+                        )
                     )
                 }
             ),

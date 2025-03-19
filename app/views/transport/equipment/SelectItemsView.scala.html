@@ -48,10 +48,12 @@
                 heading = messages("transport.equipment.selectItems.heading"),
                 caption = Some(messages("transport.caption")),
                 additionalHtml = {
-                    (
-                        messages("transport.equipment.selectItems.paragraph").toParagraphString ++
-                        messages("transport.equipment.selectItems.label", selectItemsViewModel.items.values.length).toParagraphString
-                    ).toParagraph
+                    HtmlFormat.fill(
+                        Seq(
+                            messages("transport.equipment.selectItems.paragraph").toParagraph,
+                            messages("transport.equipment.selectItems.label", selectItemsViewModel.items.values.length).toParagraph
+                        )
+                    )
                 }
             ),
             selectItems = selectItemsViewModel.items.values.toSelectItems(form.value),
