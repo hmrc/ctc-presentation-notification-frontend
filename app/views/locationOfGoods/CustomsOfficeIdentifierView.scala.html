@@ -15,6 +15,7 @@
  *@
 
 @import controllers.locationOfGoods.routes
+@import forms.SelectableFormProvider.CustomsOfficeFormProvider.field
 @import models.reference.CustomsOffice
 @import models.Selectable
 @import models.Selectable._
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("locationOfGoods.customsOfficeIdentifier.heading"),
                 caption = Some(messages("locationOfGoods.caption"))

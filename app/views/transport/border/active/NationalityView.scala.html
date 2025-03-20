@@ -15,6 +15,7 @@
  *@
 
 @import controllers.transport.border.active.routes
+@import forms.SelectableFormProvider.CountryFormProvider.field
 @import models.reference.Nationality
 @import models.Selectable
 @import models.Selectable._
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("transport.border.active.nationality.heading"),
                 caption = Some(messages("transport.border.subheading"))

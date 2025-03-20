@@ -16,7 +16,7 @@
 
 package views.loading
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import forms.behaviours.InputSelectViewBehaviours
 import models.reference.Country
 import models.{NormalMode, SelectableList}
@@ -27,7 +27,11 @@ import views.html.loading.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
-  override def form: Form[Country] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new CountryFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[Country] = formProvider.apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector.instanceOf[CountryView].apply(form, departureId, values, NormalMode)(fakeRequest, messages)

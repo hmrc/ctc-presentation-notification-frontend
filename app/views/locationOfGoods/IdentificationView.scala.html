@@ -44,13 +44,10 @@
             radioType = RadioWithAdditionalHtml(
                 heading = messages("locationOfGoods.identification.heading"),
                 caption = Some(messages("locationOfGoods.caption")),
-                additionalHtml = {
-                    Html(messages("locationOfGoods.identification.p1").toParagraphString)
-                }
+                additionalHtml = messages("locationOfGoods.identification.p1").toParagraph
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )
-
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
     }

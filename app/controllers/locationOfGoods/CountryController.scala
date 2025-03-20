@@ -16,8 +16,8 @@
 
 package controllers.locationOfGoods
 
-import controllers.actions._
-import forms.SelectableFormProvider
+import controllers.actions.*
+import forms.SelectableFormProvider.CountryFormProvider
 import models.Mode
 import models.reference.Country
 import models.requests.MandatoryDataRequest
@@ -39,7 +39,7 @@ class CountryController @Inject() (
   sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView

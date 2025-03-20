@@ -17,18 +17,18 @@
 package controllers.transport.border.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import generators.Generators
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.active.CustomsOfficeActiveBorderPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.CustomsOfficesService
 import views.html.transport.border.active.CustomsOfficeActiveBorderView
 
@@ -43,9 +43,11 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
   private val customOfficeList = List(destinationOffice, transitOffice, exitOffice)
   private val selectableList   = SelectableList(customOfficeList)
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CustomsOfficeFormProvider()
   private val form         = formProvider("transport.border.active.customsOfficeActiveBorder", selectableList)
-  private val mode         = NormalMode
+  private val field        = formProvider.field
+
+  private val mode = NormalMode
 
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
 
@@ -91,7 +93,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> destinationOffice.id))
+      val filledForm = form.bind(Map(field -> destinationOffice.id))
 
       val view = injector.instanceOf[CustomsOfficeActiveBorderView]
 
@@ -111,7 +113,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, customsOfficeActiveBorderRoute)
-        .withFormUrlEncodedBody(("value", destinationOffice.id))
+        .withFormUrlEncodedBody((field, destinationOffice.id))
 
       val result = route(app, request).value
 
@@ -127,8 +129,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, customsOfficeActiveBorderRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, customsOfficeActiveBorderRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -158,7 +160,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
     setNoExistingUserAnswers()
 
     val request = FakeRequest(POST, customsOfficeActiveBorderRoute)
-      .withFormUrlEncodedBody(("value", destinationOffice.id))
+      .withFormUrlEncodedBody((field, destinationOffice.id))
 
     val result = route(app, request).value
 

@@ -16,8 +16,8 @@
 
 package controllers.locationOfGoods
 
-import controllers.actions._
-import forms.SelectableFormProvider
+import controllers.actions.*
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import models.{Mode, RichCC015CType}
 import navigation.LocationOfGoodsNavigator
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
@@ -36,7 +36,7 @@ class CustomsOfficeIdentifierController @Inject() (
   sessionRepository: SessionRepository,
   navigator: LocationOfGoodsNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CustomsOfficeFormProvider,
   customsOfficesService: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsOfficeIdentifierView
