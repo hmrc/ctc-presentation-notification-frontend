@@ -29,18 +29,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getLocationType(code: String)(implicit hc: HeaderCarrier): Future[LocationType] =
-    referenceDataConnector.getTypeOfLocation(code)
+    referenceDataConnector.getTypeOfLocation(code).map(_.resolve())
 
   def getMeansOfTransportIdentificationType(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
-    referenceDataConnector.getMeansOfTransportIdentificationType(code)
+    referenceDataConnector.getMeansOfTransportIdentificationType(code).map(_.resolve())
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypeActive(code)
+    referenceDataConnector.getMeansOfTransportIdentificationTypeActive(code).map(_.resolve())
 
   def getNationality(code: String)(implicit hc: HeaderCarrier): Future[Nationality] =
-    referenceDataConnector.getNationality(code)
+    referenceDataConnector.getNationality(code).map(_.resolve())
 
   def getCountry(code: String)(implicit hc: HeaderCarrier): Future[Country] =
-    referenceDataConnector.getCountry("CountryCodesFullList", code)
+    referenceDataConnector.getCountry("CountryCodesFullList", code).map(_.resolve())
 
 }

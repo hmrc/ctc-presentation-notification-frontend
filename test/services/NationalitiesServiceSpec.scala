@@ -45,7 +45,7 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
         val nationality = Nationality(code = "GB", description = "An archipelago in the North Atlantic Ocean")
 
         when(mockRefDataConnector.getNationalities()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(nationality)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(nationality))))
 
         service.getNationalities().futureValue mustBe SelectableList(Seq(nationality))
         verify(mockRefDataConnector).getNationalities()(any(), any())

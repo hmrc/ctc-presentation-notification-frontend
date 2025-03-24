@@ -16,7 +16,7 @@
 
 package views.transport.border.active
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import forms.behaviours.InputSelectViewBehaviours
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
@@ -27,7 +27,11 @@ import views.html.transport.border.active.CustomsOfficeActiveBorderView
 
 class CustomsOfficeActiveBorderViewSpec extends InputSelectViewBehaviours[CustomsOffice] {
 
-  override def form: Form[CustomsOffice] = new SelectableFormProvider()(prefix, SelectableList(values))
+  private val formProvider = new CustomsOfficeFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[CustomsOffice] = formProvider.apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
     injector.instanceOf[CustomsOfficeActiveBorderView].apply(form, departureId, values, NormalMode, activeIndex)(fakeRequest, messages)

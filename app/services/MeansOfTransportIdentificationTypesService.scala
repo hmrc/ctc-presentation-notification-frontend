@@ -41,11 +41,13 @@ class MeansOfTransportIdentificationTypesService @Inject() (
       case Some(InlandMode(_, _)) =>
         referenceDataConnector
           .getMeansOfTransportIdentificationTypes()
+          .map(_.resolve())
           .map(_.toSeq)
           .flatMap(filter(_, Future.successful(inlandMode)))
       case None =>
         referenceDataConnector
           .getMeansOfTransportIdentificationTypes()
+          .map(_.resolve())
           .map(_.toSeq)
           .flatMap(
             filter(
@@ -58,7 +60,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (
     }
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
-    referenceDataConnector.getMeansOfTransportIdentificationType(code)
+    referenceDataConnector.getMeansOfTransportIdentificationType(code).map(_.resolve())
 
   private def filter(
     identificationTypes: Seq[TransportMeansIdentification],

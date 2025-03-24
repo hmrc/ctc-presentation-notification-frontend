@@ -17,19 +17,19 @@
 package controllers.locationOfGoods
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
-import generated._
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
+import generated.*
 import generators.Generators
 import models.reference.CountryCode
 import models.{NormalMode, SelectableList}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.CustomsOfficeIdentifierPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.CustomsOfficesService
 import views.html.locationOfGoods.CustomsOfficeIdentifierView
 
@@ -42,8 +42,9 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
   private val customsOffice2                    = arbitraryCustomsOffice.arbitrary.sample.get
   private val customsOfficeList                 = SelectableList(Seq(customsOffice1, customsOffice2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CustomsOfficeFormProvider()
   private val form         = formProvider("locationOfGoods.customsOfficeIdentifier", customsOfficeList)
+  private val field        = formProvider.field
 
   private val mode = NormalMode
 
@@ -98,7 +99,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
 
     val result = route(app, request).value
 
-    val filledForm = form.bind(Map("value" -> customsOffice1.id))
+    val filledForm = form.bind(Map(field -> customsOffice1.id))
 
     val view = injector.instanceOf[CustomsOfficeIdentifierView]
 
@@ -118,7 +119,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
     setExistingUserAnswers(baseAnswers)
 
     val request = FakeRequest(POST, customsOfficeIdentifierRoute)
-      .withFormUrlEncodedBody(("value", customsOffice1.id))
+      .withFormUrlEncodedBody((field, customsOffice1.id))
 
     val result = route(app, request).value
 
@@ -135,8 +136,8 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
 
     setExistingUserAnswers(baseAnswers)
 
-    val request   = FakeRequest(POST, customsOfficeIdentifierRoute).withFormUrlEncodedBody(("value", "invalid value"))
-    val boundForm = form.bind(Map("value" -> "invalid value"))
+    val request   = FakeRequest(POST, customsOfficeIdentifierRoute).withFormUrlEncodedBody((field, "invalid value"))
+    val boundForm = form.bind(Map(field -> "invalid value"))
 
     val result = route(app, request).value
 
@@ -167,7 +168,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
     setNoExistingUserAnswers()
 
     val request = FakeRequest(POST, customsOfficeIdentifierRoute)
-      .withFormUrlEncodedBody(("value", customsOffice1.id))
+      .withFormUrlEncodedBody((field, customsOffice1.id))
 
     val result = route(app, request).value
 

@@ -48,7 +48,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted customs offices of transit for a given country" in {
 
         when(mockRefDataConnector.getCustomsOfficesOfTransitForCountry(eqTo(CountryCode("GB")))(any(), any()))
-          .thenReturn(Future.successful(gbCustomsOffices))
+          .thenReturn(Future.successful(Right(gbCustomsOffices)))
 
         service.getCustomsOfficesOfTransitForCountry(CountryCode("GB")).futureValue.values mustBe
           Seq(gbCustomsOffice2, gbCustomsOffice1)
@@ -61,7 +61,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return the head of the customs office list" in {
 
         when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
-          .thenReturn(Future.successful(gbCustomsOffice1))
+          .thenReturn(Future.successful(Right(gbCustomsOffice1)))
 
         service.getCustomsOfficeById("GB1").futureValue mustBe gbCustomsOffice1
 
@@ -73,7 +73,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must get customs office list for multiple ids" in {
 
         when(mockRefDataConnector.getCustomsOfficesForIds(eqTo(Seq("GB1", "GB2")))(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2))))
 
         service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq(gbCustomsOffice2, gbCustomsOffice1)
 
@@ -83,7 +83,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must throw exception if no matches" in {
 
         when(mockRefDataConnector.getCustomsOfficesForIds(any())(any(), any()))
-          .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+          .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
         val result = service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2"))
 
@@ -100,7 +100,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted customs offices of destination for a given country" in {
 
         when(mockRefDataConnector.getCustomsOfficesOfDestinationForCountry(eqTo(CountryCode("GB")))(any(), any()))
-          .thenReturn(Future.successful(gbCustomsOffices))
+          .thenReturn(Future.successful(Right(gbCustomsOffices)))
 
         service.getCustomsOfficesOfDestinationForCountry(CountryCode("GB")).futureValue.values mustBe
           Seq(gbCustomsOffice2, gbCustomsOffice1)

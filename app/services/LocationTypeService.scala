@@ -36,6 +36,7 @@ class LocationTypeService @Inject() (
 
     referenceDataConnector
       .getTypesOfLocation()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(filter)
   }

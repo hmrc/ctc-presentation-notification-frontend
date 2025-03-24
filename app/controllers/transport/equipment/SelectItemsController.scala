@@ -16,8 +16,8 @@
 
 package controllers.transport.equipment
 
-import controllers.actions._
-import forms.SelectableFormProvider
+import controllers.actions.*
+import forms.SelectableFormProvider.ItemFormProvider
 import models.{Index, Mode}
 import navigation.EquipmentNavigator
 import pages.transport.equipment.ItemPage
@@ -36,7 +36,7 @@ class SelectItemsController @Inject() (
   sessionRepository: SessionRepository,
   navigator: EquipmentNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: ItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: SelectItemsView,
   viewModelProvider: SelectItemsViewModelProvider

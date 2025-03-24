@@ -16,8 +16,8 @@
 
 package controllers.transport.border.active
 
-import controllers.actions._
-import forms.SelectableFormProvider
+import controllers.actions.*
+import forms.SelectableFormProvider.CountryFormProvider
 import models.reference.Nationality
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
@@ -38,7 +38,7 @@ class NationalityController @Inject() (
   sessionRepository: SessionRepository,
   navigator: BorderNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: NationalityView

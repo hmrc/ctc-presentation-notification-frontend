@@ -33,6 +33,7 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   ): Future[Seq[Identification]] =
     referenceDataConnector
       .getMeansOfTransportIdentificationTypesActive()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(filter(_, index, borderModeOfTransport))
 
@@ -41,11 +42,13 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   ): Future[Seq[Identification]] =
     referenceDataConnector
       .getMeansOfTransportIdentificationTypesActive()
+      .map(_.resolve())
       .map(_.toSeq)
 
   def getBorderMeansIdentification(code: String)(implicit hc: HeaderCarrier): Future[Identification] =
     referenceDataConnector
       .getMeansOfTransportIdentificationTypeActive(code)
+      .map(_.resolve())
 
   private def filter(
     identificationTypes: Seq[Identification],

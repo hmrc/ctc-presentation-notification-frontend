@@ -17,7 +17,7 @@
 package controllers.transport.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.ItemFormProvider
 import generators.Generators
 import models.reference.Item
 import models.{Index, NormalMode, SelectableList}
@@ -27,7 +27,7 @@ import pages.transport.equipment.ItemPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.transport.equipment.SelectItemsViewModel
 import viewModels.transport.equipment.SelectItemsViewModel.SelectItemsViewModelProvider
 import views.html.transport.equipment.SelectItemsView
@@ -42,9 +42,11 @@ class SelectItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val mockViewModelProvider = mock[SelectItemsViewModelProvider]
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new ItemFormProvider()
   private val form         = formProvider("transport.equipment.selectItems", items)
-  private val mode         = NormalMode
+  private val field        = formProvider.field
+
+  private val mode = NormalMode
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -88,7 +90,7 @@ class SelectItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> item1.value))
+      val filledForm = form.bind(Map(field -> item1.value))
 
       val view = injector.instanceOf[SelectItemsView]
 
@@ -103,7 +105,7 @@ class SelectItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, controllerRoute)
-        .withFormUrlEncodedBody(("value", item1.value))
+        .withFormUrlEncodedBody((field, item1.value))
 
       val result = route(app, request).value
 
@@ -116,8 +118,8 @@ class SelectItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, controllerRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, controllerRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -146,7 +148,7 @@ class SelectItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, controllerRoute)
-        .withFormUrlEncodedBody(("value", item1.value))
+        .withFormUrlEncodedBody((field, item1.value))
 
       val result = route(app, request).value
 

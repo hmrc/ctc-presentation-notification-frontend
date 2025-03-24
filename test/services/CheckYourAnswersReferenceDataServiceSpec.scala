@@ -43,7 +43,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       val identification = TransportMeansIdentification("code", "description")
 
       when(connector.getMeansOfTransportIdentificationType(any())(any(), any()))
-        .thenReturn(Future.successful(identification))
+        .thenReturn(Future.successful(Right(identification)))
 
       service.getMeansOfTransportIdentificationType("code").futureValue mustBe identification
 
@@ -54,7 +54,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       val identification = Identification("code", "description")
 
       when(connector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
-        .thenReturn(Future.successful(identification))
+        .thenReturn(Future.successful(Right(identification)))
 
       service.getBorderMeansIdentification("code").futureValue mustBe identification
 
@@ -65,7 +65,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       val locationType = LocationType("code", "description")
 
       when(connector.getTypeOfLocation(any())(any(), any()))
-        .thenReturn(Future.successful(locationType))
+        .thenReturn(Future.successful(Right(locationType)))
 
       service.getLocationType("code").futureValue mustBe locationType
 
@@ -76,7 +76,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       val nationality = Nationality("code", "description")
 
       when(connector.getNationality(any())(any(), any()))
-        .thenReturn(Future.successful(nationality))
+        .thenReturn(Future.successful(Right(nationality)))
 
       service.getNationality("code").futureValue mustBe nationality
 
@@ -87,7 +87,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       val country = Country(CountryCode("code"), "description")
 
       when(connector.getCountry(any(), any())(any(), any()))
-        .thenReturn(Future.successful(country))
+        .thenReturn(Future.successful(Right(country)))
 
       service.getCountry("code").futureValue mustBe country
 

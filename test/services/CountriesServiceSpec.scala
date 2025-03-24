@@ -53,7 +53,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
       "must return a list of sorted countries" in {
 
         when(mockRefDataConnector.getCountries(any())(any(), any()))
-          .thenReturn(Future.successful(countries))
+          .thenReturn(Future.successful(Right(countries)))
 
         service.getCountries().futureValue mustBe
           SelectableList(Seq(country2, country3, country1))
@@ -68,7 +68,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
           forAll(arbitrary[Country]) {
             country =>
               when(mockRefDataConnector.getCountriesWithoutZipCountry(any())(any(), any()))
-                .thenReturn(Future.successful(country.code))
+                .thenReturn(Future.successful(Right(country.code)))
 
               val result = service.doesCountryRequireZip(country).futureValue
 
@@ -82,7 +82,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
           forAll(arbitrary[Country]) {
             country =>
               when(mockRefDataConnector.getCountriesWithoutZipCountry(any())(any(), any()))
-                .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+                .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
               val result = service.doesCountryRequireZip(country).futureValue
 

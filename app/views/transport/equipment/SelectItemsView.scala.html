@@ -15,6 +15,7 @@
  *@
 
 @import controllers.transport.equipment.routes
+@import forms.SelectableFormProvider.ItemFormProvider.field
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
@@ -42,15 +43,17 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("transport.equipment.selectItems.heading"),
                 caption = Some(messages("transport.caption")),
                 additionalHtml = {
-                    (
-                        messages("transport.equipment.selectItems.paragraph").toParagraphString ++
-                        messages("transport.equipment.selectItems.label", selectItemsViewModel.items.values.length).toParagraphString
-                    ).toParagraph
+                    HtmlFormat.fill(
+                        Seq(
+                            messages("transport.equipment.selectItems.paragraph").toParagraph,
+                            messages("transport.equipment.selectItems.label", selectItemsViewModel.items.values.length).toParagraph
+                        )
+                    )
                 }
             ),
             selectItems = selectItemsViewModel.items.values.toSelectItems(form.value),

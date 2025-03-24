@@ -27,20 +27,22 @@ import play.api.Logging
 import scalaxb.XMLFormat
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureMessageService @Inject() (departureMovementP5Connector: DepartureMovementConnector) extends Logging {
 
-  private def getMessages(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[List[MessageMetaData]] =
+  private def getMessages(departureId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[List[MessageMetaData]] = {
+    implicit val ordering: Ordering[MessageMetaData] = Ordering.by[MessageMetaData, LocalDateTime](_.received).reverse
     departureMovementP5Connector
       .getMessages(departureId)
       .map {
         _.messages
           .filterNot(_.status == MessageStatus.Failed)
-          .sortBy(_.received)
-          .reverse
+          .sorted
       }
+  }
 
   private def getMessageMetaData(
     departureId: String,
@@ -95,9 +97,12 @@ class DepartureMessageService @Inject() (departureMovementP5Connector: Departure
             case AmendmentAcceptance :: _            => true
             case ControlDecisionNotification :: _    => true
             case RejectionFromOfficeOfDeparture :: _ => true
-            case _                                   => false
+            case x =>
+              logger.warn(s"[$departureId] Cannot continue with messages: ${x.mkString(", ")}")
+              false
           }
         }
       case _ =>
+        logger.warn(s"[$departureId] Cannot continue with additional declaration type: $additionalDeclarationType")
         Future.successful(false)
 }
