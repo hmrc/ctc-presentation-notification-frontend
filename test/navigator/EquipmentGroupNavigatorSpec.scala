@@ -21,17 +21,17 @@ import config.Constants.AuthorisationTypeDeparture.*
 import generated.*
 import generators.Generators
 import models.{CheckMode, Index, NormalMode}
-import navigation.{EquipmentNavigator, EquipmentsNavigator}
+import navigation.{EquipmentGroupNavigator, EquipmentNavigator}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.AddAnotherTransportEquipmentPage
 
-class EquipmentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val equipmentNavigator = new EquipmentNavigator
-  private val navigator          = new EquipmentsNavigator(equipmentNavigator, equipmentIndex)
+  private val navigator          = new EquipmentGroupNavigator(equipmentNavigator, equipmentIndex)
 
-  "EquipmentNavigator" - {
+  "EquipmentGroupNavigator" - {
     "in Normal mode" - {
       val mode = NormalMode
 

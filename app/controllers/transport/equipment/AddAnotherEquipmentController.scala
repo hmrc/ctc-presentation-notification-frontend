@@ -21,7 +21,7 @@ import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.EquipmentsNavigator.EquipmentsNavigatorProvider
+import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
 import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +43,7 @@ class AddAnotherEquipmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherEquipmentView,
   viewModelProvider: AddAnotherEquipmentViewModelProvider,
-  navigatorProvider: EquipmentsNavigatorProvider
+  navigatorProvider: EquipmentGroupNavigatorProvider
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

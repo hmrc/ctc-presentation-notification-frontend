@@ -16,12 +16,16 @@
 
 package pages.transport.departureTransportMeans
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object AddAnotherDepartureTransportMeansPage extends QuestionPage[Boolean] {
+class AddAnotherTransportMeansPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddAnotherTransportMeansPage" - {
 
-  override def toString: String = "addAnotherDepartureTransportMeans"
+    beRetrievable[Boolean](AddAnotherTransportMeansPage)
+
+    beSettable[Boolean](AddAnotherTransportMeansPage)
+
+    beRemovable[Boolean](AddAnotherTransportMeansPage)
+  }
 }

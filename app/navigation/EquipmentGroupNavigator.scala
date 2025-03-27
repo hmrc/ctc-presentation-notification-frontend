@@ -24,7 +24,7 @@ import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class EquipmentsNavigator(equipmentNavigator: EquipmentNavigator, nextIndex: Index) extends Navigator {
+class EquipmentGroupNavigator(equipmentNavigator: EquipmentNavigator, nextIndex: Index) extends Navigator {
 
   override protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] =
     case AddAnotherTransportEquipmentPage => ua => addAnotherTransportEquipmentRoute(ua, departureId, mode)
@@ -46,10 +46,10 @@ class EquipmentsNavigator(equipmentNavigator: EquipmentNavigator, nextIndex: Ind
     }
 }
 
-object EquipmentsNavigator {
+object EquipmentGroupNavigator {
 
-  class EquipmentsNavigatorProvider @Inject() (equipmentNavigator: EquipmentNavigator) {
+  class EquipmentGroupNavigatorProvider @Inject() (equipmentNavigator: EquipmentNavigator) {
 
-    def apply(nextIndex: Index): EquipmentsNavigator = new EquipmentsNavigator(equipmentNavigator, nextIndex)
+    def apply(nextIndex: Index): EquipmentGroupNavigator = new EquipmentGroupNavigator(equipmentNavigator, nextIndex)
   }
 }

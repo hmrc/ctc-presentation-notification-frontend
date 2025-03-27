@@ -17,15 +17,15 @@
 package controllers.transport.departureTransportMeans
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode, NormalMode}
-import navigation.DepartureTransportMeansNavigator
+import navigation.DepartureTransportMeansGroupNavigator.DepartureTransportMeansGroupNavigatorProvider
 import pages.transport.departureTransportMeans.AddAnotherTransportMeansPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.departureTransportMeans.AddAnotherTransportMeansViewModel
@@ -43,7 +43,7 @@ class AddAnotherTransportMeansController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherTransportMeansView,
   viewModelProvider: AddAnotherTransportMeansViewModelProvider,
-  navigator: DepartureTransportMeansNavigator
+  navigatorProvider: DepartureTransportMeansGroupNavigatorProvider
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -75,11 +75,14 @@ class AddAnotherTransportMeansController @Inject() (
     departureId: String,
     mode: Mode,
     value: Boolean,
-    transportIndex: Index
+    nextIndex: Index
   )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportMeansPage(transportIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportMeansPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddAnotherTransportMeansPage(transportIndex), updatedAnswers, departureId, mode))
+    } yield {
+      val navigator = navigatorProvider.apply(nextIndex)
+      Redirect(navigator.nextPage(AddAnotherTransportMeansPage, updatedAnswers, departureId, mode))
+    }
 
 }

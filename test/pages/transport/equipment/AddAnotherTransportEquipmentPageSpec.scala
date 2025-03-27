@@ -18,13 +18,14 @@ package pages.transport.equipment
 
 import pages.behaviours.PageBehaviours
 
-class RemoveTransportEquipmentPageSpec extends PageBehaviours {
+class AddAnotherTransportEquipmentPageSpec extends PageBehaviours {
 
-  "RemoveTransportEquipmentPage" - {
+  "AddAnotherTransportEquipmentPage" - {
 
-    beRetrievable[Boolean](RemoveTransportEquipmentPage(equipmentIndex))
-    beSettable[Boolean](RemoveTransportEquipmentPage(equipmentIndex))
-    beRemovable[Boolean](RemoveTransportEquipmentPage(equipmentIndex))
+    beRetrievable[Boolean](AddAnotherTransportEquipmentPage)
 
+    beSettable[Boolean](AddAnotherTransportEquipmentPage)
+
+    beRemovable[Boolean](AddAnotherTransportEquipmentPage)
   }
 }

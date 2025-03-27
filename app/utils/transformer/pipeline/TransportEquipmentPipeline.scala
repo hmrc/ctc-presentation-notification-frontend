@@ -19,13 +19,12 @@ package utils.transformer.pipeline
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.liftToFuture
-import utils.transformer.transport.equipment._
+import utils.transformer.transport.equipment.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportEquipmentPipeline @Inject() (
-  transportEquipmentTransformer: TransportEquipmentTransformer,
   transportEquipmentYesNoTransformer: TransportEquipmentYesNoTransformer,
   containerIdTransformer: ContainerIdentificationNumberTransformer,
   containerIdentificationNumberYesNoTransformer: ContainerIdentificationNumberYesNoTransformer,
@@ -37,7 +36,6 @@ class TransportEquipmentPipeline @Inject() (
   def pipeline(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     containerIdentificationNumberYesNoTransformer.transform andThen
       transportEquipmentYesNoTransformer.transform andThen
-      transportEquipmentTransformer.transform andThen
       containerIdTransformer.transform andThen
       addSealYesNoTransformer.transform andThen
       sealTransformer.transform andThen
