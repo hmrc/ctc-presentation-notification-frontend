@@ -17,7 +17,7 @@
 package utils.transformer.transport.equipment
 
 import generated.TransportEquipmentType06
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer
@@ -29,15 +29,15 @@ class TransportEquipmentTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
   override type ExtractedTypeInDepartureData = TransportEquipmentType06
 
+  // TODO - is this class needed?
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(
       userAnswers = userAnswers,
       extractDataFromDepartureData = _.departureData.Consignment.TransportEquipment,
       generateCapturedAnswers = transportEquipments =>
-        transportEquipments.zipWithIndex
+        transportEquipments
           .map {
-            case (_, index) =>
-              (AddAnotherTransportEquipmentPage(Index(index)), true)
+            _ => (AddAnotherTransportEquipmentPage, true)
           }
     )
 }

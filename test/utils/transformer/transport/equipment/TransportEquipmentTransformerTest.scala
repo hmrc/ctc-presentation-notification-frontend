@@ -19,7 +19,6 @@ package utils.transformer.transport.equipment
 import base.SpecBase
 import generated.TransportEquipmentType06
 import generators.Generators
-import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.equipment.AddAnotherTransportEquipmentPage
 
@@ -36,7 +35,7 @@ class TransportEquipmentTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddAnotherTransportEquipmentPage(Index(0))) mustBe Some(true)
+          result.get(AddAnotherTransportEquipmentPage) mustBe Some(true)
       }
     }
   }

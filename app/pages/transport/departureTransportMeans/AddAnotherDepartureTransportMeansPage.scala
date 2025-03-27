@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package pages.transport.equipment
+package pages.transport.departureTransportMeans
 
 import pages.QuestionPage
-import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 
-case object AddAnotherTransportEquipmentPage extends QuestionPage[Boolean] {
+case object AddAnotherDepartureTransportMeansPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "addAnotherTransportEquipment"
+  override def toString: String = "addAnotherDepartureTransportMeans"
 }

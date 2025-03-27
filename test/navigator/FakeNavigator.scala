@@ -16,9 +16,9 @@
 
 package navigator
 
-import models.{Mode, UserAnswers}
-import navigation._
-import pages._
+import models.{Index, Mode, UserAnswers}
+import navigation.*
+import pages.*
 import play.api.mvc.Call
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
@@ -55,6 +55,10 @@ class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends Departure
 }
 
 class FakeBorderNavigator(desiredRoute: Call) extends BorderNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}
+
+class FakeEquipmentsNavigator(desiredRoute: Call, nextIndex: Index) extends EquipmentsNavigator(new FakeEquipmentNavigator(desiredRoute), nextIndex) {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
