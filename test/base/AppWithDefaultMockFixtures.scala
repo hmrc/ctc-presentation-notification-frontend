@@ -19,6 +19,7 @@ package base
 import controllers.actions.*
 import models.UserAnswers
 import navigation.*
+import navigation.EquipmentsNavigator.EquipmentsNavigatorProvider
 import navigator.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -67,7 +68,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator                 = new FakeLocationOfGoodsNavigator(onwardRoute)
   protected val fakeBorderNavigatorProvider: BorderNavigator                           = new FakeBorderNavigator(onwardRoute)
   protected val fakeContainerNavigator: ContainerNavigator                             = new FakeContainerNavigator(onwardRoute)
-  protected val fakeEquipmentsNavigator: EquipmentsNavigator                           = new FakeEquipmentsNavigator(onwardRoute, index)
+  protected val fakeEquipmentsNavigatorProvider: EquipmentsNavigatorProvider           = new FakeEquipmentsNavigatorProvider(onwardRoute)
   protected val fakeEquipmentNavigator: EquipmentNavigator                             = new FakeEquipmentNavigator(onwardRoute)
   protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
   protected val fakeRepresentativeNavigator: RepresentativeNavigator                   = new FakeRepresentativeNavigator(onwardRoute)
@@ -85,7 +86,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
         bind[BorderNavigator].toInstance(fakeBorderNavigatorProvider),
         bind[ContainerNavigator].toInstance(fakeContainerNavigator),
-        bind[EquipmentsNavigator].toInstance(fakeEquipmentsNavigator),
+        bind[EquipmentsNavigatorProvider].toInstance(fakeEquipmentsNavigatorProvider),
         bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator),
         bind[RepresentativeNavigator].toInstance(fakeRepresentativeNavigator),
         bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator)
