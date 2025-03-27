@@ -22,6 +22,7 @@ import navigation.*
 import navigation.BorderGroupNavigator.BorderGroupNavigatorProvider
 import navigation.DepartureTransportMeansGroupNavigator.DepartureTransportMeansGroupNavigatorProvider
 import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
+import navigation.SealGroupNavigator.SealGroupNavigatorProvider
 import navigator.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -73,9 +74,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeContainerNavigator: ContainerNavigator                           = new FakeContainerNavigator(onwardRoute)
   protected val fakeEquipmentGroupNavigatorProvider: EquipmentGroupNavigatorProvider = new FakeEquipmentGroupNavigatorProvider(onwardRoute)
   protected val fakeEquipmentNavigator: EquipmentNavigator                           = new FakeEquipmentNavigator(onwardRoute)
+  protected val fakeSealGroupNavigatorProvider: SealGroupNavigatorProvider           = new FakeSealGroupNavigatorProvider(onwardRoute)
+  protected val fakeSealNavigator: SealNavigator                                     = new FakeSealNavigator(onwardRoute)
 
   protected val fakeDepartureTransportMeansGroupNavigatorProvider: DepartureTransportMeansGroupNavigatorProvider =
     new FakeDepartureTransportMeansGroupNavigatorProvider(onwardRoute)
+
   protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
   protected val fakeRepresentativeNavigator: RepresentativeNavigator                   = new FakeRepresentativeNavigator(onwardRoute)
 
@@ -95,6 +99,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[ContainerNavigator].toInstance(fakeContainerNavigator),
         bind[EquipmentGroupNavigatorProvider].toInstance(fakeEquipmentGroupNavigatorProvider),
         bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator),
+        bind[SealGroupNavigatorProvider].toInstance(fakeSealGroupNavigatorProvider),
+        bind[SealNavigator].toInstance(fakeSealNavigator),
         bind[RepresentativeNavigator].toInstance(fakeRepresentativeNavigator),
         bind[DepartureTransportMeansGroupNavigatorProvider].toInstance(fakeDepartureTransportMeansGroupNavigatorProvider),
         bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator)

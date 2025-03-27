@@ -249,32 +249,8 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
         }
       }
-
-      "must go from add another seal page" - {
-        "to seal identification number page when user answers yes" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal1")
-            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), "Seal2")
-            .setValue(AddAnotherSealPage(equipmentIndex, Index(2)), true)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
-        }
-        "to tech difficulties when AddAnotherSealPage does not exist" in {
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
-      }
-
-      "to to goods reference item page when user answers no" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
-        navigator
-          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
-          .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
-      }
     }
+
     "in Check mode" - {
       val mode = CheckMode
 
@@ -439,35 +415,6 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               .nextPage(ContainerIdentificationNumberPage(equipmentIndex), updatedAnswers, departureId, mode)
               .mustBe(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, NormalMode, equipmentIndex))
         }
-      }
-
-      "must go from add another seal page" - {
-        "to seal identification number page when user answers yes" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal1")
-            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), "Seal2")
-            .setValue(AddAnotherSealPage(equipmentIndex, Index(2)), true)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
-        }
-      }
-
-      "to to the cya page when user answers no and the items have been answered" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
-          .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
-        navigator
-          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      }
-
-      "to to the item page when user answers no and the items have not been answered" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
-        navigator
-          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
-          .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
       }
 
       "must go from the seal identification number page to add another seal page" in {

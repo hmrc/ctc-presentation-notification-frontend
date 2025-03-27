@@ -17,15 +17,15 @@
 package controllers.transport.equipment.index
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.EquipmentNavigator
+import navigation.SealGroupNavigator.SealGroupNavigatorProvider
 import pages.transport.equipment.index.AddAnotherSealPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.equipment.AddAnotherSealViewModel
@@ -40,7 +40,7 @@ class AddAnotherSealController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
-  navigator: EquipmentNavigator,
+  navigatorProvider: SealGroupNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSealView,
   viewModelProvider: AddAnotherSealViewModelProvider
@@ -76,11 +76,14 @@ class AddAnotherSealController @Inject() (
     value: Boolean,
     departureId: String,
     equipmentIndex: Index,
-    sealIndex: Index
+    nextSealIndex: Index
   )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSealPage(equipmentIndex, sealIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSealPage(equipmentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode))
+    } yield {
+      val navigator = navigatorProvider.apply(nextSealIndex)
+      Redirect(navigator.nextPage(AddAnotherSealPage(equipmentIndex), updatedAnswers, departureId, mode))
+    }
 
 }

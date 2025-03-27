@@ -34,7 +34,6 @@ class EquipmentNavigator extends Navigator {
     case AddSealYesNoPage(equipmentIndex)                          => ua => addSealYesNoNormalRoute(ua, departureId, mode, equipmentIndex)
     case SealIdentificationNumberPage(equipmentIndex, _) =>
       _ => Some(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
-    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex, sealIndex)
     case ItemPage(equipmentIndex, _) =>
       _ => Some(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
     case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, departureId, mode, equipmentIndex, itemIndex)
@@ -49,7 +48,6 @@ class EquipmentNavigator extends Navigator {
     case AddSealYesNoPage(equipmentIndex) => ua => addSealYesNoNormalRoute(ua, departureId, mode, equipmentIndex)
     case SealIdentificationNumberPage(equipmentIndex, _) =>
       _ => Some(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
-    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex, sealIndex)
     case ItemPage(equipmentIndex, _) =>
       _ => Some(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
     case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, departureId, mode, equipmentIndex, itemIndex)
@@ -96,19 +94,6 @@ class EquipmentNavigator extends Navigator {
       case true                  => SealIdentificationNumberPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
       case false if mode.isCheck => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       case false                 => ItemPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
-    }
-
-  def addAnotherSealRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index): Option[Call] =
-    ua.get(AddAnotherSealPage(equipmentIndex, sealIndex)) flatMap {
-      case true                  => SealIdentificationNumberPage(equipmentIndex, sealIndex).route(ua, departureId, mode)
-      case false if mode.isCheck => addAnotherSealCheckRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index)
-      case false                 => ItemPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
-    }
-
-  def addAnotherSealCheckRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =
-    ua.get(ItemPage(equipmentIndex, Index(0))) match {
-      case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case None    => ItemPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
     }
 
   private def addTransportEquipmentYesNoNormalRoute(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =
