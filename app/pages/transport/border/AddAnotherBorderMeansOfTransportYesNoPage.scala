@@ -17,12 +17,12 @@
 package pages.transport.border
 
 import pages.QuestionPage
-import pages.sections.transport.border.BorderActiveListSection
+import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 
 case object AddAnotherBorderMeansOfTransportYesNoPage extends QuestionPage[Boolean] {
 
   override def toString: String = "addAnotherBorderMeansOfTransport"
 
-  override def path: JsPath = BorderActiveListSection.path \ toString
+  override def path: JsPath = TransportSection.path \ toString
 }

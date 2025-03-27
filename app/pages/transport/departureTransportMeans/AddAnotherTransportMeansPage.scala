@@ -17,12 +17,12 @@
 package pages.transport.departureTransportMeans
 
 import pages.QuestionPage
-import pages.sections.transport.departureTransportMeans.TransportMeansListSection
+import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 
 case object AddAnotherTransportMeansPage extends QuestionPage[Boolean] {
 
   override def toString: String = "addAnotherTransportMeans"
 
-  override def path: JsPath = TransportMeansListSection.path \ toString
+  override def path: JsPath = TransportSection.path \ toString
 }
