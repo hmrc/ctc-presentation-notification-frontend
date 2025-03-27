@@ -175,7 +175,7 @@ class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyC
                 val action = actions.head
                 action.content.value mustBe "Change"
                 action.href mustBe controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, mode).url
-                action.visuallyHiddenText.get mustBe "if you want to add another identifier for the location of goods"
+                action.visuallyHiddenText.get mustBe "if you want to add an additional identifier for the location of goods"
                 action.id mustBe "change-add-additional-identifier"
             }
           }

@@ -19,29 +19,30 @@ package navigator
 import base.SpecBase
 import generators.Generators
 import models.{CheckMode, NormalMode, UserAnswers}
-import navigation.SealNavigator
+import navigation.GoodsReferenceNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import pages.transport.equipment.ItemPage
 
-class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class GoodsReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val navigator = new SealNavigator
+  private val navigator = new GoodsReferenceNavigator
 
-  "SealNavigator" - {
+  "GoodsReferenceNavigator" - {
     "in Normal mode" - {
       val mode = NormalMode
 
-      "must go from the seal identification number page to add another seal page" in {
+      "must go from ItemPage to Apply another Item page" in {
+
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers =
               answers
-                .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "67YU988")
+                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
 
             navigator
-              .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
+              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
         }
       }
     }
@@ -49,16 +50,16 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
     "in Check mode" - {
       val mode = CheckMode
 
-      "must go from the seal identification number page to add another seal page" in {
+      "must go from ItemPage to Apply another Item page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers =
               answers
-                .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "67YU988")
+                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
 
             navigator
-              .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
+              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
+              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
         }
       }
     }

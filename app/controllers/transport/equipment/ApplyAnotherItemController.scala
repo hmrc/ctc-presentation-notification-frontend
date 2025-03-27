@@ -17,15 +17,15 @@
 package controllers.transport.equipment
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.EquipmentNavigator
+import navigation.GoodsReferenceGroupNavigator.GoodsReferenceGroupNavigatorProvider
 import pages.transport.equipment.index.ApplyAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.equipment.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
@@ -43,7 +43,7 @@ class ApplyAnotherItemController @Inject() (
   view: ApplyAnotherItemView,
   viewModelProvider: ApplyAnotherItemViewModelProvider,
   sessionRepository: SessionRepository,
-  navigator: EquipmentNavigator
+  navigatorProvider: GoodsReferenceGroupNavigatorProvider
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -79,11 +79,14 @@ class ApplyAnotherItemController @Inject() (
     mode: Mode,
     value: Boolean,
     equipmentIndex: Index,
-    itemIndex: Index
+    nextGoodsReferenceIndex: Index
   )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplyAnotherItemPage(equipmentIndex, itemIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplyAnotherItemPage(equipmentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode))
+    } yield {
+      val navigator = navigatorProvider.apply(nextGoodsReferenceIndex)
+      Redirect(navigator.nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode))
+    }
 
 }

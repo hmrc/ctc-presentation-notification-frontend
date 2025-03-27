@@ -18,42 +18,46 @@ package navigator
 
 import base.SpecBase
 import generators.Generators
-import models.{CheckMode, Index, NormalMode}
-import navigation.SealGroupNavigator
+import models.{CheckMode, Index, NormalMode, UserAnswers}
+import navigation.GoodsReferenceGroupNavigator
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.ItemPage
 import pages.transport.equipment.index.*
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
-class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class GoodsReferenceGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val navigator = new SealGroupNavigator(sealIndex)
+  private val navigator = new GoodsReferenceGroupNavigator(itemIndex)
 
-  "SealGroupNavigator" - {
+  "GoodsReferenceGroupNavigator" - {
     "in Normal mode" - {
       val mode = NormalMode
 
-      "must go from add another seal page" - {
-        "to seal identification number page when user answers yes" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddAnotherSealPage(equipmentIndex), true)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, sealIndex).route(userAnswers, departureId, mode).value)
+      "must go from ApplyAnotherItemPage" - {
+        "to Item page when user answers yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex), true)
+
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+          }
         }
 
-        "to tech difficulties when AddAnotherSealPage does not exist" in {
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
+        "to AddAnotherEquipment page when user answers no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex), false)
 
-        "to to goods reference item page when user answers no" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddAnotherSealPage(equipmentIndex), false)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
+          }
         }
       }
     }
@@ -61,30 +65,37 @@ class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     "in Check mode" - {
       val mode = CheckMode
 
-      "must go from add another seal page" - {
-        "to seal identification number page when user answers yes" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddAnotherSealPage(equipmentIndex), true)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, sealIndex).route(userAnswers, departureId, mode).value)
+      "must go from ApplyAnotherItemPage" - {
+        "to Item page when user answers yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex), true)
+
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+          }
         }
 
-        "to to the cya page when user answers no and the items have been answered" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddAnotherSealPage(equipmentIndex), false)
-            .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+        "to CYA page when user answers no" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers
+                  .setValue(ApplyAnotherItemPage(equipmentIndex), false)
+
+              navigator
+                .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          }
         }
 
-        "to to the item page when user answers no and the items have not been answered" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddAnotherSealPage(equipmentIndex), false)
+        "to tech difficulties when ApplyAnotherItemPage does not exist" in {
           navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
+            .nextPage(ApplyAnotherItemPage(equipmentIndex), emptyUserAnswers, departureId, mode)
+            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
     }

@@ -17,15 +17,16 @@
 package pages.transport.equipment
 
 import pages.behaviours.PageBehaviours
+import pages.transport.equipment.index.ApplyAnotherItemPage
 
-class AddAnotherTransportEquipmentPageSpec extends PageBehaviours {
+class ApplyAnotherItemPageSpec extends PageBehaviours {
 
-  "AddAnotherTransportEquipmentPage" - {
+  "ApplyAnotherItemPage" - {
 
-    beRetrievable[Boolean](AddAnotherTransportEquipmentPage)
+    beRetrievable[Boolean](ApplyAnotherItemPage(equipmentIndex))
 
-    beSettable[Boolean](AddAnotherTransportEquipmentPage)
+    beSettable[Boolean](ApplyAnotherItemPage(equipmentIndex))
 
-    beRemovable[Boolean](AddAnotherTransportEquipmentPage)
+    beRemovable[Boolean](ApplyAnotherItemPage(equipmentIndex))
   }
 }

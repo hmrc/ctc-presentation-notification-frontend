@@ -20,39 +20,32 @@ import models.{Index, Mode, UserAnswers}
 import pages.Page
 import pages.transport.equipment.ItemPage
 import pages.transport.equipment.index.*
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class SealGroupNavigator(nextIndex: Index) extends Navigator {
+class GoodsReferenceGroupNavigator(nextGoodsReferenceIndex: Index) extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddAnotherSealPage(equipmentIndex) => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex)
+    case ApplyAnotherItemPage(equipmentIndex) => ua => applyAnotherItemRoute(ua, departureId, mode, equipmentIndex)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddAnotherSealPage(equipmentIndex) => ua => addAnotherSealRoute(ua, departureId, mode, equipmentIndex)
+    case ApplyAnotherItemPage(equipmentIndex) => ua => applyAnotherItemRoute(ua, departureId, mode, equipmentIndex)
   }
 
-  private def addAnotherSealRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =
-    ua.get(AddAnotherSealPage(equipmentIndex)) flatMap {
-      case true                  => SealIdentificationNumberPage(equipmentIndex, nextIndex).route(ua, departureId, mode)
-      case false if mode.isCheck => addAnotherSealCheckRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index)
-      case false                 => ItemPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
-    }
-
-  private def addAnotherSealCheckRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =
-    ua.get(ItemPage(equipmentIndex, Index(0))) match {
-      case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case None    => ItemPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
+  private def applyAnotherItemRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Option[Call] =
+    ua.get(ApplyAnotherItemPage(equipmentIndex)) flatMap {
+      case true                  => ItemPage(equipmentIndex, nextGoodsReferenceIndex).route(ua, departureId, mode)
+      case false if mode.isCheck => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+      case false                 => Some(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
     }
 }
 
-object SealGroupNavigator {
+object GoodsReferenceGroupNavigator {
 
-  class SealGroupNavigatorProvider @Inject() {
+  class GoodsReferenceGroupNavigatorProvider @Inject() {
 
-    def apply(nextIndex: Index): SealGroupNavigator = new SealGroupNavigator(nextIndex)
+    def apply(nextIndex: Index): GoodsReferenceGroupNavigator = new GoodsReferenceGroupNavigator(nextIndex)
   }
 }

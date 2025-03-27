@@ -21,6 +21,7 @@ import navigation.*
 import navigation.BorderGroupNavigator.BorderGroupNavigatorProvider
 import navigation.DepartureTransportMeansGroupNavigator.DepartureTransportMeansGroupNavigatorProvider
 import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
+import navigation.GoodsReferenceGroupNavigator.GoodsReferenceGroupNavigatorProvider
 import navigation.SealGroupNavigator.SealGroupNavigatorProvider
 import pages.*
 import play.api.mvc.Call
@@ -99,6 +100,18 @@ class FakeSealGroupNavigatorProvider(desiredRoute: Call) extends SealGroupNaviga
 }
 
 class FakeSealNavigator(desiredRoute: Call) extends SealNavigator {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}
+
+class FakeGoodsReferenceGroupNavigator(desiredRoute: Call, nextIndex: Index) extends GoodsReferenceGroupNavigator(nextIndex) {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}
+
+class FakeGoodsReferenceGroupNavigatorProvider(desiredRoute: Call) extends GoodsReferenceGroupNavigatorProvider {
+  override def apply(nextIndex: Index): GoodsReferenceGroupNavigator = new FakeGoodsReferenceGroupNavigator(desiredRoute, nextIndex)
+}
+
+class FakeGoodsReferenceNavigator(desiredRoute: Call) extends GoodsReferenceNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 

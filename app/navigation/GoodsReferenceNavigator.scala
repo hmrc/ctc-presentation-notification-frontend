@@ -19,19 +19,19 @@ package navigation
 import com.google.inject.Singleton
 import models.{Mode, UserAnswers}
 import pages.Page
-import pages.transport.equipment.index.seals.SealIdentificationNumberPage
+import pages.transport.equipment.ItemPage
 import play.api.mvc.Call
 
 @Singleton
-class SealNavigator extends Navigator {
+class GoodsReferenceNavigator extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case SealIdentificationNumberPage(equipmentIndex, _) =>
-      _ => Some(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
+    case ItemPage(equipmentIndex, _) =>
+      _ => Some(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case SealIdentificationNumberPage(equipmentIndex, _) =>
-      _ => Some(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
+    case ItemPage(equipmentIndex, _) =>
+      _ => Some(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
   }
 }

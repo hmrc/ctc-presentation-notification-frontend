@@ -74,48 +74,6 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
       }
 
-      "must go from ItemPage to Apply another Item page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers =
-              answers
-                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
-
-            navigator
-              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
-        }
-      }
-
-      "must go from ApplyAnotherItempage" - {
-        "to Item page when user answers yes" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
-          }
-        }
-
-        "to AddAnotherEquipment page when user answers no" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
-          }
-        }
-      }
-
       "must go from container Identification number page" - {
         "to seals identification number page when declaration is simplified and Auth type is C523" in {
           forAll(arbitrary[UserAnswers]) {
@@ -253,20 +211,6 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
     "in Check mode" - {
       val mode = CheckMode
-
-      "must go from ItemPage to Apply another Item page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers =
-              answers
-                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
-
-            navigator
-              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
-        }
-      }
 
       "must go from addTransportEquipmentPage" - {
         "to CYA page when answer is No" in {
@@ -429,41 +373,6 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
         }
       }
-
-      "must go from ApplyAnotherItempage" - {
-
-        "to Item page when user answers yes" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
-          }
-        }
-
-        "to CYA page when user answers no" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          }
-        }
-        "to tech difficulties when ApplyAnotherItemPage does not exist" in {
-          navigator
-            .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
-      }
-
     }
   }
 }
