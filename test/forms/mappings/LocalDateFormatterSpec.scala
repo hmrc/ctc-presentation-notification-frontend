@@ -91,7 +91,11 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
     val result = form.bind(Map.empty[String, String])
 
-    result.errors must contain only FormError("value", "error.required.all", List("day", "month", "year"))
+    result.errors mustEqual Seq(
+      FormError("value.day", "error.required.all", List("day", "month", "year")),
+      FormError("value.month", "error.required.all", List("day", "month", "year")),
+      FormError("value.year", "error.required.all", List("day", "month", "year"))
+    )
   }
 
   "must fail to bind a date with a missing day" in {
@@ -106,7 +110,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required.day", List("day"))
+        result.errors mustEqual Seq(
+          FormError("value.day", "error.required.day", List("day"))
+        )
     }
   }
 
@@ -124,7 +130,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val days = date.getMonth.length(date.isLeapYear)
 
-        result.errors must contain only FormError("value", "error.invalid.day", List(days, "day"))
+        result.errors mustEqual Seq(
+          FormError("value.day", "error.invalid.day", List(days, "day"))
+        )
     }
   }
 
@@ -140,7 +148,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required.month", List("month"))
+        result.errors mustEqual Seq(
+          FormError("value.month", "error.required.month", List("month"))
+        )
     }
   }
 
@@ -156,7 +166,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.month", List("month"))
+        result.errors mustEqual Seq(
+          FormError("value.month", "error.invalid.month", List("month"))
+        )
     }
   }
 
@@ -173,8 +185,8 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
         val result = form.bind(data)
 
         result.errors mustEqual Seq(
-          FormError("value", "error.required.day", List("day")),
-          FormError("value", "error.invalid.month", List("month"))
+          FormError("value.day", "error.required.day", List("day")),
+          FormError("value.month", "error.invalid.month", List("month"))
         )
     }
   }
@@ -192,23 +204,28 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
         val result = form.bind(data)
 
         result.errors mustEqual Seq(
-          FormError("value", "error.invalid.day", List(31, "day")),
-          FormError("value", "error.required.month", List("month"))
+          FormError("value.day", "error.invalid.day", List(31, "day")),
+          FormError("value.month", "error.required.month", List("month"))
         )
     }
   }
 
   "must fail to bind a date with a missing year" in {
 
-    val data = Map(
-      "value.day"   -> "12",
-      "value.month" -> "12",
-      "value.year"  -> ""
-    )
+    forAll(validData -> "valid date") {
+      date =>
+        val data = Map(
+          "value.day"   -> "12",
+          "value.month" -> "12",
+          "value.year"  -> ""
+        )
 
-    val result = form.bind(data)
+        val result = form.bind(data)
 
-    result.errors must contain only FormError("value", "error.required.year", List("year"))
+        result.errors mustEqual Seq(
+          FormError("value.year", "error.required.year", List("year"))
+        )
+    }
   }
 
   "must fail to bind a date with an invalid year" in {
@@ -223,7 +240,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.year", List("year"))
+        result.errors mustEqual Seq(
+          FormError("value.year", "error.invalid.year", List("year"))
+        )
     }
   }
 
@@ -239,7 +258,10 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required.multiple", List("day", "month"))
+        result.errors mustEqual Seq(
+          FormError("value.day", "error.required.multiple", List("day", "month")),
+          FormError("value.month", "error.required.multiple", List("day", "month"))
+        )
     }
   }
 
@@ -255,7 +277,10 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required.multiple", List("day", "year"))
+        result.errors mustEqual Seq(
+          FormError("value.day", "error.required.multiple", List("day", "year")),
+          FormError("value.year", "error.required.multiple", List("day", "year"))
+        )
     }
   }
 
@@ -271,7 +296,10 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required.multiple", List("month", "year"))
+        result.errors mustEqual Seq(
+          FormError("value.month", "error.required.multiple", List("month", "year")),
+          FormError("value.year", "error.required.multiple", List("month", "year"))
+        )
     }
   }
 
@@ -287,7 +315,10 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.multiple", List("day", "month"))
+        result.errors mustEqual Seq(
+          FormError("value.day", "error.invalid.multiple", List("day", "month")),
+          FormError("value.month", "error.invalid.multiple", List("day", "month"))
+        )
     }
   }
 
@@ -303,7 +334,10 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.multiple", List("day", "year"))
+        result.errors mustEqual Seq(
+          FormError("value.day", "error.invalid.multiple", List("day", "year")),
+          FormError("value.year", "error.invalid.multiple", List("day", "year"))
+        )
     }
   }
 
@@ -319,7 +353,10 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.multiple", List("month", "year"))
+        result.errors mustEqual Seq(
+          FormError("value.month", "error.invalid.multiple", List("month", "year")),
+          FormError("value.year", "error.invalid.multiple", List("month", "year"))
+        )
     }
   }
 
@@ -335,7 +372,11 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.all", List("day", "month", "year"))
+        result.errors mustEqual Seq(
+          FormError("value.day", "error.invalid.all", List("day", "month", "year")),
+          FormError("value.month", "error.invalid.all", List("day", "month", "year")),
+          FormError("value.year", "error.invalid.all", List("day", "month", "year"))
+        )
     }
   }
 
@@ -352,7 +393,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.day", List(28, "day"))
+        FormError("value.day", "error.invalid.day", List(28, "day"))
       )
     }
 
@@ -367,7 +408,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.day", List(30, "day"))
+        FormError("value.day", "error.invalid.day", List(30, "day"))
       )
     }
 
@@ -382,7 +423,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.day", List(28, "day"))
+        FormError("value.day", "error.invalid.day", List(28, "day"))
       )
     }
 
@@ -397,7 +438,8 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.multiple", List("day", "year"))
+        FormError("value.day", "error.invalid.multiple", List("day", "year")),
+        FormError("value.year", "error.invalid.multiple", List("day", "year"))
       )
     }
 
@@ -412,8 +454,8 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.day", List(29, "day")),
-        FormError("value", "error.required.year", List("year"))
+        FormError("value.day", "error.invalid.day", List(29, "day")),
+        FormError("value.year", "error.required.year", List("year"))
       )
     }
 
@@ -428,7 +470,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.month", Seq("month"))
+        FormError("value.month", "error.invalid.month", Seq("month"))
       )
     }
 
@@ -442,8 +484,8 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
       val result = form.bind(data)
 
-      result.errors mustEqual Seq(
-        FormError("value", "error.invalid.multiple", Seq("day", "month"))
+      result.errors mustEqual Seq(FormError("value.day", "error.invalid.multiple", Seq("day", "month")),
+                                  FormError("value.month", "error.invalid.multiple", Seq("day", "month"))
       )
     }
 
@@ -458,7 +500,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.all", Seq("day", "month", "year"))
+        FormError("value.day", "error.invalid.all", Seq("day", "month", "year")),
+        FormError("value.month", "error.invalid.all", Seq("day", "month", "year")),
+        FormError("value.year", "error.invalid.all", Seq("day", "month", "year"))
       )
     }
 
@@ -473,7 +517,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.year", Seq("year"))
+        FormError("value.year", "error.invalid.year", Seq("year"))
       )
     }
 
@@ -488,7 +532,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
       val result = form.bind(data)
 
       result.errors mustEqual Seq(
-        FormError("value", "error.invalid.year", Seq("year"))
+        FormError("value.year", "error.invalid.year", Seq("year"))
       )
     }
   }
