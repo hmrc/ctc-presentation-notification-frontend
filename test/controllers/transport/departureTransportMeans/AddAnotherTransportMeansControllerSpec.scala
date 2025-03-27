@@ -18,19 +18,21 @@ package controllers.transport.departureTransportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import controllers.transport.departureTransportMeans.{routes => departureTransportMeansRoutes}
+import controllers.transport.departureTransportMeans.routes as departureTransportMeansRoutes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.departureTransportMeans.AddAnotherTransportMeansPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.transport.departureTransportMeans.AddAnotherTransportMeansViewModel
 import viewModels.transport.departureTransportMeans.AddAnotherTransportMeansViewModel.AddAnotherTransportMeansViewModelProvider
@@ -86,8 +88,8 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
         redirectLocation(result).value mustEqual
           controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url
       }
-      "when max limit not reached" in {
 
+      "when max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
@@ -106,7 +108,6 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
       }
 
       "when max limit reached" in {
-
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
@@ -122,6 +123,48 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
         contentAsString(result) mustEqual
           view(form(maxedOutViewModel), maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherTransportMeansPage, true))
+
+        val request = FakeRequest(GET, addAnotherTransportMeansRouteCheckMode)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherTransportMeansView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherTransportMeansPage, true))
+
+        val request = FakeRequest(GET, addAnotherTransportMeansRouteCheckMode)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherTransportMeansView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, maxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -188,9 +231,11 @@ class AddAnotherTransportMeansControllerSpec extends SpecBase with AppWithDefaul
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual
-        onwardRoute.url
+      redirectLocation(result).value mustEqual onwardRoute.url
 
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.getValue(AddAnotherTransportMeansPage) mustEqual true
     }
   }
 }

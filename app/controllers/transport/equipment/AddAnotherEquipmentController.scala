@@ -57,7 +57,12 @@ class AddAnotherEquipmentController @Inject() (
       val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, isNumberItemsZero)
       viewModel.count match {
         case 0 => Redirect(routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-        case _ => Ok(view(form(viewModel), viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherTransportEquipmentPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, viewModel))
       }
   }
 

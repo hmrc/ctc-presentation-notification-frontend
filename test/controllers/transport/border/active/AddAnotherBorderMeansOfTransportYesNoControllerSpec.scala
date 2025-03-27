@@ -19,9 +19,10 @@ package controllers.transport.border.active
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -130,14 +131,53 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage, true))
+
+        val request = FakeRequest(GET, addAnotherBorderTransportRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherBorderTransportView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage, true))
+
+        val request = FakeRequest(GET, addAnotherBorderTransportRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherBorderTransportView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "must redirect to next page" - {
       "when max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any())).thenReturn(notMaxedOutViewModel)
 
-        val userAnswers = emptyUserAnswers
-          .setValue(AddBorderMeansOfTransportYesNoPage, true)
-          .setValue(AddAnotherBorderMeansOfTransportYesNoPage, true)
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, addAnotherBorderTransportRoute).withFormUrlEncodedBody(("value", "true"))
 
@@ -145,22 +185,27 @@ class AddAnotherBorderMeansOfTransportYesNoControllerSpec extends SpecBase with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherBorderMeansOfTransportYesNoPage) mustEqual true
       }
 
       "when max limit reached" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any())).thenReturn(maxedOutViewModel)
 
-        val userAnswers = emptyUserAnswers
-          .setValue(AddBorderMeansOfTransportYesNoPage, true)
-          .setValue(AddAnotherBorderMeansOfTransportYesNoPage, true)
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherBorderTransportRoute).withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, addAnotherBorderTransportRoute)
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherBorderMeansOfTransportYesNoPage) mustEqual false
       }
     }
 

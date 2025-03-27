@@ -56,7 +56,12 @@ class AddAnotherSealController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode, equipmentIndex)
       viewModel.count match {
         case 0 => Redirect(controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex))
-        case _ => Ok(view(form(viewModel), viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherSealPage(equipmentIndex)) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, viewModel))
       }
   }
 

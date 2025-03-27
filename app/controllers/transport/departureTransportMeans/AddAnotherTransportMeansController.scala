@@ -56,7 +56,12 @@ class AddAnotherTransportMeansController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       viewModel.count match {
         case 0 => Redirect(routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, Index(0)))
-        case _ => Ok(view(form(viewModel), viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherTransportMeansPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, viewModel))
       }
   }
 

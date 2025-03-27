@@ -56,7 +56,12 @@ class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       viewModel.count match {
         case 0 => Redirect(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
-        case _ => Ok(view(form(viewModel), viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, viewModel))
       }
   }
 

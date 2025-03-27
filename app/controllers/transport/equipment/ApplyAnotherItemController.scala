@@ -58,7 +58,12 @@ class ApplyAnotherItemController @Inject() (
       viewModel.count match {
         case 0 =>
           Redirect(routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)))
-        case _ => Ok(view(form(viewModel, equipmentIndex), viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(ApplyAnotherItemPage(equipmentIndex)) match {
+            case None        => form(viewModel, equipmentIndex)
+            case Some(value) => form(viewModel, equipmentIndex).fill(value)
+          }
+          Ok(view(preparedForm, viewModel))
       }
   }
 
