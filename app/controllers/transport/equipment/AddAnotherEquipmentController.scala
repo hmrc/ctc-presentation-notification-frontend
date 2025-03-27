@@ -17,15 +17,15 @@
 package controllers.transport.equipment
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.EquipmentNavigator
+import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
 import pages.transport.equipment.AddAnotherTransportEquipmentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
@@ -43,7 +43,7 @@ class AddAnotherEquipmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherEquipmentView,
   viewModelProvider: AddAnotherEquipmentViewModelProvider,
-  navigator: EquipmentNavigator
+  navigatorProvider: EquipmentGroupNavigatorProvider
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -57,7 +57,12 @@ class AddAnotherEquipmentController @Inject() (
       val viewModel                  = viewModelProvider(request.userAnswers, departureId, mode, isNumberItemsZero)
       viewModel.count match {
         case 0 => Redirect(routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode))
-        case _ => Ok(view(form(viewModel), viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherTransportEquipmentPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, viewModel))
       }
   }
 
@@ -77,11 +82,14 @@ class AddAnotherEquipmentController @Inject() (
     departureId: String,
     mode: Mode,
     value: Boolean,
-    activeIndex: Index
+    nextIndex: Index
   )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportEquipmentPage(activeIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransportEquipmentPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddAnotherTransportEquipmentPage(activeIndex), updatedAnswers, departureId, mode))
+    } yield {
+      val navigator = navigatorProvider.apply(nextIndex)
+      Redirect(navigator.nextPage(AddAnotherTransportEquipmentPage, updatedAnswers, departureId, mode))
+    }
 
 }

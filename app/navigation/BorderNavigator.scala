@@ -17,13 +17,13 @@
 package navigation
 
 import com.google.inject.Singleton
-import config.Constants.TransportModeCode._
+import config.Constants.TransportModeCode.*
 import controllers.transport.border.active.routes
-import models._
+import models.*
 import models.reference.TransportMode.BorderMode
-import pages._
-import pages.transport.border._
-import pages.transport.border.active._
+import pages.*
+import pages.transport.border.*
+import pages.transport.border.active.*
 import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
 import play.api.mvc.Call
 
@@ -31,29 +31,27 @@ import play.api.mvc.Call
 class BorderNavigator extends Navigator {
 
   override def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case BorderModeOfTransportPage                              => ua => borderModeOfTransportPageNavigation(ua, departureId, mode)
-    case IdentificationPage(activeIndex)                        => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
-    case IdentificationNumberPage(activeIndex)                  => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
-    case NationalityPage(activeIndex)                           => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
-    case CustomsOfficeActiveBorderPage(activeIndex)             => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
-    case AddConveyanceReferenceYesNoPage(activeIndex)           => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
-    case ConveyanceReferenceNumberPage(_)                       => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
-    case AddAnotherBorderMeansOfTransportYesNoPage(activeIndex) => ua => addAnotherBorderNavigation(ua, departureId, mode, activeIndex)
+    case BorderModeOfTransportPage                    => ua => borderModeOfTransportPageNavigation(ua, departureId, mode)
+    case IdentificationPage(activeIndex)              => ua => IdentificationNumberPage(activeIndex).route(ua, departureId, mode)
+    case IdentificationNumberPage(activeIndex)        => ua => NationalityPage(activeIndex).route(ua, departureId, mode)
+    case NationalityPage(activeIndex)                 => ua => CustomsOfficeActiveBorderPage(activeIndex).route(ua, departureId, mode)
+    case CustomsOfficeActiveBorderPage(activeIndex)   => ua => customsOfficeNavigation(ua, departureId, mode, activeIndex)
+    case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigation(ua, departureId, mode, activeIndex)
+    case ConveyanceReferenceNumberPage(_)             => ua => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
   }
 
   override def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddBorderModeOfTransportYesNoPage                      => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
-    case BorderModeOfTransportPage                              => ua => borderModeOfTransportCheckRoute(ua, departureId, mode)
-    case IdentificationPage(activeIndex)                        => ua => identificationCheckRoute(ua, departureId, activeIndex)
-    case IdentificationNumberPage(activeIndex)                  => ua => identificationNumberCheckRoute(ua, departureId, activeIndex)
-    case NationalityPage(activeIndex)                           => ua => nationalityCheckRoute(ua, departureId, activeIndex)
-    case CustomsOfficeActiveBorderPage(activeIndex)             => ua => customsOfficeCheckRoute(ua, departureId, activeIndex)
-    case AddConveyanceReferenceYesNoPage(activeIndex)           => ua => addConveyanceNavigationCheckRoute(ua, departureId, activeIndex)
-    case ConveyanceReferenceNumberPage(_)                       => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-    case AddBorderMeansOfTransportYesNoPage                     => ua => addBorderMeansOfTransportYesNoCheckRoute(ua, departureId)
-    case AddAnotherBorderMeansOfTransportYesNoPage(activeIndex) => ua => addAnotherBorderNavigation(ua, departureId, mode, activeIndex)
-    case AddInlandModeOfTransportYesNoPage                      => ua => addInlandModeYesNoCheckRoute(ua, departureId)
-    case InlandModePage                                         => ua => inlandModeCheckRoute(ua, departureId, mode)
+    case AddBorderModeOfTransportYesNoPage            => ua => addBorderModeOfTransportYesNoNavigation(ua, departureId)
+    case BorderModeOfTransportPage                    => ua => borderModeOfTransportCheckRoute(ua, departureId, mode)
+    case IdentificationPage(activeIndex)              => ua => identificationCheckRoute(ua, departureId, activeIndex)
+    case IdentificationNumberPage(activeIndex)        => ua => identificationNumberCheckRoute(ua, departureId, activeIndex)
+    case NationalityPage(activeIndex)                 => ua => nationalityCheckRoute(ua, departureId, activeIndex)
+    case CustomsOfficeActiveBorderPage(activeIndex)   => ua => customsOfficeCheckRoute(ua, departureId, activeIndex)
+    case AddConveyanceReferenceYesNoPage(activeIndex) => ua => addConveyanceNavigationCheckRoute(ua, departureId, activeIndex)
+    case ConveyanceReferenceNumberPage(_)             => _ => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+    case AddBorderMeansOfTransportYesNoPage           => ua => addBorderMeansOfTransportYesNoCheckRoute(ua, departureId)
+    case AddInlandModeOfTransportYesNoPage            => ua => addInlandModeYesNoCheckRoute(ua, departureId)
+    case InlandModePage                               => ua => inlandModeCheckRoute(ua, departureId, mode)
   }
 
   private def addBorderMeansOfTransportYesNoCheckRoute(ua: UserAnswers, departureId: String): Option[Call] =
@@ -150,13 +148,6 @@ class BorderNavigator extends Navigator {
     ua.get(AddConveyanceReferenceYesNoPage(activeIndex)) flatMap {
       case true  => ConveyanceReferenceNumberPage(activeIndex).route(ua, departureId, mode)
       case false => redirectToAddAnotherActiveBorderNavigation(ua, departureId, mode)
-    }
-
-  private def addAnotherBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode, activeIndex: Index): Option[Call] =
-    ua.get(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex)) flatMap {
-      case true                       => Some(routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
-      case false if mode == CheckMode => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      case false                      => containerIndicatorCapturedNavigation(ua, departureId, mode)
     }
 
   private def redirectToAddAnotherActiveBorderNavigation(ua: UserAnswers, departureId: String, mode: Mode): Option[Call] =

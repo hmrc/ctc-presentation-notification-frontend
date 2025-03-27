@@ -77,4 +77,11 @@ trait CommonNavigation {
       case NormalMode => ua.departureData.TransitOperation.limitDate.isEmpty
       case CheckMode  => ua.get(LimitDatePage).isEmpty
     }
+
+  protected def checkProcedureAuthRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Call =
+    if (ua.departureData.isSimplified && ua.departureData.hasAuthC523) {
+      controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0))
+    } else {
+      controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
+    }
 }

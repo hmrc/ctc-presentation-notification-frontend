@@ -16,13 +16,13 @@
 
 package pages.transport.equipment
 
-import models.Index
 import pages.QuestionPage
 import pages.sections.transport.TransportSection
 import play.api.libs.json.JsPath
 
-case class AddAnotherTransportEquipmentPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
-  override def toString: String = "addAnotherTransportEquipment"
+case object AddAnotherTransportEquipmentPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = TransportSection.path \ toString
+
+  override def toString: String = "addAnotherTransportEquipment"
 }

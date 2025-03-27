@@ -188,7 +188,7 @@ locationOfGoods.addIdentifierYesNo.heading = Do you want to add an additional id
 locationOfGoods.addIdentifierYesNo.paragraph = This is an alternative reference number to identify the location.
 locationOfGoods.addIdentifierYesNo.hint = Adding an additional identifier is optional.
 locationOfGoods.addIdentifierYesNo.checkYourAnswersLabel = Do you want to add an additional identifier for the location of goods?
-locationOfGoods.addIdentifierYesNo.change.hidden = if you want to add another identifier for the location of goods
+locationOfGoods.addIdentifierYesNo.change.hidden = if you want to add an additional identifier for the location of goods
 locationOfGoods.addIdentifierYesNo.error.required = Select yes if you want to add an additional identifier for the location of goods
 
 locationOfGoods.additionalIdentifier.title = What is the additional identifier for the location of goods?

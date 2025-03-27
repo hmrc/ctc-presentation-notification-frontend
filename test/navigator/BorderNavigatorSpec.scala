@@ -19,22 +19,17 @@ package navigator
 import base.SpecBase
 import config.Constants.DeclarationTypeSecurity.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import controllers.transport.border.active.routes
-import generated._
+import generated.*
 import generators.Generators
-import models._
+import models.*
 import models.reference.Nationality
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.transport.border.active.Identification
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.border.active._
-import pages.transport.border.{
-  AddAnotherBorderMeansOfTransportYesNoPage,
-  AddBorderMeansOfTransportYesNoPage,
-  AddBorderModeOfTransportYesNoPage,
-  BorderModeOfTransportPage
-}
+import pages.transport.border.active.*
+import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
@@ -47,27 +42,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in Normal mode" - {
       val mode = NormalMode
-
-      "must go from AddAnotherBorderMeansOfTransportYesNoPage" - {
-        "to IdentificationController when yes" in {
-          val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), true)
-          navigator
-            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
-        }
-        "to CheckYourAnswersController when no" in {
-          val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), false)
-          navigator
-            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-        "to tech difficulties when AddAnotherBorderMeansOfTransportYesNoPage does not exist" in {
-          navigator
-            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
-
-      }
 
       "must go from Border mode of transport page" - {
 
@@ -400,16 +374,6 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "in CheckMode" - {
       val mode = CheckMode
-
-      "must go from AddAnotherBorderMeansOfTransportYesNoPage" - {
-        "to CYA when no" in {
-          val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), false)
-          navigator
-            .nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-
-      }
 
       "must go from AddBorderModeOfTransportYesNoPage" - {
 

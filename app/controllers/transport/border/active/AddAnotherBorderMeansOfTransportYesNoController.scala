@@ -17,11 +17,11 @@
 package controllers.transport.border.active
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{Index, Mode}
-import navigation.BorderNavigator
+import navigation.BorderGroupNavigator.BorderGroupNavigatorProvider
 import pages.transport.border.AddAnotherBorderMeansOfTransportYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +43,7 @@ class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
   viewModelProvider: AddAnotherBorderTransportViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherBorderTransportView,
-  navigator: BorderNavigator
+  navigatorProvider: BorderGroupNavigatorProvider
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -56,7 +56,12 @@ class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, departureId, mode)
       viewModel.count match {
         case 0 => Redirect(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
-        case _ => Ok(view(form(viewModel), viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherBorderMeansOfTransportYesNoPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, viewModel))
       }
   }
 
@@ -75,11 +80,14 @@ class AddAnotherBorderMeansOfTransportYesNoController @Inject() (
     mode: Mode,
     value: Boolean,
     departureId: String,
-    activeIndex: Index
+    nextIndex: Index
   )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherBorderMeansOfTransportYesNoPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddAnotherBorderMeansOfTransportYesNoPage(activeIndex), updatedAnswers, departureId, mode))
+    } yield {
+      val navigator = navigatorProvider.apply(nextIndex)
+      Redirect(navigator.nextPage(AddAnotherBorderMeansOfTransportYesNoPage, updatedAnswers, departureId, mode))
+    }
 
 }
