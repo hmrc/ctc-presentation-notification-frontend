@@ -38,13 +38,13 @@ private[mappings] class LocalDateFormatter(
   )(f: Int => T)(predicate: T => Boolean): Either[FieldError, T] =
     stringFormatter(requiredKey, Seq(field.key))(_.removeSpaces()).bind(field.id(key), data) match {
       case Left(errors) =>
-        Left(FieldError(field, RequiredError(requiredKey)))
+        Left(FieldError(field, requiredKey))
       case Right(value) =>
         Try(f(Integer.parseInt(value))) match {
           case Success(t) if predicate(t) =>
             Right(t)
           case _ =>
-            Left(FieldError(field, InvalidError(invalidKey), args*))
+            Left(FieldError(field, invalidKey, args*))
         }
     }
 
@@ -95,26 +95,23 @@ private[mappings] class LocalDateFormatter(
         .collect {
           case Left(fieldErrors) => fieldErrors
         }
-        .groupByPreserveOrder(_.error)
+        .groupByPreserveOrder(_.errorKey)
         .flatMap {
-          case (error, errors) if errors.size == 3 => Seq(FormError(key, s"${error.key}.all", errors.toSeq.map(_.field.key)))
-          case (error, errors) if errors.size == 2 => Seq(FormError(key, s"${error.key}.multiple", errors.toSeq.map(_.field.key)))
-          case (_, error :: Nil)                   => Seq(FormError(key, error.messageKey, error.args :+ error.field.key))
-          case _                                   => Nil
+          case (errorKey, errors) if errors.size == 3 =>
+            val fields = errors.toSeq.map(_.field)
+            fields.map {
+              field => FormError(field.id(key), s"$errorKey.all", fields.map(_.key))
+            }
+          case (errorKey, errors) if errors.size == 2 =>
+            val fields = errors.toSeq.map(_.field)
+            fields.map {
+              field => FormError(field.id(key), s"$errorKey.multiple", fields.map(_.key))
+            }
+          case (_, error :: Nil) =>
+            val field = error.field
+            Seq(FormError(field.id(key), error.messageKey, error.args :+ field.key))
+          case _ => Nil
         }
-  }
-
-  sealed trait Error {
-    val key: String
-  }
-
-  private case class RequiredError(key: String) extends Error
-
-  private case class InvalidError(key: String) extends Error
-
-  case class FieldError(field: Field, error: Error, args: Any*) {
-
-    val messageKey: String = s"${error.key}.${field.key}"
   }
 }
 
@@ -138,5 +135,9 @@ object LocalDateFormatter {
 
   private case object YearField extends Field {
     override val key: String = "year"
+  }
+
+  case class FieldError(field: Field, errorKey: String, args: Any*) {
+    val messageKey: String = s"$errorKey.${field.key}"
   }
 }
