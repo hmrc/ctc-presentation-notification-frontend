@@ -24,7 +24,7 @@ import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class EquipmentGroupNavigator(equipmentNavigator: EquipmentNavigator, nextIndex: Index) extends Navigator {
+class EquipmentGroupNavigator(nextIndex: Index) extends Navigator {
 
   override protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] =
     case AddAnotherTransportEquipmentPage => ua => addAnotherTransportEquipmentRoute(ua, departureId, mode)
@@ -39,7 +39,7 @@ class EquipmentGroupNavigator(equipmentNavigator: EquipmentNavigator, nextIndex:
           case Some(true) =>
             controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(departureId, mode, nextIndex)
           case _ =>
-            equipmentNavigator.checkProcedureAuthRoute(ua, departureId, mode, nextIndex)
+            checkProcedureAuthRoute(ua, departureId, mode, nextIndex)
         }
       case false =>
         controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
@@ -48,8 +48,8 @@ class EquipmentGroupNavigator(equipmentNavigator: EquipmentNavigator, nextIndex:
 
 object EquipmentGroupNavigator {
 
-  class EquipmentGroupNavigatorProvider @Inject() (equipmentNavigator: EquipmentNavigator) {
+  class EquipmentGroupNavigatorProvider @Inject() {
 
-    def apply(nextIndex: Index): EquipmentGroupNavigator = new EquipmentGroupNavigator(equipmentNavigator, nextIndex)
+    def apply(nextIndex: Index): EquipmentGroupNavigator = new EquipmentGroupNavigator(nextIndex)
   }
 }

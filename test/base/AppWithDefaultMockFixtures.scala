@@ -19,6 +19,7 @@ package base
 import controllers.actions.*
 import models.UserAnswers
 import navigation.*
+import navigation.BorderGroupNavigator.BorderGroupNavigatorProvider
 import navigation.DepartureTransportMeansGroupNavigator.DepartureTransportMeansGroupNavigatorProvider
 import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
 import navigator.*
@@ -67,7 +68,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeNavigator: Navigator                                             = new FakeNavigator(onwardRoute)
   protected val fakeLoadingNavigator: LoadingNavigator                               = new FakeLoadingNavigator(onwardRoute)
   protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator               = new FakeLocationOfGoodsNavigator(onwardRoute)
-  protected val fakeBorderNavigatorProvider: BorderNavigator                         = new FakeBorderNavigator(onwardRoute)
+  protected val fakeBorderGroupNavigatorProvider: BorderGroupNavigatorProvider       = new FakeBorderGroupNavigatorProvider(onwardRoute)
+  protected val fakeBorderNavigator: BorderNavigator                                 = new FakeBorderNavigator(onwardRoute)
   protected val fakeContainerNavigator: ContainerNavigator                           = new FakeContainerNavigator(onwardRoute)
   protected val fakeEquipmentGroupNavigatorProvider: EquipmentGroupNavigatorProvider = new FakeEquipmentGroupNavigatorProvider(onwardRoute)
   protected val fakeEquipmentNavigator: EquipmentNavigator                           = new FakeEquipmentNavigator(onwardRoute)
@@ -88,7 +90,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[Navigator].toInstance(fakeNavigator),
         bind[LoadingNavigator].toInstance(fakeLoadingNavigator),
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
-        bind[BorderNavigator].toInstance(fakeBorderNavigatorProvider),
+        bind[BorderGroupNavigatorProvider].toInstance(fakeBorderGroupNavigatorProvider),
+        bind[BorderNavigator].toInstance(fakeBorderNavigator),
         bind[ContainerNavigator].toInstance(fakeContainerNavigator),
         bind[EquipmentGroupNavigatorProvider].toInstance(fakeEquipmentGroupNavigatorProvider),
         bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator),

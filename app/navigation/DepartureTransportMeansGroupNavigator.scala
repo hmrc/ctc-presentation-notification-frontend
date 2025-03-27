@@ -44,7 +44,7 @@ class DepartureTransportMeansGroupNavigator(nextIndex: Index) extends Navigator 
 
 object DepartureTransportMeansGroupNavigator {
 
-  class DepartureTransportMeansGroupNavigatorProvider @Inject() (departureTransportMeansNavigator: DepartureTransportMeansNavigator) {
+  class DepartureTransportMeansGroupNavigatorProvider @Inject() {
 
     def apply(nextIndex: Index): DepartureTransportMeansGroupNavigator = new DepartureTransportMeansGroupNavigator(nextIndex)
   }

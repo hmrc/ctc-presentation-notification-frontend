@@ -16,13 +16,16 @@
 
 package pages.transport.border
 
-import pages.QuestionPage
-import pages.sections.transport.border.BorderActiveListSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object AddAnotherBorderMeansOfTransportYesNoPage extends QuestionPage[Boolean] {
+class AddAnotherBorderMeansOfTransportYesNoPageSpec extends PageBehaviours {
 
-  override def toString: String = "addAnotherBorderMeansOfTransport"
+  "AddAnotherBorderMeansOfTransportYesNoPage" - {
 
-  override def path: JsPath = BorderActiveListSection.path \ toString
+    beRetrievable[Boolean](AddAnotherBorderMeansOfTransportYesNoPage)
+
+    beSettable[Boolean](AddAnotherBorderMeansOfTransportYesNoPage)
+
+    beRemovable[Boolean](AddAnotherBorderMeansOfTransportYesNoPage)
+  }
 }

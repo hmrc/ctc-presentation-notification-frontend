@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{Index, Mode, NormalMode, RichCC015CType, UserAnswers}
+import models.{Index, Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.transport.equipment.index.*
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
@@ -96,13 +96,6 @@ class EquipmentNavigator extends Navigator {
       case true                  => SealIdentificationNumberPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
       case false if mode.isCheck => Some(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       case false                 => ItemPage(equipmentIndex, Index(0)).route(ua, departureId, mode)
-    }
-
-  def checkProcedureAuthRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index): Call =
-    if (ua.departureData.isSimplified && ua.departureData.hasAuthC523) {
-      controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(departureId, mode, equipmentIndex, Index(0))
-    } else {
-      controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
     }
 
   def addAnotherSealRoute(ua: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, sealIndex: Index): Option[Call] =

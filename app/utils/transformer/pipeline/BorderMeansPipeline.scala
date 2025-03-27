@@ -19,13 +19,12 @@ package utils.transformer.pipeline
 import models.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.liftToFuture
-import utils.transformer.transport.border._
+import utils.transformer.transport.border.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BorderMeansPipeline @Inject() (
-  addAnotherBorderMeansOfTransportYesNoTransformer: AddAnotherBorderMeansOfTransportYesNoTransformer,
   addBorderMeansOfTransportYesNoTransformer: AddBorderMeansOfTransportYesNoTransformer,
   addConveyanceReferenceYesNoTransformer: AddConveyanceReferenceYesNoTransformer,
   conveyanceReferenceTransformer: ConveyanceReferenceTransformer,
@@ -36,8 +35,7 @@ class BorderMeansPipeline @Inject() (
 )(implicit ec: ExecutionContext) {
 
   def pipeline(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    addAnotherBorderMeansOfTransportYesNoTransformer.transform andThen
-      addBorderMeansOfTransportYesNoTransformer.transform andThen
+    addBorderMeansOfTransportYesNoTransformer.transform andThen
       addConveyanceReferenceYesNoTransformer.transform andThen
       conveyanceReferenceTransformer.transform andThen
       customsOfficeTransformer.transform andThen

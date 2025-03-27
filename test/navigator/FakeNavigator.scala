@@ -18,6 +18,7 @@ package navigator
 
 import models.{Index, Mode, UserAnswers}
 import navigation.*
+import navigation.BorderGroupNavigator.BorderGroupNavigatorProvider
 import navigation.DepartureTransportMeansGroupNavigator.DepartureTransportMeansGroupNavigatorProvider
 import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
 import pages.*
@@ -56,8 +57,7 @@ class FakeDepartureTransportMeansGroupNavigator(desiredRoute: Call, nextIndex: I
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
-class FakeDepartureTransportMeansGroupNavigatorProvider(desiredRoute: Call)
-    extends DepartureTransportMeansGroupNavigatorProvider(new FakeDepartureTransportMeansNavigator(desiredRoute)) {
+class FakeDepartureTransportMeansGroupNavigatorProvider(desiredRoute: Call) extends DepartureTransportMeansGroupNavigatorProvider {
   override def apply(nextIndex: Index): DepartureTransportMeansGroupNavigator = new FakeDepartureTransportMeansGroupNavigator(desiredRoute, nextIndex)
 }
 
@@ -65,15 +65,23 @@ class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends Departure
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
+class FakeBorderGroupNavigator(desiredRoute: Call, nextIndex: Index) extends BorderGroupNavigator(nextIndex) {
+  override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
+}
+
+class FakeBorderGroupNavigatorProvider(desiredRoute: Call) extends BorderGroupNavigatorProvider {
+  override def apply(nextIndex: Index): BorderGroupNavigator = new FakeBorderGroupNavigator(desiredRoute, nextIndex)
+}
+
 class FakeBorderNavigator(desiredRoute: Call) extends BorderNavigator {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
-class FakeEquipmentGroupNavigator(desiredRoute: Call, nextIndex: Index) extends EquipmentGroupNavigator(new FakeEquipmentNavigator(desiredRoute), nextIndex) {
+class FakeEquipmentGroupNavigator(desiredRoute: Call, nextIndex: Index) extends EquipmentGroupNavigator(nextIndex) {
   override def nextPage(page: Page, userAnswers: UserAnswers, departureId: String, mode: Mode): Call = desiredRoute
 }
 
-class FakeEquipmentGroupNavigatorProvider(desiredRoute: Call) extends EquipmentGroupNavigatorProvider(new FakeEquipmentNavigator(desiredRoute)) {
+class FakeEquipmentGroupNavigatorProvider(desiredRoute: Call) extends EquipmentGroupNavigatorProvider {
   override def apply(nextIndex: Index): EquipmentGroupNavigator = new FakeEquipmentGroupNavigator(desiredRoute, nextIndex)
 }
 
