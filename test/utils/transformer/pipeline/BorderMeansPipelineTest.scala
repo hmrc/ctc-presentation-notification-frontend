@@ -19,7 +19,7 @@ package utils.transformer.pipeline
 import base.SpecBase
 import org.mockito.Mockito.{times, verify, when}
 import utils.transformer.Helper.{defaultTransformFunction, userAnswers}
-import utils.transformer.transport.border._
+import utils.transformer.transport.border.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -28,16 +28,14 @@ class BorderMeansPipelineTest extends SpecBase {
   "BorderMeansPipeline" - {
     "should call all transformers" in {
 
-      val addAnotherBorderMeansOfTransportYesNoTransformer = mock[AddAnotherBorderMeansOfTransportYesNoTransformer]
-      val addBorderMeansOfTransportYesNoTransformer        = mock[AddBorderMeansOfTransportYesNoTransformer]
-      val addConveyanceReferenceYesNoTransformer           = mock[AddConveyanceReferenceYesNoTransformer]
-      val conveyanceReferenceTransformer                   = mock[ConveyanceReferenceTransformer]
-      val customsOfficeTransformer                         = mock[CustomsOfficeTransformer]
-      val identificationTransformer                        = mock[IdentificationTransformer]
-      val identificationNumberTransformer                  = mock[IdentificationNumberTransformer]
-      val nationalityTransformer                           = mock[NationalityTransformer]
+      val addBorderMeansOfTransportYesNoTransformer = mock[AddBorderMeansOfTransportYesNoTransformer]
+      val addConveyanceReferenceYesNoTransformer    = mock[AddConveyanceReferenceYesNoTransformer]
+      val conveyanceReferenceTransformer            = mock[ConveyanceReferenceTransformer]
+      val customsOfficeTransformer                  = mock[CustomsOfficeTransformer]
+      val identificationTransformer                 = mock[IdentificationTransformer]
+      val identificationNumberTransformer           = mock[IdentificationNumberTransformer]
+      val nationalityTransformer                    = mock[NationalityTransformer]
 
-      when(addAnotherBorderMeansOfTransportYesNoTransformer.transform(hc)).thenReturn(defaultTransformFunction)
       when(addBorderMeansOfTransportYesNoTransformer.transform(hc)).thenReturn(defaultTransformFunction)
       when(addConveyanceReferenceYesNoTransformer.transform(hc)).thenReturn(defaultTransformFunction)
       when(conveyanceReferenceTransformer.transform(hc)).thenReturn(defaultTransformFunction)
@@ -47,7 +45,6 @@ class BorderMeansPipelineTest extends SpecBase {
       when(nationalityTransformer.transform(hc)).thenReturn(defaultTransformFunction)
 
       val pipeline = new BorderMeansPipeline(
-        addAnotherBorderMeansOfTransportYesNoTransformer,
         addBorderMeansOfTransportYesNoTransformer,
         addConveyanceReferenceYesNoTransformer,
         conveyanceReferenceTransformer,
@@ -59,7 +56,6 @@ class BorderMeansPipelineTest extends SpecBase {
 
       pipeline.pipeline(hc)(userAnswers)
 
-      verify(addAnotherBorderMeansOfTransportYesNoTransformer, times(1)).transform(hc)
       verify(addBorderMeansOfTransportYesNoTransformer, times(1)).transform(hc)
       verify(addConveyanceReferenceYesNoTransformer, times(1)).transform(hc)
       verify(conveyanceReferenceTransformer, times(1)).transform(hc)

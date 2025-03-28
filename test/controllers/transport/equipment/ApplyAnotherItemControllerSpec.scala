@@ -18,19 +18,21 @@ package controllers.transport.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import controllers.transport.equipment.{routes => equipmentRoutes}
+import controllers.transport.equipment.routes as equipmentRoutes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transport.equipment.index.ApplyAnotherItemPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.transport.equipment.ApplyAnotherItemViewModel
 import viewModels.transport.equipment.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
@@ -127,9 +129,52 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
       }
     }
 
-    "when max limit not reached" - {
-      "when yes submitted" - {
-        "must redirect to select items page at next index" in {
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(ApplyAnotherItemPage(equipmentIndex), true))
+
+        val request = FakeRequest(GET, applyAnotherItemRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel, equipmentIndex).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[ApplyAnotherItemView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(ApplyAnotherItemPage(equipmentIndex), true))
+
+        val request = FakeRequest(GET, applyAnotherItemRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel, equipmentIndex).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[ApplyAnotherItemView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
+    "must redirect to next page" - {
+
+      "when max limit not reached" - {
+        "when yes submitted" in {
           when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
@@ -143,11 +188,13 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual onwardRoute.url
-        }
-      }
 
-      "when no submitted" - {
-        "must redirect to next page" in {
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(ApplyAnotherItemPage(equipmentIndex)) mustEqual true
+        }
+
+        "when no submitted" in {
           when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
@@ -162,12 +209,13 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
           redirectLocation(result).value mustEqual onwardRoute.url
 
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(ApplyAnotherItemPage(equipmentIndex)) mustEqual false
         }
       }
-    }
 
-    "when max limit reached" - {
-      "must redirect to next page" in {
+      "when max limit reached" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
@@ -181,7 +229,6 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual onwardRoute.url
-
       }
     }
 

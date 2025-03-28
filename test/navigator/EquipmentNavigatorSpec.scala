@@ -17,17 +17,16 @@
 package navigator
 
 import base.SpecBase
-import config.Constants.AuthorisationTypeDeparture._
-import generated._
+import config.Constants.AuthorisationTypeDeparture.*
+import generated.*
 import generators.Generators
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.index._
+import pages.transport.equipment.index.*
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
-import pages.transport.equipment.{AddAnotherTransportEquipmentPage, AddTransportEquipmentYesNoPage, ItemPage}
+import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   val navigator = new EquipmentNavigator
@@ -72,117 +71,6 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           navigator
             .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), emptyUserAnswers, departureId, mode)
             .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
-      }
-
-      "Must go from AddAnotherTransportEquipmentPage" - {
-        "when answered no must go to Check your answers page" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), false)
-          navigator
-            .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-
-        "when answered yes" - {
-          "when ContainerIndicatorPage is true" - {
-            "must navigate to AddContainerIdentificationNumberYesNoPage " in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, true)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
-                    .onPageLoad(departureId, mode, equipmentIndex)
-                )
-            }
-          }
-
-          "when ContainerIndicatorPage is false" - {
-
-            "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test"), AuthorisationType03(2, ACR, "test2"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, false)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
-                )
-            }
-
-            "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test2"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, false)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
-                )
-            }
-
-            "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test2"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, false)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, NormalMode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
-                )
-            }
-
-          }
-        }
-
-      }
-
-      "must go from ItemPage to Apply another Item page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers =
-              answers
-                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
-
-            navigator
-              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
-        }
-      }
-
-      "must go from ApplyAnotherItempage" - {
-        "to Item page when user answers yes" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
-          }
-        }
-
-        "to AddAnotherEquipment page when user answers no" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
-          }
         }
       }
 
@@ -319,121 +207,10 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
         }
       }
-
-      "must go from add another seal page" - {
-        "to seal identification number page when user answers yes" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal1")
-            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), "Seal2")
-            .setValue(AddAnotherSealPage(equipmentIndex, Index(2)), true)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
-        }
-        "to tech difficulties when AddAnotherSealPage does not exist" in {
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
-      }
-
-      "to to goods reference item page when user answers no" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
-        navigator
-          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
-          .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
-      }
     }
+
     "in Check mode" - {
       val mode = CheckMode
-
-      "Must go from AddAnotherTransportEquipmentPage" - {
-        "when answered no must go to Check your answers page" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), false)
-          navigator
-            .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-        }
-
-        "when answered yes" - {
-          "when ContainerIndicatorPage is true" - {
-            "must navigate to AddContainerIdentificationNumberYesNoPage " in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, true)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
-                    .onPageLoad(departureId, mode, equipmentIndex)
-                )
-            }
-          }
-
-          "when ContainerIndicatorPage is false" - {
-
-            "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test"), AuthorisationType03(1, ACR, "test2"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, false)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
-                .mustBe(
-                  controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
-                    .onPageLoad(departureId, mode, equipmentIndex, Index(0))
-                )
-            }
-
-            "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test2"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, false)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
-                )
-            }
-
-            "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
-              val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test2"))))
-                .setValue(AddAnotherTransportEquipmentPage(equipmentIndex), true)
-                .setValue(ContainerIndicatorPage, false)
-              navigator
-                .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), userAnswers, departureId, mode)
-                .mustBe(
-                  controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, equipmentIndex)
-                )
-            }
-
-          }
-        }
-        "to tech difficulties when AddAnotherTransportEquipmentPage does not exist" in {
-          navigator
-            .nextPage(AddAnotherTransportEquipmentPage(equipmentIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
-      }
-
-      "must go from ItemPage to Apply another Item page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers =
-              answers
-                .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
-
-            navigator
-              .nextPage(ItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex))
-        }
-      }
 
       "must go from addTransportEquipmentPage" - {
         "to CYA page when answer is No" in {
@@ -584,35 +361,6 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
       }
 
-      "must go from add another seal page" - {
-        "to seal identification number page when user answers yes" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal1")
-            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), "Seal2")
-            .setValue(AddAnotherSealPage(equipmentIndex, Index(2)), true)
-          navigator
-            .nextPage(AddAnotherSealPage(equipmentIndex, Index(2)), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, Index(2)).route(userAnswers, departureId, mode).value)
-        }
-      }
-
-      "to to the cya page when user answers no and the items have been answered" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
-          .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
-        navigator
-          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-      }
-
-      "to to the item page when user answers no and the items have not been answered" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAnotherSealPage(equipmentIndex, sealIndex), false)
-        navigator
-          .nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), userAnswers, departureId, mode)
-          .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
-      }
-
       "must go from the seal identification number page to add another seal page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -625,41 +373,6 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               .mustBe(controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex))
         }
       }
-
-      "must go from ApplyAnotherItempage" - {
-
-        "to Item page when user answers yes" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
-          }
-        }
-
-        "to CYA page when user answers no" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers =
-                answers
-                  .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
-
-              navigator
-                .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
-          }
-        }
-        "to tech difficulties when ApplyAnotherItemPage does not exist" in {
-          navigator
-            .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
-        }
-      }
-
     }
   }
 }

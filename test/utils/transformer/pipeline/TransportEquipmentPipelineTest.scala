@@ -29,7 +29,6 @@ class TransportEquipmentPipelineTest extends SpecBase {
   "TransportEquipmentPipeline" - {
     "should call all transformers" in {
 
-      val transportEquipmentTransformer                 = mock[TransportEquipmentTransformer]
       val transportEquipmentYesNoTransformer            = mock[TransportEquipmentYesNoTransformer]
       val containerIdentificationNumberTransformer      = mock[ContainerIdentificationNumberTransformer]
       val containerIdentificationNumberYesNoTransformer = mock[ContainerIdentificationNumberYesNoTransformer]
@@ -41,14 +40,12 @@ class TransportEquipmentPipelineTest extends SpecBase {
 
       when(containerIdentificationNumberYesNoTransformer.transform(hc)).thenReturn(verifyTransformer(expect = userAnswers, `return` = userAnswers))
       when(transportEquipmentYesNoTransformer.transform(hc)).thenReturn(verifyTransformer(expect = userAnswers, `return` = userAnswers))
-      when(transportEquipmentTransformer.transform(hc)).thenReturn(verifyTransformer(expect = userAnswers, `return` = uaWithEquipment))
       when(containerIdentificationNumberTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithEquipment, `return` = uaWithEquipment))
       when(sealTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithEquipment, `return` = uaWithEquipment))
       when(sealYesNoTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithEquipment, `return` = uaWithEquipment))
       when(itemTransformer.transform(hc)).thenReturn(verifyTransformer(expect = uaWithEquipment, `return` = uaWithEquipment))
 
       val pipeline = new TransportEquipmentPipeline(
-        transportEquipmentTransformer,
         transportEquipmentYesNoTransformer,
         containerIdentificationNumberTransformer,
         containerIdentificationNumberYesNoTransformer,
@@ -59,7 +56,6 @@ class TransportEquipmentPipelineTest extends SpecBase {
 
       pipeline.pipeline(hc)(userAnswers)
 
-      verify(transportEquipmentTransformer, times(1)).transform(hc)
       verify(transportEquipmentYesNoTransformer, times(1)).transform(hc)
       verify(containerIdentificationNumberTransformer, times(1)).transform(hc)
       verify(containerIdentificationNumberYesNoTransformer, times(1)).transform(hc)

@@ -19,6 +19,11 @@ package base
 import controllers.actions.*
 import models.UserAnswers
 import navigation.*
+import navigation.BorderGroupNavigator.BorderGroupNavigatorProvider
+import navigation.DepartureTransportMeansGroupNavigator.DepartureTransportMeansGroupNavigatorProvider
+import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
+import navigation.GoodsReferenceGroupNavigator.GoodsReferenceGroupNavigatorProvider
+import navigation.SealGroupNavigator.SealGroupNavigatorProvider
 import navigator.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -62,12 +67,22 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator                                               = new FakeNavigator(onwardRoute)
-  protected val fakeLoadingNavigator: LoadingNavigator                                 = new FakeLoadingNavigator(onwardRoute)
-  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator                 = new FakeLocationOfGoodsNavigator(onwardRoute)
-  protected val fakeBorderNavigatorProvider: BorderNavigator                           = new FakeBorderNavigator(onwardRoute)
-  protected val fakeContainerNavigator: ContainerNavigator                             = new FakeContainerNavigator(onwardRoute)
-  protected val fakeEquipmentNavigator: EquipmentNavigator                             = new FakeEquipmentNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                                                       = new FakeNavigator(onwardRoute)
+  protected val fakeLoadingNavigator: LoadingNavigator                                         = new FakeLoadingNavigator(onwardRoute)
+  protected val fakeLocationOfGoodsNavigator: LocationOfGoodsNavigator                         = new FakeLocationOfGoodsNavigator(onwardRoute)
+  protected val fakeBorderGroupNavigatorProvider: BorderGroupNavigatorProvider                 = new FakeBorderGroupNavigatorProvider(onwardRoute)
+  protected val fakeBorderNavigator: BorderNavigator                                           = new FakeBorderNavigator(onwardRoute)
+  protected val fakeContainerNavigator: ContainerNavigator                                     = new FakeContainerNavigator(onwardRoute)
+  protected val fakeEquipmentGroupNavigatorProvider: EquipmentGroupNavigatorProvider           = new FakeEquipmentGroupNavigatorProvider(onwardRoute)
+  protected val fakeEquipmentNavigator: EquipmentNavigator                                     = new FakeEquipmentNavigator(onwardRoute)
+  protected val fakeSealGroupNavigatorProvider: SealGroupNavigatorProvider                     = new FakeSealGroupNavigatorProvider(onwardRoute)
+  protected val fakeSealNavigator: SealNavigator                                               = new FakeSealNavigator(onwardRoute)
+  protected val fakeGoodsReferenceGroupNavigatorProvider: GoodsReferenceGroupNavigatorProvider = new FakeGoodsReferenceGroupNavigatorProvider(onwardRoute)
+  protected val fakeGoodsReferenceNavigator: GoodsReferenceNavigator                           = new FakeGoodsReferenceNavigator(onwardRoute)
+
+  protected val fakeDepartureTransportMeansGroupNavigatorProvider: DepartureTransportMeansGroupNavigatorProvider =
+    new FakeDepartureTransportMeansGroupNavigatorProvider(onwardRoute)
+
   protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
   protected val fakeRepresentativeNavigator: RepresentativeNavigator                   = new FakeRepresentativeNavigator(onwardRoute)
 
@@ -82,10 +97,17 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[Navigator].toInstance(fakeNavigator),
         bind[LoadingNavigator].toInstance(fakeLoadingNavigator),
         bind[LocationOfGoodsNavigator].toInstance(fakeLocationOfGoodsNavigator),
-        bind[BorderNavigator].toInstance(fakeBorderNavigatorProvider),
+        bind[BorderGroupNavigatorProvider].toInstance(fakeBorderGroupNavigatorProvider),
+        bind[BorderNavigator].toInstance(fakeBorderNavigator),
         bind[ContainerNavigator].toInstance(fakeContainerNavigator),
+        bind[EquipmentGroupNavigatorProvider].toInstance(fakeEquipmentGroupNavigatorProvider),
         bind[EquipmentNavigator].toInstance(fakeEquipmentNavigator),
+        bind[SealGroupNavigatorProvider].toInstance(fakeSealGroupNavigatorProvider),
+        bind[SealNavigator].toInstance(fakeSealNavigator),
+        bind[GoodsReferenceGroupNavigatorProvider].toInstance(fakeGoodsReferenceGroupNavigatorProvider),
+        bind[GoodsReferenceNavigator].toInstance(fakeGoodsReferenceNavigator),
         bind[RepresentativeNavigator].toInstance(fakeRepresentativeNavigator),
+        bind[DepartureTransportMeansGroupNavigatorProvider].toInstance(fakeDepartureTransportMeansGroupNavigatorProvider),
         bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator)
       )
 

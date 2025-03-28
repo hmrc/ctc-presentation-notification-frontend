@@ -16,11 +16,11 @@
 
 package controllers.transport.equipment.index.seals
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transport.equipment.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{Index, Mode, RichOptionalJsArray}
-import navigation.EquipmentNavigator
+import navigation.SealNavigator
 import pages.sections.transport.equipment.SealsSection
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +38,7 @@ class SealIdentificationNumberController @Inject() (
   formProvider: SealIdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  navigator: EquipmentNavigator,
+  navigator: SealNavigator,
   view: SealIdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

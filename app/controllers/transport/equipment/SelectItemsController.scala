@@ -19,7 +19,7 @@ package controllers.transport.equipment
 import controllers.actions.*
 import forms.SelectableFormProvider.ItemFormProvider
 import models.{Index, Mode}
-import navigation.EquipmentNavigator
+import navigation.GoodsReferenceNavigator
 import pages.transport.equipment.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SelectItemsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: EquipmentNavigator,
+  navigator: GoodsReferenceNavigator,
   actions: Actions,
   formProvider: ItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
