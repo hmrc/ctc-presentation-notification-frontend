@@ -16,18 +16,18 @@
 
 package connectors
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.LocalReferenceNumber
-import models.departureP5._
+import models.departureP5.*
 import play.api.Logging
 import play.api.http.HeaderNames
 import play.api.http.HeaderNames.CONTENT_TYPE
+import play.api.libs.ws.XMLBodyWritables.*
 import scalaxb.XMLFormat
 import scalaxb.`package`.fromXML
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReadsTry, HttpResponse, StringContextOps}
-import play.api.libs.ws.XMLBodyWritables._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,13 +35,12 @@ import scala.xml.{NodeSeq, XML}
 
 class DepartureMovementConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2,
-  phaseConfig: PhaseConfig
+  http: HttpClientV2
 )(implicit ec: ExecutionContext)
     extends HttpReadsTry
     with Logging {
 
-  private val version = phaseConfig.values.apiVersion
+  private val version = 2.1
 
   private val jsonHeader: (String, String) =
     HeaderNames.ACCEPT -> s"application/vnd.hmrc.$version+json"
