@@ -18,10 +18,11 @@ package services
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.Constants.QualifierOfTheIdentification._
-import config.Constants.TypeOfLocation._
+import config.Constants.QualifierOfTheIdentification.*
+import config.Constants.TypeOfLocation.*
 import connectors.ReferenceDataConnector
-import models.{LocationOfGoodsIdentification, LocationType}
+import models.LocationOfGoodsIdentification
+import models.reference.LocationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach

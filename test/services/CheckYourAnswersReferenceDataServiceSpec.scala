@@ -18,11 +18,10 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.LocationType
 import models.reference.transport.border.active.Identification
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.reference.{Country, CountryCode, Nationality}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import models.reference.{Country, CountryCode, LocationType, Nationality}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 

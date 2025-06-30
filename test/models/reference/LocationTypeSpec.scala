@@ -18,42 +18,31 @@ package models.reference
 
 import base.SpecBase
 import config.FrontendAppConfig
-import models.reference.transport.border.active.Identification
+import models.reference.LocationType.*
 import org.scalacheck.Gen
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
 
-class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
+class LocationTypeSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "Identification" - {
-
-    "must serialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val identification = Identification(code, description)
-          Json.toJson(identification) mustEqual Json.parse(s"""
-               |{
-               |  "code": "$code",
-               |  "description": "$description"
-               |}
-               |""".stripMargin)
-      }
-    }
+  "TypeOfLocation" - {
 
     "must deserialise" - {
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val identification = Identification(code, description)
+            val value = LocationType(code, description)
             Json
               .parse(s"""
-                   |{
-                   |  "code": "$code",
-                   |  "description": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[Identification] mustBe identification
+                        |{
+                        |  "type": "$code",
+                        |  "description": "$description"
+                        |}
+                        |""".stripMargin)
+              .as[LocationType] mustEqual value
         }
       }
 
@@ -64,15 +53,15 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = Identification(code, description)
+                  val value = LocationType(code, description)
                   Json
                     .parse(s"""
-                         |{
-                         |  "code": "$code",
-                         |  "description": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[Identification](Identification.reads(config)) mustEqual value
+                              |{
+                              |  "type": "$code",
+                              |  "description": "$description"
+                              |}
+                              |""".stripMargin)
+                    .as[LocationType](LocationType.reads(config)) mustEqual value
               }
           }
         }
@@ -83,33 +72,33 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = Identification(code, description)
+                  val value = LocationType(code, description)
                   Json
                     .parse(s"""
-                         |{
-                         |  "key": "$code",
-                         |  "value": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[Identification](Identification.reads(config)) mustEqual value
+                              |{
+                              |  "key": "$code",
+                              |  "value": "$description"
+                              |}
+                              |""".stripMargin)
+                    .as[LocationType](LocationType.reads(config)) mustEqual value
               }
           }
         }
       }
     }
 
-    "must format as string" in {
+    "must serialise" in {
+
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val identification = Identification(code, description)
-          identification.toString mustEqual s"$description"
+          val typeOfLocation = LocationType(code, description)
+          Json.toJson(typeOfLocation) mustEqual Json.parse(s"""
+                                                              |{
+                                                              |  "type": "$code",
+                                                              |  "description": "$description"
+                                                              |}
+                                                              |""".stripMargin)
       }
     }
-
-    "when description contains raw HTML" in {
-      val identification = Identification("test", "one &amp; two")
-      identification.toString mustEqual "one & two"
-    }
   }
-
 }

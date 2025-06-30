@@ -19,8 +19,8 @@ package services.submission
 import connectors.DepartureMovementConnector
 import generated._
 import models.reference.TransportMode.{BorderMode, InlandMode}
-import models.reference.{Country, CustomsOffice, Item, Nationality}
-import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, LocationType, UserAnswers}
+import models.reference.{Country, CustomsOffice, Item, LocationType, Nationality}
+import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, UserAnswers}
 import pages.sections.houseConsignment.HouseConsignmentListSection
 import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection

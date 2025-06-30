@@ -17,10 +17,12 @@
 package models.reference.transport.transportMeans
 
 import cats.Order
-import models.{DynamicEnumerableType, Radioable}
-import org.apache.commons.text.StringEscapeUtils
-import play.api.libs.json.{Format, Json}
+import config.FrontendAppConfig
 import models.reference.RichComparison
+import models.{DynamicEnumerableType, Radioable}
+import play.api.libs.functional.syntax.*
+import org.apache.commons.text.StringEscapeUtils
+import play.api.libs.json.{__, Format, Json, Reads}
 
 case class TransportMeansIdentification(`type`: String, description: String) extends Radioable[TransportMeansIdentification] {
 
@@ -33,6 +35,22 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 }
 
 object TransportMeansIdentification extends DynamicEnumerableType[TransportMeansIdentification] {
+
+  def reads(config: FrontendAppConfig): Reads[TransportMeansIdentification] =
+    if (config.isPhase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(TransportMeansIdentification.apply)
+    } else {
+      Json.reads[TransportMeansIdentification]
+    }
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.isPhase6Enabled) "keys" else "data.type"
+    Seq(key -> code)
+  }
+
   implicit val format: Format[TransportMeansIdentification] = Json.format[TransportMeansIdentification]
 
   implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) => (x, y).compareBy(_.`type`)

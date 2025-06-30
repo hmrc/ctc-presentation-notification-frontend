@@ -47,13 +47,13 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getCustomsOfficesOfTransitForCountry" - {
       "must return a list of sorted customs offices of transit for a given country" in {
 
-        when(mockRefDataConnector.getCustomsOfficesOfTransitForCountry(eqTo(CountryCode("GB")))(any(), any()))
+        when(mockRefDataConnector.getCustomsOfficesOfTransitForCountry(any())(any(), any()))
           .thenReturn(Future.successful(Right(gbCustomsOffices)))
 
         service.getCustomsOfficesOfTransitForCountry(CountryCode("GB")).futureValue.values mustBe
           Seq(gbCustomsOffice2, gbCustomsOffice1)
 
-        verify(mockRefDataConnector).getCustomsOfficesOfTransitForCountry(eqTo(CountryCode("GB")))(any(), any())
+        verify(mockRefDataConnector).getCustomsOfficesOfTransitForCountry(any())(any(), any())
       }
     }
 
@@ -99,13 +99,13 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getCustomsOfficesOfDestinationForCountry" - {
       "must return a list of sorted customs offices of destination for a given country" in {
 
-        when(mockRefDataConnector.getCustomsOfficesOfDestinationForCountry(eqTo(CountryCode("GB")))(any(), any()))
+        when(mockRefDataConnector.getCustomsOfficesOfDestinationForCountry(any())(any(), any()))
           .thenReturn(Future.successful(Right(gbCustomsOffices)))
 
         service.getCustomsOfficesOfDestinationForCountry(CountryCode("GB")).futureValue.values mustBe
           Seq(gbCustomsOffice2, gbCustomsOffice1)
 
-        verify(mockRefDataConnector).getCustomsOfficesOfDestinationForCountry(eqTo(CountryCode("GB")))(any(), any())
+        verify(mockRefDataConnector).getCustomsOfficesOfDestinationForCountry(any())(any(), any())
       }
     }
   }

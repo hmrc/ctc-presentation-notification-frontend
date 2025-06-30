@@ -17,13 +17,13 @@
 package utils
 
 import base.SpecBase
-import config.Constants.QualifierOfTheIdentification._
+import config.Constants.QualifierOfTheIdentification.*
 import generators.Generators
-import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode}
+import models.reference.{Country, CustomsOffice, LocationType}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.locationOfGoods._
+import pages.locationOfGoods.*
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import services.CheckYourAnswersReferenceDataService
 

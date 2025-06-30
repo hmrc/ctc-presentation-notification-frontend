@@ -85,7 +85,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
       Gen
-        .pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z')
+        .pick(2, 'A' to 'Z')
         .map(
           code => CountryCode(code.mkString)
         )
@@ -99,11 +99,12 @@ trait ModelGenerators {
       } yield Country(code, name)
     }
 
-  implicit lazy val arbitraryUnLocode: Arbitrary[String] =
+  implicit lazy val arbitraryUnLocode: Arbitrary[UnLocode] =
     Arbitrary {
       for {
-        id <- nonEmptyString
-      } yield id
+        unLocodeExtendedCode <- stringsWithExactLength(5)
+        name                 <- nonEmptyString
+      } yield UnLocode(unLocodeExtendedCode, name)
     }
 
   implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
@@ -112,6 +113,14 @@ trait ModelGenerators {
         code <- nonEmptyString
         desc <- nonEmptyString
       } yield Nationality(code, desc)
+    }
+
+  implicit lazy val arbitrarySpecificCircumstanceIndicator: Arbitrary[SpecificCircumstanceIndicator] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield SpecificCircumstanceIndicator(code, desc)
     }
 
   lazy val arbitrarySecurityDetailsNonZeroType: Arbitrary[String] =

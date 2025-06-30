@@ -71,7 +71,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(identification1))))
 
-        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any(), any()))
+        when(mockRefDataConnector.getInlandModes()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(inlandMode))))
 
         when(mockTransportModeCodesService.getInlandModes()(any()))

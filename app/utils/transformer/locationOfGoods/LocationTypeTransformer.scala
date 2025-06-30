@@ -16,7 +16,8 @@
 
 package utils.transformer.locationOfGoods
 
-import models.{LocationType, RichCC015CType, UserAnswers}
+import models.reference.LocationType
+import models.{RichCC015CType, UserAnswers}
 import pages.locationOfGoods.{BaseLocationTypePage, InferredLocationTypePage, LocationTypePage}
 import services.LocationTypeService
 import uk.gov.hmrc.http.HeaderCarrier

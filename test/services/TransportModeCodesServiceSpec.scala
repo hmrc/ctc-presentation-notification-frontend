@@ -51,7 +51,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val borderMode8 = BorderMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted border modes" in {
-        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any(), any()))
+        when(mockRefDataConnector.getBorderModes()(any(), any()))
           .thenReturn(
             Future.successful(Right(NonEmptySet.of(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
           )
@@ -59,7 +59,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
         service.getBorderModes().futureValue mustBe
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
-        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any(), any())
+        verify(mockRefDataConnector).getBorderModes()(any(), any())
       }
     }
 
@@ -75,7 +75,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
 
       "must return the agreed list of sorted inland modes" in {
-        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any(), any()))
+        when(mockRefDataConnector.getInlandModes()(any(), any()))
           .thenReturn(
             Future.successful(Right(NonEmptySet.of(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
           )
@@ -83,7 +83,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
         service.getInlandModes().futureValue mustBe
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
 
-        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any(), any())
+        verify(mockRefDataConnector).getInlandModes()(any(), any())
       }
     }
   }

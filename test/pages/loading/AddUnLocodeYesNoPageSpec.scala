@@ -35,7 +35,7 @@ class AddUnLocodeYesNoPageSpec extends PageBehaviours {
             (unlocode, country, location) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddUnLocodeYesNoPage, true)
-                .setValue(UnLocodePage, unlocode)
+                .setValue(UnLocodePage, unlocode.unLocodeExtendedCode)
                 .setValue(AddExtraInformationYesNoPage, true)
                 .setValue(CountryPage, country)
                 .setValue(LocationPage, location)
@@ -54,7 +54,7 @@ class AddUnLocodeYesNoPageSpec extends PageBehaviours {
           forAll(arbitraryUnLocode.arbitrary, arbitraryCountry.arbitrary, nonEmptyString.sample.value) {
             (unlocode, country, location) =>
               val userAnswers = emptyUserAnswers
-                .setValue(UnLocodePage, unlocode)
+                .setValue(UnLocodePage, unlocode.unLocodeExtendedCode)
                 .setValue(AddExtraInformationYesNoPage, true)
                 .setValue(CountryPage, country)
                 .setValue(LocationPage, location)

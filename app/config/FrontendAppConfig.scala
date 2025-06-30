@@ -26,6 +26,8 @@ class FrontendAppConfig @Inject() (config: Configuration, servicesConfig: MyServ
   val loginUrl: String         = config.get[String]("urls.login")
   val loginContinueUrl: String = config.get[String]("urls.loginContinue")
 
+  val isPhase6Enabled: Boolean = config.get[Boolean]("feature-flags.phase-6-enabled")
+
   lazy val limitDateDaysBefore: Int = config.get[Int]("dates.limitDate.daysBefore")
   lazy val limitDateDaysAfter: Int  = config.get[Int]("dates.limitDate.daysAfter")
 
