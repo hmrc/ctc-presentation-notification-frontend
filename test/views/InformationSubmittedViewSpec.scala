@@ -22,7 +22,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.PanelViewBehaviours
 import views.html.InformationSubmittedView
 
-class InformationSubmissionViewSpec extends PanelViewBehaviours with Generators {
+class InformationSubmittedViewSpec extends PanelViewBehaviours with Generators {
 
   val office: CustomsOffice = arbitraryCustomsOffice.arbitrary.sample.get
 
@@ -52,8 +52,8 @@ class InformationSubmissionViewSpec extends PanelViewBehaviours with Generators 
   behave like pageWithContent("h2", "Before you go")
 
   behave like pageWithLink(
-    "survey",
+    "feedback",
     "Take a short survey",
-    frontendAppConfig.manageTransitMovementsSurveyUrl
+    frontendAppConfig.feedbackUrl
   )
 }
