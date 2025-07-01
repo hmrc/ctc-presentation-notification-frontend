@@ -37,7 +37,7 @@
         )
     )
 
-    <h2 class="govuk-heading-m">@messages("information.sent.h2")</h2>
+    <h2 class="govuk-heading-m">@messages("information.sent.h2.first")</h2>
 
     <p class="govuk-body">
         <a class="govuk-link" id="departure-declarations" href="@config.manageTransitMovementsViewDeparturesUrl">@messages("information.sent.departures")</a>
@@ -55,5 +55,13 @@
 
     <p class="govuk-body">
         <a class="govuk-link" id="new-departure" href="@config.manageTransitMovementsDeclareNewDeclarationUrl">@messages("information.sent.newDeparture")</a>
+    </p>
+
+    <h2 class="govuk-heading-m">@messages("information.sent.h2.second")</h2>
+
+    <p class="govuk-body">
+        @messages("information.sent.survey1")
+        <a class="govuk-link" id="survey" href="@config.manageTransitMovementsSurveyUrl">@messages("information.sent.survey")</a>
+        @messages("information.sent.survey2")
     </p>
 }
