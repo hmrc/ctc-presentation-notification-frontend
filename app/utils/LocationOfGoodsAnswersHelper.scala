@@ -16,8 +16,8 @@
 
 package utils
 
-import models.reference.{Country, CustomsOffice}
-import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, LocationType, Mode, UserAnswers}
+import models.reference.{Country, CustomsOffice, LocationType}
+import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, Mode, UserAnswers}
 import pages.locationOfGoods._
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import play.api.i18n.Messages

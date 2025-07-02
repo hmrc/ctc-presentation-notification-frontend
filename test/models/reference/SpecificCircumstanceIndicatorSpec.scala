@@ -25,17 +25,16 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
 import play.api.test.Helpers.running
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SpecificCircumstanceIndicatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Country" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val country = Country(CountryCode(code), description)
-          Json.toJson(country) mustEqual
+          val value = SpecificCircumstanceIndicator(code, description)
+          Json.toJson(value) mustEqual
             Json.parse(s"""
                           |{
                           |  "code": "$code",
@@ -50,11 +49,11 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
         "when phase 5" in {
           running(_.configure("feature-flags.phase-6-enabled" -> false)) {
             app =>
-              val config                         = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[Country] = Country.reads(config)
+              val config                                               = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(config)
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val country = Country(CountryCode(code), description)
+                  val value = SpecificCircumstanceIndicator(code, description)
                   Json
                     .parse(s"""
                               |{
@@ -62,7 +61,7 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
                               |  "description": "$description"
                               |}
                               |""".stripMargin)
-                    .as[Country] mustEqual country
+                    .as[SpecificCircumstanceIndicator] mustEqual value
               }
           }
         }
@@ -70,11 +69,11 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
         "when phase 6" in {
           running(_.configure("feature-flags.phase-6-enabled" -> true)) {
             app =>
-              val config                         = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[Country] = Country.reads(config)
+              val config                                               = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(config)
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val country = Country(CountryCode(code), description)
+                  val value = SpecificCircumstanceIndicator(code, description)
                   Json
                     .parse(s"""
                               |{
@@ -82,7 +81,7 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
                               |  "value": "$description"
                               |}
                               |""".stripMargin)
-                    .as[Country] mustEqual country
+                    .as[SpecificCircumstanceIndicator] mustEqual value
               }
           }
         }
@@ -91,7 +90,7 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val country = Country(CountryCode(code), description)
+            val value = SpecificCircumstanceIndicator(code, description)
             Json
               .parse(s"""
                         |{
@@ -99,40 +98,30 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
                         |  "description": "$description"
                         |}
                         |""".stripMargin)
-              .as[Country] mustEqual country
+              .as[SpecificCircumstanceIndicator] mustEqual value
         }
       }
     }
 
-    "must convert to select item" in {
-      forAll(arbitrary[Country], arbitrary[Boolean]) {
-        (country, selected) =>
-          country.toSelectItem(selected) mustEqual SelectItem(Some(country.code.code), s"${country.description} - ${country.code.code}", selected)
-      }
-    }
-
     "must format as string" in {
-      forAll(arbitrary[Country]) {
-        country =>
-          country.toString mustEqual s"${country.description} - ${country.code.code}"
+      forAll(arbitrary[SpecificCircumstanceIndicator]) {
+        value =>
+          value.toString mustEqual s"${value.code} - ${value.description}"
       }
     }
 
     "must order" in {
-      val value1 = Country(CountryCode("RS"), "Serbia")
-      val value2 = Country(CountryCode("XS"), "Serbia")
-      val value3 = Country(CountryCode("FR"), "France")
+      val value1 = SpecificCircumstanceIndicator("XXX", "Authorised economic operators")
+      val value2 = SpecificCircumstanceIndicator("A20", "Express consignments in the context of exit summary declarations")
 
-      val values = NonEmptySet.of(value1, value2, value3)
+      val values = NonEmptySet.of(value1, value2)
 
       val result = values.toNonEmptyList.toList
 
       result mustEqual Seq(
-        value3,
-        value1,
-        value2
+        value2,
+        value1
       )
     }
   }
-
 }

@@ -64,7 +64,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
 
       "must go from UnLocodePage to AddExtraInformationYesNoPage" - {
-        val userAnswers = emptyUserAnswers.setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+        val userAnswers = emptyUserAnswers.setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
         navigator
           .nextPage(UnLocodePage, userAnswers, departureId, mode)
           .mustBe(AddExtraInformationYesNoPage.route(userAnswers, departureId, mode).value)
@@ -244,7 +244,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
           val userAnswers = emptyUserAnswers
             .setValue(AddUnLocodeYesNoPage, true)
-            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
@@ -304,7 +304,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         "to AddExtraInformationPage when the AddExtraInformationPage does not exist in either the 13/15/170" in {
           val ie015WithNoExtraInformationUserAnswers = emptyUserAnswers
             .setValue(AddUnLocodeYesNoPage, true)
-            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
           navigator
             .nextPage(UnLocodePage, ie015WithNoExtraInformationUserAnswers, departureId, mode)
             .mustBe(AddExtraInformationYesNoPage.route(ie015WithNoExtraInformationUserAnswers, departureId, mode).value)
@@ -312,7 +312,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         "to CYAPage when the addExtraInformationPage does exist in either the 13/15/170" in {
           val withAddExtraInformationUserAnswers = emptyUserAnswers
-            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value)
+            .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
           navigator
             .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)
             .mustBe(AddExtraInformationYesNoPage.route(withAddExtraInformationUserAnswers, departureId, CheckMode).value)

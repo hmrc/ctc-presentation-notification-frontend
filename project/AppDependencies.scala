@@ -3,7 +3,7 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion = "9.12.0"
+  private val bootstrapVersion = "9.13.0"
   private val hmrcMongoVersion = "2.6.0"
   private val catsVersion      = "2.9.0"
   private val monocleVersion   = "3.3.0"
@@ -27,8 +27,8 @@ object AppDependencies {
     "org.scalatest"         %% "scalatest"               % "3.2.19",
     "uk.gov.hmrc"           %% "bootstrap-test-play-30"  % bootstrapVersion,
     "uk.gov.hmrc.mongo"     %% "hmrc-mongo-test-play-30" % hmrcMongoVersion,
-    "org.jsoup"              % "jsoup"                   % "1.20.1",
-    "org.mockito"            % "mockito-core"            % "5.17.0",
+    "org.jsoup"              % "jsoup"                   % "1.21.1",
+    "org.mockito"            % "mockito-core"            % "5.18.0",
     "org.scalatestplus"     %% "mockito-5-12"            % "3.2.19.0",
     "org.scalatestplus"     %% "scalacheck-1-18"         % "3.2.19.0",
     "org.scalacheck"        %% "scalacheck"              % "1.18.1",

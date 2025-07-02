@@ -19,7 +19,7 @@ package utils.transformer.locationOfGoods
 import base.SpecBase
 import generated.LocationOfGoodsType05
 import generators.Generators
-import models.LocationType
+import models.reference.LocationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

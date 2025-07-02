@@ -18,7 +18,7 @@ package services
 
 import config.Constants.TypeOfLocation._
 import connectors.ReferenceDataConnector
-import models.LocationType
+import models.reference.LocationType
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

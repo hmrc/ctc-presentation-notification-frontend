@@ -17,20 +17,21 @@
 package navigator
 
 import base.SpecBase
-import config.Constants.AuthorisationTypeDeparture._
-import config.Constants.DeclarationTypeSecurity._
-import config.Constants.QualifierOfTheIdentification._
-import config.Constants.TransportModeCode._
+import config.Constants.AuthorisationTypeDeparture.*
+import config.Constants.DeclarationTypeSecurity.*
+import config.Constants.QualifierOfTheIdentification.*
+import config.Constants.TransportModeCode.*
 import controllers.locationOfGoods.routes
-import generated._
+import generated.*
 import generators.Generators
-import models._
+import models.*
+import models.reference.LocationType
 import models.reference.TransportMode.BorderMode
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading.CountryPage
-import pages.locationOfGoods._
+import pages.locationOfGoods.*
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{CheckInformationPage, ContainerIndicatorPage, LimitDatePage}

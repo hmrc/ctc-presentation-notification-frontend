@@ -79,12 +79,12 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
           forAll(arbitrary[Mode], arbitraryUnLocode.arbitrary) {
             (mode, unlocode) =>
               val answers = emptyUserAnswers
-                .setValue(UnLocodePage, unlocode)
+                .setValue(UnLocodePage, unlocode.unLocodeExtendedCode)
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.unlocode.get
 
               result.key.value mustBe s"UN/LOCODE"
-              result.value.value mustBe unlocode
+              result.value.value mustBe unlocode.unLocodeExtendedCode
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

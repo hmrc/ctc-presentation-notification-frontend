@@ -17,8 +17,10 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-import play.api.libs.json.{Format, Json}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Format, Json, Reads}
 
 case class Nationality(code: String, description: String) extends Selectable {
 
@@ -28,6 +30,22 @@ case class Nationality(code: String, description: String) extends Selectable {
 }
 
 object Nationality {
+
+  def reads(config: FrontendAppConfig): Reads[Nationality] =
+    if (config.isPhase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(Nationality.apply)
+    } else {
+      Json.reads[Nationality]
+    }
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.isPhase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
+
   implicit val format: Format[Nationality] = Json.format[Nationality]
 
   implicit val order: Order[Nationality] = (x: Nationality, y: Nationality) => (x, y).compareBy(_.description, _.code)

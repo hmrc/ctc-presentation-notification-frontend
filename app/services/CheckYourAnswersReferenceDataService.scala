@@ -17,10 +17,9 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.LocationType
 import models.reference.transport.border.active.Identification
 import models.reference.transport.transportMeans.TransportMeansIdentification
-import models.reference.{Country, Nationality}
+import models.reference.{Country, LocationType, Nationality}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

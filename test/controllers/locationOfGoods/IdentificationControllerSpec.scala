@@ -20,7 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.{LocationOfGoodsIdentification, LocationType, NormalMode, UserAnswers}
+import models.reference.LocationType
+import models.{LocationOfGoodsIdentification, NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -31,7 +32,7 @@ import pages.locationOfGoods.{IdentificationPage, InferredIdentificationPage, In
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.LocationOfGoodsIdentificationTypeService
 import views.html.locationOfGoods.IdentificationView
 

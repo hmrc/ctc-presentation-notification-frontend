@@ -89,11 +89,6 @@ package object controllers {
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
 
-//    def navigate()(implicit navigator: Navigator, executionContext: ExecutionContext): Future[Result] =
-//      navigate {
-//        case (_, userAnswers) => navigator.nextPage(userAnswers)
-//      }
-
     def navigateTo(call: Call)(implicit executionContext: ExecutionContext): Future[Result] =
       navigate {
         _ => call

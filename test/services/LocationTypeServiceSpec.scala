@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
-import models.LocationType
+import models.reference.LocationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach

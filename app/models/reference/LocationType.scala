@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
 import cats.Order
-import play.api.libs.json.{Format, Json}
+import config.FrontendAppConfig
+import models.{DynamicEnumerableType, Radioable}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Format, Json, Reads}
 
 case class LocationType(`type`: String, description: String) extends Radioable[LocationType] {
   override val messageKeyPrefix: String = LocationType.messageKeyPrefix
@@ -27,6 +30,22 @@ case class LocationType(`type`: String, description: String) extends Radioable[L
 }
 
 object LocationType extends DynamicEnumerableType[LocationType] {
+
+  def reads(config: FrontendAppConfig): Reads[LocationType] =
+    if (config.isPhase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(LocationType.apply)
+    } else {
+      Json.reads[LocationType]
+    }
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.isPhase6Enabled) "keys" else "data.type"
+    Seq(key -> code)
+  }
+
   implicit val format: Format[LocationType] = Json.format[LocationType]
 
   implicit val order: Order[LocationType] = (x: LocationType, y: LocationType) => x.`type`.compareToIgnoreCase(y.`type`)

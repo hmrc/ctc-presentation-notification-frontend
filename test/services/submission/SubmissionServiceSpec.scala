@@ -23,7 +23,7 @@ import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference._
 import models.reference.transport.border.active.{Identification => ABTMIdentification}
 import models.reference.transport.transportMeans.{TransportMeansIdentification => DTMIdentification}
-import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification, LocationType}
+import models.{Coordinates, DynamicAddress, Index, LocationOfGoodsIdentification}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
