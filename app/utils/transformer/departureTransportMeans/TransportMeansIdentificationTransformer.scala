@@ -39,7 +39,7 @@ class TransportMeansIdentificationTransformer @Inject() (referenceDataConnector:
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
       fetchReferenceData = () => referenceDataConnector.getMeansOfTransportIdentificationTypes().map(_.resolve()).map(_.toList),
-      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.flatMap(_.typeOfIdentification),
+      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.map(_.typeOfIdentification),
       generateCapturedAnswers = generateCapturedAnswers
     )
 

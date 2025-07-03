@@ -31,11 +31,11 @@ class ItemTransformerTest extends SpecBase with Generators {
   "ItemTransformer" - {
     "must return updated answers with ItemPage if Items exist for the equipment" in {
       forAll(
-        arbitrary[TransportEquipmentType06],
-        arbitrary[GoodsReferenceType02],
-        arbitrary[HouseConsignmentType10],
-        arbitrary[ConsignmentItemType09],
-        arbitrary[CommodityType07]
+        arbitrary[TransportEquipmentType03],
+        arbitrary[GoodsReferenceType01],
+        arbitrary[HouseConsignmentType13],
+        arbitrary[ConsignmentItemType10],
+        arbitrary[CommodityType10]
       ) {
         (transportEquipment, goodsReference, houseConsignment, consignmentItem, commodity) =>
           val ie015 = basicIe015.copy(

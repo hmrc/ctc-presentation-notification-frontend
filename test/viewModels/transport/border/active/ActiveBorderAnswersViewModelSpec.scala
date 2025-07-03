@@ -17,7 +17,7 @@
 package viewModels.transport.border.active
 
 import base.SpecBase
-import generated.CustomsOfficeOfTransitDeclaredType04
+import generated.CustomsOfficeOfTransitDeclaredType06
 import generators.Generators
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
@@ -86,7 +86,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                 nonEmptyString,
                 arbitrary[CustomsOffice],
                 arbitrary[Nationality],
-                arbitrary[CustomsOfficeOfTransitDeclaredType04]
+                arbitrary[CustomsOfficeOfTransitDeclaredType06]
               ) {
                 (securityType, identification, identificationNumber, office, nationality, officeOfTransit) =>
                   val answers = emptyUserAnswers
@@ -162,7 +162,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                 nonEmptyString,
                 arbitrary[CustomsOffice],
                 arbitrary[Nationality],
-                arbitrary[CustomsOfficeOfTransitDeclaredType04]
+                arbitrary[CustomsOfficeOfTransitDeclaredType06]
               ) {
                 (securityType, identification, identificationNumber, office, nationality, officeOfTransit) =>
                   val answers = emptyUserAnswers
@@ -241,7 +241,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
           forAll(
             arbitrary[Identification],
             arbitrary[Identification],
-            arbitrary[CustomsOfficeOfTransitDeclaredType04]
+            arbitrary[CustomsOfficeOfTransitDeclaredType06]
           ) {
             (identification1, identification2, officeOfTransit) =>
               val answers = emptyUserAnswers

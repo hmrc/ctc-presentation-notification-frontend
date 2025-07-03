@@ -17,7 +17,7 @@
 package navigator
 
 import base.SpecBase
-import generated.RepresentativeType05
+import generated.RepresentativeType06
 import generators.Generators
 import models._
 import navigation.RepresentativeNavigator
@@ -108,7 +108,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
                 .setValue(AddRepresentativeContactDetailsYesNoPage, true)
                 .copy(departureData =
                   basicIe015.copy(
-                    Representative = Some(RepresentativeType05("", "", None))
+                    Representative = Some(RepresentativeType06("", "", None))
                   )
                 )
               navigator
@@ -122,7 +122,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(AddRepresentativeContactDetailsYesNoPage, true)
               .copy(departureData =
                 basicIe015.copy(
-                  Representative = Some(RepresentativeType05("", "", None))
+                  Representative = Some(RepresentativeType06("", "", None))
                 )
               )
               .setValue(NamePage, nonEmptyString.sample.value)
@@ -136,7 +136,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(AddRepresentativeContactDetailsYesNoPage, true)
               .copy(departureData =
                 basicIe015.copy(
-                  Representative = Some(RepresentativeType05("", "", None))
+                  Representative = Some(RepresentativeType06("", "", None))
                 )
               )
               .setValue(NamePage, nonEmptyString.sample.value)

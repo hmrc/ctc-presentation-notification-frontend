@@ -30,10 +30,10 @@ class TransportMeansIdentificationNumberTransformerTest extends SpecBase with Ge
 
   "TransportMeansIdentificationNumberTransformer" - {
     "must return updated answers with TransportMeansIdentificationNumberPage" in {
-      forAll(arbitrary[DepartureTransportMeansType03], nonEmptyString) {
+      forAll(arbitrary[DepartureTransportMeansType01], nonEmptyString) {
         (departureTransportMeans, identificationNumber) =>
           val userAnswers = setDepartureTransportMeansAnswersLens.replace(
-            Seq(departureTransportMeans.copy(identificationNumber = Some(identificationNumber)))
+            Seq(departureTransportMeans.copy(identificationNumber = identificationNumber))
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue

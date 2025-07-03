@@ -41,7 +41,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
   "CustomsOfficeIdentifierTransformer" - {
 
     "must skip transforming if there is no customs office data" in {
-      forAll(arbitrary[LocationOfGoodsType05]) {
+      forAll(arbitrary[LocationOfGoodsType04]) {
         locationOfGoods =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
             Some(locationOfGoods.copy(CustomsOffice = None))
@@ -53,7 +53,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
     }
 
     "must return updated answers when the customs office from departure data can be found in service response" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[CustomsOffice]) {
+      forAll(arbitrary[LocationOfGoodsType04], arbitrary[CustomsOffice]) {
         (locationOfGoods, customsOffice) =>
           when(service.getCustomsOfficesOfDepartureForCountry(any())(any()))
             .thenReturn(Future.successful(SelectableList(Seq(customsOffice))))
@@ -69,7 +69,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
   }
 
   "must return None when the customs office from departure data cannot be found in service response" in {
-    forAll(arbitrary[LocationOfGoodsType05], arbitrary[CustomsOffice]) {
+    forAll(arbitrary[LocationOfGoodsType04], arbitrary[CustomsOffice]) {
       (locationOfGoods, customsOffice) =>
         when(service.getCustomsOfficesOfDepartureForCountry(any())(any()))
           .thenReturn(Future.successful(SelectableList(Seq())))
@@ -84,7 +84,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
   }
 
   "must return failure if the service fails" in {
-    forAll(arbitrary[LocationOfGoodsType05], arbitrary[CustomsOffice]) {
+    forAll(arbitrary[LocationOfGoodsType04], arbitrary[CustomsOffice]) {
       (locationOfGoods, customsOffice) =>
         when(service.getCustomsOfficesOfDepartureForCountry(any())(any()))
           .thenReturn(Future.failed(new RuntimeException("")))

@@ -30,7 +30,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
   "AddIdentifierYesNoTransformer" - {
     "must return AddIdentifierYesNoPage Yes (true) when there is additionalIdentifier" - {
       "and identification is X or Y" in {
-        forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
+        forAll(arbitrary[LocationOfGoodsType04], nonEmptyString, Gen.oneOf("X", "Y")) {
           (locationOfGoods, additionalIdentifier, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
               .replace(
@@ -44,7 +44,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
       }
 
       "and inferred identification is X or Y" in {
-        forAll(arbitrary[LocationOfGoodsType05], nonEmptyString, Gen.oneOf("X", "Y")) {
+        forAll(arbitrary[LocationOfGoodsType04], nonEmptyString, Gen.oneOf("X", "Y")) {
           (locationOfGoods, additionalIdentifier, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
               .replace(
@@ -60,7 +60,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
 
     "must return AddIdentifierYesNoPage No (false) when there is no additionalIdentifier" - {
       "and identification is X or Y" in {
-        forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
+        forAll(arbitrary[LocationOfGoodsType04], Gen.oneOf("X", "Y")) {
           (locationOfGoods, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
               .replace(
@@ -74,7 +74,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
       }
 
       "and inferred identification is X or Y" in {
-        forAll(arbitrary[LocationOfGoodsType05], Gen.oneOf("X", "Y")) {
+        forAll(arbitrary[LocationOfGoodsType04], Gen.oneOf("X", "Y")) {
           (locationOfGoods, identification) =>
             val userAnswers = setLocationOfGoodsOnUserAnswersLens
               .replace(
@@ -89,7 +89,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
     }
 
     "must return AddIdentifierYesNoPage None when identification is not X or Y" in {
-      forAll(arbitrary[LocationOfGoodsType05], Gen.option(nonEmptyString)) {
+      forAll(arbitrary[LocationOfGoodsType04], Gen.option(nonEmptyString)) {
         (locationOfGoods, additionalIdentifier) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(

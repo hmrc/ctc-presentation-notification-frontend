@@ -17,7 +17,7 @@
 package utils.transformer.transport
 
 import base.SpecBase
-import generated.DepartureTransportMeansType03
+import generated.DepartureTransportMeansType01
 import generators.Generators
 import models.reference.Nationality
 import models.{Index, SelectableList}
@@ -41,13 +41,13 @@ class TransportMeansNationalityTransformerTest extends SpecBase with Generators 
   "TransportMeansNationalityTransformer" - {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        forAll(arbitrary[DepartureTransportMeansType03], arbitrary[Nationality]) {
+        forAll(arbitrary[DepartureTransportMeansType01], arbitrary[Nationality]) {
           (departureTransportMeans, nationality) =>
             when(nationalitiesService.getNationalities())
               .thenReturn(Future.successful(SelectableList(List(nationality))))
 
             val userAnswers = setDepartureTransportMeansAnswersLens.replace(
-              Seq(departureTransportMeans.copy(nationality = Some(nationality.code)))
+              Seq(departureTransportMeans.copy(nationality = nationality.code))
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
@@ -57,13 +57,13 @@ class TransportMeansNationalityTransformerTest extends SpecBase with Generators 
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      forAll(arbitrary[DepartureTransportMeansType03], arbitrary[Nationality]) {
+      forAll(arbitrary[DepartureTransportMeansType01], arbitrary[Nationality]) {
         (departureTransportMeans, nationality) =>
           when(nationalitiesService.getNationalities())
             .thenReturn(Future.successful(SelectableList(Nil)))
 
           val userAnswers = setDepartureTransportMeansAnswersLens.replace(
-            Seq(departureTransportMeans.copy(nationality = Some(nationality.code)))
+            Seq(departureTransportMeans.copy(nationality = nationality.code))
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue

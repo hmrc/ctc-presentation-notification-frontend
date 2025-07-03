@@ -17,7 +17,7 @@
 package utils.transformer.transport.placeOfLoading
 
 import base.SpecBase
-import generated.PlaceOfLoadingType03
+import generated.PlaceOfLoadingType
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.loading.LocationPage
@@ -27,7 +27,7 @@ class LocationTransformerTest extends SpecBase with Generators {
 
   "LocationTransformer" - {
     "must return updated answers with LocationPage" in {
-      forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
+      forAll(arbitrary[PlaceOfLoadingType], nonEmptyString) {
         (placeOfLoading, location) =>
           val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(location = Some(location)))

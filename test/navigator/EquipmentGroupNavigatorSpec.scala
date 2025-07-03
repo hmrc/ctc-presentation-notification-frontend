@@ -47,7 +47,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           "when ContainerIndicatorPage is true" - {
             "must navigate to AddContainerIdentificationNumberYesNoPage " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, ACR, "test"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, true)
               navigator
@@ -63,7 +63,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
             "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test"), AuthorisationType03(2, ACR, "test2"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, SSE, "test"), AuthorisationType02(2, ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -76,7 +76,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
             "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test2"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, SSE, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -88,7 +88,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
             "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test2"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -118,7 +118,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           "when ContainerIndicatorPage is true" - {
             "must navigate to AddContainerIdentificationNumberYesNoPage " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, ACR, "test"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, true)
               navigator
@@ -134,7 +134,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
             "must navigate to SealIdentificationNumberPage when Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test"), AuthorisationType03(1, ACR, "test2"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, SSE, "test"), AuthorisationType02(1, ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -147,7 +147,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
             "must navigate to AddSealYesNoPage when Not Simplified and the authorisation type = C523 " in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, SSE, "test2"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, SSE, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, false)
               navigator
@@ -159,7 +159,7 @@ class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
             "must navigate to AddSealYesNoPage when Simplified and the authorisation type is not C523" in {
               val userAnswers = emptyUserAnswers
-                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType03(1, ACR, "test2"))))
+                .copy(departureData = basicIe015.copy(Authorisation = Seq(AuthorisationType02(1, ACR, "test2"))))
                 .setValue(AddAnotherTransportEquipmentPage, true)
                 .setValue(ContainerIndicatorPage, false)
               navigator

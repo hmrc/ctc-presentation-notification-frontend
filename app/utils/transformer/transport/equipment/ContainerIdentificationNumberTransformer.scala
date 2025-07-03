@@ -16,7 +16,7 @@
 
 package utils.transformer.transport.equipment
 
-import generated.TransportEquipmentType06
+import generated.TransportEquipmentType03
 import models.{Index, UserAnswers}
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 class ContainerIdentificationNumberTransformer extends PageTransformer {
 
   override type DomainModelType              = String
-  override type ExtractedTypeInDepartureData = TransportEquipmentType06
+  override type ExtractedTypeInDepartureData = TransportEquipmentType03
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(

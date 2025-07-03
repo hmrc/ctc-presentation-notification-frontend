@@ -17,7 +17,7 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import generated.TransportEquipmentType06
+import generated.TransportEquipmentType03
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
@@ -28,7 +28,7 @@ class TransportEquipmentYesNoTransformerTest extends SpecBase with Generators {
 
   "TransportEquipmentYesNoTransformer" - {
     "when transport equipment present must return updated answers with AddTransportEquipmentYesNoPage as true" in {
-      forAll(arbitrary[TransportEquipmentType06]) {
+      forAll(arbitrary[TransportEquipmentType03]) {
         transportEquipment =>
           val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment)
@@ -40,7 +40,7 @@ class TransportEquipmentYesNoTransformerTest extends SpecBase with Generators {
     }
 
     "when transport equipment not present must return updated answers with AddTransportEquipmentYesNoPage as false" in {
-      forAll(arbitrary[TransportEquipmentType06]) {
+      forAll(arbitrary[TransportEquipmentType03]) {
         transportEquipment =>
           val userAnswers = setTransportEquipmentLens.replace(
             Nil

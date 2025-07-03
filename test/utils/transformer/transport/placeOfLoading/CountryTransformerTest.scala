@@ -17,7 +17,7 @@
 package utils.transformer.transport.placeOfLoading
 
 import base.SpecBase
-import generated.PlaceOfLoadingType03
+import generated.PlaceOfLoadingType
 import generators.Generators
 import models.SelectableList
 import models.reference.Country
@@ -40,7 +40,7 @@ class CountryTransformerTest extends SpecBase with Generators {
 
   "CountryTransformer" - {
     "must return updated answers with CountryPage" in {
-      forAll(arbitrary[PlaceOfLoadingType03], arbitrary[Country]) {
+      forAll(arbitrary[PlaceOfLoadingType], arbitrary[Country]) {
         (placeOfLoading, country) =>
           when(service.getCountries()(any()))
             .thenReturn(Future.successful(SelectableList(Seq(country))))

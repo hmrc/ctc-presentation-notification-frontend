@@ -29,7 +29,7 @@ class AddressTransformerTest extends SpecBase with Generators {
   "AddressTransformer" - {
 
     "must return updated answers with AddressPage" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14]) {
+      forAll(arbitrary[LocationOfGoodsType04], arbitrary[AddressType06]) {
         (locationOfGoods, address) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(

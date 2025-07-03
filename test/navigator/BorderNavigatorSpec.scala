@@ -63,7 +63,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "when security is NoSecurityDetails and active border transport is present " - {
           "and container indicator equals true navigate to ContainerIdentificationNumber page " in {
 
-            forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+            forAll(arbitrary[ActiveBorderTransportMeansType03]) {
               activeBorderTransportMeans =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ContainerIndicatorPage, true)
@@ -86,7 +86,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           "and container indicator equals false navigate to AddTransportEquipmentYesNo page " in {
 
-            forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+            forAll(arbitrary[ActiveBorderTransportMeansType03]) {
               activeBorderTransportMeans =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ContainerIndicatorPage, false)
@@ -109,7 +109,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           "and container indicator is not captured in IE170 navigate to check your answers page " in {
 
-            forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+            forAll(arbitrary[ActiveBorderTransportMeansType03]) {
               activeBorderTransportMeans =>
                 val userAnswers = emptyUserAnswers
                   .copy(departureData =
@@ -208,7 +208,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       "must go from nationality page to customs offices page" in {
         val destinationOffice = arbitrary[CustomsOfficeOfDestinationDeclaredType01].sample.value
-        val transitOffice     = arbitrary[CustomsOfficeOfTransitDeclaredType04].sample.value
+        val transitOffice     = arbitrary[CustomsOfficeOfTransitDeclaredType06].sample.value
         val exitOffice        = arbitrary[CustomsOfficeOfExitForTransitDeclaredType02].sample.value
 
         val updatedDepartureData = basicIe015.copy(
@@ -281,7 +281,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "must go to add another active border when customs office of transit is present" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+          forAll(arbitrary[UserAnswers], arbitrary[CustomsOfficeOfTransitDeclaredType06]) {
             (answers, customsOffices) =>
               val updatedAnswers = answers
                 .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
@@ -320,7 +320,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "must go to add another active border when customs office of transit is present" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+          forAll(arbitrary[UserAnswers], arbitrary[CustomsOfficeOfTransitDeclaredType06]) {
             (answers, customsOffices) =>
               val updatedAnswers = answers
                 .copy(departureData =
@@ -541,7 +541,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "to more add active border transport means page when security is 0 and active border transport is present " in {
 
-          forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+          forAll(arbitrary[ActiveBorderTransportMeansType03]) {
             activeBorderTransportMeans =>
               val userAnswers = emptyUserAnswers
                 .copy(departureData =

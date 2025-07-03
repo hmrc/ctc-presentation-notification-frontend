@@ -17,7 +17,7 @@
 package utils.transformer.representative
 
 import base.SpecBase
-import generated.RepresentativeType05
+import generated.RepresentativeType06
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.ActingAsRepresentativePage
@@ -28,7 +28,7 @@ class ActingAsRepresentativeTransformerSpec extends SpecBase with Generators {
 
   "ActingAsRepresentativeTransformer" - {
     "when representative details is present must return updated answers with ActingAsRepresentative page as true" in {
-      forAll(arbitrary[RepresentativeType05]) {
+      forAll(arbitrary[RepresentativeType06]) {
         representative =>
           val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative)

@@ -64,7 +64,7 @@ class InformationSubmittedControllerSpec extends SpecBase with AppWithDefaultMoc
           val transitOperation = cc170cType.TransitOperation.copy(LRN = lrn.value)
           val ie170 = cc170cType.copy(
             TransitOperation = transitOperation,
-            CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(customsOfficeId)
+            CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType05(customsOfficeId)
           )
 
           when(mockDepartureMessageService.getIE170(any())(any(), any()))

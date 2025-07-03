@@ -17,7 +17,7 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import generated.ActiveBorderTransportMeansType02
+import generated.ActiveBorderTransportMeansType03
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
@@ -27,7 +27,7 @@ class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase with Genera
 
   "AddBorderMeansOfTransportYesNoTransformer" - {
     "must return AddBorderMeansOfTransportYesNoPage Yes (true) when there is at least 1 border means" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03]) {
         borderTransportMeans =>
           val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans)

@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import generated.{GNSSType, LocationOfGoodsType05}
+import generated.{GNSSType, LocationOfGoodsType04}
 import generators.Generators
 import models.Coordinates
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +29,7 @@ class CoordinatesTransformerTest extends SpecBase with Generators {
   "CoordinatesTransformer" - {
 
     "must return updated answers with AdditionalIdentifierPage" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[GNSSType]) {
+      forAll(arbitrary[LocationOfGoodsType04], arbitrary[GNSSType]) {
         (locationOfGoods, coordinates) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(

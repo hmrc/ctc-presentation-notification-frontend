@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import generated.LocationOfGoodsType05
+import generated.LocationOfGoodsType04
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.AuthorisationNumberPage
@@ -28,7 +28,7 @@ class AuthorisationNumberTransformerTest extends SpecBase with Generators {
   "AuthorisationNumberTransformer" - {
 
     "must return updated answers with AuthorisationNumberPage" in {
-      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
+      forAll(arbitrary[LocationOfGoodsType04], nonEmptyString) {
         (locationOfGoods, authorisationNumber) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(

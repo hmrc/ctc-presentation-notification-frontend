@@ -16,8 +16,9 @@
 
 package services.submission
 
+import config.FrontendAppConfig
 import connectors.DepartureMovementConnector
-import generated._
+import generated.*
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.{Country, CustomsOffice, Item, LocationType, Nationality}
 import models.{Coordinates, DynamicAddress, EoriNumber, Index, LocationOfGoodsIdentification, UserAnswers}
@@ -27,7 +28,7 @@ import pages.sections.transport.departureTransportMeans.TransportMeansListSectio
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, InlandModePage, LimitDatePage}
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -42,7 +43,8 @@ import scala.xml.{NamespaceBinding, NodeSeq}
 class SubmissionService @Inject() (
   dateTimeService: DateTimeService,
   messageIdentificationService: MessageIdentificationService,
-  connector: DepartureMovementConnector
+  connector: DepartureMovementConnector,
+  config: FrontendAppConfig
 ) {
 
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
@@ -56,13 +58,13 @@ class SubmissionService @Inject() (
   private def transform(userAnswers: UserAnswers): CC170CType = {
     val officeOfDeparture = userAnswers.departureData.CustomsOfficeOfDeparture.referenceNumber
     implicit val reads: Reads[CC170CType] = for {
-      transitOperation <- __.read[TransitOperationType24](transitOperationReads(userAnswers))
-      representative   <- __.readNullableSafe[RepresentativeType05]
-      consignment      <- __.read[ConsignmentType08]
+      transitOperation <- __.read[TransitOperationType23](transitOperationReads(userAnswers))
+      representative   <- __.readNullableSafe[RepresentativeType06]
+      consignment      <- __.read[ConsignmentType10]
     } yield CC170CType(
       messageSequence1 = messageSequence(userAnswers.eoriNumber, officeOfDeparture),
       TransitOperation = transitOperation,
-      CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+      CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType05(
         referenceNumber = officeOfDeparture
       ),
       HolderOfTheTransitProcedure = holderOfTransit(userAnswers.departureData.HolderOfTheTransitProcedure),
@@ -74,8 +76,10 @@ class SubmissionService @Inject() (
     userAnswers.data.as[CC170CType]
   }
 
-  def attributes: Map[String, DataRecord[?]] =
-    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS5u461Value.toString, scope)))
+  def attributes: Map[String, DataRecord[?]] = {
+    val phaseId = if (config.isPhase6Enabled) NCTS6 else NCTS5u461
+    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(phaseId.toString, scope)))
+  }
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDeparture: String): MESSAGESequence =
     MESSAGESequence(
@@ -87,19 +91,19 @@ class SubmissionService @Inject() (
       correlationIdentifier = None
     )
 
-  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType24] =
+  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType23] =
     LimitDatePage.path.readNullable[LocalDate].map {
-      limitDate => TransitOperationType24(userAnswers.lrn, limitDate)
+      limitDate => TransitOperationType23(userAnswers.lrn, limitDate)
     }
 
-  def holderOfTransit(holderOfTransit: HolderOfTheTransitProcedureType14): HolderOfTheTransitProcedureType19 =
-    HolderOfTheTransitProcedureType19(
+  def holderOfTransit(holderOfTransit: HolderOfTheTransitProcedureType23): HolderOfTheTransitProcedureType13 =
+    HolderOfTheTransitProcedureType13(
       identificationNumber = holderOfTransit.identificationNumber,
       TIRHolderIdentificationNumber = holderOfTransit.TIRHolderIdentificationNumber,
       name = holderOfTransit.name,
       Address = holderOfTransit.Address.map {
         address =>
-          AddressType17(
+          AddressType14(
             streetAndNumber = address.streetAndNumber,
             postcode = address.postcode,
             city = address.city,
@@ -108,34 +112,34 @@ class SubmissionService @Inject() (
       }
     )
 
-  implicit val representativeReads: Reads[RepresentativeType05] = {
-    import pages.representative._
+  implicit val representativeReads: Reads[RepresentativeType06] = {
+    import pages.representative.*
 
-    implicit val contactPersonReads: Reads[ContactPersonType05] = (
+    implicit val contactPersonReads: Reads[ContactPersonType03] = (
       NamePage.path.read[String] and
         RepresentativePhoneNumberPage.path.read[String] and
         None
-    )(ContactPersonType05.apply)
+    )(ContactPersonType03.apply)
 
     (
       EoriPage.path.read[String] and
         ("2": Reads[String]) and
-        __.readNullableSafe[ContactPersonType05]
-    )(RepresentativeType05.apply)
+        __.readNullableSafe[ContactPersonType03]
+    )(RepresentativeType06.apply)
   }
 
-  implicit val consignmentReads: Reads[ConsignmentType08] =
+  implicit val consignmentReads: Reads[ConsignmentType10] =
     for {
       containerIndicator         <- ContainerIndicatorPage.path.readNullable[Boolean].map(_.map(boolToFlag))
       inlandModeOfTransport      <- InlandModePage.path.readNullable[InlandMode].map(_.map(_.code))
       modeOfTransportAtTheBorder <- BorderModeOfTransportPage.path.readNullable[BorderMode].map(_.map(_.code))
-      transportEquipment         <- EquipmentsSection.path.readArray[TransportEquipmentType06](transportEquipmentReads)
-      locationOfGoods            <- __.read[LocationOfGoodsType03]
-      departureTransportMeans    <- TransportMeansListSection.path.readArray[DepartureTransportMeansType05](departureTransportMeansReads)
+      transportEquipment         <- EquipmentsSection.path.readArray[TransportEquipmentType03](transportEquipmentReads)
+      locationOfGoods            <- __.read[LocationOfGoodsType02]
+      departureTransportMeans    <- TransportMeansListSection.path.readArray[DepartureTransportMeansType01](departureTransportMeansReads)
       activeBorderTransportMeans <- BorderActiveListSection.path.readArray[ActiveBorderTransportMeansType03](activeBorderTransportMeansReads)
-      placeOfLoading             <- __.readNullableSafe[PlaceOfLoadingType03]
+      placeOfLoading             <- __.readNullableSafe[PlaceOfLoadingType]
       houseConsignments          <- HouseConsignmentListSection.path.readArray[HouseConsignmentType06](houseConsignmentReads)
-    } yield ConsignmentType08(
+    } yield ConsignmentType10(
       containerIndicator = containerIndicator,
       inlandModeOfTransport = inlandModeOfTransport,
       modeOfTransportAtTheBorder = modeOfTransportAtTheBorder,
@@ -144,8 +148,8 @@ class SubmissionService @Inject() (
       DepartureTransportMeans = departureTransportMeans,
       ActiveBorderTransportMeans = activeBorderTransportMeans,
       PlaceOfLoading = placeOfLoading match {
-        case Some(PlaceOfLoadingType03(None, None, None)) => None
-        case _                                            => placeOfLoading
+        case Some(PlaceOfLoadingType(None, None, None)) => None
+        case _                                          => placeOfLoading
       },
       HouseConsignment = houseConsignments match {
         case Nil => Seq(HouseConsignmentType06(1, Nil))
@@ -153,8 +157,8 @@ class SubmissionService @Inject() (
       }
     )
 
-  implicit val locationOfGoodsReads: Reads[LocationOfGoodsType03] = {
-    import pages.locationOfGoods._
+  implicit val locationOfGoodsReads: Reads[LocationOfGoodsType02] = {
+    import pages.locationOfGoods.*
 
     implicit val customsOfficeReads: Reads[CustomsOfficeType02] =
       CustomsOfficeIdentifierPage.path.read[CustomsOffice].map(_.id).map(CustomsOfficeType02.apply)
@@ -164,15 +168,15 @@ class SubmissionService @Inject() (
         coordinates => GNSSType(coordinates.latitude, coordinates.longitude)
       }
 
-    implicit val economicOperatorReads: Reads[EconomicOperatorType03] =
-      EoriPage.path.read[String].map(EconomicOperatorType03.apply)
+    implicit val economicOperatorReads: Reads[EconomicOperatorType02] =
+      EoriPage.path.read[String].map(EconomicOperatorType02.apply)
 
-    implicit val addressReads: Reads[AddressType14] = (
+    implicit val addressReads: Reads[AddressType06] = (
       AddressPage.path.read[DynamicAddress] and
         CountryPage.path.read[Country]
     ).tupled.map {
       case (address, country) =>
-        AddressType14(
+        AddressType06(
           streetAndNumber = address.numberAndStreet,
           postcode = address.postalCode,
           city = address.city,
@@ -180,13 +184,13 @@ class SubmissionService @Inject() (
         )
     }
 
-    implicit val contactPersonReads: Reads[ContactPersonType06] = {
-      import contact._
+    implicit val contactPersonReads: Reads[ContactPersonType01] = {
+      import contact.*
       (
         NamePage.path.read[String] and
           PhoneNumberPage.path.read[String] and
           None
-      )(ContactPersonType06.apply)
+      )(ContactPersonType01.apply)
     }
 
     for {
@@ -197,10 +201,10 @@ class SubmissionService @Inject() (
       unLocode                  <- UnLocodePage.path.readNullable[String]
       customsOffice             <- __.readNullableSafe[CustomsOfficeType02]
       gnss                      <- __.readNullableSafe[GNSSType]
-      economicOperator          <- __.readNullableSafe[EconomicOperatorType03]
-      address                   <- __.readNullableSafe[AddressType14]
-      contactPerson             <- __.readNullableSafe[ContactPersonType06]
-    } yield LocationOfGoodsType03(
+      economicOperator          <- __.readNullableSafe[EconomicOperatorType02]
+      address                   <- __.readNullableSafe[AddressType06]
+      contactPerson             <- __.readNullableSafe[ContactPersonType01]
+    } yield LocationOfGoodsType02(
       typeOfLocation = typeOfLocation.code,
       qualifierOfIdentification = qualifierOfIdentification.qualifier,
       authorisationNumber = authorisationNumber,
@@ -214,14 +218,14 @@ class SubmissionService @Inject() (
     )
   }
 
-  def departureTransportMeansReads(index: Index): Reads[DepartureTransportMeansType05] = {
+  def departureTransportMeansReads(index: Index): Reads[DepartureTransportMeansType01] = {
     import models.reference.transport.transportMeans.TransportMeansIdentification
-    import pages.transport.departureTransportMeans._
+    import pages.transport.departureTransportMeans.*
     for {
       typeOfIdentification <- (__ \ TransportMeansIdentificationPage(index).toString).read[TransportMeansIdentification]
       identificationNumber <- (__ \ TransportMeansIdentificationNumberPage(index).toString).read[String]
       nationality          <- (__ \ TransportMeansNationalityPage(index).toString).read[Nationality]
-    } yield DepartureTransportMeansType05(
+    } yield DepartureTransportMeansType01(
       sequenceNumber = index.display,
       typeOfIdentification = typeOfIdentification.code,
       identificationNumber = identificationNumber,
@@ -231,7 +235,7 @@ class SubmissionService @Inject() (
 
   def activeBorderTransportMeansReads(index: Index): Reads[ActiveBorderTransportMeansType03] = {
     import models.reference.transport.border.active.Identification
-    import pages.transport.border.active._
+    import pages.transport.border.active.*
     for {
       customsOfficeAtBorderReferenceNumber <- (__ \ CustomsOfficeActiveBorderPage(index).toString).read[CustomsOffice]
       typeOfIdentification                 <- (__ \ IdentificationPage(index).toString).read[Identification]
@@ -248,49 +252,55 @@ class SubmissionService @Inject() (
     )
   }
 
-  def transportEquipmentReads(equipmentIndex: Index): Reads[TransportEquipmentType06] = {
-    import pages.sections.transport.equipment._
-    import pages.transport.equipment.index._
-    import pages.transport.equipment.index.seals._
+  def transportEquipmentReads(equipmentIndex: Index): Reads[TransportEquipmentType03] = {
+    import pages.sections.transport.equipment.*
+    import pages.transport.equipment.index.*
+    import pages.transport.equipment.index.seals.*
 
-    def sealReads(sealIndex: Index): Reads[SealType05] =
+    def sealReads(sealIndex: Index): Reads[SealType01] =
       (__ \ SealIdentificationNumberPage(equipmentIndex, sealIndex).toString)
         .read[String]
-        .map(SealType05(sealIndex.display, _))
+        .map(SealType01(sealIndex.display, _))
 
-    def goodsReferenceReads(itemIndex: Index): Reads[GoodsReferenceType02] =
+    def goodsReferenceReads(itemIndex: Index): Reads[GoodsReferenceType01] =
       __.read[Item]
         .map(_.declarationGoodsItemNumber)
-        .map(GoodsReferenceType02(itemIndex.display, _))
+        .map(GoodsReferenceType01(itemIndex.display, _))
 
     for {
       containerIdNo   <- (__ \ ContainerIdentificationNumberPage(equipmentIndex).toString).readNullable[String]
-      seals           <- (__ \ SealsSection(equipmentIndex).toString).readArray[SealType05](sealReads)
-      goodsReferences <- (__ \ ItemsSection(equipmentIndex).toString).readArray[GoodsReferenceType02](goodsReferenceReads)
-    } yield TransportEquipmentType06(equipmentIndex.display, containerIdNo, seals.length, seals, goodsReferences)
+      seals           <- (__ \ SealsSection(equipmentIndex).toString).readArray[SealType01](sealReads)
+      goodsReferences <- (__ \ ItemsSection(equipmentIndex).toString).readArray[GoodsReferenceType01](goodsReferenceReads)
+    } yield TransportEquipmentType03(
+      sequenceNumber = equipmentIndex.display,
+      containerIdentificationNumber = containerIdNo,
+      numberOfSeals = seals.length,
+      Seal = seals,
+      GoodsReference = goodsReferences
+    )
   }
 
-  implicit val placeOfLoadingReads: Reads[PlaceOfLoadingType03] = {
-    import pages.loading._
+  implicit val placeOfLoadingReads: Reads[PlaceOfLoadingType] = {
+    import pages.loading.*
     (
       UnLocodePage.path.readNullable[String] and
         CountryPage.path.readNullable[Country].map(_.map(_.code.code)) and
         LocationPage.path.readNullable[String]
-    )(PlaceOfLoadingType03.apply)
+    )(PlaceOfLoadingType.apply)
   }
 
   def houseConsignmentReads(hcIndex: Index): Reads[HouseConsignmentType06] = {
-    import pages.sections.houseConsignment.departureTransportMeans._
+    import pages.sections.houseConsignment.departureTransportMeans.*
 
-    def departureTransportMeansReads(dtmIndex: Index): Reads[DepartureTransportMeansType05] = {
+    def departureTransportMeansReads(dtmIndex: Index): Reads[DepartureTransportMeansType01] = {
       import models.reference.transport.transportMeans.TransportMeansIdentification
-      import pages.houseConsignment.index.departureTransportMeans._
+      import pages.houseConsignment.index.departureTransportMeans.*
 
       for {
         typeOfIdentification <- (__ \ IdentificationPage(hcIndex, dtmIndex).toString).read[TransportMeansIdentification]
         identificationNumber <- (__ \ IdentificationNumberPage(hcIndex, dtmIndex).toString).read[String]
         nationality          <- (__ \ CountryPage(hcIndex, dtmIndex).toString).read[Nationality]
-      } yield DepartureTransportMeansType05(
+      } yield DepartureTransportMeansType01(
         sequenceNumber = dtmIndex.display,
         typeOfIdentification = typeOfIdentification.code,
         identificationNumber = identificationNumber,
@@ -298,7 +308,7 @@ class SubmissionService @Inject() (
       )
     }
 
-    (__ \ DepartureTransportMeansListSection(hcIndex).toString).readArray[DepartureTransportMeansType05](departureTransportMeansReads).map {
+    (__ \ DepartureTransportMeansListSection(hcIndex).toString).readArray[DepartureTransportMeansType01](departureTransportMeansReads).map {
       departureTransportMeans =>
         HouseConsignmentType06(
           sequenceNumber = hcIndex.display,

@@ -17,7 +17,7 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import generated.ActiveBorderTransportMeansType02
+import generated.ActiveBorderTransportMeansType03
 import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +29,7 @@ class ConveyanceReferenceTransformerTest extends SpecBase with Generators {
   "IdentificationNumberTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03]) {
         borderTransportMeans =>
           val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(conveyanceReferenceNumber = None))
@@ -41,7 +41,7 @@ class ConveyanceReferenceTransformerTest extends SpecBase with Generators {
     }
 
     "must return updated answers with IdentificationNumberPage" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02], nonEmptyString) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03], nonEmptyString) {
         (borderTransportMeans, conveyanceReferenceNumber) =>
           val userAnswers = setBorderMeansAnswersLens.replace(
             Seq(borderTransportMeans.copy(conveyanceReferenceNumber = Some(conveyanceReferenceNumber)))

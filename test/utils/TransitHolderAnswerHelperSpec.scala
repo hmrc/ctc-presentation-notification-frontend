@@ -17,10 +17,10 @@
 package utils
 
 import base.SpecBase
-import generated.AddressType17
+import generated.AddressType14
 import generators.Generators
 import models.reference.Country
-import models.{Mode, RichAddressType17}
+import models.{Mode, RichAddressType14}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -79,7 +79,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     }
 
     "return country row" in {
-      forAll(arbitrary[Mode], arbitrary[AddressType17], arbitrary[Country]) {
+      forAll(arbitrary[Mode], arbitrary[AddressType14], arbitrary[Country]) {
         (mode, address, country) =>
           when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(country))
           val answers = setTransitHolderAddressLens.replace(Some(address.copy(country = country.code.code))).apply(emptyUserAnswers)
@@ -94,7 +94,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     }
 
     "return address row" in {
-      forAll(arbitrary[Mode], arbitrary[AddressType17], arbitrary[Country]) {
+      forAll(arbitrary[Mode], arbitrary[AddressType14], arbitrary[Country]) {
         (mode, address, country) =>
           when(mockReferenceDataService.getCountry(any())(any())).thenReturn(Future.successful(country))
           val answers = setTransitHolderAddressLens.replace(Some(address))(emptyUserAnswers)
@@ -123,7 +123,7 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
     }
 
     "return section" in {
-      forAll(arbitrary[Mode], nonEmptyString, arbitrary[AddressType17]) {
+      forAll(arbitrary[Mode], nonEmptyString, arbitrary[AddressType14]) {
         (mode, str, address) =>
           val pipeline = setTransitHolderEoriLens.replace(Some(str)) andThen
             setTransitHolderTirIdentificationLens.replace(Some(str)) andThen

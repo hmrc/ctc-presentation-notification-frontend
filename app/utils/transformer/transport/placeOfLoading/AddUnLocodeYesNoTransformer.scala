@@ -16,7 +16,7 @@
 
 package utils.transformer.transport.placeOfLoading
 
-import generated.PlaceOfLoadingType03
+import generated.PlaceOfLoadingType
 import models.UserAnswers
 import pages.loading.AddUnLocodeYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 class AddUnLocodeYesNoTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = PlaceOfLoadingType03
+  override type ExtractedTypeInDepartureData = PlaceOfLoadingType
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     userAnswers =>

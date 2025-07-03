@@ -19,7 +19,7 @@ package utils.transformer.transport
 import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
-import generated.DepartureTransportMeansType03
+import generated.DepartureTransportMeansType01
 import generators.Generators
 import models.Index
 import models.reference.transport.transportMeans.TransportMeansIdentification
@@ -42,13 +42,13 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
   "IdentificationTransformer" - {
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        forAll(arbitrary[DepartureTransportMeansType03], arbitrary[TransportMeansIdentification]) {
+        forAll(arbitrary[DepartureTransportMeansType01], arbitrary[TransportMeansIdentification]) {
           (departureTransportMeans, identification) =>
             when(referenceDataConnector.getMeansOfTransportIdentificationTypes())
               .thenReturn(Future.successful(Right(NonEmptySet.of(identification))))
 
             val userAnswers = setDepartureTransportMeansAnswersLens.replace(
-              Seq(departureTransportMeans.copy(typeOfIdentification = Some(identification.`type`)))
+              Seq(departureTransportMeans.copy(typeOfIdentification = identification.`type`))
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
@@ -58,7 +58,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      forAll(arbitrary[DepartureTransportMeansType03], nonEmptyString) {
+      forAll(arbitrary[DepartureTransportMeansType01], nonEmptyString) {
         (departureTransportMeans, identificationCode) =>
           val identification = TransportMeansIdentification("foo", "desc")
 
@@ -66,7 +66,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
             .thenReturn(Future.successful(Right(NonEmptySet.of(identification))))
 
           val userAnswers = setDepartureTransportMeansAnswersLens.replace(
-            Seq(departureTransportMeans.copy(typeOfIdentification = Some(identificationCode)))
+            Seq(departureTransportMeans.copy(typeOfIdentification = identificationCode))
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue

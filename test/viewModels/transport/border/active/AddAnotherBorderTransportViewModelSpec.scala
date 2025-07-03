@@ -19,7 +19,7 @@ package viewModels.transport.border.active
 import base.SpecBase
 import config.Constants.DeclarationTypeSecurity.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import config.Constants.TransportModeCode.Air
-import generated.CustomsOfficeOfTransitDeclaredType04
+import generated.CustomsOfficeOfTransitDeclaredType06
 import generators.Generators
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
@@ -179,7 +179,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
       "for first Border Mode of transport when BorderMode of Transport is  5, " +
         "security type is not 1,2 or 3 and CustomsOfficeOfTransitDeclared is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString, arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString, arbitrary[CustomsOfficeOfTransitDeclaredType06]) {
             (mode, identification, identificationNumber, customsOfficeOfTransit) =>
               val userAnswers = emptyUserAnswers
                 .copy(
@@ -273,7 +273,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
       "for first Border Mode of transport when BorderMode of Transport is  5, " +
         "security type is not 1,2 or 3 and CustomsOfficeOfTransitDeclared is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString, arbitrary[CustomsOfficeOfTransitDeclaredType04]) {
+          forAll(arbitrary[Mode], arbitrary[Identification], nonEmptyString, arbitrary[CustomsOfficeOfTransitDeclaredType06]) {
             (mode, identification, identificationNumber, customsOfficeOfTransit) =>
               val userAnswers = emptyUserAnswers
                 .copy(

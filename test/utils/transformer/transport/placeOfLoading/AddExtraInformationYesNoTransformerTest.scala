@@ -17,7 +17,7 @@
 package utils.transformer.transport.placeOfLoading
 
 import base.SpecBase
-import generated.PlaceOfLoadingType03
+import generated.PlaceOfLoadingType
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.loading.AddExtraInformationYesNoPage
@@ -27,7 +27,7 @@ class AddExtraInformationYesNoTransformerTest extends SpecBase with Generators {
 
   "AddExtraInformationYesNoTransformer" - {
     "must return updated answers with AddExtraInformationYesNo" in {
-      forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
+      forAll(arbitrary[PlaceOfLoadingType], nonEmptyString) {
         (placeOfLoading, country) =>
           val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(country = Some(country)))

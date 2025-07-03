@@ -32,12 +32,12 @@ class NationalityTransformer @Inject() (service: NationalitiesService)(implicit
 
   override type DomainModelType              = Nationality
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty
+  override def shouldTransform: UserAnswers => Boolean = _.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.nationality),
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.map(_.nationality),
       fetchReferenceData = () => service.getNationalities().map(_.values),
       generateCapturedAnswers = generateCapturedAnswers
     )

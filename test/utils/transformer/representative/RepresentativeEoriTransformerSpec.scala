@@ -17,7 +17,7 @@
 package utils.transformer.representative
 
 import base.SpecBase
-import generated.RepresentativeType05
+import generated.RepresentativeType06
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.representative.EoriPage
@@ -27,7 +27,7 @@ class RepresentativeEoriTransformerSpec extends SpecBase with Generators {
 
   "RepresentativeEoriTransformer" - {
     "must return updated answers with representative EoriPage" in {
-      forAll(arbitrary[RepresentativeType05], nonEmptyString) {
+      forAll(arbitrary[RepresentativeType06], nonEmptyString) {
         (representative, eori) =>
           val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(identificationNumber = eori))

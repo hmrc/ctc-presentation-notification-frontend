@@ -30,7 +30,7 @@ trait TestMessageData {
       messageType = CC015C,
       correlationIdentifier = None
     ),
-    TransitOperation = TransitOperationType06(
+    TransitOperation = TransitOperationType03(
       LRN = "",
       declarationType = "",
       additionalDeclarationType = "",
@@ -44,7 +44,7 @@ trait TestMessageData {
       limitDate = None
     ),
     Authorisation = Nil,
-    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType05(
       referenceNumber = ""
     ),
     CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
@@ -52,7 +52,7 @@ trait TestMessageData {
     ),
     CustomsOfficeOfTransitDeclared = Nil,
     CustomsOfficeOfExitForTransitDeclared = Nil,
-    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
+    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType23(
       identificationNumber = None,
       TIRHolderIdentificationNumber = None,
       name = None,
@@ -61,7 +61,7 @@ trait TestMessageData {
     ),
     Representative = None,
     Guarantee = Nil,
-    Consignment = ConsignmentType20(
+    Consignment = ConsignmentType23(
       countryOfDispatch = None,
       countryOfDestination = None,
       containerIndicator = None,
@@ -100,7 +100,7 @@ trait TestMessageData {
       messageType = CC015C,
       correlationIdentifier = None
     ),
-    TransitOperation = TransitOperationType06(
+    TransitOperation = TransitOperationType03(
       LRN = "",
       declarationType = "",
       additionalDeclarationType = "",
@@ -114,7 +114,7 @@ trait TestMessageData {
       limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))
     ),
     Authorisation = Nil,
-    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType05(
       referenceNumber = ""
     ),
     CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
@@ -122,7 +122,7 @@ trait TestMessageData {
     ),
     CustomsOfficeOfTransitDeclared = Nil,
     CustomsOfficeOfExitForTransitDeclared = Nil,
-    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
+    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType23(
       identificationNumber = None,
       TIRHolderIdentificationNumber = None,
       name = None,
@@ -131,7 +131,7 @@ trait TestMessageData {
     ),
     Representative = None,
     Guarantee = Nil,
-    Consignment = ConsignmentType20(
+    Consignment = ConsignmentType23(
       countryOfDispatch = None,
       countryOfDestination = None,
       containerIndicator = Some(Number1),
@@ -144,7 +144,7 @@ trait TestMessageData {
       Consignee = None,
       AdditionalSupplyChainActor = Nil,
       TransportEquipment = Seq(
-        TransportEquipmentType06(
+        TransportEquipmentType03(
           sequenceNumber = 1,
           containerIdentificationNumber = None,
           numberOfSeals = 0,
@@ -153,7 +153,7 @@ trait TestMessageData {
         )
       ),
       LocationOfGoods = Some(
-        LocationOfGoodsType05(
+        LocationOfGoodsType04(
           typeOfLocation = "A",
           qualifierOfIdentification = "T",
           authorisationNumber = None,
@@ -170,17 +170,17 @@ trait TestMessageData {
       DepartureTransportMeans = Nil,
       CountryOfRoutingOfConsignment = Nil,
       ActiveBorderTransportMeans = Seq(
-        ActiveBorderTransportMeansType02(
+        ActiveBorderTransportMeansType03(
           sequenceNumber = 1,
-          customsOfficeAtBorderReferenceNumber = None,
-          typeOfIdentification = None,
-          identificationNumber = None,
-          nationality = None,
+          customsOfficeAtBorderReferenceNumber = "",
+          typeOfIdentification = "",
+          identificationNumber = "",
+          nationality = "",
           conveyanceReferenceNumber = None
         )
       ),
       PlaceOfLoading = Some(
-        PlaceOfLoadingType03(
+        PlaceOfLoadingType(
           UNLocode = None,
           country = None,
           location = None
