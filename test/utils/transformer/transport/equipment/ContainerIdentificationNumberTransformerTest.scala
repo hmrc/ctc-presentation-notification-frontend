@@ -17,7 +17,7 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import generated.TransportEquipmentType06
+import generated.TransportEquipmentType03
 import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +29,7 @@ class ContainerIdentificationNumberTransformerTest extends SpecBase with Generat
 
   "ContainerIdentificationNumberTransformer" - {
     "must return updated answers with ContainerIdentificationNumberPage if container id exist for the equipment" in {
-      forAll(arbitrary[TransportEquipmentType06], nonEmptyString) {
+      forAll(arbitrary[TransportEquipmentType03], nonEmptyString) {
         (transportEquipment, containerIdentificationNumber) =>
           val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(containerIdentificationNumber = Some(containerIdentificationNumber)))

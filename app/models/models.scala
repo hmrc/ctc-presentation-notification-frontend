@@ -276,7 +276,7 @@ package object models {
 
     def toCC015CType(lrn: LocalReferenceNumber): CC015CType = CC015CType(
       messageSequence1 = value.messageSequence1,
-      TransitOperation = value.TransitOperation.toTransitOperationType06(lrn),
+      TransitOperation = value.TransitOperation.toTransitOperationType03(lrn),
       Authorisation = value.Authorisation,
       CustomsOfficeOfDeparture = value.CustomsOfficeOfDeparture,
       CustomsOfficeOfDestinationDeclared = value.CustomsOfficeOfDestinationDeclared,
@@ -284,29 +284,16 @@ package object models {
       CustomsOfficeOfExitForTransitDeclared = value.CustomsOfficeOfExitForTransitDeclared,
       HolderOfTheTransitProcedure = value.HolderOfTheTransitProcedure,
       Representative = value.Representative,
-      Guarantee = value.Guarantee.flatMap(_.toGuaranteeType02),
+      Guarantee = value.Guarantee,
       Consignment = value.Consignment,
       attributes = value.attributes
     )
   }
 
-  implicit class RichGuaranteeType02(value: GuaranteeType01) {
+  implicit class RichTransitOperationType02(value: TransitOperationType02) {
 
-    def toGuaranteeType02: Option[GuaranteeType02] = value.guaranteeType.map {
-      guaranteeType =>
-        GuaranteeType02(
-          sequenceNumber = value.sequenceNumber,
-          guaranteeType = guaranteeType,
-          otherGuaranteeReference = value.otherGuaranteeReference,
-          GuaranteeReference = value.GuaranteeReference
-        )
-    }
-  }
-
-  implicit class RichTransitOperationType04(value: TransitOperationType04) {
-
-    def toTransitOperationType06(lrn: LocalReferenceNumber): TransitOperationType06 =
-      TransitOperationType06(
+    def toTransitOperationType03(lrn: LocalReferenceNumber): TransitOperationType03 =
+      TransitOperationType03(
         LRN = lrn.value,
         declarationType = value.declarationType,
         additionalDeclarationType = value.additionalDeclarationType,
@@ -329,7 +316,7 @@ package object models {
     )
   }
 
-  implicit class RichAddressType14(value: AddressType14) {
+  implicit class RichAddressType06(value: AddressType06) {
 
     def toDynamicAddress: DynamicAddress = DynamicAddress(
       numberAndStreet = value.streetAndNumber,
@@ -338,7 +325,7 @@ package object models {
     )
   }
 
-  implicit class RichAddressType17(value: AddressType17) {
+  implicit class RichAddressType14(value: AddressType14) {
 
     def toDynamicAddress: DynamicAddress = DynamicAddress(
       numberAndStreet = value.streetAndNumber,

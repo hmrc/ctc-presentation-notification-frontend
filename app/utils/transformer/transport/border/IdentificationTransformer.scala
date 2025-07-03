@@ -32,13 +32,13 @@ class IdentificationTransformer @Inject() (identificationService: MeansOfTranspo
 
   override type DomainModelType              = Identification
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty
+  override def shouldTransform: UserAnswers => Boolean = _.departureData.Consignment.ActiveBorderTransportMeans.nonEmpty
 
   def transform(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
       fetchReferenceData = () => identificationService.getMeansOfTransportIdentificationTypesActive(),
-      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.flatMap(_.typeOfIdentification),
+      extractDataFromDepartureData = _.departureData.Consignment.ActiveBorderTransportMeans.map(_.typeOfIdentification),
       generateCapturedAnswers = generateCapturedAnswers
     )
 

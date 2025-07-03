@@ -16,8 +16,8 @@
 
 package utils.transformer.locationOfGoods
 
-import config.Constants.QualifierOfTheIdentification._
-import generated.ContactPersonType06
+import config.Constants.QualifierOfTheIdentification.*
+import generated.ContactPersonType01
 import models.UserAnswers
 import pages.locationOfGoods.{AddContactYesNoPage, IdentificationPage}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class AddContactYesNoTransformer extends PageTransformer {
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = ContactPersonType06
+  override type ExtractedTypeInDepartureData = ContactPersonType01
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(

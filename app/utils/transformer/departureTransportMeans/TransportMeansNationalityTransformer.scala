@@ -37,7 +37,7 @@ class TransportMeansNationalityTransformer @Inject() (nationalitiesService: Nati
     transformFromDepartureWithRefData(
       userAnswers = userAnswers,
       fetchReferenceData = () => nationalitiesService.getNationalities().map(_.values),
-      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.flatMap(_.nationality),
+      extractDataFromDepartureData = _.departureData.Consignment.DepartureTransportMeans.map(_.nationality),
       generateCapturedAnswers = generateCapturedAnswers
     )
 

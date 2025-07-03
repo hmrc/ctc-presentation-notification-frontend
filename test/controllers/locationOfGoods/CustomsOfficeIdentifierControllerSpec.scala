@@ -51,7 +51,7 @@ class CustomsOfficeIdentifierControllerSpec extends SpecBase with AppWithDefault
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
 
   private val countryCode = arbitrary[CountryCode].sample.value
-  private val ie015       = arbitrary[CC015CType].sample.value.copy(CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(s"${countryCode.code}00001"))
+  private val ie015       = arbitrary[CC015CType].sample.value.copy(CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType05(s"${countryCode.code}00001"))
   private val baseAnswers = emptyUserAnswers.copy(departureData = ie015)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =

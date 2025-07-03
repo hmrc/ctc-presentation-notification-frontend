@@ -45,7 +45,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
       messageType = CC015C,
       correlationIdentifier = None
     ),
-    TransitOperation = TransitOperationType06(
+    TransitOperation = TransitOperationType03(
       LRN = "",
       declarationType = "",
       additionalDeclarationType = "",
@@ -59,7 +59,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
       limitDate = None
     ),
     Authorisation = Nil,
-    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType03(
+    CustomsOfficeOfDeparture = CustomsOfficeOfDepartureType05(
       referenceNumber = ""
     ),
     CustomsOfficeOfDestinationDeclared = CustomsOfficeOfDestinationDeclaredType01(
@@ -67,7 +67,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
     ),
     CustomsOfficeOfTransitDeclared = Nil,
     CustomsOfficeOfExitForTransitDeclared = Nil,
-    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType14(
+    HolderOfTheTransitProcedure = HolderOfTheTransitProcedureType23(
       identificationNumber = None,
       TIRHolderIdentificationNumber = None,
       name = None,
@@ -76,7 +76,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
     ),
     Representative = None,
     Guarantee = Nil,
-    Consignment = ConsignmentType20(
+    Consignment = ConsignmentType23(
       countryOfDispatch = None,
       countryOfDestination = None,
       containerIndicator = None,

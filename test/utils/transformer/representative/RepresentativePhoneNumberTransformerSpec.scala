@@ -17,7 +17,7 @@
 package utils.transformer.representative
 
 import base.SpecBase
-import generated.{ContactPersonType05, RepresentativeType05}
+import generated.{ContactPersonType03, RepresentativeType06}
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.representative.RepresentativePhoneNumberPage
@@ -27,7 +27,7 @@ class RepresentativePhoneNumberTransformerSpec extends SpecBase with Generators 
 
   "RepresentativePhoneNumberTransformer" - {
     "must return updated answers with RepresentativePhoneNumberPage" in {
-      forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05], nonEmptyString) {
+      forAll(arbitrary[RepresentativeType06], arbitrary[ContactPersonType03], nonEmptyString) {
         (representative, contactPerson, phoneNumber) =>
           val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = Some(contactPerson.copy(phoneNumber = phoneNumber))))
@@ -39,7 +39,7 @@ class RepresentativePhoneNumberTransformerSpec extends SpecBase with Generators 
     }
 
     "must not update if representative phone number is None" in {
-      forAll(arbitrary[RepresentativeType05]) {
+      forAll(arbitrary[RepresentativeType06]) {
         representative =>
           val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = None))

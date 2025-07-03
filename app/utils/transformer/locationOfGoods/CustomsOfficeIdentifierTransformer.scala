@@ -32,7 +32,7 @@ class CustomsOfficeIdentifierTransformer @Inject() (service: CustomsOfficesServi
 
   override type DomainModelType              = CustomsOffice
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice).isDefined
+  override def shouldTransform: UserAnswers => Boolean = _.departureData.Consignment.LocationOfGoods.flatMap(_.CustomsOffice).isDefined
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(

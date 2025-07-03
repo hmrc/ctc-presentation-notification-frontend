@@ -26,7 +26,7 @@ import scala.concurrent.Future
 class EoriTransformer extends PageTransformer {
   override type DomainModelType              = String
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.LocationOfGoods.isDefined
+  override def shouldTransform: UserAnswers => Boolean = _.departureData.Consignment.LocationOfGoods.isDefined
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(

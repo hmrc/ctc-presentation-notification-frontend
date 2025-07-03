@@ -16,7 +16,7 @@
 
 package utils.transformer.transport.border
 
-import generated.ConsignmentType20
+import generated.ConsignmentType23
 import models.UserAnswers
 import pages.transport.border.AddBorderModeOfTransportYesNoPage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 class AddBorderModeOfTransportYesNoTransformer extends PageTransformer {
 
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = ConsignmentType20
+  override type ExtractedTypeInDepartureData = ConsignmentType23
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(

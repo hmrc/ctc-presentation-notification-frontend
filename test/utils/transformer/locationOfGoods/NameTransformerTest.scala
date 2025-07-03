@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import generated.{ContactPersonType06, LocationOfGoodsType05}
+import generated.{ContactPersonType01, LocationOfGoodsType04}
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.contact.NamePage
@@ -28,7 +28,7 @@ class NameTransformerTest extends SpecBase with Generators {
   "NameTransformer" - {
 
     "must return updated answers with NamePage" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[ContactPersonType06]) {
+      forAll(arbitrary[LocationOfGoodsType04], arbitrary[ContactPersonType01]) {
         (locationOfGoods, contactPerson) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(

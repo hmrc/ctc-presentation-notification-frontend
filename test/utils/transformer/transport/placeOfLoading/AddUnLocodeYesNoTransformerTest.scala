@@ -17,7 +17,7 @@
 package utils.transformer.transport.placeOfLoading
 
 import base.SpecBase
-import generated.PlaceOfLoadingType03
+import generated.PlaceOfLoadingType
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.loading.AddUnLocodeYesNoPage
@@ -28,7 +28,7 @@ class AddUnLocodeYesNoTransformerTest extends SpecBase with Generators {
 
   "AddUnLocodeYesNoTransformer" - {
     "must return updated answers with AddUnLocodeYesNo" in {
-      forAll(arbitrary[PlaceOfLoadingType03], nonEmptyString) {
+      forAll(arbitrary[PlaceOfLoadingType], nonEmptyString) {
         (placeOfLoading, unLocode) =>
           val userAnswers = setPlaceOfLoadingOnUserAnswersLens.replace(
             Some(placeOfLoading.copy(UNLocode = Some(unLocode)))

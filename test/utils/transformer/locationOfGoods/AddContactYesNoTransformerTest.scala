@@ -29,7 +29,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
 
   "AddContactYesNoTransformer" - {
     "must return AddContactYesNoPage Yes (true) when there is ContactPerson and identification type is not V" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[ContactPersonType06]) {
+      forAll(arbitrary[LocationOfGoodsType04], arbitrary[ContactPersonType01]) {
         (locationOfGoods, contactPerson) =>
           val userAnswers =
             setLocationOfGoodsOnUserAnswersLens
@@ -45,7 +45,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
     }
 
     "must return AddContactYesNoPage No (false) when there is no ContactPerson and identification is not V" in {
-      forAll(arbitrary[LocationOfGoodsType05]) {
+      forAll(arbitrary[LocationOfGoodsType04]) {
         locationOfGoods =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(
@@ -59,7 +59,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
     }
 
     "must return AddContactYesNoPage None when identification is V" in {
-      forAll(arbitrary[LocationOfGoodsType05], Gen.option(arbitrary[ContactPersonType06])) {
+      forAll(arbitrary[LocationOfGoodsType04], Gen.option(arbitrary[ContactPersonType01])) {
         (locationOfGoods, person) =>
           val userAnswers =
             setLocationOfGoodsOnUserAnswersLens
