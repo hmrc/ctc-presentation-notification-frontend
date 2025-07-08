@@ -99,7 +99,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
               assertElementContainsText(link, "Sign out")
               assertElementContainsHref(
                 link,
-                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-movements"
+                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-departures"
               )
           }
         }
@@ -123,7 +123,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
               assertElementContainsText(link, "Sign out")
               assertElementContainsHref(
                 link,
-                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-movements"
+                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-departures"
               )
           }
         }
@@ -221,7 +221,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
               assertElementContainsText(link, "Sign out")
               assertElementContainsHref(
                 link,
-                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-movements"
+                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-departures"
               )
           }
         }
@@ -245,7 +245,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
               assertElementContainsText(link, "Sign out")
               assertElementContainsHref(
                 link,
-                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-movements"
+                "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/manage-transit-departures"
               )
           }
         }
