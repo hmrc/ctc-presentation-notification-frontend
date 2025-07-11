@@ -32,7 +32,7 @@ class IdentificationTransformer @Inject() (service: LocationOfGoodsIdentificatio
 
   override type DomainModelType              = LocationOfGoodsIdentification
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification).isDefined
+  override def shouldTransform: UserAnswers => Boolean = _.departureData.Consignment.LocationOfGoods.map(_.qualifierOfIdentification).isDefined
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(

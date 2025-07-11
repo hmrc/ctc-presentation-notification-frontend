@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import generated.{AddressType14, LocationOfGoodsType05}
+import generated.{AddressType06, LocationOfGoodsType04}
 import generators.Generators
 import models.SelectableList
 import models.reference.Country
@@ -40,7 +40,7 @@ class CountryTransformerTest extends SpecBase with Generators {
   "CountryTransformer" - {
 
     "must skip transforming if there is no country data" in {
-      forAll(arbitrary[LocationOfGoodsType05]) {
+      forAll(arbitrary[LocationOfGoodsType04]) {
         locationOfGoods =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(
             Some(locationOfGoods.copy(Address = None))
@@ -52,7 +52,7 @@ class CountryTransformerTest extends SpecBase with Generators {
     }
 
     "must return updated answers when the code from departure data can be found in service response" in {
-      forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14], arbitrary[Country]) {
+      forAll(arbitrary[LocationOfGoodsType04], arbitrary[AddressType06], arbitrary[Country]) {
         (locationOfGoods, address, country) =>
           when(service.getCountries())
             .thenReturn(Future.successful(SelectableList(Seq(country))))
@@ -68,7 +68,7 @@ class CountryTransformerTest extends SpecBase with Generators {
   }
 
   "must return None when the code from departure data cannot be found in service response" in {
-    forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14], arbitrary[Country]) {
+    forAll(arbitrary[LocationOfGoodsType04], arbitrary[AddressType06], arbitrary[Country]) {
       (locationOfGoods, address, country) =>
         when(service.getCountries())
           .thenReturn(Future.successful(SelectableList(Nil)))
@@ -83,7 +83,7 @@ class CountryTransformerTest extends SpecBase with Generators {
   }
 
   "must return failure if the service fails" in {
-    forAll(arbitrary[LocationOfGoodsType05], arbitrary[AddressType14]) {
+    forAll(arbitrary[LocationOfGoodsType04], arbitrary[AddressType06]) {
       (locationOfGoods, address) =>
         when(service.getCountries())
           .thenReturn(Future.failed(new RuntimeException("")))

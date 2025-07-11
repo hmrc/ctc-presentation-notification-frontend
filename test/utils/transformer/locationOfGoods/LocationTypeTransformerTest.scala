@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import generated.LocationOfGoodsType05
+import generated.LocationOfGoodsType04
 import generators.Generators
 import models.reference.LocationType
 import org.mockito.ArgumentMatchers.any
@@ -47,7 +47,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
 
     "must return updated answers when the location type from departure data can be found in service response" - {
       "when multiple location types returned" in {
-        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType], arbitrary[LocationType]) {
+        forAll(arbitrary[LocationOfGoodsType04], arbitrary[LocationType], arbitrary[LocationType]) {
           (locationOfGoods, locationType1, locationType2) =>
             when(service.getLocationTypes(any())(any()))
               .thenReturn(Future.successful(Seq(locationType1, locationType2)))
@@ -63,7 +63,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
       }
 
       "when one location type returned" in {
-        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType]) {
+        forAll(arbitrary[LocationOfGoodsType04], arbitrary[LocationType]) {
           (locationOfGoods, locationType) =>
             when(service.getLocationTypes(any())(any()))
               .thenReturn(Future.successful(Seq(locationType)))
@@ -81,7 +81,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
   }
 
   "must return None when the location type from departure data cannot be found in service response" in {
-    forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationType]) {
+    forAll(arbitrary[LocationOfGoodsType04], arbitrary[LocationType]) {
       (locationOfGoods, locationType) =>
         when(service.getLocationTypes(any())(any()))
           .thenReturn(Future.successful(Nil))
@@ -96,7 +96,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
   }
 
   "must return failure if the service fails" in {
-    forAll(arbitrary[LocationOfGoodsType05]) {
+    forAll(arbitrary[LocationOfGoodsType04]) {
       locationOfGoods =>
         when(service.getLocationTypes(any())(any()))
           .thenReturn(Future.failed(new RuntimeException("")))

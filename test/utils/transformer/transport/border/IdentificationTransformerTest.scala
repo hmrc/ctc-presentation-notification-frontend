@@ -17,7 +17,7 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import generated.ActiveBorderTransportMeansType02
+import generated.ActiveBorderTransportMeansType03
 import generators.Generators
 import models.Index
 import models.reference.transport.border.active.Identification
@@ -40,29 +40,23 @@ class IdentificationTransformerTest extends SpecBase with Generators {
   "IdentificationTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Identification]) {
-        (borderTransportMeans, identification) =>
-          when(service.getMeansOfTransportIdentificationTypesActive())
-            .thenReturn(Future.successful(Seq(identification)))
+      val userAnswers = setBorderMeansAnswersLens.replace(
+        Nil
+      )(emptyUserAnswers)
 
-          val userAnswers = setBorderMeansAnswersLens.replace(
-            Seq(borderTransportMeans.copy(typeOfIdentification = None))
-          )(emptyUserAnswers)
-
-          val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(IdentificationPage(Index(0))) mustBe None
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(IdentificationPage(Index(0))) mustBe None
     }
 
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Identification]) {
+        forAll(arbitrary[ActiveBorderTransportMeansType03], arbitrary[Identification]) {
           (borderTransportMeans, identification) =>
             when(service.getMeansOfTransportIdentificationTypesActive())
               .thenReturn(Future.successful(Seq(identification)))
 
             val userAnswers = setBorderMeansAnswersLens.replace(
-              Seq(borderTransportMeans.copy(typeOfIdentification = Some(identification.code)))
+              Seq(borderTransportMeans.copy(typeOfIdentification = identification.code))
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
@@ -72,13 +66,13 @@ class IdentificationTransformerTest extends SpecBase with Generators {
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Identification]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03], arbitrary[Identification]) {
         (borderTransportMeans, identification) =>
           when(service.getMeansOfTransportIdentificationTypesActive())
             .thenReturn(Future.successful(Nil))
 
           val userAnswers = setBorderMeansAnswersLens.replace(
-            Seq(borderTransportMeans.copy(typeOfIdentification = Some(identification.code)))
+            Seq(borderTransportMeans.copy(typeOfIdentification = identification.code))
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
@@ -87,7 +81,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
     }
 
     "must return failure if the service fails" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03]) {
         borderTransportMeans =>
           when(service.getMeansOfTransportIdentificationTypesActive())
             .thenReturn(Future.failed(new RuntimeException("")))

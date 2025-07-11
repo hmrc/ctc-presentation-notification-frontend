@@ -16,7 +16,7 @@
 
 package utils.transformer.locationOfGoods
 
-import models.{DynamicAddress, RichAddressType14, UserAnswers}
+import models.{DynamicAddress, RichAddressType06, UserAnswers}
 import pages.locationOfGoods.AddressPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformer.PageTransformer

@@ -295,7 +295,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from Add AddContactYesNo page to ContainerIndicatorPage page when user selects No and POL & limit date exists and Container Indicator does not exist" in {
-        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
           (answers, placeOfLoading, limitDate) =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
@@ -316,7 +316,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from Add AddContactYesNo page to CYA page when user selects no, Security is NoSecurityDetails, Add contact is false, Container Indicator is true" in {
-        forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+        forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
           (answers, locationOfGoods, placeOfLoading, limitDate) =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
@@ -382,7 +382,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from Add PhoneNumberPage page to ContainerIndicatorPage page when user selects No and POL & limit date exists and Container Indicator does not exist" in {
-        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
           (answers, placeOfLoading, limitDate) =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
@@ -404,13 +404,13 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from CustomsOfficeIdentifierPage to LimitDatePage when place of loading is present and limit date does not exist and is simplified" in {
-        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
           (answers, placeOfLoading) =>
             val updatedAnswers = answers
               .copy(departureData =
                 answers.departureData.copy(
                   TransitOperation = answers.departureData.TransitOperation.copy(limitDate = None),
-                  Authorisation = Seq(AuthorisationType03(1, ACR, "1234")),
+                  Authorisation = Seq(AuthorisationType02(1, ACR, "1234")),
                   Consignment = answers.departureData.Consignment.copy(
                     PlaceOfLoading = Some(placeOfLoading)
                   )
@@ -423,14 +423,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from AddContactYesNoPage to LimitDatePage when 'addContact' is false and place of loading is present and limit date does not exist and is simplified" in {
-        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
           (answers, placeOfLoading) =>
             val updatedAnswers = answers
               .setValue(AddContactYesNoPage, false)
               .copy(departureData =
                 answers.departureData.copy(
                   TransitOperation = answers.departureData.TransitOperation.copy(limitDate = None),
-                  Authorisation = Seq(AuthorisationType03(1, ACR, "1234")),
+                  Authorisation = Seq(AuthorisationType02(1, ACR, "1234")),
                   Consignment = answers.departureData.Consignment.copy(
                     PlaceOfLoading = Some(placeOfLoading)
                   )
@@ -443,13 +443,13 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from PhoneNumberPage to LimitDatePage when place of loading is present and limit date does not exist and is simplified" in {
-        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
           (answers, placeOfLoading) =>
             val updatedAnswers = answers
               .copy(departureData =
                 answers.departureData.copy(
                   TransitOperation = answers.departureData.TransitOperation.copy(limitDate = None),
-                  Authorisation = Seq(AuthorisationType03(1, ACR, "1234")),
+                  Authorisation = Seq(AuthorisationType02(1, ACR, "1234")),
                   Consignment = answers.departureData.Consignment.copy(
                     PlaceOfLoading = Some(placeOfLoading)
                   )
@@ -525,7 +525,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "and security is '0'" +
         "and active border means is present" +
         "and container indicator is '1'" in {
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
             (answers, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
@@ -553,7 +553,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "and active border means is present" +
         "and container indicator is '0'" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
             (answers, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
@@ -580,7 +580,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "consignment contains LocationOfGoods, " +
         "Security is NoSecurityDetails, " +
         "Container Indicator is true" in {
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
             (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .copy(departureData =
@@ -607,14 +607,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is NOT C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 5" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType]) {
             (answers, locationOfGoods, placeOfLoading) =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(BorderModeOfTransportPage, BorderMode(Mail, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
+                    Authorisation = Seq(AuthorisationType02(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
@@ -634,14 +634,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is NOT C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4 AND transport means is present" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType]) {
             (answers, locationOfGoods, placeOfLoading) =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
+                    Authorisation = Seq(AuthorisationType02(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
@@ -661,12 +661,12 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C521 AND limit date exists AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 5" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
             (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
+                    Authorisation = Seq(AuthorisationType02(1, ACR, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(
                       security = NoSecurityDetails,
                       limitDate = Some(limitDate)
@@ -689,13 +689,13 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C521 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
             (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
+                    Authorisation = Seq(AuthorisationType02(1, ACR, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(
                       security = NoSecurityDetails,
                       limitDate = Some(limitDate)
@@ -718,14 +718,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Place of loading is present AND container indicator is NOT captured in IE170 AND " +
         "is C523 AND container indicator is present (in 13/15) AND security is 0 AND Mode of transport is 4" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType]) {
             (answers, locationOfGoods, placeOfLoading) =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
+                    Authorisation = Seq(AuthorisationType02(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       LocationOfGoods = Some(locationOfGoods),
@@ -748,14 +748,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Transit Operation Security is not in {1, 2, 3} AND " +
         "Consignment Container Indicator is present" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
             (answers, placeOfLoading) =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
+                    Authorisation = Seq(AuthorisationType02(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       containerIndicator = Some(Number1),
@@ -778,7 +778,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Transit Operation Security is not in {1, 2, 3} AND " +
         "Consignment Container Indicator is present" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
             (answers, placeOfLoading) =>
               val updatedAnswers = answers
                 .setValue(ContainerIndicatorPage, None)
@@ -786,7 +786,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
+                    Authorisation = Seq(AuthorisationType02(1, ACR, "")),
                     TransitOperation =
                       answers.departureData.TransitOperation.copy(security = NoSecurityDetails, limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))),
                     Consignment = answers.departureData.Consignment.copy(
@@ -810,7 +810,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Transit Operation Security is not in {1, 2, 3} AND " +
         "Consignment Container Indicator is present" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
             (answers, placeOfLoading) =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
@@ -818,7 +818,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
+                    Authorisation = Seq(AuthorisationType02(1, SSE, "")),
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
                     Consignment = answers.departureData.Consignment.copy(
                       containerIndicator = Some(Number1),
@@ -842,7 +842,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "Transit Operation Security is not in {1, 2, 3} AND " +
         "Consignment Container Indicator is presentD" in {
 
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
             (answers, placeOfLoading) =>
               val updatedAnswers = answers
                 .setValue(AddContactYesNoPage, false)
@@ -851,7 +851,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 .setValue(BorderModeOfTransportPage, BorderMode(Air, "description"))
                 .copy(departureData =
                   answers.departureData.copy(
-                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
+                    Authorisation = Seq(AuthorisationType02(1, ACR, "")),
                     TransitOperation =
                       answers.departureData.TransitOperation.copy(security = NoSecurityDetails, limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))),
                     Consignment = answers.departureData.Consignment.copy(
@@ -872,7 +872,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "consignment contains LocationOfGoods, " +
         "Security is NoSecurityDetails, " +
         "Container Indicator is true" in {
-          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType05], arbitrary[PlaceOfLoadingType03], arbitrary[XMLGregorianCalendar]) {
+          forAll(arbitrary[UserAnswers], arbitrary[LocationOfGoodsType04], arbitrary[PlaceOfLoadingType], arbitrary[XMLGregorianCalendar]) {
             (answers, locationOfGoods, placeOfLoading, limitDate) =>
               val updatedAnswers = answers
                 .copy(departureData =
@@ -901,7 +901,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "limit date is present, " +
         "Container indicator captured in IE013/IE015 " +
         "and no security" in {
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
             (answers, placeOfLoading) =>
               val updatedAnswers = answers
                 .copy(departureData =
@@ -910,7 +910,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                       security = NoSecurityDetails,
                       limitDate = Some(XMLCalendar("2020-01-01T09:30:00"))
                     ),
-                    Authorisation = Seq(AuthorisationType03(1, ACR, "")),
+                    Authorisation = Seq(AuthorisationType02(1, ACR, "")),
                     Consignment = answers.departureData.Consignment.copy(
                       PlaceOfLoading = Some(placeOfLoading),
                       containerIndicator = Some(Number1)
@@ -930,13 +930,13 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         "auth is not C521/simplified, " +
         "Container indicator captured in IE013/IE015 " +
         "and no security" in {
-          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+          forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
             (answers, placeOfLoading) =>
               val updatedAnswers = answers
                 .copy(departureData =
                   answers.departureData.copy(
                     TransitOperation = answers.departureData.TransitOperation.copy(security = NoSecurityDetails),
-                    Authorisation = Seq(AuthorisationType03(1, SSE, "")),
+                    Authorisation = Seq(AuthorisationType02(1, SSE, "")),
                     Consignment = answers.departureData.Consignment.copy(
                       PlaceOfLoading = Some(placeOfLoading),
                       containerIndicator = Some(Number1)
@@ -1073,14 +1073,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from CustomsOfficeIdentifierPage to LimitDatePage when limit date does not exist" in {
-        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType03]) {
+        forAll(arbitrary[UserAnswers], arbitrary[PlaceOfLoadingType]) {
           (answers, placeOfLoading) =>
             val updatedAnswers = answers.copy(
               departureData = answers.departureData.copy(
                 Consignment = answers.departureData.Consignment.copy(
                   PlaceOfLoading = Some(placeOfLoading)
                 ),
-                Authorisation = Seq(AuthorisationType03(1, ACR, ""))
+                Authorisation = Seq(AuthorisationType02(1, ACR, ""))
               )
             )
             navigator

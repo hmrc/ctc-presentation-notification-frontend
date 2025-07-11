@@ -17,7 +17,7 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import generated.ActiveBorderTransportMeansType02
+import generated.ActiveBorderTransportMeansType03
 import generators.Generators
 import models.reference.Nationality
 import models.{Index, SelectableList}
@@ -40,29 +40,23 @@ class NationalityTransformerTest extends SpecBase with Generators {
   "NationalityTransformer" - {
 
     "must skip transforming if there is no border means" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Nationality]) {
-        (borderTransportMeans, nationality) =>
-          when(service.getNationalities())
-            .thenReturn(Future.successful(SelectableList(Seq(nationality))))
+      val userAnswers = setBorderMeansAnswersLens.replace(
+        Nil
+      )(emptyUserAnswers)
 
-          val userAnswers = setBorderMeansAnswersLens.replace(
-            Seq(borderTransportMeans.copy(nationality = None))
-          )(emptyUserAnswers)
-
-          val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(NationalityPage(Index(0))) mustBe None
-      }
+      val result = transformer.transform.apply(userAnswers).futureValue
+      result.get(NationalityPage(Index(0))) mustBe None
     }
 
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Nationality]) {
+        forAll(arbitrary[ActiveBorderTransportMeansType03], arbitrary[Nationality]) {
           (borderTransportMeans, nationality) =>
             when(service.getNationalities())
               .thenReturn(Future.successful(SelectableList(Seq(nationality))))
 
             val userAnswers = setBorderMeansAnswersLens.replace(
-              Seq(borderTransportMeans.copy(nationality = Some(nationality.code)))
+              Seq(borderTransportMeans.copy(nationality = nationality.code))
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
@@ -72,13 +66,13 @@ class NationalityTransformerTest extends SpecBase with Generators {
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[Nationality]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03], arbitrary[Nationality]) {
         (borderTransportMeans, nationality) =>
           when(service.getNationalities())
             .thenReturn(Future.successful(SelectableList(Nil)))
 
           val userAnswers = setBorderMeansAnswersLens.replace(
-            Seq(borderTransportMeans.copy(nationality = Some(nationality.code)))
+            Seq(borderTransportMeans.copy(nationality = nationality.code))
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
@@ -87,7 +81,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
     }
 
     "must return failure if the service fails" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03]) {
         borderTransportMeans =>
           when(service.getNationalities())
             .thenReturn(Future.failed(new RuntimeException("")))

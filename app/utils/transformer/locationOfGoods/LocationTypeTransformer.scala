@@ -32,7 +32,7 @@ class LocationTypeTransformer @Inject() (service: LocationTypeService)(implicit
 
   override type DomainModelType              = LocationType
   override type ExtractedTypeInDepartureData = String
-  override def shouldTransform = _.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation).isDefined
+  override def shouldTransform: UserAnswers => Boolean = _.departureData.Consignment.LocationOfGoods.map(_.typeOfLocation).isDefined
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDepartureWithRefData(

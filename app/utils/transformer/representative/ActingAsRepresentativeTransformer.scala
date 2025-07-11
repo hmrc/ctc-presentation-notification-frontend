@@ -16,7 +16,7 @@
 
 package utils.transformer.representative
 
-import generated.RepresentativeType05
+import generated.RepresentativeType06
 import models.UserAnswers
 import pages.ActingAsRepresentativePage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 class ActingAsRepresentativeTransformer extends PageTransformer {
 
   override type DomainModelType              = Boolean
-  override type ExtractedTypeInDepartureData = Option[RepresentativeType05]
+  override type ExtractedTypeInDepartureData = Option[RepresentativeType06]
 
   override def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transformFromDeparture(

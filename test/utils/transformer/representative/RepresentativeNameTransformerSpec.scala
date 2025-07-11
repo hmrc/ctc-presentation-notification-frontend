@@ -17,7 +17,7 @@
 package utils.transformer.representative
 
 import base.SpecBase
-import generated.{ContactPersonType05, RepresentativeType05}
+import generated.{ContactPersonType03, RepresentativeType06}
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.representative.NamePage
@@ -27,7 +27,7 @@ class RepresentativeNameTransformerSpec extends SpecBase with Generators {
 
   "RepresentativeNameTransformer" - {
     "must return updated answers with representative NamePage" in {
-      forAll(arbitrary[RepresentativeType05], arbitrary[ContactPersonType05], nonEmptyString) {
+      forAll(arbitrary[RepresentativeType06], arbitrary[ContactPersonType03], nonEmptyString) {
         (representative, contactPerson, name) =>
           val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = Some(contactPerson.copy(name = name))))
@@ -39,7 +39,7 @@ class RepresentativeNameTransformerSpec extends SpecBase with Generators {
     }
 
     "must not update if representative name is None" in {
-      forAll(arbitrary[RepresentativeType05]) {
+      forAll(arbitrary[RepresentativeType06]) {
         representative =>
           val userAnswers = setRepresentativeOnUserAnswersLens.replace(
             Some(representative.copy(ContactPerson = None))

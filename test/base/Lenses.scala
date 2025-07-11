@@ -29,50 +29,50 @@ trait Lenses {
   private val departureDataLens: Lens[UserAnswers, CC015CType] =
     GenLens[UserAnswers](_.departureData)
 
-  private val consignmentLens: Lens[CC015CType, ConsignmentType20] =
+  private val consignmentLens: Lens[CC015CType, ConsignmentType23] =
     GenLens[CC015CType](_.Consignment)
 
-  private val representativeLens: Lens[CC015CType, Option[RepresentativeType05]] =
+  private val representativeLens: Lens[CC015CType, Option[RepresentativeType06]] =
     GenLens[CC015CType](_.Representative)
 
-  private val modeOfTransportAtTheBorderConsignmentLens: Lens[ConsignmentType20, Option[String]] =
-    GenLens[ConsignmentType20](_.modeOfTransportAtTheBorder)
+  private val modeOfTransportAtTheBorderConsignmentLens: Lens[ConsignmentType23, Option[String]] =
+    GenLens[ConsignmentType23](_.modeOfTransportAtTheBorder)
 
-  private val inlandModeOfTransportConsignmentLens: Lens[ConsignmentType20, Option[String]] =
-    GenLens[ConsignmentType20](_.inlandModeOfTransport)
+  private val inlandModeOfTransportConsignmentLens: Lens[ConsignmentType23, Option[String]] =
+    GenLens[ConsignmentType23](_.inlandModeOfTransport)
 
-  private val containerIndicatorLens: Lens[ConsignmentType20, Option[Flag]] =
-    GenLens[ConsignmentType20](_.containerIndicator)
+  private val containerIndicatorLens: Lens[ConsignmentType23, Option[Flag]] =
+    GenLens[ConsignmentType23](_.containerIndicator)
 
-  private val locationOfGoodsConsignmentLens: Lens[ConsignmentType20, Option[LocationOfGoodsType05]] =
-    GenLens[ConsignmentType20](_.LocationOfGoods)
+  private val locationOfGoodsConsignmentLens: Lens[ConsignmentType23, Option[LocationOfGoodsType04]] =
+    GenLens[ConsignmentType23](_.LocationOfGoods)
 
-  private val placeOfLoadingConsignmentLens: Lens[ConsignmentType20, Option[PlaceOfLoadingType03]] =
-    GenLens[ConsignmentType20](_.PlaceOfLoading)
+  private val placeOfLoadingConsignmentLens: Lens[ConsignmentType23, Option[PlaceOfLoadingType]] =
+    GenLens[ConsignmentType23](_.PlaceOfLoading)
 
-  private val departureTransportMeansConsignmentLens: Lens[ConsignmentType20, Seq[DepartureTransportMeansType03]] =
-    GenLens[ConsignmentType20](_.DepartureTransportMeans)
+  private val departureTransportMeansConsignmentLens: Lens[ConsignmentType23, Seq[DepartureTransportMeansType01]] =
+    GenLens[ConsignmentType23](_.DepartureTransportMeans)
 
-  private val borderMeansConsignmentLens: Lens[ConsignmentType20, Seq[ActiveBorderTransportMeansType02]] =
-    GenLens[ConsignmentType20](_.ActiveBorderTransportMeans)
+  private val borderMeansConsignmentLens: Lens[ConsignmentType23, Seq[ActiveBorderTransportMeansType03]] =
+    GenLens[ConsignmentType23](_.ActiveBorderTransportMeans)
 
-  private val transportEquipmentConsignmentLens: Lens[ConsignmentType20, Seq[TransportEquipmentType06]] =
-    GenLens[ConsignmentType20](_.TransportEquipment)
+  private val transportEquipmentConsignmentLens: Lens[ConsignmentType23, Seq[TransportEquipmentType03]] =
+    GenLens[ConsignmentType23](_.TransportEquipment)
 
-  private val addressLocationLens: Lens[LocationOfGoodsType05, Option[AddressType14]] =
-    GenLens[LocationOfGoodsType05](_.Address)
+  private val addressLocationLens: Lens[LocationOfGoodsType04, Option[AddressType06]] =
+    GenLens[LocationOfGoodsType04](_.Address)
 
-  private val postAddressLocationLens: Lens[LocationOfGoodsType05, Option[PostcodeAddressType02]] =
-    GenLens[LocationOfGoodsType05](_.PostcodeAddress)
+  private val postAddressLocationLens: Lens[LocationOfGoodsType04, Option[PostcodeAddressType]] =
+    GenLens[LocationOfGoodsType04](_.PostcodeAddress)
 
-  private val lensContactPerson: Lens[LocationOfGoodsType05, Option[ContactPersonType06]] =
-    GenLens[LocationOfGoodsType05](_.ContactPerson)
+  private val lensContactPerson: Lens[LocationOfGoodsType04, Option[ContactPersonType01]] =
+    GenLens[LocationOfGoodsType04](_.ContactPerson)
 
-  private val lensRepresentativeContactPerson: Lens[RepresentativeType05, Option[ContactPersonType05]] =
-    GenLens[RepresentativeType05](_.ContactPerson)
+  private val lensRepresentativeContactPerson: Lens[RepresentativeType06, Option[ContactPersonType03]] =
+    GenLens[RepresentativeType06](_.ContactPerson)
 
-  private val lensAdditionalIdentifier: Lens[LocationOfGoodsType05, Option[String]] =
-    GenLens[LocationOfGoodsType05](_.additionalIdentifier)
+  private val lensAdditionalIdentifier: Lens[LocationOfGoodsType04, Option[String]] =
+    GenLens[LocationOfGoodsType04](_.additionalIdentifier)
 
   val setModeOfTransportAtTheBorderOnUserAnswersLens: Lens[UserAnswers, Option[String]] =
     departureDataLens.andThen(consignmentLens).andThen(modeOfTransportAtTheBorderConsignmentLens)
@@ -83,25 +83,25 @@ trait Lenses {
   val setContainerIndicatorOnUserAnswersLens: Lens[UserAnswers, Option[Flag]] =
     departureDataLens.andThen(consignmentLens).andThen(containerIndicatorLens)
 
-  val setLocationOfGoodsOnUserAnswersLens: Lens[UserAnswers, Option[LocationOfGoodsType05]] =
+  val setLocationOfGoodsOnUserAnswersLens: Lens[UserAnswers, Option[LocationOfGoodsType04]] =
     departureDataLens.andThen(consignmentLens).andThen(locationOfGoodsConsignmentLens)
 
-  val setPlaceOfLoadingOnUserAnswersLens: Lens[UserAnswers, Option[PlaceOfLoadingType03]] =
+  val setPlaceOfLoadingOnUserAnswersLens: Lens[UserAnswers, Option[PlaceOfLoadingType]] =
     departureDataLens.andThen(consignmentLens).andThen(placeOfLoadingConsignmentLens)
 
-  val setRepresentativeOnUserAnswersLens: Lens[UserAnswers, Option[RepresentativeType05]] =
+  val setRepresentativeOnUserAnswersLens: Lens[UserAnswers, Option[RepresentativeType06]] =
     departureDataLens andThen representativeLens
 
-  val setAddressOnUserAnswersLens: Optional[UserAnswers, AddressType14] =
+  val setAddressOnUserAnswersLens: Optional[UserAnswers, AddressType06] =
     departureDataLens andThen consignmentLens andThen locationOfGoodsConsignmentLens andThen some andThen addressLocationLens andThen some
 
-  val setPostAddressOnUserAnswersLens: Optional[UserAnswers, PostcodeAddressType02] =
+  val setPostAddressOnUserAnswersLens: Optional[UserAnswers, PostcodeAddressType] =
     departureDataLens andThen consignmentLens andThen locationOfGoodsConsignmentLens andThen some andThen postAddressLocationLens andThen some
 
-  val setContactPersonOnUserAnswersLens: Optional[UserAnswers, ContactPersonType06] =
+  val setContactPersonOnUserAnswersLens: Optional[UserAnswers, ContactPersonType01] =
     departureDataLens andThen consignmentLens andThen locationOfGoodsConsignmentLens andThen some andThen lensContactPerson andThen some
 
-  val setRepresentativeContactPersonDetailsOnUserAnswersLens: Optional[UserAnswers, ContactPersonType05] =
+  val setRepresentativeContactPersonDetailsOnUserAnswersLens: Optional[UserAnswers, ContactPersonType03] =
     departureDataLens andThen representativeLens andThen some andThen lensRepresentativeContactPerson andThen some
 
   val setAdditionalIdentifierOnUserAnswersLens: Optional[UserAnswers, String] =
@@ -113,29 +113,29 @@ trait Lenses {
   val setCustomsOfficeDepartureReferenceLens: Lens[UserAnswers, String] =
     departureDataLens andThen customsOfficeReferenceLens
 
-  private val transitHolderLens: Lens[CC015CType, HolderOfTheTransitProcedureType14] =
+  private val transitHolderLens: Lens[CC015CType, HolderOfTheTransitProcedureType23] =
     GenLens[CC015CType](_.HolderOfTheTransitProcedure)
 
-  private val transitOperationLens: Lens[CC015CType, TransitOperationType06] =
+  private val transitOperationLens: Lens[CC015CType, TransitOperationType03] =
     GenLens[CC015CType](_.TransitOperation)
 
-  private val limitDateLens: Lens[TransitOperationType06, Option[XMLGregorianCalendar]] =
-    GenLens[TransitOperationType06](_.limitDate)
+  private val limitDateLens: Lens[TransitOperationType03, Option[XMLGregorianCalendar]] =
+    GenLens[TransitOperationType03](_.limitDate)
 
-  private val transitHolderEoriLens: Lens[HolderOfTheTransitProcedureType14, Option[String]] =
-    GenLens[HolderOfTheTransitProcedureType14](_.identificationNumber)
+  private val transitHolderEoriLens: Lens[HolderOfTheTransitProcedureType23, Option[String]] =
+    GenLens[HolderOfTheTransitProcedureType23](_.identificationNumber)
 
-  private val transitHolderNameLens: Lens[HolderOfTheTransitProcedureType14, Option[String]] =
-    GenLens[HolderOfTheTransitProcedureType14](_.name)
+  private val transitHolderNameLens: Lens[HolderOfTheTransitProcedureType23, Option[String]] =
+    GenLens[HolderOfTheTransitProcedureType23](_.name)
 
-  private val transitHolderTirIdentificationLens: Lens[HolderOfTheTransitProcedureType14, Option[String]] =
-    GenLens[HolderOfTheTransitProcedureType14](_.TIRHolderIdentificationNumber)
+  private val transitHolderTirIdentificationLens: Lens[HolderOfTheTransitProcedureType23, Option[String]] =
+    GenLens[HolderOfTheTransitProcedureType23](_.TIRHolderIdentificationNumber)
 
-  private val transitHolderContactPersonLens: Lens[HolderOfTheTransitProcedureType14, Option[ContactPersonType05]] =
-    GenLens[HolderOfTheTransitProcedureType14](_.ContactPerson)
+  private val transitHolderContactPersonLens: Lens[HolderOfTheTransitProcedureType23, Option[ContactPersonType03]] =
+    GenLens[HolderOfTheTransitProcedureType23](_.ContactPerson)
 
-  private val transitHolderAddressLens: Lens[HolderOfTheTransitProcedureType14, Option[AddressType17]] =
-    GenLens[HolderOfTheTransitProcedureType14](_.Address)
+  private val transitHolderAddressLens: Lens[HolderOfTheTransitProcedureType23, Option[AddressType14]] =
+    GenLens[HolderOfTheTransitProcedureType23](_.Address)
 
   val setTransitHolderEoriLens: Lens[UserAnswers, Option[String]] =
     departureDataLens andThen transitHolderLens andThen transitHolderEoriLens
@@ -149,18 +149,18 @@ trait Lenses {
   val setTransitHolderTirIdentificationLens: Lens[UserAnswers, Option[String]] =
     departureDataLens andThen transitHolderLens andThen transitHolderTirIdentificationLens
 
-  val setTransitHolderContactPersonLens: Optional[UserAnswers, ContactPersonType05] =
+  val setTransitHolderContactPersonLens: Optional[UserAnswers, ContactPersonType03] =
     departureDataLens andThen transitHolderLens andThen transitHolderContactPersonLens andThen some
 
-  val setTransitHolderAddressLens: Lens[UserAnswers, Option[AddressType17]] =
+  val setTransitHolderAddressLens: Lens[UserAnswers, Option[AddressType14]] =
     departureDataLens andThen transitHolderLens andThen transitHolderAddressLens
 
-  val setBorderMeansAnswersLens: Lens[UserAnswers, Seq[ActiveBorderTransportMeansType02]] =
+  val setBorderMeansAnswersLens: Lens[UserAnswers, Seq[ActiveBorderTransportMeansType03]] =
     departureDataLens.andThen(consignmentLens).andThen(borderMeansConsignmentLens)
 
-  val setTransportEquipmentLens: Lens[UserAnswers, Seq[TransportEquipmentType06]] =
+  val setTransportEquipmentLens: Lens[UserAnswers, Seq[TransportEquipmentType03]] =
     departureDataLens.andThen(consignmentLens).andThen(transportEquipmentConsignmentLens)
 
-  val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Seq[DepartureTransportMeansType03]] =
+  val setDepartureTransportMeansAnswersLens: Lens[UserAnswers, Seq[DepartureTransportMeansType01]] =
     departureDataLens.andThen(consignmentLens).andThen(departureTransportMeansConsignmentLens)
 }

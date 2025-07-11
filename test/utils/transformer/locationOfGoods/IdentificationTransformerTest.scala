@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import generated.LocationOfGoodsType05
+import generated.LocationOfGoodsType04
 import generators.Generators
 import models.LocationOfGoodsIdentification
 import org.mockito.ArgumentMatchers.any
@@ -47,7 +47,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
 
     "must return updated answers when the identification from departure data can be found in service response" - {
       "when multiple identifier types returned" in {
-        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationOfGoodsIdentification], arbitrary[LocationOfGoodsIdentification]) {
+        forAll(arbitrary[LocationOfGoodsType04], arbitrary[LocationOfGoodsIdentification], arbitrary[LocationOfGoodsIdentification]) {
           (locationOfGoods, identification1, identification2) =>
             when(service.getLocationOfGoodsIdentificationTypes(any())(any()))
               .thenReturn(Future.successful(Seq(identification1, identification2)))
@@ -64,7 +64,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
       }
 
       "when one identifier type returned" in {
-        forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationOfGoodsIdentification]) {
+        forAll(arbitrary[LocationOfGoodsType04], arbitrary[LocationOfGoodsIdentification]) {
           (locationOfGoods, identification) =>
             when(service.getLocationOfGoodsIdentificationTypes(any())(any()))
               .thenReturn(Future.successful(Seq(identification)))
@@ -83,7 +83,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
   }
 
   "must return None when the identification from departure data cannot be found in service response" in {
-    forAll(arbitrary[LocationOfGoodsType05], arbitrary[LocationOfGoodsIdentification]) {
+    forAll(arbitrary[LocationOfGoodsType04], arbitrary[LocationOfGoodsIdentification]) {
       (locationOfGoods, identification) =>
         when(service.getLocationOfGoodsIdentificationTypes(any())(any()))
           .thenReturn(Future.successful(Seq()))
@@ -99,7 +99,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
   }
 
   "must return failure if the service fails" in {
-    forAll(arbitrary[LocationOfGoodsType05]) {
+    forAll(arbitrary[LocationOfGoodsType04]) {
       locationOfGoods =>
         when(service.getLocationOfGoodsIdentificationTypes(any())(any()))
           .thenReturn(Future.failed(new RuntimeException("")))

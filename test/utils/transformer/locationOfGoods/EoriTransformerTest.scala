@@ -17,7 +17,7 @@
 package utils.transformer.locationOfGoods
 
 import base.SpecBase
-import generated.{EconomicOperatorType03, LocationOfGoodsType05}
+import generated.{EconomicOperatorType02, LocationOfGoodsType04}
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.locationOfGoods.EoriPage
@@ -28,11 +28,11 @@ class EoriTransformerTest extends SpecBase with Generators {
   "EoriTransformer" - {
 
     "must return updated answers with EoriPage" in {
-      forAll(arbitrary[LocationOfGoodsType05], nonEmptyString) {
+      forAll(arbitrary[LocationOfGoodsType04], nonEmptyString) {
         (locationOfGoods, eori) =>
           val userAnswers = setLocationOfGoodsOnUserAnswersLens
             .replace(
-              Option(locationOfGoods.copy(EconomicOperator = Some(EconomicOperatorType03(eori))))
+              Option(locationOfGoods.copy(EconomicOperator = Some(EconomicOperatorType02(eori))))
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue

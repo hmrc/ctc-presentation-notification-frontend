@@ -17,7 +17,7 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import generated.{SealType05, TransportEquipmentType06}
+import generated.{SealType01, TransportEquipmentType03}
 import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +29,7 @@ class SealTransformerTest extends SpecBase with Generators {
 
   "SealTransformer" - {
     "must return updated answers with SealIdentificationNumberPage if seals exist for the equipment" in {
-      forAll(arbitrary[TransportEquipmentType06], arbitrary[SealType05]) {
+      forAll(arbitrary[TransportEquipmentType03], arbitrary[SealType01]) {
         (transportEquipment, seal) =>
           val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(Seal = Seq(seal)))

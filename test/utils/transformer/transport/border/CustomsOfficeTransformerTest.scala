@@ -17,7 +17,7 @@
 package utils.transformer.transport.border
 
 import base.SpecBase
-import generated.ActiveBorderTransportMeansType02
+import generated.ActiveBorderTransportMeansType03
 import generators.Generators
 import models.Index
 import models.reference.CustomsOffice
@@ -51,13 +51,13 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
 
     "fromDepartureDataToUserAnswers" - {
       "must return updated answers when the code from departure data can be found in service response" in {
-        forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[CustomsOffice]) {
+        forAll(arbitrary[ActiveBorderTransportMeansType03], arbitrary[CustomsOffice]) {
           (borderTransportMeans, customsOffice) =>
             when(service.getCustomsOfficesByMultipleIds(any())(any()))
               .thenReturn(Future.successful(Seq(customsOffice)))
 
             val userAnswers = setBorderMeansAnswersLens.replace(
-              Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = Some(customsOffice.id)))
+              Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = customsOffice.id))
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
@@ -67,13 +67,13 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
     }
 
     "must return None when the code from departure data cannot be found in service response" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02], arbitrary[CustomsOffice]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03], arbitrary[CustomsOffice]) {
         (borderTransportMeans, customsOffice) =>
           when(service.getCustomsOfficesByMultipleIds(any())(any()))
             .thenReturn(Future.successful(Nil))
 
           val userAnswers = setBorderMeansAnswersLens.replace(
-            Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = Some(customsOffice.id)))
+            Seq(borderTransportMeans.copy(customsOfficeAtBorderReferenceNumber = customsOffice.id))
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
@@ -82,7 +82,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
     }
 
     "must return failure if the service fails" in {
-      forAll(arbitrary[ActiveBorderTransportMeansType02]) {
+      forAll(arbitrary[ActiveBorderTransportMeansType03]) {
         borderTransportMeans =>
           when(service.getCustomsOfficesByMultipleIds(any())(any()))
             .thenReturn(Future.failed(new RuntimeException("")))

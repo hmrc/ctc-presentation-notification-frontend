@@ -17,7 +17,7 @@
 package viewModels.transport.equipment
 
 import base.SpecBase
-import generated.{CommodityType07, ConsignmentItemType09, HouseConsignmentType10}
+import generated.*
 import generators.Generators
 import models.reference.Item
 import models.{Index, SelectableList}
@@ -34,35 +34,55 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must filter list if there are items in two different transport equipments in UA" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CommodityType07("item1")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item1",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CommodityType07("item2")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item2",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               )
             )
           ),
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 200,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
-                Commodity = CommodityType07("item3")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item3",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 100
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
-                Commodity = CommodityType07("item4")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item4",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 100
+                  )
+                )
               )
             )
           )
@@ -87,35 +107,55 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must filter list if there are items in two different transport equipments in UA without filtering selected item" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CommodityType07("item1")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item1",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CommodityType07("item2")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item2",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               )
             )
           ),
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 2,
             grossMass = 200,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
-                Commodity = CommodityType07("item3")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item3",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 100
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
-                Commodity = CommodityType07("item4")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item4",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 100
+                  )
+                )
               )
             )
           )
@@ -140,19 +180,29 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must filter list if there are items in a single transport equipment in UA" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CommodityType07("item1")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item1",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CommodityType07("item2")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item2",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               )
             )
           )
@@ -175,7 +225,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must return empty list if no items" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 0,
             ConsignmentItem = List.empty
@@ -198,35 +248,55 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must not filter list if there is a transport equipment section but with no items" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CommodityType07("item1")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item1",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CommodityType07("item2")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item2",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               )
             )
           ),
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 2,
             grossMass = 200,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
-                Commodity = CommodityType07("item3")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item3",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 100
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
-                Commodity = CommodityType07("item4")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item4",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 100
+                  )
+                )
               )
             )
           )
@@ -249,35 +319,55 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
       "must not filter list if there are no items in UA" in {
 
         val updatedHouseConsignment = Seq(
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 100,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CommodityType07("item1")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item1",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CommodityType07("item2")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item2",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 50
+                  )
+                )
               )
             )
           ),
-          HouseConsignmentType10(
+          HouseConsignmentType13(
             sequenceNumber = 1,
             grossMass = 0,
             ConsignmentItem = Seq(
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
-                Commodity = CommodityType07("item3")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item3",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 0
+                  )
+                )
               ),
-              ConsignmentItemType09(
+              ConsignmentItemType10(
                 goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
-                Commodity = CommodityType07("item4")
+                Commodity = CommodityType10(
+                  descriptionOfGoods = "item4",
+                  GoodsMeasure = GoodsMeasureType04(
+                    grossMass = 0
+                  )
+                )
               )
             )
           )

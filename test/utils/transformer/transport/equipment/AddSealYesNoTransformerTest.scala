@@ -17,7 +17,7 @@
 package utils.transformer.transport.equipment
 
 import base.SpecBase
-import generated.{SealType05, TransportEquipmentType06}
+import generated.{SealType01, TransportEquipmentType03}
 import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +29,7 @@ class AddSealYesNoTransformerTest extends SpecBase with Generators {
 
   "AddSealYesNoTransformer" - {
     "when seals present must return updated answers with AddSealYesNoPage as true" in {
-      forAll(arbitrary[TransportEquipmentType06], arbitrary[SealType05]) {
+      forAll(arbitrary[TransportEquipmentType03], arbitrary[SealType01]) {
         (transportEquipment, seal) =>
           val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(Seal = Seq(seal)))
@@ -41,7 +41,7 @@ class AddSealYesNoTransformerTest extends SpecBase with Generators {
     }
 
     "when seals not present must return updated answers with AddSealYesNoPage as false" in {
-      forAll(arbitrary[TransportEquipmentType06]) {
+      forAll(arbitrary[TransportEquipmentType03]) {
         transportEquipment =>
           val userAnswers = setTransportEquipmentLens.replace(
             Seq(transportEquipment.copy(Seal = Nil))
