@@ -42,7 +42,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
     "must skip transforming if there is no location type" in {
       val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers)
       val result      = transformer.transform.apply(userAnswers).futureValue
-      result mustBe userAnswers
+      result mustEqual userAnswers
     }
 
     "must return updated answers when the location type from departure data can be found in service response" - {
@@ -57,7 +57,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(LocationTypePage) mustBe Some(locationType1)
+            result.get(LocationTypePage).value mustEqual locationType1
             result.get(InferredLocationTypePage) must not be defined
         }
       }
@@ -74,7 +74,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
 
             val result = transformer.transform.apply(userAnswers).futureValue
             result.get(LocationTypePage) must not be defined
-            result.get(InferredLocationTypePage) mustBe Some(locationType)
+            result.get(InferredLocationTypePage).value mustEqual locationType
         }
       }
     }
@@ -91,7 +91,7 @@ class LocationTypeTransformerTest extends SpecBase with Generators {
         )(emptyUserAnswers)
 
         val result = transformer.transform.apply(userAnswers).futureValue
-        result.get(LocationTypePage) mustBe None
+        result.get(LocationTypePage) must not be defined
     }
   }
 

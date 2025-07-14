@@ -36,7 +36,7 @@ class PhoneNumberTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(PhoneNumberPage).value mustBe contactPerson.phoneNumber
+          result.get(PhoneNumberPage).value mustEqual contactPerson.phoneNumber
       }
     }
   }

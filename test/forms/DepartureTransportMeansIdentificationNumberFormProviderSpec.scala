@@ -64,7 +64,7 @@ class DepartureTransportMeansIdentificationNumberFormProviderSpec extends String
 
     "must convert input to upper case" in {
       val result = form.bind(Map(fieldName -> "abc123def456"))
-      result.value.value mustBe "ABC123DEF456"
+      result.value.value mustEqual "ABC123DEF456"
     }
   }
 }

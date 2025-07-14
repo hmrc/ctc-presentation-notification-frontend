@@ -35,7 +35,7 @@ class TransportEquipmentYesNoTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddTransportEquipmentYesNoPage) mustBe Some(true)
+          result.get(AddTransportEquipmentYesNoPage).value mustEqual true
       }
     }
 
@@ -47,7 +47,7 @@ class TransportEquipmentYesNoTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddTransportEquipmentYesNoPage) mustBe Some(false)
+          result.get(AddTransportEquipmentYesNoPage).value mustEqual false
       }
     }
   }

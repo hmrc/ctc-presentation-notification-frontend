@@ -50,7 +50,7 @@ class CountryTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(CountryPage).value mustBe country
+          result.get(CountryPage).value mustEqual country
       }
     }
   }

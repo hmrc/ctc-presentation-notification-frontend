@@ -50,7 +50,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getCustomsOfficesOfTransitForCountry(any())(any(), any()))
           .thenReturn(Future.successful(Right(gbCustomsOffices)))
 
-        service.getCustomsOfficesOfTransitForCountry(CountryCode("GB")).futureValue.values mustBe
+        service.getCustomsOfficesOfTransitForCountry(CountryCode("GB")).futureValue.values mustEqual
           Seq(gbCustomsOffice2, gbCustomsOffice1)
 
         verify(mockRefDataConnector).getCustomsOfficesOfTransitForCountry(any())(any(), any())
@@ -63,7 +63,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getCustomsOfficeForId(any())(any(), any()))
           .thenReturn(Future.successful(Right(gbCustomsOffice1)))
 
-        service.getCustomsOfficeById("GB1").futureValue mustBe gbCustomsOffice1
+        service.getCustomsOfficeById("GB1").futureValue mustEqual gbCustomsOffice1
 
         verify(mockRefDataConnector).getCustomsOfficeForId(any())(any(), any())
       }
@@ -75,7 +75,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getCustomsOfficesForIds(eqTo(Seq("GB1", "GB2")))(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2))))
 
-        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustBe Seq(gbCustomsOffice2, gbCustomsOffice1)
+        service.getCustomsOfficesByMultipleIds(Seq("GB1", "GB2")).futureValue mustEqual Seq(gbCustomsOffice2, gbCustomsOffice1)
 
         verify(mockRefDataConnector).getCustomsOfficesForIds(any())(any(), any())
       }
@@ -102,7 +102,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getCustomsOfficesOfDestinationForCountry(any())(any(), any()))
           .thenReturn(Future.successful(Right(gbCustomsOffices)))
 
-        service.getCustomsOfficesOfDestinationForCountry(CountryCode("GB")).futureValue.values mustBe
+        service.getCustomsOfficesOfDestinationForCountry(CountryCode("GB")).futureValue.values mustEqual
           Seq(gbCustomsOffice2, gbCustomsOffice1)
 
         verify(mockRefDataConnector).getCustomsOfficesOfDestinationForCountry(any())(any(), any())

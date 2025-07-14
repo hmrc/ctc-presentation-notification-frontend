@@ -36,7 +36,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.actingAsRepresentative
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -49,15 +49,15 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper  = new RepresentativeAnswersHelper(answers, departureId, mode)
               val result  = helper.actingAsRepresentative.get
 
-              result.key.value mustBe "Are you acting as a representative?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Are you acting as a representative?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you are acting as a representative"
-              action.id mustBe "change-acting-as-representative"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.routes.ActingAsRepresentativeController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you are acting as a representative"
+              action.id mustEqual "change-acting-as-representative"
           }
         }
       }
@@ -71,7 +71,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.eori
 
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -84,15 +84,15 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper  = new RepresentativeAnswersHelper(answers, departureId, mode)
               val result  = helper.eori.get
 
-              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
-              result.value.value mustBe eori
+              result.key.value mustEqual "EORI number or Trader Identification Number (TIN)"
+              result.value.value mustEqual eori
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.representative.routes.EoriController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "representative’s EORI number or Trader Identification Number (TIN)"
-              action.id mustBe "change-representative-eori"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.representative.routes.EoriController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "representative’s EORI number or Trader Identification Number (TIN)"
+              action.id mustEqual "change-representative-eori"
           }
         }
       }
@@ -106,7 +106,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.addRepresentativeContactDetails()
 
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -119,15 +119,15 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper  = new RepresentativeAnswersHelper(answers, departureId, mode)
               val result  = helper.addRepresentativeContactDetails().get
 
-              result.key.value mustBe "Do you want to add your details?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add your details?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.representative.routes.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add your details"
-              action.id mustBe "change-add-contact-details"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.representative.routes.AddRepresentativeContactDetailsYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add your details"
+              action.id mustEqual "change-add-contact-details"
           }
         }
       }
@@ -141,7 +141,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.name
 
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -154,15 +154,15 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper  = new RepresentativeAnswersHelper(answers, departureId, mode)
               val result  = helper.name.get
 
-              result.key.value mustBe "Name"
-              result.value.value mustBe name
+              result.key.value mustEqual "Name"
+              result.value.value mustEqual name
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.representative.routes.NameController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "representative’s name"
-              action.id mustBe "change-representative-name"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.representative.routes.NameController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "representative’s name"
+              action.id mustEqual "change-representative-name"
           }
         }
       }
@@ -176,7 +176,7 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new RepresentativeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.phoneNumber
 
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -189,15 +189,15 @@ class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper  = new RepresentativeAnswersHelper(answers, departureId, mode)
               val result  = helper.phoneNumber.get
 
-              result.key.value mustBe "Phone number"
-              result.value.value mustBe phoneNumber
+              result.key.value mustEqual "Phone number"
+              result.value.value mustEqual phoneNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.representative.routes.RepresentativePhoneNumberController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "representative’s phone number"
-              action.id mustBe "change-representative-phone-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.representative.routes.RepresentativePhoneNumberController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "representative’s phone number"
+              action.id mustEqual "change-representative-phone-number"
           }
         }
       }

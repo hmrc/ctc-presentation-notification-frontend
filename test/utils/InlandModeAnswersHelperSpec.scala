@@ -43,16 +43,16 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
                 new InlandModeAnswersHelper(userAnswers, departureId, mode)
               val result = helper.inlandModeOfTransportYesNo.get
 
-              result.key.value mustBe "Do you want to add an inland mode of transport?"
-              result.value.value mustBe "No"
+              result.key.value mustEqual "Do you want to add an inland mode of transport?"
+              result.value.value mustEqual "No"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.AddInlandModeOfTransportYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add an inland mode of transport"
-              action.id mustBe "change-add-inland-mode-of-transport"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.routes.AddInlandModeOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add an inland mode of transport"
+              action.id mustEqual "change-add-inland-mode-of-transport"
           }
         }
       }
@@ -66,16 +66,16 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
               val helper = new InlandModeAnswersHelper(updatedAnswers, departureId, mode)
               val result = helper.inlandModeOfTransportYesNo.get
 
-              result.key.value mustBe "Do you want to add an inland mode of transport?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add an inland mode of transport?"
+              result.value.value mustEqual "Yes"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.AddInlandModeOfTransportYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add an inland mode of transport"
-              action.id mustBe "change-add-inland-mode-of-transport"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.routes.AddInlandModeOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add an inland mode of transport"
+              action.id mustEqual "change-add-inland-mode-of-transport"
           }
         }
       }
@@ -88,7 +88,7 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
             mode =>
               val helper = new InlandModeAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.inlandMode
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -103,15 +103,15 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
 
               val result = helper.inlandMode.get
 
-              result.key.value mustBe s"Mode"
-              result.value.value mustBe inlandMode.asString
+              result.key.value mustEqual s"Mode"
+              result.value.value mustEqual inlandMode.asString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "inland mode of transport"
-              action.id mustBe "change-transport-inland-mode"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "inland mode of transport"
+              action.id mustEqual "change-transport-inland-mode"
           }
         }
       }
@@ -125,7 +125,7 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
             val departureData = basicIe015.copy(TransitOperation = basicIe015.TransitOperation.copy(reducedDatasetIndicator = Number1))
             val helper        = new InlandModeAnswersHelper(emptyUserAnswers.copy(departureData = departureData), departureId, mode)
             val result        = helper.buildInlandModeSection
-            result mustBe None
+            result must not be defined
         }
       }
 
@@ -184,8 +184,8 @@ class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
               )
             )
 
-            result.get mustBe section
-            result.get.rows.size mustBe 2
+            result.get mustEqual section
+            result.get.rows.size mustEqual 2
         }
       }
 

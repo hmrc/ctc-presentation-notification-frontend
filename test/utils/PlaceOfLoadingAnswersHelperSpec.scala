@@ -34,7 +34,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.addUnlocodeYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -48,15 +48,15 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.addUnlocodeYesNo.get
 
-              result.key.value mustBe s"Do you want to add a UN/LOCODE for the place of loading?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual s"Do you want to add a UN/LOCODE for the place of loading?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.AddUnLocodeYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want a UN/LOCODE for the place of loading"
-              action.id mustBe "change-add-unlocode"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.loading.routes.AddUnLocodeYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want a UN/LOCODE for the place of loading"
+              action.id mustEqual "change-add-unlocode"
           }
         }
       }
@@ -69,7 +69,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.unlocode
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -83,15 +83,15 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.unlocode.get
 
-              result.key.value mustBe s"UN/LOCODE"
-              result.value.value mustBe unlocode.unLocodeExtendedCode
+              result.key.value mustEqual s"UN/LOCODE"
+              result.value.value mustEqual unlocode.unLocodeExtendedCode
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.UnLocodeController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "UN/LOCODE for the place of loading"
-              action.id mustBe "change-unlocode"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.loading.routes.UnLocodeController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "UN/LOCODE for the place of loading"
+              action.id mustEqual "change-unlocode"
           }
         }
       }
@@ -104,7 +104,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.addExtraInformationYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -118,15 +118,15 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.addExtraInformationYesNo.get
 
-              result.key.value mustBe s"Do you want to add extra information for the place of loading?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual s"Do you want to add extra information for the place of loading?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add extra information for the place of loading"
-              action.id mustBe "change-add-extra-information"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.loading.routes.AddExtraInformationYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add extra information for the place of loading"
+              action.id mustEqual "change-add-extra-information"
           }
         }
       }
@@ -139,7 +139,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.countryTypeRow
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -153,15 +153,15 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.countryTypeRow.get
 
-              result.key.value mustBe s"Country"
-              result.value.value mustBe country.description
+              result.key.value mustEqual s"Country"
+              result.value.value mustEqual country.description
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.CountryController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "country for the place of loading"
-              action.id mustBe "change-country"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.loading.routes.CountryController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "country for the place of loading"
+              action.id mustEqual "change-country"
           }
         }
       }
@@ -174,7 +174,7 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             mode =>
               val helper = new PlaceOfLoadingAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.location
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -188,15 +188,15 @@ class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val helper = new PlaceOfLoadingAnswersHelper(answers, departureId, mode)
               val result = helper.location.get
 
-              result.key.value mustBe s"Location"
-              result.value.value mustBe location
+              result.key.value mustEqual s"Location"
+              result.value.value mustEqual location
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.loading.routes.LocationController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "location for the place of loading"
-              action.id mustBe "change-location"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.loading.routes.LocationController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "location for the place of loading"
+              action.id mustEqual "change-location"
           }
         }
       }

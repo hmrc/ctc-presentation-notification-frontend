@@ -36,7 +36,7 @@ class ConveyanceReferenceTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(ConveyanceReferenceNumberPage(Index(0))) mustBe None
+          result.get(ConveyanceReferenceNumberPage(Index(0))) must not be defined
       }
     }
 
@@ -48,7 +48,7 @@ class ConveyanceReferenceTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(ConveyanceReferenceNumberPage(Index(0))).value mustBe conveyanceReferenceNumber
+          result.get(ConveyanceReferenceNumberPage(Index(0))).value mustEqual conveyanceReferenceNumber
       }
     }
   }

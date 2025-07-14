@@ -43,7 +43,7 @@ class BorderModeOfTransportPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(BorderModeOfTransportPage, borderMode)
 
-          result.get(AddBorderModeOfTransportYesNoPage).value mustBe true
+          result.get(AddBorderModeOfTransportYesNoPage).value mustEqual true
           result.get(AddBorderMeansOfTransportYesNoPage) mustNot be(defined)
           result.get(BorderActiveListSection) mustNot be(defined)
       }

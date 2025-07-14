@@ -36,7 +36,7 @@ class EoriTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(EoriPage).value mustBe eori
+          result.get(EoriPage).value mustEqual eori
       }
     }
   }

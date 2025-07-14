@@ -38,7 +38,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, transportIndex)
               val result = helper.identificationNumberRow
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -53,17 +53,17 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               val result = helper.identificationNumberRow.get
 
-              result.key.value mustBe "Identification"
-              result.value.value mustBe number
+              result.key.value mustEqual "Identification"
+              result.value.value mustEqual number
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
                 .onPageLoad(departureId, mode, transportIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "the identification for the departure means of transport"
-              action.id mustBe "change-departure-transport-means-identification-number"
+              action.visuallyHiddenText.get mustEqual "the identification for the departure means of transport"
+              action.id mustEqual "change-departure-transport-means-identification-number"
           }
         }
       }
@@ -77,7 +77,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           mode =>
             val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, transportIndex)
             val result = helper.identificationType
-            result mustBe None
+            result must not be defined
         }
       }
     }
@@ -93,17 +93,17 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
             val result = helper.identificationType.get
 
-            result.key.value mustBe "Identification type"
-            result.value.value mustBe means.toString
+            result.key.value mustEqual "Identification type"
+            result.value.value mustEqual means.toString
             val actions = result.actions.get.items
-            actions.size mustBe 1
+            actions.size mustEqual 1
             val action = actions.head
-            action.content.value mustBe "Change"
-            action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController
+            action.content.value mustEqual "Change"
+            action.href mustEqual controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController
               .onPageLoad(departureId, mode, transportIndex)
               .url
-            action.visuallyHiddenText.get mustBe "identification type for the departure means of transport"
-            action.id mustBe "change-transport-means-identification"
+            action.visuallyHiddenText.get mustEqual "identification type for the departure means of transport"
+            action.id mustEqual "change-transport-means-identification"
         }
       }
     }
@@ -116,7 +116,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           mode =>
             val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, transportIndex)
             val result = helper.nationality
-            result mustBe None
+            result must not be defined
         }
       }
     }
@@ -131,17 +131,17 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, mode, transportIndex)
             val result = helper.nationality.get
 
-            result.key.value mustBe "Registered country"
-            result.value.value mustBe nationality.description
+            result.key.value mustEqual "Registered country"
+            result.value.value mustEqual nationality.description
             val actions = result.actions.get.items
-            actions.size mustBe 1
+            actions.size mustEqual 1
             val action = actions.head
-            action.content.value mustBe "Change"
-            action.href mustBe controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController
+            action.content.value mustEqual "Change"
+            action.href mustEqual controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController
               .onPageLoad(departureId, mode, transportIndex)
               .url
-            action.visuallyHiddenText.get mustBe "registered country for the departure means of transport"
-            action.id mustBe "change-departure-transport-means-nationality"
+            action.visuallyHiddenText.get mustEqual "registered country for the departure means of transport"
+            action.id mustEqual "change-departure-transport-means-nationality"
         }
       }
     }
@@ -162,8 +162,8 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             new DepartureTransportMeansAnswersHelper(answers, departureId, mode, transportIndex)
           val result = helper.buildDepartureTransportMeansSection
 
-          result.rows.size mustBe 3
-          result.sectionTitle.get mustBe "Departure means of transport 1"
+          result.rows.size mustEqual 3
+          result.sectionTitle.get mustEqual "Departure means of transport 1"
       }
     }
 
@@ -178,8 +178,8 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           val helper = new DepartureTransportMeansAnswersHelper(answers, departureId, mode, transportIndex)
           val result = helper.buildDepartureTransportMeansSection
 
-          result.rows.size mustBe 3
-          result.sectionTitle.get mustBe "Departure means of transport 1"
+          result.rows.size mustEqual 3
+          result.sectionTitle.get mustEqual "Departure means of transport 1"
       }
     }
 

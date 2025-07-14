@@ -36,7 +36,7 @@ class AddSealYesNoTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddSealYesNoPage(Index(0))) mustBe Some(true)
+          result.get(AddSealYesNoPage(Index(0))).value mustEqual true
       }
     }
 
@@ -48,7 +48,7 @@ class AddSealYesNoTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddSealYesNoPage(Index(0))) mustBe Some(false)
+          result.get(AddSealYesNoPage(Index(0))).value mustEqual false
       }
     }
   }

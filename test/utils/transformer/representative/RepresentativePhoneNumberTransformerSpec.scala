@@ -34,7 +34,7 @@ class RepresentativePhoneNumberTransformerSpec extends SpecBase with Generators 
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(RepresentativePhoneNumberPage).value mustBe phoneNumber
+          result.get(RepresentativePhoneNumberPage).value mustEqual phoneNumber
       }
     }
 
@@ -46,7 +46,7 @@ class RepresentativePhoneNumberTransformerSpec extends SpecBase with Generators 
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(RepresentativePhoneNumberPage) mustBe None
+          result.get(RepresentativePhoneNumberPage) must not be defined
       }
     }
   }

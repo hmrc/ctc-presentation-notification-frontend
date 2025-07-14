@@ -61,7 +61,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
           when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
             .thenReturn(Future.successful(Right(NonEmptySet.of(identification5, identification6, identification7))))
 
-          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustBe
+          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustEqual
             Seq(identification6, identification5)
 
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
@@ -73,7 +73,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
           when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
             .thenReturn(Future.successful(Right(NonEmptySet.of(identification4, identification7))))
 
-          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustBe
+          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustEqual
             Seq(identification4)
 
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
@@ -85,7 +85,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
           when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
             .thenReturn(Future.successful(Right(NonEmptySet.of(identification3, identification7))))
 
-          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustBe
+          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustEqual
             Seq(identification3)
 
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
@@ -97,7 +97,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
           when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
             .thenReturn(Future.successful(Right(NonEmptySet.of(identification1, identification2, identification7))))
 
-          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustBe
+          service.getMeansOfTransportIdentificationTypesActive(index, Some(borderMode)).futureValue mustEqual
             Seq(identification2, identification1)
 
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
@@ -112,7 +112,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
               )
             )
 
-          service.getMeansOfTransportIdentificationTypesActive(index, None).futureValue mustBe
+          service.getMeansOfTransportIdentificationTypesActive(index, None).futureValue mustEqual
             Seq(identification6, identification5, identification4, identification3, identification2, identification1)
 
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
@@ -129,7 +129,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
               )
             )
 
-          service.getMeansOfTransportIdentificationTypesActive(Index(1), Some(borderModeOfTransport)).futureValue mustBe
+          service.getMeansOfTransportIdentificationTypesActive(Index(1), Some(borderModeOfTransport)).futureValue mustEqual
             Seq(identification6, identification5, identification4, identification3, identification2, identification1)
 
           verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
@@ -145,7 +145,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
             )
           )
 
-        service.getMeansOfTransportIdentificationTypesActive().futureValue mustBe
+        service.getMeansOfTransportIdentificationTypesActive().futureValue mustEqual
           Seq(identification6, identification5, identification4, identification3, identification2, identification1, identification7)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
@@ -158,7 +158,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
       when(mockRefDataConnector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
         .thenReturn(Future.successful(Right(identification)))
 
-      service.getBorderMeansIdentification("code").futureValue mustBe identification
+      service.getBorderMeansIdentification("code").futureValue mustEqual identification
 
       verify(mockRefDataConnector).getMeansOfTransportIdentificationTypeActive(eqTo("code"))(any(), any())
     }

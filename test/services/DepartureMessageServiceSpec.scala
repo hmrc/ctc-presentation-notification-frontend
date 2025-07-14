@@ -55,7 +55,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
     "getLRN" in {
       when(mockConnector.getLRN(any())(any())).thenReturn(Future.successful(lrn))
 
-      service.getLRN(departureId).futureValue mustBe lrn
+      service.getLRN(departureId).futureValue mustEqual lrn
 
       verify(mockConnector).getLRN(eqTo(departureId))(any())
     }
@@ -78,7 +78,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
               when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(departureMessages))
               when(mockConnector.getMessage[CC013CType](any(), any())(any(), any())).thenReturn(Future.successful(ie013))
 
-              service.getDepartureData(departureId, lrn).futureValue.value mustBe ie013.toCC015CType(lrn)
+              service.getDepartureData(departureId, lrn).futureValue.value mustEqual ie013.toCC015CType(lrn)
 
               verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
               verify(mockConnector).getMessage(eqTo(departureId), eqTo("id2"))(any(), any())
@@ -98,7 +98,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
               when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(departureMessages))
               when(mockConnector.getMessage[CC015CType](any(), any())(any(), any())).thenReturn(Future.successful(ie015))
 
-              service.getDepartureData(departureId, lrn).futureValue.value mustBe ie015
+              service.getDepartureData(departureId, lrn).futureValue.value mustEqual ie015
 
               verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
               verify(mockConnector).getMessage(eqTo(departureId), eqTo("id1"))(any(), any())
@@ -121,7 +121,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
             when(mockConnector.getMessages(any())(any(), any())).thenReturn(Future.successful(departureMessages))
             when(mockConnector.getMessage[CC170CType](any(), any())(any(), any())).thenReturn(Future.successful(ie170))
 
-            service.getIE170(departureId).futureValue.value mustBe ie170
+            service.getIE170(departureId).futureValue.value mustEqual ie170
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
             verify(mockConnector).getMessage(eqTo(departureId), eqTo("id1"))(any(), any())
@@ -153,7 +153,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
             val result = service.canSubmitPresentationNotification(departureId, lrn, AdditionalDeclarationType.PreLodged).futureValue
 
-            result.mustBe(false)
+            result.mustEqual(false)
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
           }

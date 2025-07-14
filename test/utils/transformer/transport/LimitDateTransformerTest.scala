@@ -34,7 +34,7 @@ class LimitDateTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(LimitDatePage).value mustBe LocalDate.parse("2022-02-03")
+      result.get(LimitDatePage).value mustEqual LocalDate.parse("2022-02-03")
     }
 
     "must not update if limit date is None" in {
@@ -43,7 +43,7 @@ class LimitDateTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(LimitDatePage) mustBe None
+      result.get(LimitDatePage) must not be defined
     }
   }
 }

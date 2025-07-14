@@ -35,7 +35,7 @@ class AddRepresentativeContactDetailsYesNoTransformerSpec extends SpecBase with 
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddRepresentativeContactDetailsYesNoPage) mustBe Some(true)
+          result.get(AddRepresentativeContactDetailsYesNoPage).value mustEqual true
       }
     }
 
@@ -47,7 +47,7 @@ class AddRepresentativeContactDetailsYesNoTransformerSpec extends SpecBase with 
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddRepresentativeContactDetailsYesNoPage) mustBe Some(false)
+          result.get(AddRepresentativeContactDetailsYesNoPage).value mustEqual false
       }
     }
   }

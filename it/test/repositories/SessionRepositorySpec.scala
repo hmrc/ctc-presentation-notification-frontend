@@ -138,18 +138,18 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
         val result = repository.get("id1").futureValue
 
-        result.value.id `mustBe` userAnswers1.id
-        result.value.eoriNumber `mustBe` userAnswers1.eoriNumber
-        result.value.lrn `mustBe` userAnswers1.lrn
-        result.value.data `mustBe` userAnswers1.data
-        result.value.departureData `mustBe` userAnswers1.departureData
+        result.value.id mustEqual userAnswers1.id
+        result.value.eoriNumber mustEqual userAnswers1.eoriNumber
+        result.value.lrn mustEqual userAnswers1.lrn
+        result.value.data mustEqual userAnswers1.data
+        result.value.departureData mustEqual userAnswers1.departureData
       }
 
       "must return None when no UserAnswers match departure ID" in {
 
         val result = repository.get("id3").futureValue
 
-        result `mustBe` None
+        result `must` not `be` defined
       }
     }
 
@@ -170,12 +170,12 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
         val getResult = repository.get("id3").futureValue.value
 
-        setResult `mustBe` true
-        getResult.id `mustBe` userAnswers.id
-        getResult.eoriNumber `mustBe` userAnswers.eoriNumber
-        getResult.lrn `mustBe` userAnswers.lrn
-        getResult.data `mustBe` userAnswers.data
-        getResult.departureData `mustBe` userAnswers.departureData
+        setResult mustEqual true
+        getResult.id mustEqual userAnswers.id
+        getResult.eoriNumber mustEqual userAnswers.eoriNumber
+        getResult.lrn mustEqual userAnswers.lrn
+        getResult.data mustEqual userAnswers.data
+        getResult.departureData mustEqual userAnswers.departureData
       }
     }
 

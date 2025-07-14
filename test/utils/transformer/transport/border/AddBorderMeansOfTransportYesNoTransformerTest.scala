@@ -34,7 +34,7 @@ class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase with Genera
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddBorderMeansOfTransportYesNoPage).value mustBe true
+          result.get(AddBorderMeansOfTransportYesNoPage).value mustEqual true
       }
     }
 
@@ -44,7 +44,7 @@ class AddBorderMeansOfTransportYesNoTransformerTest extends SpecBase with Genera
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(AddBorderMeansOfTransportYesNoPage).value mustBe false
+      result.get(AddBorderMeansOfTransportYesNoPage).value mustEqual false
     }
   }
 }

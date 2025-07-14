@@ -45,7 +45,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(IdentificationPage(Index(0))) mustBe None
+      result.get(IdentificationPage(Index(0))) must not be defined
     }
 
     "fromDepartureDataToUserAnswers" - {
@@ -60,7 +60,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(IdentificationPage(Index(0))).value mustBe identification
+            result.get(IdentificationPage(Index(0))).value mustEqual identification
         }
       }
     }
@@ -76,7 +76,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(IdentificationPage(Index(0))) mustBe None
+          result.get(IdentificationPage(Index(0))) must not be defined
       }
     }
 

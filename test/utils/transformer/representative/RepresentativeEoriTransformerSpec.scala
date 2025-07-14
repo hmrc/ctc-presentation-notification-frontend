@@ -34,7 +34,7 @@ class RepresentativeEoriTransformerSpec extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(EoriPage).value mustBe eori
+          result.get(EoriPage).value mustEqual eori
       }
     }
 
@@ -44,7 +44,7 @@ class RepresentativeEoriTransformerSpec extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(EoriPage) mustBe None
+      result.get(EoriPage) must not be defined
     }
   }
 }

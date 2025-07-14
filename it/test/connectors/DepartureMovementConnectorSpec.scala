@@ -76,7 +76,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         val result = connector.getLRN(departureId).futureValue
 
-        result mustBe LocalReferenceNumber("DEF456")
+        result mustEqual LocalReferenceNumber("DEF456")
       }
 
     }
@@ -153,7 +153,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
             .willReturn(okJson(responseJson.toString()))
         )
 
-        connector.getMessages(departureId).futureValue mustBe expectedResult
+        connector.getMessages(departureId).futureValue mustEqual expectedResult
       }
     }
 
@@ -230,7 +230,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         val result = connector.getMessage[CC015CType](departureId, messageId).futureValue
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
 
       "when IE013 messageData" in {
@@ -304,7 +304,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         val result = connector.getMessage[CC013CType](departureId, messageId).futureValue
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
     }
 
@@ -325,7 +325,7 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
 
         val result: HttpResponse = connector.submit(body, departureId).futureValue
 
-        result.status mustBe OK
+        result.status mustEqual OK
       }
     }
   }

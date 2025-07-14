@@ -44,10 +44,10 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             val helper      = new PresentationNotificationAnswersHelper(userAnswers, departureId, mode)
             val result      = helper.customsOfficeDeparture.get
 
-            result.key.value mustBe s"Office of departure"
-            result.value.value mustBe departureCustomsOfficeRefNumber
+            result.key.value mustEqual s"Office of departure"
+            result.value.value mustEqual departureCustomsOfficeRefNumber
             val actions = result.actions
-            actions.size mustBe 0
+            actions.size mustEqual 0
         }
       }
     }
@@ -59,7 +59,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val helper = new PresentationNotificationAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.limitDate
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -75,15 +75,15 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.limitDate.get
 
-              result.key.value mustBe s"Estimated arrival date at the office of destination"
-              result.value.value mustBe "8 January 2000"
+              result.key.value mustEqual s"Estimated arrival date at the office of destination"
+              result.value.value mustEqual "8 January 2000"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.LimitDateController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "estimated arrival date at the office of destination"
-              action.id mustBe "change-limit-date"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.routes.LimitDateController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "estimated arrival date at the office of destination"
+              action.id mustEqual "change-limit-date"
           }
         }
       }
@@ -96,7 +96,7 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
             mode =>
               val helper = new PresentationNotificationAnswersHelper(emptyUserAnswers, departureId, mode)
               val result = helper.containerIndicator
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -110,15 +110,15 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.containerIndicator.get
 
-              result.key.value mustBe s"Are you using any shipping containers to transport the goods?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual s"Are you using any shipping containers to transport the goods?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you are using any shipping containers to transport the goods"
-              action.id mustBe "change-container-indicator"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.routes.ContainerIndicatorController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you are using any shipping containers to transport the goods"
+              action.id mustEqual "change-container-indicator"
           }
         }
       }
@@ -133,15 +133,15 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
                 .setValue(AddBorderModeOfTransportYesNoPage, false)
               val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.borderModeOfTransportYesNo
-              result.get.key.value mustBe s"Do you want to add a border mode of transport?"
-              result.get.value.value mustBe "No"
+              result.get.key.value mustEqual s"Do you want to add a border mode of transport?"
+              result.get.value.value mustEqual "No"
               val actions = result.get.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.routes.AddBorderModeOfTransportYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add a border mode of transport"
-              action.id mustBe "change-add-border-mode"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.border.routes.AddBorderModeOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add a border mode of transport"
+              action.id mustEqual "change-add-border-mode"
           }
         }
       }
@@ -158,15 +158,15 @@ class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheck
               val helper = new PresentationNotificationAnswersHelper(answers, departureId, mode)
               val result = helper.borderModeOfTransportRow.get
 
-              result.key.value mustBe s"Mode"
-              result.value.value mustBe borderModeOfTransport.description
+              result.key.value mustEqual s"Mode"
+              result.value.value mustEqual borderModeOfTransport.description
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "border mode of transport"
-              action.id mustBe "change-border-mode-of-transport"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "border mode of transport"
+              action.id mustEqual "change-border-mode-of-transport"
           }
         }
       }

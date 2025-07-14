@@ -36,7 +36,7 @@ class ContainerIdentificationNumberTransformerTest extends SpecBase with Generat
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(ContainerIdentificationNumberPage(Index(0))).value mustBe containerIdentificationNumber
+          result.get(ContainerIdentificationNumberPage(Index(0))).value mustEqual containerIdentificationNumber
       }
     }
   }

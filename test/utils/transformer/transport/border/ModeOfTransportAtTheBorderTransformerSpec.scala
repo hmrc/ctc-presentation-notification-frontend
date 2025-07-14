@@ -47,7 +47,7 @@ class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase with Generators
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(BorderModeOfTransportPage) mustBe Some(borderMode)
+          result.get(BorderModeOfTransportPage).value mustEqual borderMode
       }
     }
 
@@ -62,7 +62,7 @@ class ModeOfTransportAtTheBorderTransformerSpec extends SpecBase with Generators
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(BorderModeOfTransportPage) mustBe None
+          result.get(BorderModeOfTransportPage) must not be defined
       }
     }
 

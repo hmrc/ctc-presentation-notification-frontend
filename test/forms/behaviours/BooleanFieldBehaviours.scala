@@ -25,12 +25,12 @@ trait BooleanFieldBehaviours extends FieldBehaviours with Generators {
 
     "must bind true" in {
       val result = form.bind(Map(fieldName -> "true"))
-      result.value.value mustBe true
+      result.value.value mustEqual true
     }
 
     "must bind false" in {
       val result = form.bind(Map(fieldName -> "false"))
-      result.value.value mustBe false
+      result.value.value mustEqual false
     }
 
     "must not bind non-booleans" in {

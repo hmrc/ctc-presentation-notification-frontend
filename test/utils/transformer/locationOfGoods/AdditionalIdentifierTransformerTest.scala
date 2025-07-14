@@ -36,7 +36,7 @@ class AdditionalIdentifierTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AdditionalIdentifierPage).value mustBe additionalIdentifier
+          result.get(AdditionalIdentifierPage).value mustEqual additionalIdentifier
       }
     }
   }

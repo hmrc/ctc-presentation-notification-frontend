@@ -58,7 +58,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(identification1))))
 
-        service.getMeansOfTransportIdentificationTypes(Some(inlandMode)).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(Some(inlandMode)).futureValue mustEqual
           Seq(identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -77,7 +77,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockTransportModeCodesService.getInlandModes()(any()))
           .thenReturn(Future.successful(Seq(inlandMode)))
 
-        service.getMeansOfTransportIdentificationTypes(None).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(None).futureValue mustEqual
           Seq(identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())

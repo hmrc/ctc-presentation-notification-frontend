@@ -43,10 +43,10 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.eoriYesNoRow
 
-          result.key.value mustBe "Do you know the transit holder’s EORI number?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you know the transit holder’s EORI number?"
+          result.value.value mustEqual "Yes"
           val actions = result.actions
-          actions.size mustBe 0
+          actions.size mustEqual 0
       }
     }
 
@@ -57,10 +57,10 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.eoriRow
 
-          result.get.key.value mustBe "EORI number"
-          result.get.value.value mustBe eori
+          result.get.key.value mustEqual "EORI number"
+          result.get.value.value mustEqual eori
           val actions = result.get.actions
-          actions.size mustBe 0
+          actions.size mustEqual 0
       }
     }
 
@@ -71,10 +71,10 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.tirIdentificationRow
 
-          result.get.key.value mustBe "TIR holder’s identification number"
-          result.get.value.value mustBe tirIdentification
+          result.get.key.value mustEqual "TIR holder’s identification number"
+          result.get.value.value mustEqual tirIdentification
           val actions = result.get.actions
-          actions.size mustBe 0
+          actions.size mustEqual 0
       }
     }
 
@@ -86,10 +86,10 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.countryRow.get.futureValue
 
-          result.key.value mustBe "Transit holder’s country"
-          result.value.value mustBe country.description
+          result.key.value mustEqual "Transit holder’s country"
+          result.value.value mustEqual country.description
           val actions = result.actions
-          actions.size mustBe 0
+          actions.size mustEqual 0
       }
     }
 
@@ -101,10 +101,10 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.addressRow
 
-          result.get.key.value mustBe "Transit holder’s address"
-          result.get.value.value mustBe address.toDynamicAddress.toString
+          result.get.key.value mustEqual "Transit holder’s address"
+          result.get.value.value mustEqual address.toDynamicAddress.toString
           val actions = result.get.actions
-          actions.size mustBe 0
+          actions.size mustEqual 0
       }
     }
 
@@ -115,10 +115,10 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
           val helper  = new TransitHolderAnswerHelper(answers, departureId, mockReferenceDataService, mode)
           val result  = helper.nameRow
 
-          result.get.key.value mustBe "Transit holder’s name"
-          result.get.value.value mustBe name
+          result.get.key.value mustEqual "Transit holder’s name"
+          result.get.value.value mustEqual name
           val actions = result.get.actions
-          actions.size mustBe 0
+          actions.size mustEqual 0
       }
     }
 
@@ -135,8 +135,8 @@ class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChec
           val helper      = new TransitHolderAnswerHelper(userAnswers, departureId, mockReferenceDataService, mode)
           val section     = helper.transitHolderSection.futureValue
 
-          section.sectionTitle.get mustBe "Transit holder"
-          section.rows.size mustBe 6
+          section.sectionTitle.get mustEqual "Transit holder"
+          section.rows.size mustEqual 6
       }
     }
   }

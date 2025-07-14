@@ -34,7 +34,7 @@ class AddExtraInformationYesNoTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddExtraInformationYesNoPage) mustBe Some(true)
+          result.get(AddExtraInformationYesNoPage).value mustEqual true
       }
     }
   }

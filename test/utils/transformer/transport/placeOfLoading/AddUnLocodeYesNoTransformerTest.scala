@@ -35,7 +35,7 @@ class AddUnLocodeYesNoTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddUnLocodeYesNoPage) mustBe Some(true)
+          result.get(AddUnLocodeYesNoPage).value mustEqual true
       }
     }
   }

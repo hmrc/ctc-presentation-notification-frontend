@@ -45,7 +45,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(NationalityPage(Index(0))) mustBe None
+      result.get(NationalityPage(Index(0))) must not be defined
     }
 
     "fromDepartureDataToUserAnswers" - {
@@ -60,7 +60,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(NationalityPage(Index(0))).value mustBe nationality
+            result.get(NationalityPage(Index(0))).value mustEqual nationality
         }
       }
     }
@@ -76,7 +76,7 @@ class NationalityTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(NationalityPage(Index(0))) mustBe None
+          result.get(NationalityPage(Index(0))) must not be defined
       }
     }
 

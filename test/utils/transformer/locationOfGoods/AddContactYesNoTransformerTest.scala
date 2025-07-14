@@ -40,7 +40,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
 
           val result = transformer.transform.apply(userAnswers).futureValue
 
-          result.get(AddContactYesNoPage).get mustBe true
+          result.get(AddContactYesNoPage).get mustEqual true
       }
     }
 
@@ -54,7 +54,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
             .setValue(IdentificationPage, LocationOfGoodsIdentification("X", "EoriIdentifier"))
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddContactYesNoPage).get mustBe false
+          result.get(AddContactYesNoPage).get mustEqual false
       }
     }
 
@@ -67,7 +67,7 @@ class AddContactYesNoTransformerTest extends SpecBase with Generators {
               .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "CustomsOfficeIdentifier"))
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddContactYesNoPage) mustBe None
+          result.get(AddContactYesNoPage) must not be defined
       }
     }
   }
