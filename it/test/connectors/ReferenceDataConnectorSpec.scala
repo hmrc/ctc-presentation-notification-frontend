@@ -798,7 +798,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                 CustomsOffice("GB2", "testName2", None)
               )
 
-              connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)).futureValue.value mustBe expectedResult
+              connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)).futureValue.value mustEqual expectedResult
           }
         }
 
@@ -842,7 +842,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
               val expectedResult = CustomsOffice("GB1", "testName1", None)
 
-              connector.getCustomsOfficeForId(id).futureValue.value mustBe expectedResult
+              connector.getCustomsOfficeForId(id).futureValue.value mustEqual expectedResult
 
           }
         }
@@ -890,7 +890,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                 CustomsOffice("GB2", "testName2", None)
               )
 
-              connector.getCustomsOfficesForIds(ids).futureValue.value mustBe expectedResult
+              connector.getCustomsOfficesForIds(ids).futureValue.value mustEqual expectedResult
           }
         }
 
@@ -935,7 +935,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                 CustomsOffice("GB2", "testName2", None)
               )
 
-              connector.getCustomsOfficesOfDestinationForCountry(CountryCode(countryId)).futureValue.value mustBe expectedResult
+              connector.getCustomsOfficesOfDestinationForCountry(CountryCode(countryId)).futureValue.value mustEqual expectedResult
           }
         }
 
@@ -1469,7 +1469,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                 CustomsOffice("GB2", "testName2", None)
               )
 
-              connector.getCustomsOfficesOfExitForCountry(CountryCode(countryId)).futureValue.value mustBe expectedResult
+              connector.getCustomsOfficesOfExitForCountry(CountryCode(countryId)).futureValue.value mustEqual expectedResult
           }
         }
 
@@ -1516,7 +1516,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                 CustomsOffice("GB2", "testName2", None)
               )
 
-              connector.getCustomsOfficesOfDepartureForCountry(countryId).futureValue.value mustBe expectedResult
+              connector.getCustomsOfficesOfDepartureForCountry(countryId).futureValue.value mustEqual expectedResult
           }
         }
 

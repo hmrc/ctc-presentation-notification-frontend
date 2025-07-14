@@ -60,7 +60,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(identification5, identification6, identification7))))
 
-        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustEqual
           Seq(identification6, identification5)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -72,7 +72,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(identification4, identification7))))
 
-        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustEqual
           Seq(identification4)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -84,7 +84,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(identification3, identification7))))
 
-        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustEqual
           Seq(identification3)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -96,7 +96,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(identification1, identification2, identification7))))
 
-        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(index, Some(inlandMode))(hc, request).futureValue mustEqual
           Seq(identification2, identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -112,7 +112,7 @@ class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeA
 
         when(mockTransportModeCodesService.getInlandModes()).thenReturn(Future.successful(Seq(InlandMode("1", "Maritime"))))
 
-        service.getMeansOfTransportIdentificationTypes(index, None)(hc, request).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(index, None)(hc, request).futureValue mustEqual
           Seq(identification6, identification5, identification4, identification3, identification2, identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())

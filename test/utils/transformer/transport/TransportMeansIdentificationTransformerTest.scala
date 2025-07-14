@@ -52,7 +52,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(TransportMeansIdentificationPage(Index(0))).value mustBe identification
+            result.get(TransportMeansIdentificationPage(Index(0))).value mustEqual identification
         }
       }
     }
@@ -70,7 +70,7 @@ class TransportMeansIdentificationTransformerTest extends SpecBase with Generato
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(TransportMeansIdentificationPage(Index(0))) mustBe None
+          result.get(TransportMeansIdentificationPage(Index(0))) must not be defined
       }
     }
 

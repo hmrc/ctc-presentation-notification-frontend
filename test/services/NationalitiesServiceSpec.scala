@@ -47,7 +47,7 @@ class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getNationalities()(any(), any()))
           .thenReturn(Future.successful(Right(NonEmptySet.of(nationality))))
 
-        service.getNationalities().futureValue mustBe SelectableList(Seq(nationality))
+        service.getNationalities().futureValue mustEqual SelectableList(Seq(nationality))
         verify(mockRefDataConnector).getNationalities()(any(), any())
       }
     }

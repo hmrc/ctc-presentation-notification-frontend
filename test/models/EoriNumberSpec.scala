@@ -28,6 +28,6 @@ class EoriNumberSpec extends AnyFreeSpec with Matchers {
   }
 
   "must deserialize correctly" in {
-    JsString("eoriNumber").as[EoriNumber] mustBe eoriNumber
+    JsString("eoriNumber").as[EoriNumber] mustEqual eoriNumber
   }
 }

@@ -71,7 +71,7 @@ class JsonMatchersSpec extends AnyFreeSpec with Matchers with JsonMatchers with 
         json must containJson(expectedJson)
       }
 
-      ex.message.value mustBe """{"foo":1} did not match for key(s) bar"""
+      ex.message.value mustEqual """{"foo":1} did not match for key(s) bar"""
     }
 
     "must throw a Test Failed Exception when expected Json contains a different value for a key in the left Json" in {
@@ -83,7 +83,7 @@ class JsonMatchersSpec extends AnyFreeSpec with Matchers with JsonMatchers with 
         json must containJson(expectedJson)
       }
 
-      ex.message.value mustBe """{"foo":1} did not match for key(s) foo"""
+      ex.message.value mustEqual """{"foo":1} did not match for key(s) foo"""
     }
   }
 }

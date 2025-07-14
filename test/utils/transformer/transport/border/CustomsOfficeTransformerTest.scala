@@ -46,7 +46,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(CustomsOfficeActiveBorderPage(Index(0))) mustBe None
+      result.get(CustomsOfficeActiveBorderPage(Index(0))) must not be defined
     }
 
     "fromDepartureDataToUserAnswers" - {
@@ -61,7 +61,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(CustomsOfficeActiveBorderPage(index)) mustBe Some(customsOffice)
+            result.get(CustomsOfficeActiveBorderPage(index)).value mustEqual customsOffice
         }
       }
     }
@@ -77,7 +77,7 @@ class CustomsOfficeTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(CustomsOfficeActiveBorderPage(index)) mustBe None
+          result.get(CustomsOfficeActiveBorderPage(index)) must not be defined
       }
     }
 

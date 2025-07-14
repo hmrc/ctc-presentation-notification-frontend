@@ -34,7 +34,7 @@ class IdentificationNumberTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(IdentificationNumberPage(Index(0))) mustBe None
+      result.get(IdentificationNumberPage(Index(0))) must not be defined
     }
 
     "must return updated answers with IdentificationNumberPage" in {
@@ -45,7 +45,7 @@ class IdentificationNumberTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(IdentificationNumberPage(Index(0))).value mustBe identificationNumber
+          result.get(IdentificationNumberPage(Index(0))).value mustEqual identificationNumber
       }
     }
   }

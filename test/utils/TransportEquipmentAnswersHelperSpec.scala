@@ -40,7 +40,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.addAnyTransportEquipmentYesNo()
 
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -53,16 +53,16 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper         = new TransportEquipmentAnswersHelper(setUserAnswers, departureId, mode, activeIndex)
               val result         = helper.addAnyTransportEquipmentYesNo().get
 
-              result.key.value mustBe "Do you want to add any transport equipment?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add any transport equipment?"
+              result.value.value mustEqual "Yes"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add any transport equipment"
-              action.id mustBe "change-add-transport-equipment"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add any transport equipment"
+              action.id mustEqual "change-add-transport-equipment"
           }
         }
       }
@@ -75,7 +75,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.addContainerIdentificationNumberYesNo()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -90,18 +90,18 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
               val result = helper.addContainerIdentificationNumberYesNo().get
 
-              result.key.value mustBe "Do you want to add a container identification number?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add a container identification number?"
+              result.value.value mustEqual "Yes"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.equipment.index.routes.AddContainerIdentificationNumberYesNoController
                 .onPageLoad(departureId, mode, activeIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "if you want to add an identification number"
-              action.id mustBe "change-add-transport-equipment-container-identification-number-yes-no"
+              action.visuallyHiddenText.get mustEqual "if you want to add an identification number"
+              action.id mustEqual "change-add-transport-equipment-container-identification-number-yes-no"
 
           }
         }
@@ -115,7 +115,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.containerIdentificationNumber()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -130,16 +130,18 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = TransportEquipmentAnswersHelper(answers, departureId, mode, index)
               val result = helper.containerIdentificationNumber().get
 
-              result.key.value mustBe "Container identification number"
-              result.value.value mustBe containerIdentificationNumber
+              result.key.value mustEqual "Container identification number"
+              result.value.value mustEqual containerIdentificationNumber
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, mode, index).url
-              action.visuallyHiddenText.get mustBe "identification number"
-              action.id mustBe "change-transport-equipment-container-identification-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
+                .onPageLoad(departureId, mode, index)
+                .url
+              action.visuallyHiddenText.get mustEqual "identification number"
+              action.id mustEqual "change-transport-equipment-container-identification-number"
 
           }
         }
@@ -153,7 +155,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.sealsYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -168,16 +170,16 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = new TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
               val result = helper.sealsYesNo.get
 
-              result.key.value mustBe "Do you want to add a seal?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add a seal?"
+              result.value.value mustEqual "Yes"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, index).url
-              action.visuallyHiddenText.get mustBe "if you want to add a seal"
-              action.id mustBe "change-add-seals"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.equipment.index.routes.AddSealYesNoController.onPageLoad(departureId, mode, index).url
+              action.visuallyHiddenText.get mustEqual "if you want to add a seal"
+              action.id mustEqual "change-add-seals"
 
           }
         }
@@ -191,7 +193,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.seal(sealIndex)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -204,17 +206,17 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper      = TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
               val result      = helper.seal(index).get
 
-              result.key.value mustBe "Seal 1"
-              result.value.value mustBe sealIdNumber
+              result.key.value mustEqual "Seal 1"
+              result.value.value mustEqual sealIdNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
                 .onPageLoad(departureId, mode, equipmentIndex, sealIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "seal 1"
-              action.id mustBe "change-seal-1"
+              action.visuallyHiddenText.get mustEqual "seal 1"
+              action.id mustEqual "change-seal-1"
           }
         }
       }
@@ -227,7 +229,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.addOrRemoveSeals()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -240,9 +242,9 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper  = new TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
               val result  = helper.addOrRemoveSeals().get
 
-              result.id mustBe "add-or-remove-seals"
-              result.text mustBe "Add or remove seals"
-              result.href mustBe controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex).url
+              result.id mustEqual "add-or-remove-seals"
+              result.text mustEqual "Add or remove seals"
+              result.href mustEqual controllers.transport.equipment.index.routes.AddAnotherSealController.onPageLoad(departureId, mode, equipmentIndex).url
           }
         }
       }
@@ -255,7 +257,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, index)
               val result = helper.addOrRemoveEquipments()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -268,9 +270,9 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper  = new TransportEquipmentAnswersHelper(answers, departureId, mode, index)
               val result  = helper.addOrRemoveEquipments().get
 
-              result.id mustBe "add-or-remove-transport-equipment"
-              result.text mustBe "Add or remove transport equipment"
-              result.href mustBe controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
+              result.id mustEqual "add-or-remove-transport-equipment"
+              result.text mustEqual "Add or remove transport equipment"
+              result.href mustEqual controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode).url
           }
         }
       }
@@ -283,7 +285,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.item(itemIndex)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -297,17 +299,17 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper = TransportEquipmentAnswersHelper(userAnswers, departureId, mode, activeIndex)
               val result = helper.item(itemIndex).get
 
-              result.key.value mustBe "Item 1"
-              result.value.value mustBe description
+              result.key.value mustEqual "Item 1"
+              result.value.value mustEqual description
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.equipment.routes.SelectItemsController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.equipment.routes.SelectItemsController
                 .onPageLoad(departureId, mode, equipmentIndex, sealIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "item 1"
-              action.id mustBe "change-item-1"
+              action.visuallyHiddenText.get mustEqual "item 1"
+              action.id mustEqual "change-item-1"
           }
         }
       }
@@ -320,7 +322,7 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
             mode =>
               val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.addOrRemoveItems()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -333,9 +335,9 @@ class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckProper
               val helper  = new TransportEquipmentAnswersHelper(answers, departureId, mode, activeIndex)
               val result  = helper.addOrRemoveItems().get
 
-              result.id mustBe "add-or-remove-items"
-              result.text mustBe "Add or remove items from this transport equipment"
-              result.href mustBe controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
+              result.id mustEqual "add-or-remove-items"
+              result.text mustEqual "Add or remove items from this transport equipment"
+              result.href mustEqual controllers.transport.equipment.routes.ApplyAnotherItemController.onPageLoad(departureId, mode, equipmentIndex).url
           }
         }
       }

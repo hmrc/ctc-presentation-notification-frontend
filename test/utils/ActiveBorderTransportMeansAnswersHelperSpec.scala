@@ -38,16 +38,16 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               val helper         = new ActiveBorderTransportMeansAnswersHelper(updatedAnswers, departureId, mode, activeIndex)
               val result         = helper.addBorderMeansOfTransportYesNo.get
 
-              result.key.value mustBe "Do you want to add identification for the border means of transport?"
-              result.value.value mustBe "No"
+              result.key.value mustEqual "Do you want to add identification for the border means of transport?"
+              result.value.value mustEqual "No"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
-              action.id mustBe "change-add-identification-for-the-border-means-of-transport"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add identification for the border means of transport"
+              action.id mustEqual "change-add-identification-for-the-border-means-of-transport"
           }
         }
       }
@@ -59,16 +59,16 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             val helper         = new ActiveBorderTransportMeansAnswersHelper(updatedAnswers, departureId, mode, activeIndex)
             val result         = helper.addBorderMeansOfTransportYesNo.get
 
-            result.key.value mustBe "Do you want to add identification for the border means of transport?"
-            result.value.value mustBe "Yes"
+            result.key.value mustEqual "Do you want to add identification for the border means of transport?"
+            result.value.value mustEqual "Yes"
 
             val actions = result.actions.get.items
-            actions.size mustBe 1
+            actions.size mustEqual 1
             val action = actions.head
-            action.content.value mustBe "Change"
-            action.href mustBe controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
-            action.visuallyHiddenText.get mustBe "if you want to add identification for the border means of transport"
-            action.id mustBe "change-add-identification-for-the-border-means-of-transport"
+            action.content.value mustEqual "Change"
+            action.href mustEqual controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode).url
+            action.visuallyHiddenText.get mustEqual "if you want to add identification for the border means of transport"
+            action.id mustEqual "change-add-identification-for-the-border-means-of-transport"
         }
       }
     }
@@ -80,7 +80,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.identificationType
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -95,15 +95,15 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
               helper.identificationType.map {
                 result =>
-                  result.key.value mustBe s"Identification type"
-                  result.value.value mustBe identification.asString
+                  result.key.value mustEqual s"Identification type"
+                  result.value.value mustEqual identification.asString
                   val actions = result.actions.get.items
-                  actions.size mustBe 1
+                  actions.size mustEqual 1
                   val action = actions.head
-                  action.content.value mustBe "Change"
-                  action.href mustBe controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
-                  action.visuallyHiddenText.get mustBe "identification type for the border means of transport"
-                  action.id mustBe "change-identification-1"
+                  action.content.value mustEqual "Change"
+                  action.href mustEqual controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex).url
+                  action.visuallyHiddenText.get mustEqual "identification type for the border means of transport"
+                  action.id mustEqual "change-identification-1"
               }
           }
         }
@@ -117,7 +117,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.identificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -132,15 +132,15 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
               val result = helper.identificationNumber.get
 
-              result.key.value mustBe s"Identification"
-              result.value.value mustBe identificationNumber
+              result.key.value mustEqual s"Identification"
+              result.value.value mustEqual identificationNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.IdentificationNumberController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "identification for the border means of transport"
-              action.id mustBe "change-identification-number-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.border.active.routes.IdentificationNumberController.onPageLoad(departureId, mode, activeIndex).url
+              action.visuallyHiddenText.get mustEqual "identification for the border means of transport"
+              action.id mustEqual "change-identification-number-1"
           }
         }
       }
@@ -153,7 +153,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.nationality
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -168,15 +168,15 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
               val result = helper.nationality.get
 
-              result.key.value mustBe s"Registered country"
-              result.value.value mustBe nationality.description
+              result.key.value mustEqual s"Registered country"
+              result.value.value mustEqual nationality.description
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "registered country for the border means of transport"
-              action.id mustBe "change-nationality-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.border.active.routes.NationalityController.onPageLoad(departureId, mode, activeIndex).url
+              action.visuallyHiddenText.get mustEqual "registered country for the border means of transport"
+              action.id mustEqual "change-nationality-1"
           }
         }
       }
@@ -189,7 +189,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.customsOffice
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -204,17 +204,17 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
               val result = helper.customsOffice.get
 
-              result.key.value mustBe s"Customs office"
-              result.value.value mustBe customsOffice.toString
+              result.key.value mustEqual s"Customs office"
+              result.value.value mustEqual customsOffice.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.CustomsOfficeActiveBorderController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.border.active.routes.CustomsOfficeActiveBorderController
                 .onPageLoad(departureId, mode, activeIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "customs office for the border means of transport"
-              action.id mustBe "change-customs-office-1"
+              action.visuallyHiddenText.get mustEqual "customs office for the border means of transport"
+              action.id mustEqual "change-customs-office-1"
           }
         }
       }
@@ -228,7 +228,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
               mode =>
                 val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
                 val result = helper.conveyanceReferenceNumberYesNo
-                result mustBe None
+                result must not be defined
             }
           }
         }
@@ -243,17 +243,17 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
                 val result = helper.conveyanceReferenceNumberYesNo.get
 
-                result.key.value mustBe "Do you want to add a conveyance reference number?"
-                result.value.value mustBe "Yes"
+                result.key.value mustEqual "Do you want to add a conveyance reference number?"
+                result.value.value mustEqual "Yes"
                 val actions = result.actions.get.items
-                actions.size mustBe 1
+                actions.size mustEqual 1
                 val action = actions.head
-                action.content.value mustBe "Change"
-                action.href mustBe controllers.transport.border.active.routes.AddConveyanceReferenceYesNoController
+                action.content.value mustEqual "Change"
+                action.href mustEqual controllers.transport.border.active.routes.AddConveyanceReferenceYesNoController
                   .onPageLoad(departureId, mode, activeIndex)
                   .url
-                action.visuallyHiddenText.get mustBe "if you want to add a conveyance reference number"
-                action.id mustBe "change-add-conveyance-reference-number-1"
+                action.visuallyHiddenText.get mustEqual "if you want to add a conveyance reference number"
+                action.id mustEqual "change-add-conveyance-reference-number-1"
             }
           }
         }
@@ -267,7 +267,7 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
             mode =>
               val helper = new ActiveBorderTransportMeansAnswersHelper(emptyUserAnswers, departureId, mode, activeIndex)
               val result = helper.conveyanceReferenceNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -282,15 +282,17 @@ class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaChe
 
               val result = helper.conveyanceReferenceNumber.get
 
-              result.key.value mustBe s"Conveyance reference number"
-              result.value.value mustBe conveyanceReferenceNumber
+              result.key.value mustEqual s"Conveyance reference number"
+              result.value.value mustEqual conveyanceReferenceNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transport.border.active.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex).url
-              action.visuallyHiddenText.get mustBe "conveyance reference number for the border means of transport"
-              action.id mustBe "change-conveyance-reference-number-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transport.border.active.routes.ConveyanceReferenceNumberController
+                .onPageLoad(departureId, mode, activeIndex)
+                .url
+              action.visuallyHiddenText.get mustEqual "conveyance reference number for the border means of transport"
+              action.id mustEqual "change-conveyance-reference-number-1"
           }
         }
       }

@@ -31,7 +31,7 @@ trait TelephoneNumberViewBehaviours extends InputTextViewBehaviours[String] {
 
       "must contain a telephone number input field" in {
         val input = getElementByTag(doc, "input")
-        input.attr("type") mustBe "tel"
+        input.attr("type") mustEqual "tel"
       }
     }
   }

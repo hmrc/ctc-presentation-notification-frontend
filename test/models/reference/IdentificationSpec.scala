@@ -53,7 +53,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
                    |  "description": "$description"
                    |}
                    |""".stripMargin)
-              .as[Identification] mustBe identification
+              .as[Identification] mustEqual identification
         }
       }
 

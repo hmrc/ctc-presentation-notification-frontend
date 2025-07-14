@@ -32,7 +32,7 @@ class ContainerIndicatorTransformerTest extends SpecBase with Generators {
         )(emptyUserAnswers)
 
         val result = transformer.transform.apply(userAnswers).futureValue
-        result.get(ContainerIndicatorPage) mustBe Some(true)
+        result.get(ContainerIndicatorPage).value mustEqual true
       }
 
       "when false" in {
@@ -41,7 +41,7 @@ class ContainerIndicatorTransformerTest extends SpecBase with Generators {
         )(emptyUserAnswers)
 
         val result = transformer.transform.apply(userAnswers).futureValue
-        result.get(ContainerIndicatorPage) mustBe Some(false)
+        result.get(ContainerIndicatorPage).value mustEqual false
       }
     }
 
@@ -51,7 +51,7 @@ class ContainerIndicatorTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(ContainerIndicatorPage) mustBe None
+      result.get(ContainerIndicatorPage) must not be defined
     }
   }
 }

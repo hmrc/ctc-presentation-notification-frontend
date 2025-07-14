@@ -37,7 +37,7 @@ class AddressTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddressPage).value mustBe DynamicAddress(address.streetAndNumber, address.city, address.postcode)
+          result.get(AddressPage).value mustEqual DynamicAddress(address.streetAndNumber, address.city, address.postcode)
       }
     }
   }

@@ -47,7 +47,7 @@ class CountryTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result mustBe userAnswers
+          result mustEqual userAnswers
       }
     }
 
@@ -62,7 +62,7 @@ class CountryTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(CountryPage) mustBe Some(country)
+          result.get(CountryPage).value mustEqual country
       }
     }
   }
@@ -78,7 +78,7 @@ class CountryTransformerTest extends SpecBase with Generators {
         )(emptyUserAnswers)
 
         val result = transformer.transform.apply(userAnswers).futureValue
-        result.get(CountryPage) mustBe None
+        result.get(CountryPage) must not be defined
     }
   }
 

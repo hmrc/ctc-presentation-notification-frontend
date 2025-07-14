@@ -36,7 +36,7 @@ class SealTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(SealIdentificationNumberPage(Index(0), Index(0))).value mustBe seal.identifier
+          result.get(SealIdentificationNumberPage(Index(0), Index(0))).value mustEqual seal.identifier
       }
     }
   }

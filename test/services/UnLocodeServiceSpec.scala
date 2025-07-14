@@ -48,7 +48,7 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
           .thenReturn(Future.successful(Right(unLocodeItem)))
 
-        service.doesUnLocodeExist(unLocode).futureValue mustBe true
+        service.doesUnLocodeExist(unLocode).futureValue mustEqual true
         verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())
       }
     }
@@ -60,7 +60,7 @@ class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
         .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
-      service.doesUnLocodeExist(unLocode).futureValue mustBe false
+      service.doesUnLocodeExist(unLocode).futureValue mustEqual false
       verify(mockRefDataConnector).getUnLocode(ArgumentMatchers.eq(unLocode))(any(), any())
     }
   }

@@ -36,7 +36,7 @@ class UnLocodeTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(UnLocodePage).value mustBe unLocode
+          result.get(UnLocodePage).value mustEqual unLocode
       }
     }
   }

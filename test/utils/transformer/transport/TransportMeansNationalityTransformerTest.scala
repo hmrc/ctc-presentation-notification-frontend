@@ -51,7 +51,7 @@ class TransportMeansNationalityTransformerTest extends SpecBase with Generators 
             )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(TransportMeansNationalityPage(Index(0))).value mustBe nationality
+            result.get(TransportMeansNationalityPage(Index(0))).value mustEqual nationality
         }
       }
     }
@@ -67,7 +67,7 @@ class TransportMeansNationalityTransformerTest extends SpecBase with Generators 
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(TransportMeansNationalityPage(Index(0))) mustBe None
+          result.get(TransportMeansNationalityPage(Index(0))) must not be defined
       }
     }
 

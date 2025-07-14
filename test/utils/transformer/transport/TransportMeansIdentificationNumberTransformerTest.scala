@@ -37,7 +37,7 @@ class TransportMeansIdentificationNumberTransformerTest extends SpecBase with Ge
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(TransportMeansIdentificationNumberPage(Index(0))).value mustBe identificationNumber
+          result.get(TransportMeansIdentificationNumberPage(Index(0))).value mustEqual identificationNumber
       }
     }
   }

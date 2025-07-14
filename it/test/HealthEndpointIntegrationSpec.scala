@@ -30,7 +30,7 @@ class HealthEndpointIntegrationSpec extends ItSpecBase {
           .get()
           .futureValue
 
-      response.status mustBe 200
+      response.status mustEqual 200
     }
   }
 }

@@ -33,7 +33,7 @@ class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase with Generat
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddBorderModeOfTransportYesNoPage) mustBe Some(true)
+          result.get(AddBorderModeOfTransportYesNoPage).value mustEqual true
       }
     }
 
@@ -43,7 +43,7 @@ class AddBorderModeOfTransportYesNoTransformerSpec extends SpecBase with Generat
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(AddBorderModeOfTransportYesNoPage) mustBe Some(false)
+      result.get(AddBorderModeOfTransportYesNoPage).value mustEqual false
     }
   }
 }

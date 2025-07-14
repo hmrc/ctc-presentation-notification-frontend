@@ -60,7 +60,7 @@ class ItemTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers.copy(departureData = ie015))
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(ItemPage(Index(0), Index(0))).value mustBe Item(1, "Description")
+          result.get(ItemPage(Index(0), Index(0))).value mustEqual Item(1, "Description")
       }
     }
   }

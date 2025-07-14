@@ -44,7 +44,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       when(connector.getMeansOfTransportIdentificationType(any())(any(), any()))
         .thenReturn(Future.successful(Right(identification)))
 
-      service.getMeansOfTransportIdentificationType("code").futureValue mustBe identification
+      service.getMeansOfTransportIdentificationType("code").futureValue mustEqual identification
 
       verify(connector).getMeansOfTransportIdentificationType(eqTo("code"))(any(), any())
     }
@@ -55,7 +55,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       when(connector.getMeansOfTransportIdentificationTypeActive(any())(any(), any()))
         .thenReturn(Future.successful(Right(identification)))
 
-      service.getBorderMeansIdentification("code").futureValue mustBe identification
+      service.getBorderMeansIdentification("code").futureValue mustEqual identification
 
       verify(connector).getMeansOfTransportIdentificationTypeActive(eqTo("code"))(any(), any())
     }
@@ -66,7 +66,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       when(connector.getTypeOfLocation(any())(any(), any()))
         .thenReturn(Future.successful(Right(locationType)))
 
-      service.getLocationType("code").futureValue mustBe locationType
+      service.getLocationType("code").futureValue mustEqual locationType
 
       verify(connector).getTypeOfLocation(eqTo("code"))(any(), any())
     }
@@ -77,7 +77,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       when(connector.getNationality(any())(any(), any()))
         .thenReturn(Future.successful(Right(nationality)))
 
-      service.getNationality("code").futureValue mustBe nationality
+      service.getNationality("code").futureValue mustEqual nationality
 
       verify(connector).getNationality(eqTo("code"))(any(), any())
     }
@@ -88,7 +88,7 @@ class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAf
       when(connector.getCountry(any(), any())(any(), any()))
         .thenReturn(Future.successful(Right(country)))
 
-      service.getCountry("code").futureValue mustBe country
+      service.getCountry("code").futureValue mustEqual country
 
       verify(connector).getCountry(any(), eqTo("code"))(any(), any())
     }

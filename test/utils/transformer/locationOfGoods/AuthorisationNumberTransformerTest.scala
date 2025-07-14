@@ -36,7 +36,7 @@ class AuthorisationNumberTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AuthorisationNumberPage).value mustBe authorisationNumber
+          result.get(AuthorisationNumberPage).value mustEqual authorisationNumber
       }
     }
   }

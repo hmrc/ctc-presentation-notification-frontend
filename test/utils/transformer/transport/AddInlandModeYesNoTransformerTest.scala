@@ -33,7 +33,7 @@ class AddInlandModeYesNoTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddInlandModeOfTransportYesNoPage) mustBe Some(true)
+          result.get(AddInlandModeOfTransportYesNoPage).value mustEqual true
       }
     }
 
@@ -43,7 +43,7 @@ class AddInlandModeYesNoTransformerTest extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(AddInlandModeOfTransportYesNoPage) mustBe Some(false)
+      result.get(AddInlandModeOfTransportYesNoPage).value mustEqual false
     }
   }
 }

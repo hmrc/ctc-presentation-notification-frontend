@@ -36,7 +36,7 @@ class NameTransformerTest extends SpecBase with Generators {
             )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(NamePage).value mustBe contactPerson.name
+          result.get(NamePage).value mustEqual contactPerson.name
       }
     }
   }

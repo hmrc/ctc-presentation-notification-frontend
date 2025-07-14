@@ -42,7 +42,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
     "must skip transforming if there is no qualifier identification" in {
       val userAnswers = setLocationOfGoodsOnUserAnswersLens.replace(None)(emptyUserAnswers)
       val result      = transformer.transform.apply(userAnswers).futureValue
-      result mustBe userAnswers
+      result mustEqual userAnswers
     }
 
     "must return updated answers when the identification from departure data can be found in service response" - {
@@ -58,7 +58,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
               )(emptyUserAnswers)
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(IdentificationPage) mustBe Some(identification1)
+            result.get(IdentificationPage).value mustEqual identification1
             result.get(InferredIdentificationPage) must not be defined
         }
       }
@@ -76,7 +76,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
 
             val result = transformer.transform.apply(userAnswers).futureValue
             result.get(IdentificationPage) must not be defined
-            result.get(InferredIdentificationPage) mustBe Some(identification)
+            result.get(InferredIdentificationPage).value mustEqual identification
         }
       }
     }
@@ -94,7 +94,7 @@ class IdentificationTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
         val result = transformer.transform.apply(userAnswers).futureValue
-        result.get(IdentificationPage) mustBe None
+        result.get(IdentificationPage) must not be defined
     }
   }
 

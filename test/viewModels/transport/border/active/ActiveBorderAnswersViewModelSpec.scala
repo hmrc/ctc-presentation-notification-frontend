@@ -70,7 +70,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
                   val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
-                  activeBorderSection.sectionTitle mustBe Some("Border means of transport 1")
+                  activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 6
                   activeBorderSection.addAnotherLink must not be defined
@@ -108,7 +108,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
                   val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
-                  activeBorderSection.sectionTitle mustBe Some("Border means of transport 1")
+                  activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 6
                   activeBorderSection.addAnotherLink mustBe defined
@@ -146,7 +146,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
                   val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
-                  activeBorderSection.sectionTitle mustBe Some("Border means of transport 1")
+                  activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 5
                   activeBorderSection.addAnotherLink must not be defined
@@ -183,7 +183,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
                   val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
-                  activeBorderSection.sectionTitle mustBe Some("Border means of transport 1")
+                  activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
                   activeBorderSection.rows.size mustBe 5
                   activeBorderSection.addAnotherLink mustBe defined
@@ -223,7 +223,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                 val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
                 val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
-                activeBorderSection.sectionTitle mustBe Some("Border means of transport 1")
+                activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                 activeBorderSection.sectionTitle mustBe defined
                 activeBorderSection.rows.size mustBe 5
                 activeBorderSection.addAnotherLink must not be defined
@@ -258,11 +258,11 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               val activeBorderSection1 = viewModelProvider.apply(answers, departureId, mode, Index(0)).section
               val activeBorderSection2 = viewModelProvider.apply(answers, departureId, mode, Index(1)).section
 
-              activeBorderSection1.sectionTitle mustBe Some("Border means of transport 1")
+              activeBorderSection1.sectionTitle.value mustEqual "Border means of transport 1"
               activeBorderSection1.sectionTitle mustBe defined
               activeBorderSection1.addAnotherLink must not be defined
 
-              activeBorderSection2.sectionTitle mustBe Some("Border means of transport 2")
+              activeBorderSection2.sectionTitle.value mustEqual "Border means of transport 2"
               activeBorderSection2.sectionTitle mustBe defined
               activeBorderSection2.addAnotherLink mustBe defined
           }
@@ -291,11 +291,11 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               val activeBorderSection1 = viewModelProvider.apply(answers, departureId, mode, Index(0)).section
               val activeBorderSection2 = viewModelProvider.apply(answers, departureId, mode, Index(1)).section
 
-              activeBorderSection1.sectionTitle mustBe Some("Border means of transport 1")
+              activeBorderSection1.sectionTitle.value mustEqual "Border means of transport 1"
               activeBorderSection1.sectionTitle mustBe defined
               activeBorderSection1.addAnotherLink must not be defined
 
-              activeBorderSection2.sectionTitle mustBe Some("Border means of transport 2")
+              activeBorderSection2.sectionTitle.value mustEqual "Border means of transport 2"
               activeBorderSection2.sectionTitle mustBe defined
               activeBorderSection2.addAnotherLink must not be defined
           }

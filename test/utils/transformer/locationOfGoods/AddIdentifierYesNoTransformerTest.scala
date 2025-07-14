@@ -39,7 +39,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
               .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(AddIdentifierYesNoPage).get mustBe true
+            result.get(AddIdentifierYesNoPage).get mustEqual true
         }
       }
 
@@ -53,7 +53,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
               .setValue(InferredIdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(AddIdentifierYesNoPage).get mustBe true
+            result.get(AddIdentifierYesNoPage).get mustEqual true
         }
       }
     }
@@ -69,7 +69,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
               .setValue(IdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(AddIdentifierYesNoPage).get mustBe false
+            result.get(AddIdentifierYesNoPage).get mustEqual false
         }
       }
 
@@ -83,7 +83,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
               .setValue(InferredIdentificationPage, LocationOfGoodsIdentification(identification, "description"))
 
             val result = transformer.transform.apply(userAnswers).futureValue
-            result.get(AddIdentifierYesNoPage).get mustBe false
+            result.get(AddIdentifierYesNoPage).get mustEqual false
         }
       }
     }
@@ -98,7 +98,7 @@ class AddIdentifierYesNoTransformerTest extends SpecBase with Generators {
             .setValue(IdentificationPage, LocationOfGoodsIdentification("V", "description"))
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddIdentifierYesNoPage) mustBe None
+          result.get(AddIdentifierYesNoPage) must not be defined
       }
     }
   }

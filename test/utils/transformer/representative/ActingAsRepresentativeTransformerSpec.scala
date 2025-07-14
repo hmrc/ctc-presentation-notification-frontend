@@ -35,7 +35,7 @@ class ActingAsRepresentativeTransformerSpec extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(ActingAsRepresentativePage) mustBe Some(true)
+          result.get(ActingAsRepresentativePage).value mustEqual true
       }
     }
 
@@ -45,7 +45,7 @@ class ActingAsRepresentativeTransformerSpec extends SpecBase with Generators {
       )(emptyUserAnswers)
 
       val result = transformer.transform.apply(userAnswers).futureValue
-      result.get(ActingAsRepresentativePage) mustBe Some(false)
+      result.get(ActingAsRepresentativePage).value mustEqual false
     }
   }
 }

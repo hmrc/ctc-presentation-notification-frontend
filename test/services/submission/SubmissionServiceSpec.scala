@@ -99,7 +99,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       "when GB office of departure" in {
         val result = service.messageSequence(eoriNumber, "GB00001")
 
-        result mustBe MESSAGESequence(
+        result mustEqual MESSAGESequence(
           messageSender = eoriNumber.value,
           messageRecipient = "NTA.GB",
           preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
@@ -227,7 +227,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val reads  = __.readNullableSafe[RepresentativeType06](service.representativeReads)
         val result = userAnswers.data.as[Option[RepresentativeType06]](reads)
 
-        result mustBe None
+        result must not be defined
       }
     }
 

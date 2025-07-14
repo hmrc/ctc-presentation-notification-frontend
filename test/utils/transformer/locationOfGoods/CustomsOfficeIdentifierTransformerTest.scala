@@ -48,7 +48,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result mustBe userAnswers
+          result mustEqual userAnswers
       }
     }
 
@@ -63,7 +63,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(CustomsOfficeIdentifierPage) mustBe Some(customsOffice)
+          result.get(CustomsOfficeIdentifierPage) mustEqual Some(customsOffice)
       }
     }
   }
@@ -79,7 +79,7 @@ class CustomsOfficeIdentifierTransformerTest extends SpecBase with Generators {
         )(emptyUserAnswers)
 
         val result = transformer.transform.apply(userAnswers).futureValue
-        result.get(CustomsOfficeIdentifierPage) mustBe None
+        result.get(CustomsOfficeIdentifierPage) must not be defined
     }
   }
 

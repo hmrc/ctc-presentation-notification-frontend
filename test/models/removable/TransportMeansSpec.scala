@@ -32,7 +32,7 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         (identificationType, identificationNumber) =>
           val transportMeans = TransportMeans(index, identificationType, Some(identificationNumber))
           val result         = transportMeans.forRemoveDisplay
-          result.value mustBe s"${identificationType.toString} - $identificationNumber"
+          result.value mustEqual s"${identificationType.toString} - $identificationNumber"
       }
     }
 
@@ -41,7 +41,7 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         identificationType =>
           val transportMeans = TransportMeans(index, identificationType, None)
           val result         = transportMeans.forRemoveDisplay
-          result.value mustBe identificationType.toString
+          result.value mustEqual identificationType.toString
       }
     }
   }

@@ -36,7 +36,7 @@ class ContainerIdentificationNumberYesNoTransformerTest extends SpecBase with Ge
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddContainerIdentificationNumberYesNoPage(Index(0))) mustBe Some(true)
+          result.get(AddContainerIdentificationNumberYesNoPage(Index(0))).value mustEqual true
       }
     }
 
@@ -48,7 +48,7 @@ class ContainerIdentificationNumberYesNoTransformerTest extends SpecBase with Ge
           )(emptyUserAnswers)
 
           val result = transformer.transform.apply(userAnswers).futureValue
-          result.get(AddContainerIdentificationNumberYesNoPage(Index(0))) mustBe Some(false)
+          result.get(AddContainerIdentificationNumberYesNoPage(Index(0))).value mustEqual false
       }
     }
   }
