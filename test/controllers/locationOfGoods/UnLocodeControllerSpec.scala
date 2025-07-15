@@ -23,10 +23,11 @@ import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.locationOfGoods.UnLocodePage
+import play.api.data.FormError
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.UnLocodeService
 import views.html.locationOfGoods.UnLocodeView
 
@@ -34,9 +35,11 @@ import scala.concurrent.Future
 
 class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val prefix = "locationOfGoods.unLocode"
+
   private lazy val unLocodeRoute                   = controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode).url
   private val formProvider                         = new UnLocodeFormProvider()
-  private val form                                 = formProvider("locationOfGoods.unLocode")
+  private val form                                 = formProvider(prefix)
   private val mode                                 = NormalMode
   private val mockUnLocodeService: UnLocodeService = mock[UnLocodeService]
 
@@ -113,10 +116,33 @@ class UnLocodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       setExistingUserAnswers(emptyUserAnswers)
 
+      when(mockUnLocodeService.doesUnLocodeExist(any())(any())) `thenReturn` Future.successful(true)
+
+      val invalidAnswer = "invalid value"
+
+      val request   = FakeRequest(POST, unLocodeRoute).withFormUrlEncodedBody(("value", invalidAnswer))
+      val boundForm = form.bind(Map("value" -> invalidAnswer))
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[UnLocodeView]
+
+      status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) mustEqual
+        view(boundForm, departureId, mode)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when unknown data is submitted" in {
+
+      setExistingUserAnswers(emptyUserAnswers)
+
       when(mockUnLocodeService.doesUnLocodeExist(any())(any())) `thenReturn` Future.successful(false)
 
-      val request   = FakeRequest(POST, unLocodeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val unknownAnswer = "ABCDE"
+
+      val request   = FakeRequest(POST, unLocodeRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+      val boundForm = form.bind(Map("value" -> unknownAnswer)).withError(FormError("value", s"$prefix.error.not.exists"))
 
       val result = route(app, request).value
 

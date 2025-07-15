@@ -61,8 +61,8 @@ class UnLocodeController @Inject() (
 
   def onSubmit(departureId: String, mode: Mode): Action[AnyContent] = actions.requireData(departureId).async {
     implicit request =>
-      form
-        .bindFromRequest()
+      val boundForm = form.bindFromRequest()
+      boundForm
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, departureId, mode))),
           value =>
@@ -70,7 +70,7 @@ class UnLocodeController @Inject() (
               case true =>
                 redirect(mode, value, departureId)
               case false =>
-                val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
+                val formWithErrors = boundForm.withError(FormError("value", s"$prefix.error.not.exists"))
                 Future.successful(BadRequest(view(formWithErrors, departureId, mode)))
             }
         )
