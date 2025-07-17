@@ -85,7 +85,7 @@ object CustomsOffice {
   )(config: FrontendAppConfig): Seq[(String, String)] =
     if (config.isPhase6Enabled) {
       Seq(
-        ids.map("referenceNumber" -> _),
+        ids.map("referenceNumbers" -> _),
         countryCodes.map("countryCodes" -> _),
         roles.map("roles" -> _)
       ).flatten

@@ -931,7 +931,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
 
       "when phase 6" - {
-        def url(officeId: String) = s"/$baseUrl/lists/CustomsOffices?referenceNumber=$officeId"
+        def url(officeId: String) = s"/$baseUrl/lists/CustomsOffices?referenceNumbers=$officeId"
 
         "must return a successful future response with a sequence of CustomsOffices" in {
           running(phase6App) {
@@ -1022,7 +1022,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       "when phase 6" - {
 
-        val url = s"/$baseUrl/lists/CustomsOffices?referenceNumber=GB1&referenceNumber=GB2"
+        val url = s"/$baseUrl/lists/CustomsOffices?referenceNumbers=GB1&referenceNumbers=GB2"
 
         "must return a successful future response with a sequence of CustomsOffices" in {
 
