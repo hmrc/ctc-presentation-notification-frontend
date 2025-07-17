@@ -43,7 +43,7 @@ class GoodsReferenceGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
               navigator
                 .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
-                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+                .mustEqual(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
           }
         }
 
@@ -56,7 +56,7 @@ class GoodsReferenceGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
               navigator
                 .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
+                .mustEqual(controllers.transport.equipment.routes.AddAnotherEquipmentController.onPageLoad(departureId, mode))
           }
         }
       }
@@ -75,7 +75,7 @@ class GoodsReferenceGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
               navigator
                 .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
-                .mustBe(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
+                .mustEqual(ItemPage(equipmentIndex, Index(0)).route(updatedAnswers, departureId, mode).value)
           }
         }
 
@@ -88,14 +88,14 @@ class GoodsReferenceGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
               navigator
                 .nextPage(ApplyAnotherItemPage(equipmentIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
         "to tech difficulties when ApplyAnotherItemPage does not exist" in {
           navigator
             .nextPage(ApplyAnotherItemPage(equipmentIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+            .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
     }

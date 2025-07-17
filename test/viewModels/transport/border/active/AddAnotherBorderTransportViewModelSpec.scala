@@ -45,12 +45,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
             .setValue(IdentificationNumberPage(Index(0)), identificationNumber)
 
           val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 border means of transport"
-          result.heading mustBe "You have added 1 border means of transport"
-          result.legend mustBe "Do you want to add another border means of transport?"
-          result.hint mustBe "Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.".toText
-          result.maxLimitLabel mustBe "You cannot add any more border means of transport. To add another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 border means of transport"
+          result.heading mustEqual "You have added 1 border means of transport"
+          result.legend mustEqual "Do you want to add another border means of transport?"
+          result.hint mustEqual "Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.".toText
+          result.maxLimitLabel mustEqual "You cannot add any more border means of transport. To add another, you need to remove one first."
       }
     }
 
@@ -67,12 +67,12 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
           }
 
           val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
-          result.listItems.length mustBe activeBorderTransports
-          result.title mustBe s"You have added ${formatter.format(activeBorderTransports)} border means of transport"
-          result.heading mustBe s"You have added ${formatter.format(activeBorderTransports)} border means of transport"
-          result.legend mustBe "Do you want to add another border means of transport?"
-          result.hint mustBe "Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.".toText
-          result.maxLimitLabel mustBe "You cannot add any more border means of transport. To add another, you need to remove one first."
+          result.listItems.length mustEqual activeBorderTransports
+          result.title mustEqual s"You have added ${formatter.format(activeBorderTransports)} border means of transport"
+          result.heading mustEqual s"You have added ${formatter.format(activeBorderTransports)} border means of transport"
+          result.legend mustEqual "Do you want to add another border means of transport?"
+          result.hint mustEqual "Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.".toText
+          result.maxLimitLabel mustEqual "You cannot add any more border means of transport. To add another, you need to remove one first."
       }
     }
 
@@ -95,7 +95,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
@@ -130,7 +130,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
@@ -162,7 +162,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
@@ -195,7 +195,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
@@ -229,7 +229,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               val result = new AddAnotherBorderTransportViewModelProvider().apply(userAnswers, departureId, NormalMode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, NormalMode, Index(0)).url,
@@ -256,7 +256,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,
@@ -289,7 +289,7 @@ class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators wi
 
               val result = new AddAnotherBorderTransportViewModelProvider()(userAnswers, departureId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"${identification.asString} - $identificationNumber",
                   changeUrl = controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, Index(0)).url,

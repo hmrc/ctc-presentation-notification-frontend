@@ -38,7 +38,7 @@ class DepartureTransportMeansGroupNavigatorSpec extends SpecBase with ScalaCheck
             .setValue(AddAnotherTransportMeansPage, true)
           navigator
             .nextPage(AddAnotherTransportMeansPage, userAnswers, departureId, mode)
-            .mustBe(
+            .mustEqual(
               controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex)
             )
         }
@@ -48,13 +48,13 @@ class DepartureTransportMeansGroupNavigatorSpec extends SpecBase with ScalaCheck
             .setValue(AddAnotherTransportMeansPage, false)
           navigator
             .nextPage(AddAnotherTransportMeansPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
         "to tech difficulties when AddAnotherTransportMeansPage does not exist" in {
           navigator
             .nextPage(AddAnotherTransportMeansPage, emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+            .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
     }
@@ -68,7 +68,7 @@ class DepartureTransportMeansGroupNavigatorSpec extends SpecBase with ScalaCheck
             .setValue(AddAnotherTransportMeansPage, true)
           navigator
             .nextPage(AddAnotherTransportMeansPage, userAnswers, departureId, mode)
-            .mustBe(
+            .mustEqual(
               controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, NormalMode, transportIndex)
             )
         }
@@ -78,13 +78,13 @@ class DepartureTransportMeansGroupNavigatorSpec extends SpecBase with ScalaCheck
             .setValue(AddAnotherTransportMeansPage, false)
           navigator
             .nextPage(AddAnotherTransportMeansPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
         "to tech difficulties when AddAnotherTransportMeansPage does not exist" in {
           navigator
             .nextPage(AddAnotherTransportMeansPage, emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+            .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
     }

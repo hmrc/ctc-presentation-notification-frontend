@@ -29,44 +29,44 @@ class MessageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       "when a JsString" - {
         "when IE015" in {
           val result = JsString("IE015").as[MessageType]
-          result mustBe DeclarationData
+          result mustEqual DeclarationData
         }
 
         "when IE013" in {
           val result = JsString("IE013").as[MessageType]
-          result mustBe DeclarationAmendment
+          result mustEqual DeclarationAmendment
         }
 
         "when IE170" in {
           val result = JsString("IE170").as[MessageType]
-          result mustBe PresentationForThePreLodgedDeclaration
+          result mustEqual PresentationForThePreLodgedDeclaration
         }
 
         "when IE928" in {
           val result = JsString("IE928").as[MessageType]
-          result mustBe PositiveAcknowledgement
+          result mustEqual PositiveAcknowledgement
         }
 
         "when IE004" in {
           val result = JsString("IE004").as[MessageType]
-          result mustBe AmendmentAcceptance
+          result mustEqual AmendmentAcceptance
         }
 
         "when IE060" in {
           val result = JsString("IE060").as[MessageType]
-          result mustBe ControlDecisionNotification
+          result mustEqual ControlDecisionNotification
         }
 
         "when IE056" in {
           val result = JsString("IE056").as[MessageType]
-          result mustBe RejectionFromOfficeOfDeparture
+          result mustEqual RejectionFromOfficeOfDeparture
         }
 
         "when something else" in {
           forAll(nonEmptyString) {
             value =>
               val result = JsString(value).as[MessageType]
-              result mustBe Other(value)
+              result mustEqual Other(value)
           }
         }
       }

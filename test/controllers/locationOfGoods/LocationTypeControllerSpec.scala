@@ -96,7 +96,7 @@ class LocationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.getValue(InferredLocationTypePage) mustBe lt
+      userAnswersCaptor.getValue.getValue(InferredLocationTypePage) mustEqual lt
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

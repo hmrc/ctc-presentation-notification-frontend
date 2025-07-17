@@ -61,8 +61,8 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
       val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
-      result.sections.length mustBe 11
-      result.sections(9).sectionTitle.value mustBe "Border means of transport"
+      result.sections.length mustEqual 11
+      result.sections(9).sectionTitle.value mustEqual "Border means of transport"
     }
 
     "must return the view model when InlandMode is mail" in {
@@ -82,8 +82,8 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
       val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
-      result.sections.length mustBe 9
-      result.sections(7).sectionTitle.value mustBe "Border means of transport"
+      result.sections.length mustEqual 9
+      result.sections(7).sectionTitle.value mustEqual "Border means of transport"
     }
 
     "must return the view model when ActiveBorderTransportMeans is defined" in {
@@ -101,8 +101,8 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
       val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
-      result.sections.length mustBe 9
-      result.sections(7).sectionTitle.value mustBe "Border means of transport 1"
+      result.sections.length mustEqual 9
+      result.sections(7).sectionTitle.value mustEqual "Border means of transport 1"
     }
   }
 }

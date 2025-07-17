@@ -73,7 +73,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val view = app.injector.instanceOf[CheckYourAnswersView]
 
-      status(result) mustBe OK
+      status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(lrn.value, departureId, sampleSections)(request, messages).toString
     }
@@ -89,7 +89,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val result = route(app, request).value
 
-      status(result) mustBe SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.InformationSubmittedController.onPageLoad(departureId).url
 
@@ -112,7 +112,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
           val result = route(app, request).value
 
-          status(result) mustBe SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
 

@@ -183,7 +183,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
       "must remove document when given a valid departure ID" in {
 
-        repository.get("id1").futureValue `mustBe` defined
+        repository.get("id1").futureValue mustBe defined
 
         repository.remove("id1").futureValue
 

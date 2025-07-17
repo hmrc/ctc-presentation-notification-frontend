@@ -45,7 +45,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
               )
               navigator
                 .nextPage(ContainerIndicatorPage, userAnswers, departureId, NormalMode)
-                .mustBe(BorderModeOfTransportPage.route(userAnswers, departureId, NormalMode).value)
+                .mustEqual(BorderModeOfTransportPage.route(userAnswers, departureId, NormalMode).value)
           }
         }
 
@@ -64,7 +64,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   )
                 navigator
                   .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-                  .mustBe(
+                  .mustEqual(
                     controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
                   )
             }
@@ -85,7 +85,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   )
                 navigator
                   .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-                  .mustBe(
+                  .mustEqual(
                     controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode)
                   )
             }
@@ -104,7 +104,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
                   )
                 navigator
                   .nextPage(ContainerIndicatorPage, updatedAnswers, departureId, NormalMode)
-                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                  .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
             }
           }
       }
@@ -117,7 +117,7 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorPage, true)
         navigator
           .nextPage(ContainerIndicatorPage, userAnswers, departureId, CheckMode)
-          .mustBe(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, CheckMode, equipmentIndex))
+          .mustEqual(controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, CheckMode, equipmentIndex))
       }
 
       "to Add Transport Equipment Page when answer is No" in {
@@ -125,13 +125,13 @@ class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorPage, false)
         navigator
           .nextPage(ContainerIndicatorPage, userAnswers, departureId, CheckMode)
-          .mustBe(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, CheckMode))
+          .mustEqual(controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, CheckMode))
       }
 
       "to tech difficulties when ContainerIndicatorPage does not exist" in {
         navigator
           .nextPage(ContainerIndicatorPage, emptyUserAnswers, departureId, CheckMode)
-          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+          .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
       }
 
     }
