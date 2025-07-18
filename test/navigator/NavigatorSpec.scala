@@ -31,11 +31,11 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
   val nonExhaustiveNavigator: Navigator = new Navigator {
 
     override protected def normalRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-      case page: QuestionPage[_] => _ => None
+      case page: QuestionPage[?] => _ => None
     }
 
     override protected def checkRoutes(departureId: String, mode: Mode): PartialFunction[Page, UserAnswers => Option[Call]] = {
-      case page: QuestionPage[_] => _ => None
+      case page: QuestionPage[?] => _ => None
     }
   }
 

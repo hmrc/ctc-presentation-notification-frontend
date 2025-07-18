@@ -26,7 +26,7 @@ class EnumerableFormProvider @Inject() extends Mappings {
 
   def apply[T <: Radioable[T]](prefix: String, args: Any*)(implicit et: Enumerable[T]): Form[T] = {
     val flattenedArgs = args.flatMap {
-      case seq: Seq[_] => seq
+      case seq: Seq[?] => seq
       case other       => Seq(other)
     }
 
