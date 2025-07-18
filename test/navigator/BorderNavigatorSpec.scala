@@ -55,7 +55,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             )
           navigator
             .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-            .mustBe(
+            .mustEqual(
               controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, NormalMode, equipmentIndex)
             )
         }
@@ -78,7 +78,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   )
                 navigator
                   .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                  .mustBe(
+                  .mustEqual(
                     controllers.transport.equipment.index.routes.ContainerIdentificationNumberController.onPageLoad(departureId, NormalMode, equipmentIndex)
                   )
             }
@@ -101,7 +101,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   )
                 navigator
                   .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                  .mustBe(
+                  .mustEqual(
                     controllers.transport.equipment.routes.AddTransportEquipmentYesNoController.onPageLoad(departureId, NormalMode)
                   )
             }
@@ -123,7 +123,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   )
                 navigator
                   .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                  .mustBe(
+                  .mustEqual(
                     controllers.routes.CheckYourAnswersController.onPageLoad(departureId)
                   )
             }
@@ -146,7 +146,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               )
             navigator
               .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-              .mustBe(ContainerIdentificationNumberPage(equipmentIndex).route(userAnswers, departureId, mode).value)
+              .mustEqual(ContainerIdentificationNumberPage(equipmentIndex).route(userAnswers, departureId, mode).value)
           }
 
           "and containerIndicator is false navigate to AddTransportEquipmentYesNo page " in {
@@ -164,7 +164,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               )
             navigator
               .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-              .mustBe(AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode).value)
+              .mustEqual(AddTransportEquipmentYesNoPage.route(userAnswers, departureId, mode).value)
           }
 
           "and container indicator is not captured in IE170 navigate to check your answers page " in {
@@ -181,7 +181,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               )
             navigator
               .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
@@ -192,7 +192,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           answers =>
             navigator
               .nextPage(IdentificationPage(activeIndex), answers, departureId, NormalMode)
-              .mustBe(routes.IdentificationNumberController.onPageLoad(departureId, NormalMode, activeIndex))
+              .mustEqual(routes.IdentificationNumberController.onPageLoad(departureId, NormalMode, activeIndex))
         }
       }
 
@@ -202,7 +202,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           answers =>
             navigator
               .nextPage(IdentificationNumberPage(activeIndex), answers, departureId, NormalMode)
-              .mustBe(routes.NationalityController.onPageLoad(departureId, NormalMode, activeIndex))
+              .mustEqual(routes.NationalityController.onPageLoad(departureId, NormalMode, activeIndex))
         }
       }
 
@@ -222,7 +222,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         navigator
           .nextPage(NationalityPage(activeIndex), userAnswers, departureId, NormalMode)
-          .mustBe(routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, NormalMode, activeIndex))
+          .mustEqual(routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, NormalMode, activeIndex))
       }
 
       "must go from to customs offices page to conveyance number page when security is 1,2,3 and border mode of transport is 4 " in {
@@ -238,7 +238,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               )
             navigator
               .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
-              .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
+              .mustEqual(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
 
         }
 
@@ -257,7 +257,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               )
             navigator
               .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
-              .mustBe(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
+              .mustEqual(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
 
         }
 
@@ -269,12 +269,12 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
         navigator
           .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, NormalMode)
-          .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, NormalMode, activeIndex))
+          .mustEqual(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, NormalMode, activeIndex))
       }
       "to tech difficulties when AddConveyanceReferenceYesNoPage does not exist" in {
         navigator
           .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+          .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
       }
 
       "when selected no on add conveyance number yes no" - {
@@ -292,7 +292,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 )
               navigator
                 .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, NormalMode))
+                .mustEqual(routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, NormalMode))
           }
         }
 
@@ -309,7 +309,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
               navigator
                 .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
 
         }
@@ -330,7 +330,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 )
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), updatedAnswers, departureId, NormalMode)
-                .mustBe(routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, NormalMode))
+                .mustEqual(routes.AddAnotherBorderMeansOfTransportYesNoController.onPageLoad(departureId, NormalMode))
           }
         }
         "must go to check your answers page when customs office of transit is not present" in {
@@ -345,7 +345,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 )
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), userAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -365,7 +365,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .setValue(ContainerIndicatorPage, true)
               navigator
                 .nextPage(ConveyanceReferenceNumberPage(activeIndex), userAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
@@ -383,7 +383,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(AddBorderModeOfTransportYesNoPage, false)
           navigator
             .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
 
@@ -396,7 +396,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             )
           navigator
             .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.transport.border.routes.BorderModeOfTransportController.onPageLoad(departureId, mode))
 
         }
 
@@ -407,7 +407,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
           navigator
             .nextPage(AddBorderModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
       }
@@ -420,7 +420,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(AddInlandModeOfTransportYesNoPage, false)
           navigator
             .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
 
@@ -433,7 +433,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             )
           navigator
             .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.transport.routes.InlandModeController.onPageLoad(departureId, mode))
 
         }
 
@@ -444,7 +444,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(InlandModePage, InlandMode("1", "Air"))
           navigator
             .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
       }
@@ -457,7 +457,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(InlandModePage, InlandMode("5", "test"))
           navigator
             .nextPage(InlandModePage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
 
@@ -467,7 +467,9 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           navigator
             .nextPage(InlandModePage, userAnswers, departureId, mode)
-            .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex))
+            .mustEqual(
+              controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(departureId, mode, transportIndex)
+            )
         }
 
         "to CheckYourAnswers when Yes and there is an answer to inlandMode in ie170" in {
@@ -477,7 +479,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(InlandModePage, InlandMode("1", "Air"))
           navigator
             .nextPage(AddInlandModeOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
       }
@@ -491,7 +493,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             )
           navigator
             .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
-            .mustBe(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
 
         }
         "to identification page when Do you want to add border mode of transport?  is false and security type is 1" in {
@@ -501,7 +503,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           navigator
             .nextPage(BorderModeOfTransportPage, userAnswers, departureId, CheckMode)
-            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, CheckMode, Index(0)))
+            .mustEqual(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, CheckMode, Index(0)))
 
         }
 
@@ -533,7 +535,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 )
               navigator
                 .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                .mustBe(IdentificationPage(activeIndex).route(userAnswers, departureId, mode).value)
+                .mustEqual(IdentificationPage(activeIndex).route(userAnswers, departureId, mode).value)
 
           }
 
@@ -552,7 +554,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 )
               navigator
                 .nextPage(BorderModeOfTransportPage, userAnswers, departureId, mode)
-                .mustBe(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
+                .mustEqual(controllers.transport.border.routes.AddBorderMeansOfTransportYesNoController.onPageLoad(departureId, mode))
           }
         }
       }
@@ -565,7 +567,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(AddBorderMeansOfTransportYesNoPage, false)
           navigator
             .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
 
@@ -578,7 +580,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             )
           navigator
             .nextPage(AddBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
+            .mustEqual(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
 
         }
       }
@@ -588,7 +590,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "to identificationNumberPage when identification does not exist in the ie70" in {
           navigator
             .nextPage(IdentificationPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
-            .mustBe(routes.IdentificationNumberController.onPageLoad(departureId, CheckMode, activeIndex))
+            .mustEqual(routes.IdentificationNumberController.onPageLoad(departureId, CheckMode, activeIndex))
 
         }
 
@@ -599,7 +601,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(IdentificationNumberPage(activeIndex), "identificationNumber")
           navigator
             .nextPage(IdentificationPage(activeIndex), userAnswers, departureId, CheckMode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
       }
@@ -609,7 +611,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "to nationality page when identification number does not exist in the ie70" in {
           navigator
             .nextPage(IdentificationNumberPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
-            .mustBe(routes.NationalityController.onPageLoad(departureId, CheckMode, activeIndex))
+            .mustEqual(routes.NationalityController.onPageLoad(departureId, CheckMode, activeIndex))
 
         }
 
@@ -620,7 +622,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(NationalityPage(activeIndex), Nationality("AR", "Argentina"))
           navigator
             .nextPage(IdentificationNumberPage(activeIndex), userAnswers, departureId, CheckMode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
       }
@@ -630,7 +632,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "to customs office ref number page when customs office ref number does not exist in the ie170" in {
           navigator
             .nextPage(NationalityPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
-            .mustBe(routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, CheckMode, activeIndex))
+            .mustEqual(routes.CustomsOfficeActiveBorderController.onPageLoad(departureId, CheckMode, activeIndex))
 
         }
 
@@ -642,7 +644,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .setValue(CustomsOfficeActiveBorderPage(activeIndex), customsOffice)
               navigator
                 .nextPage(NationalityPage(activeIndex), userAnswers, departureId, CheckMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
@@ -664,7 +666,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                     )
                 navigator
                   .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
-                  .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
+                  .mustEqual(routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
             }
           }
 
@@ -681,7 +683,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   )
                 navigator
                   .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
-                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                  .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
             }
           }
 
@@ -692,7 +694,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           "go to the AddConveyanceRefNumberYesNoPage if it is not in the ie170" in {
             navigator
               .nextPage(CustomsOfficeActiveBorderPage(activeIndex), emptyUserAnswers, departureId, mode)
-              .mustBe(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
+              .mustEqual(routes.AddConveyanceReferenceYesNoController.onPageLoad(departureId, mode, activeIndex))
           }
 
           "go to CYA page if AddConveyanceRefNumberYesNo is in the 170" in {
@@ -708,7 +710,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                   )
                 navigator
                   .nextPage(CustomsOfficeActiveBorderPage(activeIndex), userAnswers, departureId, mode)
-                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                  .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
             }
           }
 
@@ -724,7 +726,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
           navigator
             .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
         }
 
@@ -737,7 +739,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             )
           navigator
             .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.transport.border.active.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
+            .mustEqual(controllers.transport.border.active.routes.ConveyanceReferenceNumberController.onPageLoad(departureId, mode, activeIndex))
 
         }
 
@@ -750,7 +752,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                 .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
               navigator
                 .nextPage(AddConveyanceReferenceYesNoPage(activeIndex), userAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
 
           }
         }
@@ -759,7 +761,7 @@ class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       "must go from ConveyanceRefNumberPage to CheckYourAnswers page" in {
         navigator
           .nextPage(ConveyanceReferenceNumberPage(activeIndex), emptyUserAnswers, departureId, CheckMode)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       }
 
     }

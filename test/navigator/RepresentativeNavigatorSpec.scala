@@ -48,7 +48,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           page =>
             navigator
               .nextPage(page, emptyUserAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
     }
@@ -63,7 +63,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(EoriPage, nonEmptyString.sample.value)
             navigator
               .nextPage(ActingAsRepresentativePage, userAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
 
           "must go from AddRepresentativeContactDetailsYesNoPage to CYA page" in {
@@ -72,7 +72,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(NamePage, nonEmptyString.sample.value)
             navigator
               .nextPage(AddRepresentativeContactDetailsYesNoPage, userAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
 
           "must go from Representative NamePage to CYA page" in {
@@ -81,7 +81,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(RepresentativePhoneNumberPage, nonEmptyString.sample.value)
             navigator
               .nextPage(NamePage, userAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
 
           "must go from RepresentativePhoneNumberPage to CYA page" in {
@@ -89,7 +89,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(RepresentativePhoneNumberPage, nonEmptyString.sample.value)
             navigator
               .nextPage(RepresentativePhoneNumberPage, userAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -100,7 +100,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
                 .setValue(AddRepresentativeContactDetailsYesNoPage, false)
               navigator
                 .nextPage(AddRepresentativeContactDetailsYesNoPage, userAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
             }
 
             "to Representative NamePage if answer is changed to 'Yes'" in {
@@ -113,7 +113,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
                 )
               navigator
                 .nextPage(AddRepresentativeContactDetailsYesNoPage, userAnswers, departureId, mode)
-                .mustBe(NamePage.route(userAnswers, departureId, mode).value)
+                .mustEqual(NamePage.route(userAnswers, departureId, mode).value)
             }
           }
 
@@ -128,7 +128,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(NamePage, nonEmptyString.sample.value)
             navigator
               .nextPage(NamePage, userAnswers, departureId, mode)
-              .mustBe(RepresentativePhoneNumberPage.route(userAnswers, departureId, mode).value)
+              .mustEqual(RepresentativePhoneNumberPage.route(userAnswers, departureId, mode).value)
           }
 
           "must go from RepresentativePhoneNumberPage to CYA page" in {
@@ -143,7 +143,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(RepresentativePhoneNumberPage, nonEmptyString.sample.value)
             navigator
               .nextPage(RepresentativePhoneNumberPage, userAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -154,7 +154,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
                 .setValue(ActingAsRepresentativePage, false)
               navigator
                 .nextPage(ActingAsRepresentativePage, userAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
             }
 
             "to Representative EoriNumberPage if answer is changed to 'Yes'" in {
@@ -167,7 +167,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
                 )
               navigator
                 .nextPage(ActingAsRepresentativePage, userAnswers, departureId, mode)
-                .mustBe(EoriPage.route(userAnswers, departureId, mode).value)
+                .mustEqual(EoriPage.route(userAnswers, departureId, mode).value)
             }
           }
 
@@ -177,7 +177,7 @@ class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               .setValue(EoriPage, nonEmptyString.sample.value)
             navigator
               .nextPage(EoriPage, userAnswers, departureId, mode)
-              .mustBe(AddRepresentativeContactDetailsYesNoPage.route(userAnswers, departureId, mode).value)
+              .mustEqual(AddRepresentativeContactDetailsYesNoPage.route(userAnswers, departureId, mode).value)
           }
         }
       }

@@ -105,7 +105,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
                                                                                   eqTo(ie015.TransitOperation.additionalDeclarationType)
             )(any(), any())
             verify(mockSessionRepository).set(userAnswersCaptor.capture())
-            userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+            userAnswersCaptor.getValue.data mustEqual emptyUserAnswers.data
         }
       }
 
@@ -145,9 +145,9 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           )(any(), any())
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
 
-          userAnswersCaptor.getValue.lrn mustBe lrn.value
-          userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-          userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+          userAnswersCaptor.getValue.lrn mustEqual lrn.value
+          userAnswersCaptor.getValue.eoriNumber mustEqual eoriNumber
+          userAnswersCaptor.getValue.data mustEqual emptyUserAnswers.data
         }
 
         "and data is incomplete" in {
@@ -186,9 +186,9 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
               )(any(), any())
               verify(mockSessionRepository).set(userAnswersCaptor.capture())
 
-              userAnswersCaptor.getValue.lrn mustBe lrn.value
-              userAnswersCaptor.getValue.eoriNumber mustBe eoriNumber
-              userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+              userAnswersCaptor.getValue.lrn mustEqual lrn.value
+              userAnswersCaptor.getValue.eoriNumber mustEqual eoriNumber
+              userAnswersCaptor.getValue.data mustEqual emptyUserAnswers.data
           }
         }
       }

@@ -35,7 +35,7 @@ class CheckInformationControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val view = app.injector.instanceOf[CheckInformationView]
 
-      status(result) mustBe OK
+      status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(lrn.value, departureId)(request, messages).toString
     }

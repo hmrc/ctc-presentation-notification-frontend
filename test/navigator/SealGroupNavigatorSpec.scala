@@ -39,13 +39,13 @@ class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .setValue(AddAnotherSealPage(equipmentIndex), true)
           navigator
             .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, sealIndex).route(userAnswers, departureId, mode).value)
+            .mustEqual(SealIdentificationNumberPage(equipmentIndex, sealIndex).route(userAnswers, departureId, mode).value)
         }
 
         "to tech difficulties when AddAnotherSealPage does not exist" in {
           navigator
             .nextPage(AddAnotherSealPage(equipmentIndex), emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+            .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
         }
 
         "to to goods reference item page when user answers no" in {
@@ -53,7 +53,7 @@ class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .setValue(AddAnotherSealPage(equipmentIndex), false)
           navigator
             .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
+            .mustEqual(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
         }
       }
     }
@@ -67,7 +67,7 @@ class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .setValue(AddAnotherSealPage(equipmentIndex), true)
           navigator
             .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(SealIdentificationNumberPage(equipmentIndex, sealIndex).route(userAnswers, departureId, mode).value)
+            .mustEqual(SealIdentificationNumberPage(equipmentIndex, sealIndex).route(userAnswers, departureId, mode).value)
         }
 
         "to to the cya page when user answers no and the items have been answered" in {
@@ -76,7 +76,7 @@ class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .setValue(ItemPage(equipmentIndex, itemIndex), arbitraryItem.arbitrary.sample.value)
           navigator
             .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
         "to to the item page when user answers no and the items have not been answered" in {
@@ -84,7 +84,7 @@ class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             .setValue(AddAnotherSealPage(equipmentIndex), false)
           navigator
             .nextPage(AddAnotherSealPage(equipmentIndex), userAnswers, departureId, mode)
-            .mustBe(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
+            .mustEqual(ItemPage(equipmentIndex, Index(0)).route(userAnswers, departureId, mode).value)
         }
       }
     }

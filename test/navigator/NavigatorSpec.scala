@@ -57,12 +57,12 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       "must go to index page with bad navigation" in {
         nonExhaustiveNavigator
           .nextPage(TestBadPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.IndexController.redirect(departureId))
+          .mustEqual(controllers.routes.IndexController.redirect(departureId))
       }
       "must go to the error controller when the route returns a None for the page" in {
         errorControllerNavigator
           .nextPage(TestBadPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+          .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
       }
 
     }
@@ -72,12 +72,12 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       "must go to index page with bad navigation" in {
         nonExhaustiveNavigator
           .nextPage(TestBadPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.IndexController.redirect(departureId))
+          .mustEqual(controllers.routes.IndexController.redirect(departureId))
       }
       "must go to the error controller when the route returns a None for the page" in {
         errorControllerNavigator
           .nextPage(TestBadPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+          .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
       }
     }
   }

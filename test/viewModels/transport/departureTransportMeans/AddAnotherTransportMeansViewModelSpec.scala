@@ -42,10 +42,10 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
             .setValue(TransportMeansIdentificationNumberPage(Index(0)), identificationNumber)
 
           val result = new AddAnotherTransportMeansViewModelProvider()(userAnswers, departureId, mode)
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 departure means of transport"
-          result.heading mustBe "You have added 1 departure means of transport"
-          result.legend mustBe "Do you want to add another departure means of transport?"
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 departure means of transport"
+          result.heading mustEqual "You have added 1 departure means of transport"
+          result.legend mustEqual "Do you want to add another departure means of transport?"
       }
     }
 
@@ -65,10 +65,10 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
             }
 
             val result = new AddAnotherTransportMeansViewModelProvider()(userAnswers, departureId, mode)
-            result.listItems.length mustBe departureTransportMeans
-            result.title mustBe s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
-            result.heading mustBe s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
-            result.legend mustBe "Do you want to add another departure means of transport?"
+            result.listItems.length mustEqual departureTransportMeans
+            result.title mustEqual s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
+            result.heading mustEqual s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
+            result.legend mustEqual "Do you want to add another departure means of transport?"
         }
       }
 
@@ -85,10 +85,10 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
             }
 
             val result = new AddAnotherTransportMeansViewModelProvider()(userAnswers, departureId, mode)
-            result.listItems.length mustBe departureTransportMeans
-            result.title mustBe s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
-            result.heading mustBe s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
-            result.legend mustBe "Do you want to add another departure means of transport?"
+            result.listItems.length mustEqual departureTransportMeans
+            result.title mustEqual s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
+            result.heading mustEqual s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
+            result.legend mustEqual "Do you want to add another departure means of transport?"
         }
       }
     }
@@ -104,7 +104,7 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
 
             val result = new AddAnotherTransportMeansViewModelProvider()(userAnswers, departureId, mode)
 
-            result.listItems mustBe Seq(
+            result.listItems mustEqual Seq(
               ListItem(
                 name = s"${identification.asString} - $identificationNumber",
                 changeUrl =
@@ -127,7 +127,7 @@ class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators wit
 
             val result = new AddAnotherTransportMeansViewModelProvider().apply(userAnswers, departureId, mode)
 
-            result.listItems mustBe Seq(
+            result.listItems mustEqual Seq(
               ListItem(
                 name = s"${identification.asString} - $identificationNumber",
                 changeUrl =

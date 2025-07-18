@@ -50,7 +50,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           val userAnswers = emptyUserAnswers.setValue(AddUnLocodeYesNoPage, true)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(UnLocodePage.route(userAnswers, departureId, mode).value)
+            .mustEqual(UnLocodePage.route(userAnswers, departureId, mode).value)
         }
 
         "to Country page when answer is No" in {
@@ -58,7 +58,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           val userAnswers = emptyUserAnswers.setValue(AddUnLocodeYesNoPage, false)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
+            .mustEqual(CountryPage.route(userAnswers, departureId, mode).value)
         }
 
       }
@@ -67,21 +67,21 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         val userAnswers = emptyUserAnswers.setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
         navigator
           .nextPage(UnLocodePage, userAnswers, departureId, mode)
-          .mustBe(AddExtraInformationYesNoPage.route(userAnswers, departureId, mode).value)
+          .mustEqual(AddExtraInformationYesNoPage.route(userAnswers, departureId, mode).value)
       }
 
       "must go from AddExtraInformationYesNoPage" - {
         "to tech difficulties when AddExtraInformationYesNoPage does not exist" in {
           navigator
             .nextPage(AddExtraInformationYesNoPage, emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+            .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
         }
 
         "to Country page when answer is Yes" in {
           val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, true)
           navigator
             .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(CountryPage.route(userAnswers, departureId, mode).value)
+            .mustEqual(CountryPage.route(userAnswers, departureId, mode).value)
         }
 
         "to BorderMode of transport page when answer is No" in {
@@ -99,7 +99,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
               navigator
                 .nextPage(AddExtraInformationYesNoPage, updatedAnswers, departureId, mode)
-                .mustBe(BorderModeOfTransportPage.route(updatedAnswers, departureId, mode).value)
+                .mustEqual(BorderModeOfTransportPage.route(updatedAnswers, departureId, mode).value)
           }
         }
 
@@ -114,7 +114,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
           navigator
             .nextPage(CountryPage, userAnswersWithLimitDate, departureId, mode)
-            .mustBe(LocationPage.route(userAnswersWithLimitDate, departureId, mode).value)
+            .mustEqual(LocationPage.route(userAnswersWithLimitDate, departureId, mode).value)
         }
 
       }
@@ -130,7 +130,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         navigator
           .nextPage(LocationPage, userAnswersNoLimitDate, departureId, mode)
-          .mustBe(LimitDatePage.route(userAnswersNoLimitDate, departureId, mode).value)
+          .mustEqual(LimitDatePage.route(userAnswersNoLimitDate, departureId, mode).value)
       }
 
       "must go from LocationPage to BorderModePage when is simplified and limit date exists and container indicator exists" in {
@@ -146,7 +146,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         navigator
           .nextPage(LocationPage, userAnswersWithLimitDate, departureId, mode)
-          .mustBe(BorderModeOfTransportPage.route(userAnswersWithLimitDate, departureId, mode).value)
+          .mustEqual(BorderModeOfTransportPage.route(userAnswersWithLimitDate, departureId, mode).value)
 
       }
 
@@ -160,7 +160,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         navigator
           .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
-          .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
+          .mustEqual(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LocationPage to BorderModePage when is NOT simplified and container indicator is present" in {
@@ -174,7 +174,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         navigator
           .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
-          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
+          .mustEqual(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LocationPage to ContainerIndicatorPage when limit date exists, is simplified and container indicator is empty" in {
@@ -189,7 +189,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         navigator
           .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
-          .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
+          .mustEqual(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LocationPage to BorderModePage when is NOT simplified and container indicator is present and limit date is not present" in {
@@ -204,7 +204,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         navigator
           .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
-          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
+          .mustEqual(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LocationPage to CheckYourAnswers page when " +
@@ -222,7 +222,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
           navigator
             .nextPage(LocationPage, userAnswersUpdated, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
     }
 
@@ -237,7 +237,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(AddUnLocodeYesNoPage, true)
           navigator
             .nextPage(AddUnLocodeYesNoPage, ie015WithNoUnLocodeUserAnswers, departureId, mode)
-            .mustBe(UnLocodePage.route(ie015WithNoUnLocodeUserAnswers, departureId, mode).value)
+            .mustEqual(UnLocodePage.route(ie015WithNoUnLocodeUserAnswers, departureId, mode).value)
         }
 
         "to CYA page when answer is Yes and there is an existing UnLocode" in {
@@ -247,7 +247,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
         "to Country page when answer is No" in {
@@ -255,7 +255,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(AddUnLocodeYesNoPage, false)
           navigator
             .nextPage(AddUnLocodeYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.loading.routes.CountryController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.loading.routes.CountryController.onPageLoad(departureId, mode))
         }
       }
 
@@ -267,7 +267,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(AddExtraInformationYesNoPage, true)
           navigator
             .nextPage(AddExtraInformationYesNoPage, ie015WithNoCountryUserAnswers, departureId, mode)
-            .mustBe(loading.CountryPage.route(ie015WithNoCountryUserAnswers, departureId, mode).value)
+            .mustEqual(loading.CountryPage.route(ie015WithNoCountryUserAnswers, departureId, mode).value)
         }
 
         "to CYA page when answer is Yes and there is an existing Country" in {
@@ -276,14 +276,14 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(CountryPage, arbitraryCountry.arbitrary.sample.value)
           navigator
             .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
         "to CYA page when answer is NO" in {
 
           val userAnswers = emptyUserAnswers.setValue(AddExtraInformationYesNoPage, false)
           navigator
             .nextPage(AddExtraInformationYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
       }
@@ -295,7 +295,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
               val userAnswers = emptyUserAnswers.setValue(CountryPage, country)
               navigator
                 .nextPage(CountryPage, userAnswers, departureId, mode)
-                .mustBe(LocationPage.route(userAnswers, departureId, mode).value)
+                .mustEqual(LocationPage.route(userAnswers, departureId, mode).value)
           }
         }
       }
@@ -307,7 +307,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
           navigator
             .nextPage(UnLocodePage, ie015WithNoExtraInformationUserAnswers, departureId, mode)
-            .mustBe(AddExtraInformationYesNoPage.route(ie015WithNoExtraInformationUserAnswers, departureId, mode).value)
+            .mustEqual(AddExtraInformationYesNoPage.route(ie015WithNoExtraInformationUserAnswers, departureId, mode).value)
         }
 
         "to CYAPage when the addExtraInformationPage does exist in either the 13/15/170" in {
@@ -315,14 +315,14 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             .setValue(UnLocodePage, arbitraryUnLocode.arbitrary.sample.value.unLocodeExtendedCode)
           navigator
             .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)
-            .mustBe(AddExtraInformationYesNoPage.route(withAddExtraInformationUserAnswers, departureId, CheckMode).value)
+            .mustEqual(AddExtraInformationYesNoPage.route(withAddExtraInformationUserAnswers, departureId, CheckMode).value)
         }
         "to CYAPage when AddExtraInformationYesNoPage exists" in {
           val withAddExtraInformationUserAnswers = emptyUserAnswers
             .setValue(AddExtraInformationYesNoPage, true)
           navigator
             .nextPage(UnLocodePage, withAddExtraInformationUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
 
@@ -330,7 +330,7 @@ class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
         val userAnswers = emptyUserAnswers.setValue(LocationPage, nonEmptyString.sample.value)
         navigator
           .nextPage(LocationPage, userAnswers, departureId, mode)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+          .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
       }
 
     }

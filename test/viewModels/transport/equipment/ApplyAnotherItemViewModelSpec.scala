@@ -39,13 +39,13 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
 
           val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex, isNumberItemsZero = false)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have applied 1 item to transport equipment 1"
-          result.heading mustBe "You have applied 1 item to transport equipment 1"
-          result.legend mustBe "Do any other items apply to transport equipment 1?"
-          result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have applied 1 item to transport equipment 1"
+          result.heading mustEqual "You have applied 1 item to transport equipment 1"
+          result.legend mustEqual "Do any other items apply to transport equipment 1?"
+          result.maxLimitLabel mustEqual "You cannot apply any more items. To apply another, you need to remove one first."
 
-          result.listItems mustBe Seq(
+          result.listItems mustEqual Seq(
             ListItem(
               name = s"Item ${item.toString}",
               changeUrl = routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,
@@ -65,13 +65,13 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
 
           val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, departureId, mode, equipmentIndex, isNumberItemsZero = false)
 
-          result.listItems.length mustBe 2
-          result.title mustBe "You have applied 2 items to transport equipment 1"
-          result.heading mustBe "You have applied 2 items to transport equipment 1"
-          result.legend mustBe "Do any other items apply to transport equipment 1?"
-          result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
+          result.listItems.length mustEqual 2
+          result.title mustEqual "You have applied 2 items to transport equipment 1"
+          result.heading mustEqual "You have applied 2 items to transport equipment 1"
+          result.legend mustEqual "Do any other items apply to transport equipment 1?"
+          result.maxLimitLabel mustEqual "You cannot apply any more items. To apply another, you need to remove one first."
 
-          result.listItems mustBe Seq(
+          result.listItems mustEqual Seq(
             ListItem(
               name = s"Item ${item1.toString}",
               changeUrl = routes.SelectItemsController.onPageLoad(departureId, mode, equipmentIndex, Index(0)).url,

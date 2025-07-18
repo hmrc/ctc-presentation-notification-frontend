@@ -134,7 +134,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
         "when IE015/IE013 has a standard (A) additional declaration type" in {
           val result = service.canSubmitPresentationNotification(departureId, lrn, AdditionalDeclarationType.Standard).futureValue
 
-          result.mustBe(false)
+          result mustEqual false
 
           verifyNoInteractions(mockConnector)
         }
@@ -179,7 +179,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
             val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
 
-            result.mustBe(true)
+            result.mustEqual(true)
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
           }
@@ -200,7 +200,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
             val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
 
-            result.mustBe(true)
+            result.mustEqual(true)
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
           }
@@ -220,7 +220,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
             val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
 
-            result.mustBe(true)
+            result.mustEqual(true)
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
           }
@@ -240,7 +240,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
             val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
 
-            result.mustBe(true)
+            result.mustEqual(true)
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
           }
@@ -261,7 +261,7 @@ class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAn
 
             val result = service.canSubmitPresentationNotification(departureId, lrn, additionalDeclarationType).futureValue
 
-            result.mustBe(true)
+            result.mustEqual(true)
 
             verify(mockConnector).getMessages(eqTo(departureId))(any(), any())
           }
