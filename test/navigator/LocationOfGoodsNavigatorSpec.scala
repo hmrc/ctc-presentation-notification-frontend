@@ -56,7 +56,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(CheckInformationPage, answers, departureId, NormalMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
 
@@ -68,7 +68,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(InferredLocationTypePage, value)
           navigator
             .nextPage(InferredLocationTypePage, userAnswers, departureId, mode)
-            .mustBe(IdentificationPage.route(userAnswers, departureId, mode).value)
+            .mustEqual(IdentificationPage.route(userAnswers, departureId, mode).value)
         }
 
         "when value is not inferred" in {
@@ -77,7 +77,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(LocationTypePage, value)
           navigator
             .nextPage(LocationTypePage, userAnswers, departureId, mode)
-            .mustBe(IdentificationPage.route(userAnswers, departureId, mode).value)
+            .mustEqual(IdentificationPage.route(userAnswers, departureId, mode).value)
         }
       }
 
@@ -86,7 +86,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(pages.locationOfGoods.CountryPage, answers, departureId, mode)
-              .mustBe(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, mode))
+              .mustEqual(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, mode))
         }
 
       }
@@ -101,7 +101,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             val userAnswers = emptyUserAnswers.setValue(InferredIdentificationPage, value)
             navigator
               .nextPage(InferredIdentificationPage, userAnswers, departureId, mode)
-              .mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+              .mustEqual(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
           }
 
           "and it is not inferred" in {
@@ -110,7 +110,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
             navigator
               .nextPage(IdentificationPage, userAnswers, departureId, mode)
-              .mustBe(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
+              .mustEqual(controllers.locationOfGoods.routes.AuthorisationNumberController.onPageLoad(departureId, mode))
           }
         }
 
@@ -120,7 +120,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
           navigator
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.locationOfGoods.routes.CustomsOfficeIdentifierController.onPageLoad(departureId, mode))
         }
 
         "when EoriNumberIdentifier" in {
@@ -129,7 +129,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
           navigator
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.locationOfGoods.routes.EoriController.onPageLoad(departureId, mode))
         }
 
         "when UnlocodeIdentifier" in {
@@ -138,7 +138,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
           navigator
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.locationOfGoods.routes.UnLocodeController.onPageLoad(departureId, mode))
         }
 
         "when CoordinatesIdentifier" in {
@@ -147,7 +147,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
           navigator
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, mode))
         }
 
         "when AddressIdentifier" in {
@@ -156,7 +156,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
           navigator
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode))
+            .mustEqual(controllers.locationOfGoods.routes.CountryController.onPageLoad(departureId, mode))
         }
 
         "when unknown identifier" in {
@@ -166,7 +166,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(IdentificationPage, value)
           navigator
             .nextPage(IdentificationPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+            .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
 
@@ -181,7 +181,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(MoreInformationPage, simplifiedUserAnswers, departureId, mode)
-          .mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+          .mustEqual(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       }
 
       "redirect to LocationTypeController when locationOfGoods is None and is simplified" in {
@@ -194,7 +194,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(MoreInformationPage, simplifiedUserAnswers, departureId, mode)
-          .mustBe(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
+          .mustEqual(controllers.locationOfGoods.routes.LocationTypeController.onPageLoad(departureId, mode))
       }
 
       "must go from EORI Page to Add Additional Identifier Yes No page" in {
@@ -203,7 +203,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(EoriPage, answers, departureId, NormalMode)
-              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+              .mustEqual(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
         }
       }
 
@@ -213,7 +213,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(AuthorisationNumberPage, answers, departureId, NormalMode)
-              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
+              .mustEqual(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, NormalMode))
         }
       }
 
@@ -224,14 +224,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .setValue(AddIdentifierYesNoPage, true)
             navigator
               .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, NormalMode))
+              .mustEqual(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, NormalMode))
         }
       }
 
       "must go from AddIdentifierYesNoPage to tech difficulties when AddIdentifierYesNoPage does not exist" in {
         navigator
           .nextPage(AddIdentifierYesNoPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+          .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
       }
 
       "must go from Add AdditionalIdentifierYesNo page to AddContactYesNo page when user selects No" in {
@@ -241,7 +241,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .setValue(AddIdentifierYesNoPage, false)
             navigator
               .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+              .mustEqual(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
         }
       }
 
@@ -258,7 +258,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 answers =>
                   navigator
                     .nextPage(page, answers, departureId, NormalMode)
-                    .mustBe(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
+                    .mustEqual(controllers.locationOfGoods.routes.AddContactYesNoController.onPageLoad(departureId, NormalMode))
               }
             }
         )
@@ -271,14 +271,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .setValue(AddContactYesNoPage, true)
             navigator
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, NormalMode))
+              .mustEqual(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, NormalMode))
         }
       }
 
       "must go from AddContactYesNoPage to tech difficulties when AddContactYesNoPage does not exist" in {
         navigator
           .nextPage(AddContactYesNoPage, emptyUserAnswers, departureId, mode)
-          .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+          .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
       }
 
       "must go from Add AddContactYesNo page to AddUnLocode page when user selects No and POL does not exist" in {
@@ -290,7 +290,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
             navigator
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(AddUnLocodePage.route(answers, departureId, mode).value)
+              .mustEqual(AddUnLocodePage.route(answers, departureId, mode).value)
         }
       }
 
@@ -311,7 +311,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
             navigator
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(ContainerIndicatorPage.route(answers, departureId, mode).value)
+              .mustEqual(ContainerIndicatorPage.route(answers, departureId, mode).value)
         }
       }
 
@@ -336,7 +336,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
             navigator
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
 
@@ -345,7 +345,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(NamePage, answers, departureId, NormalMode)
-              .mustBe(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, NormalMode))
+              .mustEqual(controllers.locationOfGoods.contact.routes.PhoneNumberController.onPageLoad(departureId, NormalMode))
         }
       }
 
@@ -356,7 +356,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(CustomsOfficeIdentifierPage, userAnswers, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswers, departureId, mode).value)
+          .mustEqual(AddUnLocodePage.route(userAnswers, departureId, mode).value)
       }
 
       "must go from AddContactYesNoPage to AddUnLocodePage when 'addContact' is false and place of loading is not present" in {
@@ -366,7 +366,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(AddContactYesNoPage, userAnswersEmptyPOL, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswersEmptyPOL, departureId, mode).value)
+          .mustEqual(AddUnLocodePage.route(userAnswersEmptyPOL, departureId, mode).value)
       }
 
       "must go from PhoneNumberPage to AddUnLocodePage when 'placeOfLoading' exists and place of loading is not present" in {
@@ -378,7 +378,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(PhoneNumberPage, userAnswersEmptyPOL, departureId, mode)
-          .mustBe(AddUnLocodePage.route(userAnswersEmptyPOL, departureId, mode).value)
+          .mustEqual(AddUnLocodePage.route(userAnswersEmptyPOL, departureId, mode).value)
       }
 
       "must go from Add PhoneNumberPage page to ContainerIndicatorPage page when user selects No and POL & limit date exists and Container Indicator does not exist" in {
@@ -399,7 +399,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
             navigator
               .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-              .mustBe(ContainerIndicatorPage.route(answers, departureId, mode).value)
+              .mustEqual(ContainerIndicatorPage.route(answers, departureId, mode).value)
         }
       }
 
@@ -418,7 +418,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               )
             navigator
               .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, mode)
-              .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
+              .mustEqual(LimitDatePage.route(updatedAnswers, departureId, mode).value)
         }
       }
 
@@ -438,7 +438,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               )
             navigator
               .nextPage(AddContactYesNoPage, updatedAnswers, departureId, mode)
-              .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
+              .mustEqual(LimitDatePage.route(updatedAnswers, departureId, mode).value)
         }
       }
 
@@ -457,7 +457,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               )
             navigator
               .nextPage(PhoneNumberPage, updatedAnswers, departureId, mode)
-              .mustBe(LimitDatePage.route(updatedAnswers, departureId, mode).value)
+              .mustEqual(LimitDatePage.route(updatedAnswers, departureId, mode).value)
         }
       }
 
@@ -469,7 +469,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
-          .mustBe(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
+          .mustEqual(ContainerIndicatorPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present in prelodge journey" in {
@@ -484,7 +484,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
-          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
+          .mustEqual(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LimitDatePage to BorderModeOfTransportPage when container indicator is present in departure data" in {
@@ -498,7 +498,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
-          .mustBe(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
+          .mustEqual(BorderModeOfTransportPage.route(userAnswersUpdated, departureId, mode).value)
       }
 
       "must go from LimitDatePage to Check Your Answers when " +
@@ -517,7 +517,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
           navigator
             .nextPage(LimitDatePage, userAnswersUpdated, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
       "must go from Add PhoneNumberPage page to CYA page " +
@@ -543,7 +543,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 )
               navigator
                 .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       "must go from Add PhoneNumberPage page to AddTransportEquipmentYesNoPage " +
@@ -571,7 +571,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 )
               navigator
                 .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -599,7 +599,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(MoreInformationPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -626,7 +626,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -653,7 +653,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -681,7 +681,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -710,7 +710,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -737,7 +737,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -766,7 +766,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -798,7 +798,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(PhoneNumberPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -829,7 +829,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -863,7 +863,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(AddContactYesNoPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -891,7 +891,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -921,7 +921,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
 
@@ -946,7 +946,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
               navigator
                 .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, NormalMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
     }
@@ -961,7 +961,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
           navigator
             .nextPage(NamePage, userAnswers, departureId, mode)
-            .mustBe(PhoneNumberPage.route(userAnswers, departureId, mode).value)
+            .mustEqual(PhoneNumberPage.route(userAnswers, departureId, mode).value)
         }
 
         "to CYA page otherwise" in {
@@ -970,7 +970,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers.setValue(LocationTypePage, value)
           navigator
             .nextPage(NamePage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
 
@@ -979,7 +979,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(LimitDatePage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
       }
@@ -989,7 +989,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(LocationTypePage, answers, departureId, CheckMode)
-              .mustBe(IdentificationPage.route(answers, departureId, CheckMode).value)
+              .mustEqual(IdentificationPage.route(answers, departureId, CheckMode).value)
         }
 
       }
@@ -1000,7 +1000,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             val updatedAnswers = answers.setValue(IdentificationPage, LocationOfGoodsIdentification(CoordinatesIdentifier, s"$CoordinatesIdentifier - desc"))
             navigator
               .nextPage(IdentificationPage, updatedAnswers, departureId, CheckMode)
-              .mustBe(controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, CheckMode))
+              .mustEqual(controllers.locationOfGoods.routes.CoordinatesController.onPageLoad(departureId, CheckMode))
         }
 
       }
@@ -1010,7 +1010,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(AuthorisationNumberPage, answers, departureId, CheckMode)
-              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
+              .mustEqual(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -1023,7 +1023,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 answersWithoutAdditionalIdentifierPage <- updatedAnswers.remove(AdditionalIdentifierPage)
               } yield navigator
                 .nextPage(AddIdentifierYesNoPage, answersWithoutAdditionalIdentifierPage, departureId, CheckMode)
-                .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
+                .mustEqual(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
           }
         }
 
@@ -1035,7 +1035,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                 answersWithAdditionalIdentifierPage <- updatedAnswers.set(AdditionalIdentifierPage, "identifier")
               } yield navigator
                 .nextPage(AddIdentifierYesNoPage, answersWithAdditionalIdentifierPage, departureId, CheckMode)
-                .mustBe(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
+                .mustEqual(controllers.locationOfGoods.routes.AdditionalIdentifierController.onPageLoad(departureId, CheckMode))).get
           }
         }
         "to AddContactYesNoPage if answer is No" in {
@@ -1047,7 +1047,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
                   updatedAnswers =>
                     navigator
                       .nextPage(AddIdentifierYesNoPage, updatedAnswers, departureId, CheckMode)
-                      .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+                      .mustEqual(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
                 }
                 .get
           }
@@ -1059,7 +1059,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(AdditionalIdentifierPage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustEqual(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -1068,7 +1068,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(UnLocodePage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustEqual(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -1085,7 +1085,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             )
             navigator
               .nextPage(CustomsOfficeIdentifierPage, updatedAnswers, departureId, CheckMode)
-              .mustBe(controllers.transport.routes.LimitDateController.onPageLoad(departureId, CheckMode))
+              .mustEqual(controllers.transport.routes.LimitDateController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -1094,7 +1094,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(EoriPage, answers, departureId, CheckMode)
-              .mustBe(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
+              .mustEqual(controllers.locationOfGoods.routes.AddIdentifierYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -1103,7 +1103,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(CoordinatesPage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustEqual(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
       }
 
@@ -1114,7 +1114,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               val userAnswersSet = answers.setValue(AddContactYesNoPage, false)
               navigator
                 .nextPage(AddContactYesNoPage, userAnswersSet, departureId, CheckMode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
 
         }
@@ -1122,14 +1122,14 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val ans = answers.setValue(PhoneNumberPage, "999").setValue(NamePage, "Bob")
-              (ans.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe true
-              (ans.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe true
+              (ans.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustEqual true
+              (ans.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustEqual true
               val userAnswersSet = ans.setValue(AddContactYesNoPage, false)
 
-              userAnswersSet.get(CountryPage).mustBe(None)
+              userAnswersSet.get(CountryPage) must not be defined
 
-              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustBe false
-              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustBe false
+              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "telephoneNumber").asOpt[String].isDefined mustEqual false
+              (userAnswersSet.data \ "locationOfGoods" \ "contact" \ "name").asOpt[String].isDefined mustEqual false
 
           }
         }
@@ -1140,7 +1140,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               val userAnswersSet = answers.setValue(AddContactYesNoPage, true)
               navigator
                 .nextPage(AddContactYesNoPage, userAnswersSet, departureId, CheckMode)
-                .mustBe(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, CheckMode))
+                .mustEqual(controllers.locationOfGoods.contact.routes.NameController.onPageLoad(departureId, CheckMode))
           }
 
         }
@@ -1151,7 +1151,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(PhoneNumberPage, answers, departureId, CheckMode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
       }
@@ -1161,7 +1161,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(pages.locationOfGoods.CountryPage, answers, departureId, CheckMode)
-              .mustBe(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, CheckMode))
+              .mustEqual(controllers.locationOfGoods.routes.AddressController.onPageLoad(departureId, CheckMode))
         }
 
       }
@@ -1171,7 +1171,7 @@ class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             navigator
               .nextPage(AddressPage, answers, departureId, CheckMode)
-              .mustBe(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
+              .mustEqual(routes.AddContactYesNoController.onPageLoad(departureId, CheckMode))
         }
 
       }

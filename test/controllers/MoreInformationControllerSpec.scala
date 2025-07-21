@@ -41,7 +41,7 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val view = app.injector.instanceOf[MoreInformationView]
 
-      status(result) mustBe OK
+      status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(lrn.value, departureId)(request, messages).toString
     }
@@ -54,7 +54,7 @@ class MoreInformationControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val result = route(app, request).value
 
-      status(result) mustBe SEE_OTHER
+      status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual onwardRoute.url
     }
   }

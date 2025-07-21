@@ -43,7 +43,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               val userAnswers = emptyUserAnswers
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = true)
-              result.listItems mustBe Nil
+              result.listItems mustEqual Nil
           }
         }
       }
@@ -65,9 +65,9 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
                     val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-                    result.listItems.length mustBe 2
+                    result.listItems.length mustEqual 2
 
-                    result.listItems mustBe Seq(
+                    result.listItems mustEqual Seq(
                       ListItem(
                         name = s"Transport equipment 1 - container $containerId",
                         changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -101,9 +101,9 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                     .setValue(AddContainerIdentificationNumberYesNoPage(Index(1)), true)
                   val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-                  result.listItems.length mustBe 2
+                  result.listItems.length mustEqual 2
 
-                  result.listItems mustBe Seq(
+                  result.listItems mustEqual Seq(
                     ListItem(
                       name = s"Transport equipment 1 - container $containerId",
                       changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController
@@ -137,9 +137,9 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
                   val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-                  result.listItems.length mustBe 1
+                  result.listItems.length mustEqual 1
 
-                  result.listItems mustBe Seq(
+                  result.listItems mustEqual Seq(
                     ListItem(
                       name = s"Transport equipment 1 - container $containerId",
                       changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -166,13 +166,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-                result.listItems.length mustBe 1
-                result.title mustBe "You have added 1 transport equipment"
-                result.heading mustBe "You have added 1 transport equipment"
-                result.legend mustBe "Do you want to add any other transport equipment?"
-                result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+                result.listItems.length mustEqual 1
+                result.title mustEqual "You have added 1 transport equipment"
+                result.heading mustEqual "You have added 1 transport equipment"
+                result.legend mustEqual "Do you want to add any other transport equipment?"
+                result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-                result.listItems mustBe Seq(
+                result.listItems mustEqual Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
                     changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -192,13 +192,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-                result.listItems.length mustBe 1
-                result.title mustBe "You have added 1 transport equipment"
-                result.heading mustBe "You have added 1 transport equipment"
-                result.legend mustBe "Do you want to add any other transport equipment?"
-                result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+                result.listItems.length mustEqual 1
+                result.title mustEqual "You have added 1 transport equipment"
+                result.heading mustEqual "You have added 1 transport equipment"
+                result.legend mustEqual "Do you want to add any other transport equipment?"
+                result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-                result.listItems mustBe Seq(
+                result.listItems mustEqual Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
                     changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -223,13 +223,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-                result.listItems.length mustBe 1
-                result.title mustBe "You have added 1 transport equipment"
-                result.heading mustBe "You have added 1 transport equipment"
-                result.legend mustBe "Do you want to add any other transport equipment?"
-                result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+                result.listItems.length mustEqual 1
+                result.title mustEqual "You have added 1 transport equipment"
+                result.heading mustEqual "You have added 1 transport equipment"
+                result.legend mustEqual "Do you want to add any other transport equipment?"
+                result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-                result.listItems mustBe Seq(
+                result.listItems mustEqual Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
                     changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -249,13 +249,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                 val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-                result.listItems.length mustBe 1
-                result.title mustBe "You have added 1 transport equipment"
-                result.heading mustBe "You have added 1 transport equipment"
-                result.legend mustBe "Do you want to add any other transport equipment?"
-                result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+                result.listItems.length mustEqual 1
+                result.title mustEqual "You have added 1 transport equipment"
+                result.heading mustEqual "You have added 1 transport equipment"
+                result.legend mustEqual "Do you want to add any other transport equipment?"
+                result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-                result.listItems mustBe Seq(
+                result.listItems mustEqual Seq(
                   ListItem(
                     name = s"Transport equipment 1 - container $containerId",
                     changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -281,13 +281,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ItemPage(Index(0), Index(0)), item)
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-              result.listItems.length mustBe 1
-              result.title mustBe "You have added 1 transport equipment"
-              result.heading mustBe "You have added 1 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.listItems.length mustEqual 1
+              result.title mustEqual "You have added 1 transport equipment"
+              result.heading mustEqual "You have added 1 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"Transport equipment 1 - no container identification number",
                   changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -313,13 +313,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, departureId, mode, isNumberItemsZero = false)
 
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 transport equipment"
-              result.heading mustBe s"You have added 2 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.listItems.length mustEqual 2
+              result.title mustEqual s"You have added 2 transport equipment"
+              result.heading mustEqual s"You have added 2 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = "Transport equipment 1 - no container identification number",
                   changeUrl = controllers.transport.equipment.index.routes.ContainerIdentificationNumberController
@@ -351,13 +351,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 transport equipment"
-              result.heading mustBe s"You have added 2 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.listItems.length mustEqual 2
+              result.title mustEqual s"You have added 2 transport equipment"
+              result.heading mustEqual s"You have added 2 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = "Transport equipment 1 - no container identification number",
                   changeUrl = controllers.transport.equipment.index.seals.routes.SealIdentificationNumberController
@@ -391,13 +391,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 transport equipment"
-              result.heading mustBe s"You have added 2 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.listItems.length mustEqual 2
+              result.title mustEqual s"You have added 2 transport equipment"
+              result.heading mustEqual s"You have added 2 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = "Transport equipment 1 - no container identification number",
                   changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController
@@ -427,13 +427,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
-              result.listItems.length mustBe 1
-              result.title mustBe s"You have added 1 transport equipment"
-              result.heading mustBe s"You have added 1 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.listItems.length mustEqual 1
+              result.title mustEqual s"You have added 1 transport equipment"
+              result.heading mustEqual s"You have added 1 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = "Transport equipment 1 - no container identification number",
                   changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController
@@ -460,13 +460,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(updatedUserAnswers, departureId, mode, isNumberItemsZero = false)
 
-              result.listItems.length mustBe 1
-              result.title mustBe s"You have added 1 transport equipment"
-              result.heading mustBe s"You have added 1 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.listItems.length mustEqual 1
+              result.title mustEqual s"You have added 1 transport equipment"
+              result.heading mustEqual s"You have added 1 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = "Transport equipment 1 - no container identification number",
                   changeUrl = controllers.transport.equipment.index.routes.AddSealYesNoController

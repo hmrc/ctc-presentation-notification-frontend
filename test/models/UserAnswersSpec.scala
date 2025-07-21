@@ -59,7 +59,7 @@ class UserAnswersSpec extends SpecBase {
           testPagePath -> testPageAnswer
         )
 
-        result.data mustBe expectedData
+        result.data mustEqual expectedData
       }
 
       "must run cleanup when given a different answer" in {
@@ -73,7 +73,7 @@ class UserAnswersSpec extends SpecBase {
           testPagePath -> testPageAnswer2
         )
 
-        result.data mustBe expectedData
+        result.data mustEqual expectedData
       }
 
       "must not run cleanup when given the same answer" in {
@@ -88,7 +88,7 @@ class UserAnswersSpec extends SpecBase {
           testPagePath        -> testPageAnswer
         )
 
-        result.data mustBe expectedData
+        result.data mustEqual expectedData
       }
     }
 
@@ -102,7 +102,7 @@ class UserAnswersSpec extends SpecBase {
 
         val result = userAnswers.remove(TestPage).toOption.value.data
 
-        result mustBe expectedUserAnswers.data
+        result mustEqual expectedUserAnswers.data
       }
     }
 
@@ -143,12 +143,12 @@ class UserAnswersSpec extends SpecBase {
 
           "read correctly" in {
             val result = json.as[UserAnswers]
-            result mustBe userAnswers
+            result mustEqual userAnswers
           }
 
           "write and read correctly" in {
             val result = Json.toJson(userAnswers).as[UserAnswers]
-            result mustBe userAnswers
+            result mustEqual userAnswers
           }
         }
       }
@@ -179,12 +179,12 @@ class UserAnswersSpec extends SpecBase {
 
           "must read correctly" in {
             val result = json.as[UserAnswers]
-            result mustBe userAnswers
+            result mustEqual userAnswers
           }
 
           "write correctly" in {
             val result = Json.toJson(userAnswers)
-            result mustBe json
+            result mustEqual json
           }
         }
       }

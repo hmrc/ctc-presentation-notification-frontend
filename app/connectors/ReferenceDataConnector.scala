@@ -89,20 +89,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[CustomsOffice]] =
     getCustomsOfficesForCountryAndRole(countryCode, "DEP")
 
-  def getAddressPostcodeBasedCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] =
-    getCountries("CountryAddressPostcodeBased")
-
   def getCountriesWithoutZipCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CountryCode]] = {
     val queryParameters                    = CountryCode.queryParams(code)(config)
     implicit val reads: Reads[CountryCode] = CountryCode.reads(config)
     val url                                = url"${config.referenceDataUrl}/lists/CountryWithoutZip?$queryParameters"
     getOrElseUpdate[CountryCode](url)
-  }
-
-  def getUnLocodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[UnLocode]] = {
-    implicit val reads: Reads[UnLocode] = UnLocode.reads(config)
-    val url                             = url"${config.referenceDataUrl}/lists/UnLocodeExtended"
-    get[UnLocode](url)
   }
 
   def getUnLocode(unLocode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[UnLocode]] = {
@@ -123,12 +114,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[Nationality] = Nationality.reads(config)
     val url                                = url"${config.referenceDataUrl}/lists/Nationality?$queryParameters"
     getOrElseUpdate[Nationality](url)
-  }
-
-  def getSpecificCircumstanceIndicators()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[SpecificCircumstanceIndicator]] = {
-    implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(config)
-    val url                                                  = url"${config.referenceDataUrl}/lists/SpecificCircumstanceIndicatorCode"
-    get[SpecificCircumstanceIndicator](url)
   }
 
   def getTypesOfLocation()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[LocationType]] = {
@@ -209,8 +194,10 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getCustomsOfficeForId(
     id: String
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CustomsOffice]] = {
-    val queryParameters = CustomsOffice.queryParameters(ids = Seq(id))(config)
-    getCustomsOffices(queryParameters).map(_.map(_.head))
+    val queryParameters                            = CustomsOffice.queryParameters(ids = Seq(id))(config)
+    val url                                        = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"
+    implicit val reads: Reads[List[CustomsOffice]] = CustomsOffice.listReads(config)
+    getOrElseUpdate[CustomsOffice](url)
   }
 
   def getCustomsOfficesForIds(

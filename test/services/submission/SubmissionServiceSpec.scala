@@ -112,7 +112,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       "when XI office of departure" in {
         val result = service.messageSequence(eoriNumber, "XI00001")
 
-        result mustBe MESSAGESequence(
+        result mustEqual MESSAGESequence(
           messageSender = eoriNumber.value,
           messageRecipient = "NTA.XI",
           preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
@@ -133,7 +133,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val reads  = service.transitOperationReads(userAnswers)
         val result = userAnswers.data.as[TransitOperationType23](reads)
 
-        result mustBe TransitOperationType23(
+        result mustEqual TransitOperationType23(
           LRN = userAnswers.lrn,
           limitDate = Some(XMLCalendar("2020-01-01"))
         )
@@ -145,7 +145,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val reads  = service.transitOperationReads(userAnswers)
         val result = userAnswers.data.as[TransitOperationType23](reads)
 
-        result mustBe TransitOperationType23(
+        result mustEqual TransitOperationType23(
           LRN = userAnswers.lrn,
           limitDate = None
         )
@@ -173,7 +173,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             val result = service.holderOfTransit(holderOfTransit)
 
-            result mustBe HolderOfTheTransitProcedureType13(
+            result mustEqual HolderOfTheTransitProcedureType13(
               identificationNumber = identificationNumber,
               TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
               name = name,
@@ -206,7 +206,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             val result = service.holderOfTransit(holderOfTransit)
 
-            result mustBe HolderOfTheTransitProcedureType13(
+            result mustEqual HolderOfTheTransitProcedureType13(
               identificationNumber = identificationNumber,
               TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
               name = name,
@@ -245,7 +245,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               val reads  = __.readNullableSafe[RepresentativeType06](service.representativeReads)
               val result = userAnswers.data.as[Option[RepresentativeType06]](reads)
 
-              result mustBe Some(
+              result.value mustEqual
                 RepresentativeType06(
                   identificationNumber = eori,
                   status = "2",
@@ -257,7 +257,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                     )
                   )
                 )
-              )
           }
         }
 
@@ -271,13 +270,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               val reads  = __.readNullableSafe[RepresentativeType06](service.representativeReads)
               val result = userAnswers.data.as[Option[RepresentativeType06]](reads)
 
-              result mustBe Some(
+              result.value mustEqual
                 RepresentativeType06(
                   identificationNumber = eori,
                   status = "2",
                   ContactPerson = None
                 )
-              )
           }
         }
       }
@@ -347,13 +345,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           val reads  = service.consignmentReads
           val result = userAnswers.data.as[ConsignmentType10](reads)
 
-          result.containerIndicator.value mustBe Number1
+          result.containerIndicator.value mustEqual Number1
 
-          result.inlandModeOfTransport.value mustBe "im"
+          result.inlandModeOfTransport.value mustEqual "im"
 
-          result.modeOfTransportAtTheBorder.value mustBe "bm"
+          result.modeOfTransportAtTheBorder.value mustEqual "bm"
 
-          result.TransportEquipment mustBe Seq(
+          result.TransportEquipment mustEqual Seq(
             TransportEquipmentType03(
               sequenceNumber = 1,
               containerIdentificationNumber = Some("cin1"),
@@ -382,11 +380,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
           )
 
-          result.LocationOfGoods.typeOfLocation mustBe "tol"
+          result.LocationOfGoods.typeOfLocation mustEqual "tol"
 
-          result.LocationOfGoods.qualifierOfIdentification mustBe "qoi"
+          result.LocationOfGoods.qualifierOfIdentification mustEqual "qoi"
 
-          result.DepartureTransportMeans mustBe Seq(
+          result.DepartureTransportMeans mustEqual Seq(
             DepartureTransportMeansType01(
               sequenceNumber = 1,
               typeOfIdentification = "dtmtoi1",
@@ -401,7 +399,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
           )
 
-          result.ActiveBorderTransportMeans mustBe Seq(
+          result.ActiveBorderTransportMeans mustEqual Seq(
             ActiveBorderTransportMeansType03(
               sequenceNumber = 1,
               customsOfficeAtBorderReferenceNumber = "abtmcoabrn1",
@@ -420,15 +418,14 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
           )
 
-          result.PlaceOfLoading mustBe Some(
+          result.PlaceOfLoading.value mustEqual
             PlaceOfLoadingType(
               UNLocode = Some("polunl"),
               country = None,
               location = None
             )
-          )
 
-          result.HouseConsignment mustBe Seq(
+          result.HouseConsignment mustEqual Seq(
             HouseConsignmentType06(
               sequenceNumber = 1,
               DepartureTransportMeans = Seq(
@@ -474,7 +471,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           val reads  = service.consignmentReads
           val result = userAnswers.data.as[ConsignmentType10](reads)
 
-          result mustBe ConsignmentType10(
+          result mustEqual ConsignmentType10(
             LocationOfGoods = LocationOfGoodsType02(
               typeOfLocation = "tol",
               qualifierOfIdentification = "qoi"
@@ -504,7 +501,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val reads  = service.transportEquipmentReads(equipmentIndex)
         val result = userAnswers.getValue(EquipmentSection(equipmentIndex)).as[TransportEquipmentType03](reads)
 
-        result mustBe TransportEquipmentType03(
+        result mustEqual TransportEquipmentType03(
           sequenceNumber = equipmentIndex.display,
           containerIdentificationNumber = Some("containerIdentification"),
           numberOfSeals = 1,
@@ -550,7 +547,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           val reads  = service.locationOfGoodsReads
           val result = userAnswers.data.as[LocationOfGoodsType02](reads)
 
-          result mustBe LocationOfGoodsType02(
+          result mustEqual LocationOfGoodsType02(
             typeOfLocation = locationType.code,
             qualifierOfIdentification = qualifierOfIdentification.qualifier,
             authorisationNumber = authorisationNumber,
@@ -598,7 +595,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           val reads  = service.locationOfGoodsReads
           val result = userAnswers.data.as[LocationOfGoodsType02](reads)
 
-          result mustBe LocationOfGoodsType02(
+          result mustEqual LocationOfGoodsType02(
             typeOfLocation = locationType.code,
             qualifierOfIdentification = qualifierOfIdentification.qualifier,
             authorisationNumber = None,
@@ -621,7 +618,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           val reads  = service.locationOfGoodsReads
           val result = userAnswers.data.as[LocationOfGoodsType02](reads)
 
-          result mustBe LocationOfGoodsType02(
+          result mustEqual LocationOfGoodsType02(
             typeOfLocation = locationType.code,
             qualifierOfIdentification = qualifierOfIdentification.qualifier,
             authorisationNumber = None,
@@ -653,7 +650,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.departureTransportMeansReads(transportIndex)
             val result = userAnswers.getValue(TransportMeansSection(transportIndex)).as[DepartureTransportMeansType01](reads)
 
-            result mustBe DepartureTransportMeansType01(
+            result mustEqual DepartureTransportMeansType01(
               sequenceNumber = 1,
               typeOfIdentification = typeOfIdentification.code,
               identificationNumber = identificationNumber,
@@ -680,7 +677,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.activeBorderTransportMeansReads(activeIndex)
             val result = userAnswers.getValue(BorderActiveSection(activeIndex)).as[ActiveBorderTransportMeansType03](reads)
 
-            result mustBe ActiveBorderTransportMeansType03(
+            result mustEqual ActiveBorderTransportMeansType03(
               sequenceNumber = 1,
               customsOfficeAtBorderReferenceNumber = customsOffice.id,
               typeOfIdentification = typeOfIdentification.code,
@@ -704,13 +701,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val reads  = __.readNullableSafe[PlaceOfLoadingType](service.placeOfLoadingReads)
         val result = userAnswers.data.as[Option[PlaceOfLoadingType]](reads)
 
-        result mustBe Some(
+        result.value mustEqual
           PlaceOfLoadingType(
             UNLocode = Some("unLocode"),
             country = Some("IT"),
             location = Some("location")
           )
-        )
       }
 
       "must not create PlaceOfLoading when user answers don't exist" in {
@@ -719,13 +715,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val reads  = __.readNullableSafe[PlaceOfLoadingType](service.placeOfLoadingReads)
         val result = userAnswers.data.as[Option[PlaceOfLoadingType]](reads)
 
-        result mustBe Some(
+        result.value mustEqual
           PlaceOfLoadingType(
             UNLocode = None,
             country = None,
             location = None
           )
-        )
       }
     }
 
@@ -754,7 +749,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.houseConsignmentReads(houseConsignmentIndex)
             val result = userAnswers.getValue(HouseConsignmentSection(houseConsignmentIndex)).as[HouseConsignmentType06](reads)
 
-            result mustBe HouseConsignmentType06(
+            result mustEqual HouseConsignmentType06(
               sequenceNumber = 1,
               DepartureTransportMeans = Seq(
                 DepartureTransportMeansType01(

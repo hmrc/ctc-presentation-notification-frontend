@@ -101,7 +101,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(4, "item4"))))
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
 
       "must filter list if there are items in two different transport equipments in UA without filtering selected item" in {
@@ -174,7 +174,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(4, "item4"), Item(1, "item1"))))
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
 
       "must filter list if there are items in a single transport equipment in UA" in {
@@ -219,7 +219,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(2, "item2"))))
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
 
       "must return empty list if no items" in {
@@ -242,7 +242,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val expectedResult = new SelectItemsViewModel(SelectableList(Seq.empty))
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
 
       "must not filter list if there is a transport equipment section but with no items" in {
@@ -313,7 +313,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(1, "item1"), Item(2, "item2"), Item(3, "item3"), Item(4, "item4"))))
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
 
       "must not filter list if there are no items in UA" in {
@@ -383,7 +383,7 @@ class SelectItemsViewModelSpec extends SpecBase with Generators with ScalaCheckP
 
         val expectedResult = SelectItemsViewModel(SelectableList(Seq(Item(1, "item1"), Item(2, "item2"), Item(3, "item3"), Item(4, "item4"))))
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
     }
   }

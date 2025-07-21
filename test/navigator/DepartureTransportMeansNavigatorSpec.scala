@@ -46,7 +46,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
               navigator
                 .nextPage(TransportMeansIdentificationPage(transportIndex), updatedAnswers, departureId, mode)
-                .mustBe(
+                .mustEqual(
                   controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
                     .onPageLoad(departureId, mode, transportIndex)
                 )
@@ -65,7 +65,9 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
               navigator
                 .nextPage(TransportMeansIdentificationNumberPage(transportIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
+                .mustEqual(
+                  controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex)
+                )
           }
         }
       }
@@ -77,7 +79,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
               .setValue(TransportMeansNationalityPage(transportIndex), Nationality("UK", "test"))
             navigator
               .nextPage(TransportMeansNationalityPage(transportIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode))
+              .mustEqual(controllers.transport.departureTransportMeans.routes.AddAnotherTransportMeansController.onPageLoad(departureId, mode))
         }
       }
     }
@@ -96,7 +98,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
               navigator
                 .nextPage(TransportMeansIdentificationPage(transportIndex), updatedAnswers, departureId, mode)
-                .mustBe(
+                .mustEqual(
                   controllers.transport.departureTransportMeans.routes.TransportMeansIdentificationNumberController
                     .onPageLoad(departureId, mode, transportIndex)
                 )
@@ -111,7 +113,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
                 .setValue(TransportMeansIdentificationNumberPage(transportIndex), "test")
               navigator
                 .nextPage(TransportMeansIdentificationPage(transportIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
@@ -127,7 +129,9 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
               navigator
                 .nextPage(TransportMeansIdentificationNumberPage(transportIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex))
+                .mustEqual(
+                  controllers.transport.departureTransportMeans.routes.TransportMeansNationalityController.onPageLoad(departureId, mode, transportIndex)
+                )
           }
         }
 
@@ -139,7 +143,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
                 .setValue(TransportMeansNationalityPage(transportIndex), Nationality("GB", "test"))
               navigator
                 .nextPage(TransportMeansIdentificationNumberPage(transportIndex), updatedAnswers, departureId, mode)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
           }
         }
       }
@@ -151,7 +155,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
               .setValue(TransportMeansNationalityPage(transportIndex), Nationality("UK", "test"))
             navigator
               .nextPage(TransportMeansNationalityPage(transportIndex), updatedAnswers, departureId, mode)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
     }

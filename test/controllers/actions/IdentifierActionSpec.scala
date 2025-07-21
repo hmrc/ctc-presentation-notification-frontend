@@ -88,7 +88,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
       }
@@ -111,7 +111,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
       }
@@ -135,9 +135,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -159,9 +159,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -183,9 +183,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -207,9 +207,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -231,9 +231,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -257,9 +257,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -276,9 +276,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
     }
 
@@ -295,9 +295,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
     }
 
@@ -314,8 +314,8 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe frontendAppConfig.eccEnrolmentSplashPage
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.eccEnrolmentSplashPage
       }
     }
 
@@ -333,8 +333,8 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe frontendAppConfig.eccEnrolmentSplashPage
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.eccEnrolmentSplashPage
       }
     }
 
@@ -358,7 +358,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe OK
+        status(result) mustEqual OK
       }
     }
   }

@@ -33,7 +33,7 @@ class JsonMatchersSpec extends AnyFreeSpec with Matchers with JsonMatchers with 
 
       val result = json must containJson(expectedJson)
 
-      result mustBe Succeeded
+      result mustEqual Succeeded
     }
 
     "must return Succeeded when all keys in the expected Json are present" in {
@@ -47,7 +47,7 @@ class JsonMatchersSpec extends AnyFreeSpec with Matchers with JsonMatchers with 
 
       val result = json must containJson(expectedJson)
 
-      result mustBe Succeeded
+      result mustEqual Succeeded
     }
 
     "must return Succeeded when both Json objects are the same" in {
@@ -59,7 +59,7 @@ class JsonMatchersSpec extends AnyFreeSpec with Matchers with JsonMatchers with 
 
       val result = json must containJson(json)
 
-      result mustBe Succeeded
+      result mustEqual Succeeded
     }
 
     "must throw a Test Failed Exception when expected Json contains a key not present in the left Json" in {

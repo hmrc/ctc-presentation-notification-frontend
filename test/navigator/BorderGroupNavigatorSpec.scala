@@ -37,20 +37,20 @@ class BorderGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
           val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage, true)
           navigator
             .nextPage(AddAnotherBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
+            .mustEqual(controllers.transport.border.active.routes.IdentificationController.onPageLoad(departureId, mode, activeIndex))
         }
 
         "to CheckYourAnswersController when no" in {
           val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage, false)
           navigator
             .nextPage(AddAnotherBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
 
         "to tech difficulties when AddAnotherBorderMeansOfTransportYesNoPage does not exist" in {
           navigator
             .nextPage(AddAnotherBorderMeansOfTransportYesNoPage, emptyUserAnswers, departureId, mode)
-            .mustBe(controllers.routes.ErrorController.technicalDifficulties())
+            .mustEqual(controllers.routes.ErrorController.technicalDifficulties())
         }
       }
     }
@@ -63,7 +63,7 @@ class BorderGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
           val userAnswers = emptyUserAnswers.setValue(AddAnotherBorderMeansOfTransportYesNoPage, false)
           navigator
             .nextPage(AddAnotherBorderMeansOfTransportYesNoPage, userAnswers, departureId, mode)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
+            .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(departureId))
         }
       }
     }

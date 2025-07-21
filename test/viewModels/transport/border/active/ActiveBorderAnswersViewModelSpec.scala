@@ -72,7 +72,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
 
                   activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
-                  activeBorderSection.rows.size mustBe 6
+                  activeBorderSection.rows.size mustEqual 6
                   activeBorderSection.addAnotherLink must not be defined
               }
             }
@@ -110,7 +110,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
 
                   activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
-                  activeBorderSection.rows.size mustBe 6
+                  activeBorderSection.rows.size mustEqual 6
                   activeBorderSection.addAnotherLink mustBe defined
               }
             }
@@ -148,7 +148,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
 
                   activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
-                  activeBorderSection.rows.size mustBe 5
+                  activeBorderSection.rows.size mustEqual 5
                   activeBorderSection.addAnotherLink must not be defined
               }
             }
@@ -185,7 +185,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
 
                   activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                   activeBorderSection.sectionTitle mustBe defined
-                  activeBorderSection.rows.size mustBe 5
+                  activeBorderSection.rows.size mustEqual 5
                   activeBorderSection.addAnotherLink mustBe defined
               }
             }
@@ -225,7 +225,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
 
                 activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
                 activeBorderSection.sectionTitle mustBe defined
-                activeBorderSection.rows.size mustBe 5
+                activeBorderSection.rows.size mustEqual 5
                 activeBorderSection.addAnotherLink must not be defined
             }
           }
