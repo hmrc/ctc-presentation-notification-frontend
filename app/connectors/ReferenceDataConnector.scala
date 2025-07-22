@@ -187,32 +187,31 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     countryCode: String,
     role: String
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[CustomsOffice]] = {
-    val queryParameters: Seq[(String, String)] = Seq(
-      "data.countryId"  -> countryCode,
-      "data.roles.role" -> role.toUpperCase.trim
-    )
+    val queryParameters = CustomsOffice.queryParameters(countryCodes = Seq(countryCode), roles = Seq(role))(config)
     getCustomsOffices(queryParameters)
   }
 
   def getCustomsOfficeForId(
     id: String
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CustomsOffice]] = {
-    val queryParameters: Seq[(String, String)] = Seq("data.id" -> id)
-    val url                                    = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"
+    val queryParameters                            = CustomsOffice.queryParameters(ids = Seq(id))(config)
+    val url                                        = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"
+    implicit val reads: Reads[List[CustomsOffice]] = CustomsOffice.listReads(config)
     getOrElseUpdate[CustomsOffice](url)
   }
 
   def getCustomsOfficesForIds(
     ids: Seq[String]
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[CustomsOffice]] = {
-    val queryParameters: Seq[(String, String)] = ids.map("data.id" -> _)
+    val queryParameters = CustomsOffice.queryParameters(ids = ids)(config)
     getCustomsOffices(queryParameters)
   }
 
   private def getCustomsOffices(
     queryParameters: Seq[(String, String)]
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[CustomsOffice]] = {
-    val url = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"
+    val url                                        = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"
+    implicit val reads: Reads[List[CustomsOffice]] = CustomsOffice.listReads(config)
     get[CustomsOffice](url)
   }
 
