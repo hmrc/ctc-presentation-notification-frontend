@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package utils
+package utils.transformer
 
+import generated.ConsignmentType23
+import models.UserAnswers
+import uk.gov.hmrc.http.HeaderCarrier
+
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
-package object transformer {
+class ConsignmentTransformer @Inject()(
+  departureTransportMeansTransformer: DepartureTransportMeansTransformer,
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
-  final val SequenceNumber             = "sequenceNumber"
-  final val Removed = "removed"
+  def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
 
-  implicit class TryOps[A](tryValue: Try[A]) {
-    def asFuture: Future[A] = Future.fromTry(tryValue)
-  }
+          departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans)
 
-  implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
 }

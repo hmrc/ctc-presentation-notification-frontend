@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package utils
+package utils.transformer
 
+import models.UserAnswers
+import pages.CustomsOfficeOfDestinationActualPage
+import services.ReferenceDataService
+import uk.gov.hmrc.http.HeaderCarrier
+
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
-package object transformer {
+class IE170Transformer @Inject()(
+  consignmentTransformer: ConsignmentTransformer,
+) extends PageTransformer {
 
-  final val SequenceNumber             = "sequenceNumber"
-  final val Removed = "removed"
+  def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
+    val pipeline =
+        consignmentTransformer.transform(userAnswers.departureData.Consignment)
 
-  implicit class TryOps[A](tryValue: Try[A]) {
-    def asFuture: Future[A] = Future.fromTry(tryValue)
+    pipeline(userAnswers)
   }
-
-  implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
 }

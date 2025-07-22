@@ -57,6 +57,20 @@ final case class UserAnswers(
     }
   }
 
+  def set[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+    val updatedData = data.setObject(path, Json.toJson(value)) match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
+      case JsError(errors) =>
+        Failure(JsResultException(errors))
+    }
+
+    updatedData.map {
+      d =>
+        copy(data = d)
+    }
+  }
+
   def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
     val updatedData    = data.removeObject(page.path).getOrElse(data)
     val updatedAnswers = copy(data = updatedData)
