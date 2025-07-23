@@ -24,11 +24,11 @@ import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
+import pages.sections.transport.equipment.{ItemsSection, SealsSection}
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsArray, Json}
 
 import scala.concurrent.Future
 
@@ -47,14 +47,6 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
         bind[GoodsReferencesTransformer].toInstance(mockGoodsReferencesTransformer)
       )
 
-  private case class FakeSealsSection(equipmentIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ equipmentIndex.position.toString \ "seals"
-  }
-
-  private case class FakeGoodsReferenceSection(equipmentIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ equipmentIndex.position.toString \ "items"
-  }
-
   "must transform data" in {
     forAll(arbitrary[Seq[TransportEquipmentType03]]) {
       transportEquipment =>
@@ -64,22 +56,24 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
 
             when(mockSealsTransformer.transform(any(), eqTo(equipmentIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeSealsSection(equipmentIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(SealsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
+
             when(mockGoodsReferencesTransformer.transform(any(), eqTo(equipmentIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeGoodsReferenceSection(equipmentIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(ItemsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
         }
 
         val result = transformer.transform(transportEquipment).apply(emptyUserAnswers).futureValue
+
         transportEquipment.zipWithIndex.map {
           case (te, i) =>
             val equipmentIndex = Index(i)
 
             result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustEqual te.containerIdentificationNumber
-            result.getValue(FakeSealsSection(equipmentIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeGoodsReferenceSection(equipmentIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(SealsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(ItemsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
         }
     }
   }

@@ -31,8 +31,7 @@ class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) exten
   ): UserAnswers => Future[UserAnswers] =
     goodsReferences.mapWithSets {
       (value, itemIndex) => userAnswers =>
-        val item = userAnswers.departureData.items
-          .find(_.declarationGoodsItemNumber == value.declarationGoodsItemNumber)
+        val item = userAnswers.departureData.items.find(_.declarationGoodsItemNumber == value.declarationGoodsItemNumber)
         set(ItemPage(equipmentIndex, itemIndex), item).apply(userAnswers)
     }
 }
