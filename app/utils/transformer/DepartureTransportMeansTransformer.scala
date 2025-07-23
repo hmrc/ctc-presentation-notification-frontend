@@ -17,14 +17,14 @@
 package utils.transformer
 
 import generated.DepartureTransportMeansType01
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import services.CheckYourAnswersReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DepartureTransportMeansTransformer @Inject()(
+class DepartureTransportMeansTransformer @Inject() (
   referenceDataService: CheckYourAnswersReferenceDataService
 )(implicit ec: ExecutionContext)
     extends NewPageTransformer {
@@ -33,18 +33,12 @@ class DepartureTransportMeansTransformer @Inject()(
     departureTransportMeans: Seq[DepartureTransportMeansType01]
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.transport.departureTransportMeans.*
-    import pages.sections.transport.departureTransportMeans.TransportMeansSection
-    
-    userAnswers =>
-      departureTransportMeans.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (value, i)) =>
-          val index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(TransportMeansSection(index), value.sequenceNumber) andThen
-              set(TransportMeansIdentificationPage(index), value.typeOfIdentification, referenceDataService.getMeansOfTransportIdentificationType) andThen
-              set(TransportMeansIdentificationNumberPage(index), value.identificationNumber) andThen
-              set(TransportMeansNationalityPage(index), value.nationality, referenceDataService.getNationality)
-          }
-      }
+
+    departureTransportMeans.mapWithSets {
+      (value, index) =>
+        set(TransportMeansIdentificationPage(index), value.typeOfIdentification, referenceDataService.getMeansOfTransportIdentificationType) andThen
+          set(TransportMeansIdentificationNumberPage(index), value.identificationNumber) andThen
+          set(TransportMeansNationalityPage(index), value.nationality, referenceDataService.getNationality)
+    }
   }
 }

@@ -23,13 +23,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignmentTransformer @Inject()(
-  departureTransportMeansTransformer: DepartureTransportMeansTransformer,
+class ConsignmentTransformer @Inject() (
+  departureTransportMeansTransformer: DepartureTransportMeansTransformer
 )(implicit ec: ExecutionContext)
-    extends PageTransformer {
+    extends NewPageTransformer {
 
   def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-
-          departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans)
+    departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans)
 
 }

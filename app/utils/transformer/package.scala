@@ -16,17 +16,31 @@
 
 package utils
 
+import models.{Index, UserAnswers}
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 package object transformer {
-
-  final val SequenceNumber             = "sequenceNumber"
-  final val Removed = "removed"
 
   implicit class TryOps[A](tryValue: Try[A]) {
     def asFuture: Future[A] = Future.fromTry(tryValue)
   }
 
   implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
+
+  implicit class RichSeq[A](value: Seq[A]) {
+
+    def mapWithSets(
+      sets: (A, Index) => UserAnswers => Future[UserAnswers]
+    )(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+      userAnswers =>
+        value.zipWithIndex
+          .foldLeft(Future.successful(userAnswers)) {
+            case (acc, (a, i)) =>
+              acc.flatMap {
+                sets(a, Index(i))
+              }
+          }
+  }
 }

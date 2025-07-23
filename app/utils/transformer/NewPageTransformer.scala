@@ -18,8 +18,7 @@ package utils.transformer
 
 import models.UserAnswers
 import pages.QuestionPage
-import pages.sections.Section
-import play.api.libs.json.{JsObject, Reads, Writes}
+import play.api.libs.json.{Reads, Writes}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,23 +51,4 @@ trait NewPageTransformer {
     lookup: String => Future[T]
   )(implicit writes: Writes[T], reads: Reads[T], ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
     userAnswers => lookup(value).flatMap(set(page, _).apply(userAnswers))
-
-  /** @param section
-    *   a JsObject within a JsArray
-    * @param sequenceNumber
-    *   the sequence number as defined in the IE043
-    * @return
-    *   user answers with the sequence number and a `removed` value of `false`. We set this so we can distinguish between:
-    *   - something that has been removed in session and;
-    *   - something with no information provided from the IE043
-    */
-  def setSequenceNumber(section: Section[JsObject], sequenceNumber: BigInt)(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
-    setValue(section, SequenceNumber, sequenceNumber) andThen
-      setValue(section, Removed, false)
-
-  def setSequenceNumber(section: Section[JsObject], sequenceNumber: String)(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
-    setSequenceNumber(section, BigInt(sequenceNumber))
-
-  private def setValue[A](section: Section[JsObject], key: String, value: A)(implicit writes: Writes[A]): UserAnswers => Future[UserAnswers] = userAnswers =>
-    Future.fromTry(userAnswers.set(section.path \ key, value))
 }

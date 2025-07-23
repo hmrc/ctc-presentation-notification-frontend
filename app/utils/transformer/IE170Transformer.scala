@@ -17,20 +17,18 @@
 package utils.transformer
 
 import models.UserAnswers
-import pages.CustomsOfficeOfDestinationActualPage
-import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IE170Transformer @Inject()(
-  consignmentTransformer: ConsignmentTransformer,
-) extends PageTransformer {
+class IE170Transformer @Inject() (
+  consignmentTransformer: ConsignmentTransformer
+) extends NewPageTransformer {
 
   def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
     val pipeline =
-        consignmentTransformer.transform(userAnswers.departureData.Consignment)
+      consignmentTransformer.transform(userAnswers.departureData.Consignment)
 
     pipeline(userAnswers)
   }
