@@ -22,7 +22,7 @@ import org.scalacheck.Gen.*
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-import java.time._
+import java.time.*
 import scala.util.matching.Regex
 
 // scalastyle:off number.of.methods
@@ -222,6 +222,8 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
       x => x.withNano(0).withSecond(0)
     )
   }
+
+  def positiveBigInts: Gen[BigInt] = Gen.choose(0, 1000)
 
   def stringsLongerThan(minLength: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
