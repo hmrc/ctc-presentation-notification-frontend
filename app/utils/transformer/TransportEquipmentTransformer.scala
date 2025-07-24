@@ -33,12 +33,12 @@ class TransportEquipmentTransformer @Inject() (
   def transform(
     transportEquipments: Seq[TransportEquipmentType03]
   ): UserAnswers => Future[UserAnswers] =
-    transportEquipments.mapWithSets {
-      (value, equipmentIndex) =>
-        set(AddTransportEquipmentYesNoPage, transportEquipments.nonEmpty) andThen
-          set(AddContainerIdentificationNumberYesNoPage(equipmentIndex), value.containerIdentificationNumber.nonEmpty) andThen
-          set(ContainerIdentificationNumberPage(equipmentIndex), value.containerIdentificationNumber) andThen
-          sealsTransformer.transform(value.Seal, equipmentIndex) andThen
-          goodsReferencesTransformer.transform(value.GoodsReference, equipmentIndex)
-    }
+    set(AddTransportEquipmentYesNoPage, transportEquipments.nonEmpty) andThen
+      transportEquipments.mapWithSets {
+        (value, equipmentIndex) =>
+          set(AddContainerIdentificationNumberYesNoPage(equipmentIndex), value.containerIdentificationNumber.isDefined) andThen
+            set(ContainerIdentificationNumberPage(equipmentIndex), value.containerIdentificationNumber) andThen
+            sealsTransformer.transform(value.Seal, equipmentIndex) andThen
+            goodsReferencesTransformer.transform(value.GoodsReference, equipmentIndex)
+      }
 }

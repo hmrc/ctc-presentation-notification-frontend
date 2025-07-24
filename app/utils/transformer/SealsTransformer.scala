@@ -18,6 +18,7 @@ package utils.transformer
 
 import generated.SealType01
 import models.{Index, UserAnswers}
+import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
 import javax.inject.Inject
@@ -29,8 +30,9 @@ class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends NewPage
     seals: Seq[SealType01],
     equipmentIndex: Index
   ): UserAnswers => Future[UserAnswers] =
-    seals.mapWithSets {
-      (value, sealIndex) =>
-        set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value.identifier)
-    }
+    set(AddSealYesNoPage(equipmentIndex), seals.nonEmpty) andThen
+      seals.mapWithSets {
+        (value, sealIndex) =>
+          set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value.identifier)
+      }
 }

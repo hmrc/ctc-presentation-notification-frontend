@@ -22,7 +22,6 @@ import generators.Generators
 import models.Index
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.transport.equipment.{ItemsSection, SealsSection}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
@@ -48,35 +47,75 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
         bind[GoodsReferencesTransformer].toInstance(mockGoodsReferencesTransformer)
       )
 
-  "must transform data" in {
-    forAll(arbitrary[Seq[TransportEquipmentType03]]) {
-      transportEquipments =>
-        transportEquipments.zipWithIndex.map {
-          case (_, i) =>
-            val equipmentIndex = Index(i)
+  "must transform data" - {
+    "when optional values are all defined" in {
+      forAll(listWithMaxLength[TransportEquipmentType03]().map(_.map(_.copy(containerIdentificationNumber = Some("value"))))) {
+        transportEquipments =>
+          transportEquipments.zipWithIndex.map {
+            case (_, i) =>
+              val equipmentIndex = Index(i)
 
-            when(mockSealsTransformer.transform(any(), eqTo(equipmentIndex)))
-              .thenReturn {
-                ua => Future.successful(ua.setValue(SealsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
-              }
+              when(mockSealsTransformer.transform(any(), eqTo(equipmentIndex)))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(SealsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
+                }
 
-            when(mockGoodsReferencesTransformer.transform(any(), eqTo(equipmentIndex)))
-              .thenReturn {
-                ua => Future.successful(ua.setValue(ItemsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
-              }
-        }
+              when(mockGoodsReferencesTransformer.transform(any(), eqTo(equipmentIndex)))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(ItemsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
+                }
+          }
 
-        val result = transformer.transform(transportEquipments).apply(emptyUserAnswers).futureValue
+          val result = transformer.transform(transportEquipments).apply(emptyUserAnswers).futureValue
+          result.get(AddTransportEquipmentYesNoPage).value mustEqual true
 
-        transportEquipments.zipWithIndex.map {
-          case (te, i) =>
-            val equipmentIndex = Index(i)
-            result.get(AddTransportEquipmentYesNoPage).value mustEqual true
-            result.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)).value mustEqual true
-            result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustEqual te.containerIdentificationNumber
-            result.getValue(SealsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
-            result.getValue(ItemsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
-        }
+          transportEquipments.zipWithIndex.map {
+            case (te, i) =>
+              val equipmentIndex = Index(i)
+              result.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)).value mustEqual true
+              result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustEqual te.containerIdentificationNumber
+              result.getValue(SealsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+              result.getValue(ItemsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+          }
+      }
+    }
+
+    "when optional values are undefined" in {
+      forAll(listWithMaxLength[TransportEquipmentType03]().map(_.map(_.copy(containerIdentificationNumber = None)))) {
+        transportEquipments =>
+          transportEquipments.zipWithIndex.map {
+            case (_, i) =>
+              val equipmentIndex = Index(i)
+
+              when(mockSealsTransformer.transform(any(), eqTo(equipmentIndex)))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(SealsSection(equipmentIndex), JsArray()))
+                }
+
+              when(mockGoodsReferencesTransformer.transform(any(), eqTo(equipmentIndex)))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(ItemsSection(equipmentIndex), JsArray()))
+                }
+          }
+
+          val result = transformer.transform(transportEquipments).apply(emptyUserAnswers).futureValue
+          result.get(AddTransportEquipmentYesNoPage).value mustEqual true
+
+          transportEquipments.zipWithIndex.map {
+            case (te, i) =>
+              val equipmentIndex = Index(i)
+
+              result.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)).value mustEqual false
+              result.get(ContainerIdentificationNumberPage(equipmentIndex)) must not be defined
+              result.getValue(SealsSection(equipmentIndex)) mustEqual JsArray()
+              result.getValue(ItemsSection(equipmentIndex)) mustEqual JsArray()
+          }
+      }
+    }
+
+    "when transportEquipment is undefined" in {
+      val result = transformer.transform(Nil).apply(emptyUserAnswers).futureValue
+      result.get(AddTransportEquipmentYesNoPage).value mustEqual false
     }
   }
 }

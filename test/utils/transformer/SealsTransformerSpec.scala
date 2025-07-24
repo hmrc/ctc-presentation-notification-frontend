@@ -20,23 +20,29 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.SealType01
 import generators.Generators
 import models.Index
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
 class SealsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val transformer = app.injector.instanceOf[SealsTransformer]
 
-  "must transform data" in {
-    forAll(arbitrary[Seq[SealType01]]) {
-      seals =>
-        val result = transformer.transform(seals, equipmentIndex).apply(emptyUserAnswers).futureValue
-
-        seals.zipWithIndex.map {
-          case (seal, i) =>
-            result.getValue(SealIdentificationNumberPage(equipmentIndex, Index(i))) mustEqual seal.identifier
-        }
+  "must transform data" - {
+    "when seals is defined" in {
+      forAll(listWithMaxLength[SealType01]()) {
+        seals =>
+          val result = transformer.transform(seals, equipmentIndex).apply(emptyUserAnswers).futureValue
+          result.get(AddSealYesNoPage(equipmentIndex)).value mustEqual true
+          seals.zipWithIndex.map {
+            case (seal, i) =>
+              result.getValue(SealIdentificationNumberPage(equipmentIndex, Index(i))) mustEqual seal.identifier
+          }
+      }
+    }
+    "when seals undefined" in {
+      val result = transformer.transform(Nil, equipmentIndex).apply(emptyUserAnswers).futureValue
+      result.get(AddSealYesNoPage(equipmentIndex)).value mustEqual false
     }
   }
 }
