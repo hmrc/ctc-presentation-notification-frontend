@@ -33,7 +33,7 @@ class ConsignmentTransformer @Inject() (
     extends NewPageTransformer {
 
   def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
-      transportEquipmentTransformer.transform(consignment.TransportEquipment) andThen
-      set(InlandModePage, consignment.inlandModeOfTransport, transportModeCodesService.getInlandMode)
+    set(InlandModePage, consignment.inlandModeOfTransport, transportModeCodesService.getInlandMode) andThen
+      departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
+      transportEquipmentTransformer.transform(consignment.TransportEquipment)
 }

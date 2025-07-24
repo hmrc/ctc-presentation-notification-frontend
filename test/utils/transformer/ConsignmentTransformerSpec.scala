@@ -53,8 +53,10 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       )
 
   "must transform data" - {
-    "when consignment defined" in {
-      forAll(arbitrary[ConsignmentType23]) {
+    "when options defined" in {
+      val inlandMode = InlandMode("1", "mode")
+
+      forAll(arbitrary[ConsignmentType23].map(_.copy(inlandModeOfTransport = Some(inlandMode.code)))) {
         consignment =>
           when(mockTransportEquipmentTransformer.transform(any()))
             .thenReturn {
@@ -66,15 +68,10 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(TransportMeansListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
-          val inlandMode = InlandMode("1", "mode")
           when(mockTransportModeCodesService.getInlandMode(any())(any()))
             .thenReturn(Future.successful(inlandMode))
 
-          val updatedConsignment = consignment.copy(
-            inlandModeOfTransport = Some("mode")
-          )
-
-          val result = transformer.transform(updatedConsignment)(hc).apply(emptyUserAnswers).futureValue
+          val result = transformer.transform(consignment).apply(emptyUserAnswers).futureValue
 
           result.getValue(EquipmentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
           result.getValue(TransportMeansListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
