@@ -18,6 +18,8 @@ package utils.transformer
 
 import generated.ConsignmentType23
 import models.UserAnswers
+import pages.transport.InlandModePage
+import services.TransportModeCodesService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -25,12 +27,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentTransformer @Inject() (
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
-  transportEquipmentTransformer: TransportEquipmentTransformer
+  transportEquipmentTransformer: TransportEquipmentTransformer,
+  transportModeCodesService: TransportModeCodesService
 )(implicit ec: ExecutionContext)
     extends NewPageTransformer {
 
   def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
-      transportEquipmentTransformer.transform(consignment.TransportEquipment)
-
+      transportEquipmentTransformer.transform(consignment.TransportEquipment) andThen
+      set(InlandModePage, consignment.inlandModeOfTransport, transportModeCodesService.getInlandMode)
 }

@@ -155,6 +155,13 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getTransportModeCodes()
   }
 
+  def getInlandMode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[InlandMode]] = {
+    implicit val reads: Reads[InlandMode] = InlandMode.reads(config)
+    val queryParameters                   = InlandMode.queryParams(code)(config)
+    val url                               = url"${config.referenceDataUrl}/lists/TransportModeCode?$queryParameters"
+    getOrElseUpdate[InlandMode](url)
+  }
+
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Identification]] = {
     implicit val reads: Reads[Identification] = Identification.reads(config)
     val url                                   = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"

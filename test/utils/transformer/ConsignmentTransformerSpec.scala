@@ -19,15 +19,18 @@ package utils.transformer
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.ConsignmentType23
 import generators.Generators
+import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.sections.transport.equipment.EquipmentsSection
+import pages.transport.InlandModePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
+import services.TransportModeCodesService
 
 import scala.concurrent.Future
 
@@ -38,12 +41,15 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockTransportEquipmentTransformer      = mock[TransportEquipmentTransformer]
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
 
+  private lazy val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
-        bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer)
+        bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
+        bind[TransportModeCodesService].toInstance(mockTransportModeCodesService)
       )
 
   "must transform data" - {
@@ -60,12 +66,20 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(TransportMeansListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
-          val result = transformer.transform(consignment)(hc).apply(emptyUserAnswers).futureValue
+          val inlandMode = InlandMode("1", "mode")
+          when(mockTransportModeCodesService.getInlandMode(any())(any()))
+            .thenReturn(Future.successful(inlandMode))
+
+          val updatedConsignment = consignment.copy(
+            inlandModeOfTransport = Some("mode")
+          )
+
+          val result = transformer.transform(updatedConsignment)(hc).apply(emptyUserAnswers).futureValue
 
           result.getValue(EquipmentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
           result.getValue(TransportMeansListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+          result.getValue(InlandModePage) mustEqual inlandMode
       }
     }
-
   }
 }

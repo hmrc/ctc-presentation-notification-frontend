@@ -39,4 +39,9 @@ class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceData
       .map(_.resolve())
       .map(_.toSeq)
       .map(_.filter(_.isNotOneOf(Unknown)))
+
+  def getInlandMode(code: String)(implicit hc: HeaderCarrier): Future[InlandMode] =
+    referenceDataConnector
+      .getInlandMode(code)
+      .map(_.resolve())
 }

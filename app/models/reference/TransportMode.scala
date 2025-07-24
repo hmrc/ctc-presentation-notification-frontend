@@ -52,6 +52,11 @@ object TransportMode {
         Json.reads[InlandMode]
       }
 
+    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+      val key = if (config.isPhase6Enabled) "keys" else "data.code"
+      Seq(key -> code)
+    }
+
     implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
     implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
