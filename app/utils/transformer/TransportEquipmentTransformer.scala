@@ -18,7 +18,8 @@ package utils.transformer
 
 import generated.TransportEquipmentType03
 import models.UserAnswers
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, ContainerIdentificationNumberPage}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,11 +31,13 @@ class TransportEquipmentTransformer @Inject() (
     extends NewPageTransformer {
 
   def transform(
-    transportEquipment: Seq[TransportEquipmentType03]
+    transportEquipments: Seq[TransportEquipmentType03]
   ): UserAnswers => Future[UserAnswers] =
-    transportEquipment.mapWithSets {
+    transportEquipments.mapWithSets {
       (value, equipmentIndex) =>
-        set(ContainerIdentificationNumberPage(equipmentIndex), value.containerIdentificationNumber) andThen
+        set(AddTransportEquipmentYesNoPage, transportEquipments.nonEmpty) andThen
+          set(AddContainerIdentificationNumberYesNoPage(equipmentIndex), value.containerIdentificationNumber.nonEmpty) andThen
+          set(ContainerIdentificationNumberPage(equipmentIndex), value.containerIdentificationNumber) andThen
           sealsTransformer.transform(value.Seal, equipmentIndex) andThen
           goodsReferencesTransformer.transform(value.GoodsReference, equipmentIndex)
     }

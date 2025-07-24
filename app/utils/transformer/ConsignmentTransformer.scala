@@ -24,11 +24,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentTransformer @Inject() (
-  departureTransportMeansTransformer: DepartureTransportMeansTransformer
+  departureTransportMeansTransformer: DepartureTransportMeansTransformer,
+  transportEquipmentTransformer: TransportEquipmentTransformer
 )(implicit ec: ExecutionContext)
     extends NewPageTransformer {
 
   def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans)
+    departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
+      transportEquipmentTransformer.transform(consignment.TransportEquipment)
 
 }

@@ -25,7 +25,8 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.transport.equipment.{ItemsSection, SealsSection}
-import pages.transport.equipment.index.ContainerIdentificationNumberPage
+import pages.transport.equipment.AddTransportEquipmentYesNoPage
+import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, ContainerIdentificationNumberPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
@@ -49,8 +50,8 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
 
   "must transform data" in {
     forAll(arbitrary[Seq[TransportEquipmentType03]]) {
-      transportEquipment =>
-        transportEquipment.zipWithIndex.map {
+      transportEquipments =>
+        transportEquipments.zipWithIndex.map {
           case (_, i) =>
             val equipmentIndex = Index(i)
 
@@ -65,12 +66,13 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
               }
         }
 
-        val result = transformer.transform(transportEquipment).apply(emptyUserAnswers).futureValue
+        val result = transformer.transform(transportEquipments).apply(emptyUserAnswers).futureValue
 
-        transportEquipment.zipWithIndex.map {
+        transportEquipments.zipWithIndex.map {
           case (te, i) =>
             val equipmentIndex = Index(i)
-
+            result.get(AddTransportEquipmentYesNoPage).value mustEqual true
+            result.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)).value mustEqual true
             result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustEqual te.containerIdentificationNumber
             result.getValue(SealsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
             result.getValue(ItemsSection(equipmentIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
