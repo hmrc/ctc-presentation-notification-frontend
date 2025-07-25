@@ -47,6 +47,17 @@ package object transformer {
           }
   }
 
+  implicit class RichOption[A](value: Option[A]) {
+
+    def mapWithSets(
+      sets: A => UserAnswers => Future[UserAnswers]
+    )(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+      value match {
+        case Some(a) => sets(a)
+        case None    => Future.successful
+      }
+  }
+
   implicit class RichFlag(value: Flag) {
 
     def toBoolean: Boolean = value match {

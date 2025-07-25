@@ -16,22 +16,26 @@
 
 package utils.transformer
 
+import generated.PlaceOfLoadingType
 import models.UserAnswers
+import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, LocationPage, UnLocodePage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IE170Transformer @Inject() (
-  consignmentTransformer: ConsignmentTransformer,
-  transitOperationTransformer: TransitOperationTransformer
-) extends NewPageTransformer {
+class PlaceOfLoadingTransformer @Inject() (
+)(implicit ec: ExecutionContext)
+    extends NewPageTransformer {
 
-  def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
-    val pipeline =
-      consignmentTransformer.transform(userAnswers.departureData.Consignment) andThen
-        transitOperationTransformer.transform(userAnswers.departureData.TransitOperation)
-
-    pipeline(userAnswers)
-  }
+  def transform(
+    placeOfLoading: Option[PlaceOfLoadingType]
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    placeOfLoading.mapWithSets {
+      value =>
+        set(AddUnLocodeYesNoPage, value.UNLocode.isDefined) andThen
+          set(UnLocodePage, value.UNLocode) andThen
+          set(LocationPage, value.location) andThen
+          set(AddExtraInformationYesNoPage, value.country.isDefined)
+    }
 }

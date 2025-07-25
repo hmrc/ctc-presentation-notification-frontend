@@ -25,9 +25,16 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+  
+  private val countryCodesFullList = "CountryCodesFullList"
 
   def getCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
-    getCountries("CountryCodesFullList")
+    getCountries(countryCodesFullList)
+    
+  def getCountry(code: String)(implicit hc: HeaderCarrier): Future[Country] =
+    referenceDataConnector
+      .getCountry(countryCodesFullList, code)
+      .map(_.resolve())
 
   private def getCountries(listName: String)(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
