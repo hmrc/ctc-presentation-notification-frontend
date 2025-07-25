@@ -17,7 +17,7 @@
 package utils.transformer
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.ConsignmentType23
+import generated.{ConsignmentType23, Number1}
 import generators.Generators
 import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
@@ -26,7 +26,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.sections.transport.equipment.EquipmentsSection
-import pages.transport.InlandModePage
+import pages.transport.{ContainerIndicatorPage, InlandModePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
@@ -52,31 +52,37 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[TransportModeCodesService].toInstance(mockTransportModeCodesService)
       )
 
-  "must transform data" - {
-    "when options defined" in {
-      val inlandMode = InlandMode("1", "mode")
+  "must transform data" in {
+    val inlandMode = InlandMode("1", "mode")
 
-      forAll(arbitrary[ConsignmentType23].map(_.copy(inlandModeOfTransport = Some(inlandMode.code)))) {
-        consignment =>
-          when(mockTransportEquipmentTransformer.transform(any()))
-            .thenReturn {
-              ua => Future.successful(ua.setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
-            }
+    forAll(
+      arbitrary[ConsignmentType23].map(
+        _.copy(
+          inlandModeOfTransport = Some(inlandMode.code),
+          containerIndicator = Some(Number1)
+        )
+      )
+    ) {
+      consignment =>
+        when(mockTransportEquipmentTransformer.transform(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
+          }
 
-          when(mockDepartureTransportMeansTransformer.transform(any())(any()))
-            .thenReturn {
-              ua => Future.successful(ua.setValue(TransportMeansListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
-            }
+        when(mockDepartureTransportMeansTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(TransportMeansListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
+          }
 
-          when(mockTransportModeCodesService.getInlandMode(any())(any()))
-            .thenReturn(Future.successful(inlandMode))
+        when(mockTransportModeCodesService.getInlandMode(any())(any()))
+          .thenReturn(Future.successful(inlandMode))
 
-          val result = transformer.transform(consignment).apply(emptyUserAnswers).futureValue
+        val result = transformer.transform(consignment).apply(emptyUserAnswers).futureValue
 
-          result.getValue(EquipmentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
-          result.getValue(TransportMeansListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
-          result.getValue(InlandModePage) mustEqual inlandMode
-      }
+        result.getValue(EquipmentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+        result.getValue(TransportMeansListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+        result.getValue(InlandModePage) mustEqual inlandMode
+        result.get(ContainerIndicatorPage).value mustEqual true
     }
   }
 }

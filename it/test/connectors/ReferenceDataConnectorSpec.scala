@@ -1480,6 +1480,116 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
+    "getInlandModeCode" - {
+      val inlandModeCode = "1"
+
+      "when phase 5" - {
+        def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?data.code=$code"
+        "must return inland mode when successful" in {
+          val responseJson: String =
+            """
+                |{
+                |  "_links": {
+                |    "self": {
+                |      "href": "/customs-reference-data/lists/TransportModeCode"
+                |    }
+                |  },
+                |  "meta": {
+                |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+                |    "snapshotDate": "2023-01-01"
+                |  },
+                |  "id": "TransportModeCode",
+                |  "data": [
+                |    {
+                |      "code": "1",
+                |      "description": "Maritime Transport"
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
+
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+
+              server.stubFor(
+                get(urlEqualTo(url(inlandModeCode)))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
+                  .willReturn(okJson(responseJson))
+              )
+
+              val expectedResult = InlandMode("1", "Maritime Transport")
+
+              connector.getInlandMode(inlandModeCode).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkNoReferenceDataFoundResponse(url(inlandModeCode), emptyPhase5ResponseJson, connector.getInlandMode(inlandModeCode))
+          }
+
+        }
+
+        "must return an exception when an error response is returned" in {
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkErrorResponse(url(inlandModeCode), connector.getInlandMode(inlandModeCode))
+          }
+        }
+      }
+
+      "when phase 6" - {
+        def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?keys=$code"
+        "must return inland mode when successful" in {
+          val responseJson: String =
+            """
+                |[
+                |    {
+                |      "key": "1",
+                |      "value": "Maritime Transport"
+                |    }
+                |]
+                |""".stripMargin
+
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+
+              server.stubFor(
+                get(urlEqualTo(url(inlandModeCode)))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+                  .willReturn(okJson(responseJson))
+              )
+
+              val expectedResult = InlandMode("1", "Maritime Transport")
+
+              connector.getInlandMode(inlandModeCode).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkNoReferenceDataFoundResponse(url(inlandModeCode), emptyPhase6ResponseJson, connector.getInlandMode(inlandModeCode))
+          }
+
+        }
+
+        "must return an exception when an error response is returned" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkErrorResponse(url(inlandModeCode), connector.getInlandMode(inlandModeCode))
+          }
+        }
+      }
+    }
+
     "getQualifierOfTheIdentifications" - {
       val url: String = s"/$baseUrl/lists/QualifierOfTheIdentification"
 

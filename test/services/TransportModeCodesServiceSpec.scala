@@ -86,5 +86,21 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
         verify(mockRefDataConnector).getInlandModes()(any(), any())
       }
     }
+
+    "getInlandMode" - {
+
+      val inlandMode1 = InlandMode("8", "Inland waterway")
+
+      "must return an inland mode" in {
+        when(mockRefDataConnector.getInlandMode(any())(any(), any()))
+          .thenReturn(
+            Future.successful(Right(inlandMode1))
+          )
+
+        service.getInlandMode("8").futureValue mustEqual inlandMode1
+
+        verify(mockRefDataConnector).getInlandMode(any())(any(), any())
+      }
+    }
   }
 }

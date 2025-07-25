@@ -17,6 +17,7 @@
 package utils
 
 import models.{Index, UserAnswers}
+import generated.{Flag, Number0, Number1}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -42,5 +43,13 @@ package object transformer {
                 sets(a, Index(i))
               }
           }
+  }
+
+  implicit class RichFlag(value: Flag) {
+
+    def toBoolean: Boolean = value match {
+      case Number1 => true
+      case Number0 => false
+    }
   }
 }
