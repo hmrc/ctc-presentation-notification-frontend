@@ -26,7 +26,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.sections.transport.equipment.EquipmentsSection
-import pages.transport.{ContainerIndicatorPage, InlandModePage}
+import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
@@ -82,6 +82,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         result.getValue(EquipmentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
         result.getValue(TransportMeansListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
         result.getValue(InlandModePage) mustEqual inlandMode
+        result.get(AddInlandModeOfTransportYesNoPage).value mustEqual true
         result.get(ContainerIndicatorPage).value mustEqual true
     }
   }

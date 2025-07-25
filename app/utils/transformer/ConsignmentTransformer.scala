@@ -18,10 +18,9 @@ package utils.transformer
 
 import generated.ConsignmentType23
 import models.UserAnswers
-import pages.transport.{ContainerIndicatorPage, InlandModePage}
+import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import services.TransportModeCodesService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.transformer.RichFlag
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +33,8 @@ class ConsignmentTransformer @Inject() (
     extends NewPageTransformer {
 
   def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    set(InlandModePage, consignment.inlandModeOfTransport, transportModeCodesService.getInlandMode) andThen
+    set(AddInlandModeOfTransportYesNoPage, consignment.inlandModeOfTransport.isDefined) andThen
+      set(InlandModePage, consignment.inlandModeOfTransport, transportModeCodesService.getInlandMode) andThen
       set(ContainerIndicatorPage, consignment.containerIndicator.map(_.toBoolean)) andThen
       departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
       transportEquipmentTransformer.transform(consignment.TransportEquipment)

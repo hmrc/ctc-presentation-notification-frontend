@@ -19,6 +19,8 @@ package utils
 import models.{Index, UserAnswers}
 import generated.{Flag, Number0, Number1}
 
+import java.time.LocalDate
+import javax.xml.datatype.XMLGregorianCalendar
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -51,5 +53,9 @@ package object transformer {
       case Number1 => true
       case Number0 => false
     }
+  }
+
+  implicit class RichXMLGregorianCalendar(value: XMLGregorianCalendar) {
+    def toLocalDate: LocalDate = value.toGregorianCalendar.toZonedDateTime.toLocalDate
   }
 }
