@@ -19,13 +19,16 @@ package utils.transformer
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.{ConsignmentType23, Number1}
 import generators.Generators
-import models.reference.TransportMode.InlandMode
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.sections.loading.LoadingSection
+import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.sections.transport.equipment.EquipmentsSection
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -38,8 +41,10 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private val transformer = app.injector.instanceOf[ConsignmentTransformer]
 
-  private lazy val mockTransportEquipmentTransformer      = mock[TransportEquipmentTransformer]
-  private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
+  private lazy val mockTransportEquipmentTransformer         = mock[TransportEquipmentTransformer]
+  private lazy val mockDepartureTransportMeansTransformer    = mock[DepartureTransportMeansTransformer]
+  private lazy val mockPlaceOfLoadingTransformer             = mock[PlaceOfLoadingTransformer]
+  private lazy val mockActiveBorderTransportMeansTransformer = mock[ActiveBorderTransportMeansTransformer]
 
   private lazy val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
 
@@ -49,16 +54,20 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       .overrides(
         bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
+        bind[PlaceOfLoadingTransformer].toInstance(mockPlaceOfLoadingTransformer),
+        bind[ActiveBorderTransportMeansTransformer].toInstance(mockActiveBorderTransportMeansTransformer),
         bind[TransportModeCodesService].toInstance(mockTransportModeCodesService)
       )
 
   "must transform data" in {
     val inlandMode = InlandMode("1", "mode")
+    val borderMode = BorderMode("8", "Inland waterway")
 
     forAll(
       arbitrary[ConsignmentType23].map(
         _.copy(
           inlandModeOfTransport = Some(inlandMode.code),
+          modeOfTransportAtTheBorder = Some(borderMode.code),
           containerIndicator = Some(Number1)
         )
       )
@@ -74,15 +83,32 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
             ua => Future.successful(ua.setValue(TransportMeansListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
           }
 
+        when(mockPlaceOfLoadingTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(LoadingSection, Json.obj("foo" -> "bar")))
+          }
+
         when(mockTransportModeCodesService.getInlandMode(any())(any()))
           .thenReturn(Future.successful(inlandMode))
+
+        when(mockTransportModeCodesService.getBorderMode(any())(any()))
+          .thenReturn(Future.successful(borderMode))
+
+        when(mockActiveBorderTransportMeansTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(BorderActiveListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
+          }
 
         val result = transformer.transform(consignment).apply(emptyUserAnswers).futureValue
 
         result.getValue(EquipmentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+        result.getValue(LoadingSection) mustEqual Json.obj("foo" -> "bar")
         result.getValue(TransportMeansListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
         result.getValue(InlandModePage) mustEqual inlandMode
+        result.getValue(BorderModeOfTransportPage) mustEqual borderMode
         result.get(AddInlandModeOfTransportYesNoPage).value mustEqual true
+        result.get(AddBorderModeOfTransportYesNoPage).value mustEqual true
+        result.get(BorderActiveListSection).value mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
         result.get(ContainerIndicatorPage).value mustEqual true
     }
   }

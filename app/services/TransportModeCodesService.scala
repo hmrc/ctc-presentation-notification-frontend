@@ -44,4 +44,9 @@ class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceData
     referenceDataConnector
       .getInlandMode(code)
       .map(_.resolve())
+
+  def getBorderMode(code: String)(implicit hc: HeaderCarrier): Future[BorderMode] =
+    referenceDataConnector
+      .getBorderMode(code)
+      .map(_.resolve())
 }

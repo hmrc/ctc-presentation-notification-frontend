@@ -20,10 +20,10 @@ import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.reference.transport.border.active.Identification
-import models.reference.TransportMode.{BorderMode, InlandMode}
-import models.reference.*
 import models.LocationOfGoodsIdentification
+import models.reference.*
+import models.reference.TransportMode.{BorderMode, InlandMode}
+import models.reference.transport.border.active.Identification
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.Gen
 import org.scalatest.{Assertion, EitherValues}
@@ -1585,6 +1585,115 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             app =>
               val connector = app.injector.instanceOf[ReferenceDataConnector]
               checkErrorResponse(url(inlandModeCode), connector.getInlandMode(inlandModeCode))
+          }
+        }
+      }
+    }
+    "getBorderModeCode" - {
+      val borderModeCode = "1"
+
+      "when phase 5" - {
+        def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?data.code=$code"
+        "must return border mode when successful" in {
+          val responseJson: String =
+            """
+                |{
+                |  "_links": {
+                |    "self": {
+                |      "href": "/customs-reference-data/lists/TransportModeCode"
+                |    }
+                |  },
+                |  "meta": {
+                |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+                |    "snapshotDate": "2023-01-01"
+                |  },
+                |  "id": "TransportModeCode",
+                |  "data": [
+                |    {
+                |      "code": "1",
+                |      "description": "Maritime Transport"
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
+
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+
+              server.stubFor(
+                get(urlEqualTo(url(borderModeCode)))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
+                  .willReturn(okJson(responseJson))
+              )
+
+              val expectedResult = BorderMode("1", "Maritime Transport")
+
+              connector.getBorderMode(borderModeCode).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkNoReferenceDataFoundResponse(url(borderModeCode), emptyPhase5ResponseJson, connector.getBorderMode(borderModeCode))
+          }
+
+        }
+
+        "must return an exception when an error response is returned" in {
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkErrorResponse(url(borderModeCode), connector.getBorderMode(borderModeCode))
+          }
+        }
+      }
+
+      "when phase 6" - {
+        def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?keys=$code"
+        "must return inland mode when successful" in {
+          val responseJson: String =
+            """
+                |[
+                |    {
+                |      "key": "1",
+                |      "value": "Maritime Transport"
+                |    }
+                |]
+                |""".stripMargin
+
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+
+              server.stubFor(
+                get(urlEqualTo(url(borderModeCode)))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+                  .willReturn(okJson(responseJson))
+              )
+
+              val expectedResult = BorderMode("1", "Maritime Transport")
+
+              connector.getBorderMode(borderModeCode).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkNoReferenceDataFoundResponse(url(borderModeCode), emptyPhase6ResponseJson, connector.getBorderMode(borderModeCode))
+          }
+
+        }
+
+        "must return an exception when an error response is returned" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkErrorResponse(url(borderModeCode), connector.getBorderMode(borderModeCode))
           }
         }
       }

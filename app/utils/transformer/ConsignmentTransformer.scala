@@ -18,6 +18,7 @@ package utils.transformer
 
 import generated.ConsignmentType23
 import models.UserAnswers
+import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 import services.TransportModeCodesService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,14 +29,20 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentTransformer @Inject() (
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
+  placeOfLoadingTransformer: PlaceOfLoadingTransformer,
+  activeBorderTransportMeansTransformer: ActiveBorderTransportMeansTransformer,
   transportModeCodesService: TransportModeCodesService
 )(implicit ec: ExecutionContext)
     extends NewPageTransformer {
 
   def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    set(AddInlandModeOfTransportYesNoPage, consignment.inlandModeOfTransport.isDefined) andThen
+    set(AddBorderModeOfTransportYesNoPage, consignment.modeOfTransportAtTheBorder.isDefined) andThen
+      set(AddInlandModeOfTransportYesNoPage, consignment.inlandModeOfTransport.isDefined) andThen
+      set(BorderModeOfTransportPage, consignment.modeOfTransportAtTheBorder, transportModeCodesService.getBorderMode) andThen
       set(InlandModePage, consignment.inlandModeOfTransport, transportModeCodesService.getInlandMode) andThen
+      placeOfLoadingTransformer.transform(consignment.PlaceOfLoading) andThen
       set(ContainerIndicatorPage, consignment.containerIndicator.map(_.toBoolean)) andThen
       departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
+      activeBorderTransportMeansTransformer.transform(consignment.ActiveBorderTransportMeans) andThen
       transportEquipmentTransformer.transform(consignment.TransportEquipment)
 }

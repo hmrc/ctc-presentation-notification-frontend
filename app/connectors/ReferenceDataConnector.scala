@@ -162,6 +162,13 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getOrElseUpdate[InlandMode](url)
   }
 
+  def getBorderMode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[BorderMode]] = {
+    implicit val reads: Reads[BorderMode] = BorderMode.reads(config)
+    val queryParameters                   = BorderMode.queryParams(code)(config)
+    val url                               = url"${config.referenceDataUrl}/lists/TransportModeCode?$queryParameters"
+    getOrElseUpdate[BorderMode](url)
+  }
+
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Identification]] = {
     implicit val reads: Reads[Identification] = Identification.reads(config)
     val url                                   = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"

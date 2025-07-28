@@ -23,6 +23,8 @@ import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Format, Json, Reads}
 
+import scala.collection.immutable.Seq
+
 trait TransportMode[T] extends Radioable[T] {
 
   val code: String
@@ -81,5 +83,10 @@ object TransportMode {
     implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
     implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => (x, y).compareBy(_.code)
+
+    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+      val key = if (config.isPhase6Enabled) "keys" else "data.code"
+      Seq(key -> code)
+    }
   }
 }
