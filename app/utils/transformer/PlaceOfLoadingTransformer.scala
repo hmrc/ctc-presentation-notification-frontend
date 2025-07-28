@@ -18,13 +18,15 @@ package utils.transformer
 
 import generated.PlaceOfLoadingType
 import models.UserAnswers
-import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, LocationPage, UnLocodePage}
+import pages.loading.{AddExtraInformationYesNoPage, AddUnLocodeYesNoPage, CountryPage, LocationPage, UnLocodePage}
+import services.CountriesService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PlaceOfLoadingTransformer @Inject() (
+  countryService: CountriesService
 )(implicit ec: ExecutionContext)
     extends NewPageTransformer {
 
@@ -35,7 +37,9 @@ class PlaceOfLoadingTransformer @Inject() (
       value =>
         set(AddUnLocodeYesNoPage, value.UNLocode.isDefined) andThen
           set(UnLocodePage, value.UNLocode) andThen
-          set(LocationPage, value.location) andThen
-          set(AddExtraInformationYesNoPage, value.country.isDefined)
+          set(AddExtraInformationYesNoPage, value.UNLocode.isDefined && value.country.isDefined) andThen
+          set(CountryPage, value.country, countryService.getCountry) andThen
+          set(LocationPage, value.location)
+
     }
 }

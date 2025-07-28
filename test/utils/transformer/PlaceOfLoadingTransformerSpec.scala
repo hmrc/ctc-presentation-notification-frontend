@@ -19,33 +19,100 @@ package utils.transformer
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.PlaceOfLoadingType
 import generators.Generators
-import org.scalacheck.Arbitrary
+import models.reference.{Country, CountryCode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.loading.*
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import services.CountriesService
+
+import scala.concurrent.Future
 
 class PlaceOfLoadingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val transformer = app.injector.instanceOf[PlaceOfLoadingTransformer]
 
-  "must transform data" - {
-    import pages.loading.*
+  private lazy val mockCountryService = mock[CountriesService]
 
-    "when values defined" in {
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[CountriesService].toInstance(mockCountryService)
+      )
+
+  "must transform data" - {
+
+    "when UNLocode is undefined and Country is defined" in {
+      val country = Country(CountryCode("GB"), "value")
       forAll(
         arbitrary[PlaceOfLoadingType].map(
           _.copy(
-            UNLocode = Some("UNLocode"),
-            country = Some("UK")
+            UNLocode = None,
+            country = Some("GB"),
+            location = Some("Paris")
           )
         )
       ) {
         placeOfLoading =>
+          when(mockCountryService.getCountry(any())(any()))
+            .thenReturn(Future.successful(country))
           val result = transformer.transform(Some(placeOfLoading)).apply(emptyUserAnswers).futureValue
 
-          result.getValue(AddUnLocodeYesNoPage) mustEqual true
-          result.get(UnLocodePage) mustEqual placeOfLoading.UNLocode
+          result.get(AddUnLocodeYesNoPage).value mustEqual false
+          result.get(UnLocodePage) must not be defined
+          result.get(AddExtraInformationYesNoPage).value mustEqual false
+          result.getValue(CountryPage) mustEqual country
           result.get(LocationPage) mustEqual placeOfLoading.location
-          result.getValue(AddExtraInformationYesNoPage) mustEqual true
+      }
+    }
+    "when UNLocode is defined but Country is undefined " in {
+      val country = Country(CountryCode("GB"), "value")
+      forAll(
+        arbitrary[PlaceOfLoadingType].map(
+          _.copy(
+            UNLocode = Some("value"),
+            country = None,
+            location = Some("Paris")
+          )
+        )
+      ) {
+        placeOfLoading =>
+          when(mockCountryService.getCountry(any())(any()))
+            .thenReturn(Future.successful(country))
+          val result = transformer.transform(Some(placeOfLoading)).apply(emptyUserAnswers).futureValue
+
+          result.get(AddUnLocodeYesNoPage).value mustEqual true
+          result.get(UnLocodePage) mustEqual placeOfLoading.UNLocode
+          result.get(AddExtraInformationYesNoPage).value mustEqual false
+          result.get(CountryPage) must not be defined
+          result.get(LocationPage) mustEqual placeOfLoading.location
+      }
+    }
+    "when all values are defined " in {
+      val country = Country(CountryCode("GB"), "value")
+      forAll(
+        arbitrary[PlaceOfLoadingType].map(
+          _.copy(
+            UNLocode = Some("value"),
+            country = Some("GB"),
+            location = Some("Paris")
+          )
+        )
+      ) {
+        placeOfLoading =>
+          when(mockCountryService.getCountry(any())(any()))
+            .thenReturn(Future.successful(country))
+          val result = transformer.transform(Some(placeOfLoading)).apply(emptyUserAnswers).futureValue
+
+          result.get(AddUnLocodeYesNoPage).value mustEqual true
+          result.get(UnLocodePage) mustEqual placeOfLoading.UNLocode
+          result.get(AddExtraInformationYesNoPage).value mustEqual true
+          result.getValue(CountryPage) mustEqual country
+          result.get(LocationPage) mustEqual placeOfLoading.location
       }
     }
   }

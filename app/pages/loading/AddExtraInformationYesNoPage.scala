@@ -16,10 +16,10 @@
 
 package pages.loading
 
+import controllers.loading.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.loading.LoadingSection
-import controllers.loading.routes
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
