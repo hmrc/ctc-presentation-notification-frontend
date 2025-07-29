@@ -16,24 +16,25 @@
 
 package utils.transformer
 
+import generated.ContactPersonType03
 import models.UserAnswers
+import pages.representative.{AddRepresentativeContactDetailsYesNoPage, NamePage, RepresentativePhoneNumberPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IE170Transformer @Inject() (
-  consignmentTransformer: ConsignmentTransformer,
-  transitOperationTransformer: TransitOperationTransformer,
-  representativeTransformer: RepresentativeTransformer
-) extends NewPageTransformer {
+class ContactPersonTransformer @Inject() (
+)(implicit ec: ExecutionContext)
+    extends NewPageTransformer {
 
-  def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
-    val pipeline =
-      consignmentTransformer.transform(userAnswers.departureData.Consignment) andThen
-        representativeTransformer.transform(userAnswers.departureData.Representative) andThen
-        transitOperationTransformer.transform(userAnswers.departureData.TransitOperation)
-
-    pipeline(userAnswers)
-  }
+  def transform(
+    contactPerson: Option[ContactPersonType03]
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    set(AddRepresentativeContactDetailsYesNoPage, contactPerson.isDefined) andThen
+      contactPerson.mapWithSets {
+        value =>
+          set(NamePage, value.name) andThen
+            set(RepresentativePhoneNumberPage, value.phoneNumber)
+      }
 }

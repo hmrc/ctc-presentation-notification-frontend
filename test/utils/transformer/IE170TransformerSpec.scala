@@ -35,13 +35,15 @@ class IE170TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
   private val transformer                          = app.injector.instanceOf[IE170Transformer]
   private lazy val mockConsignmentTransformer      = mock[ConsignmentTransformer]
   private lazy val mockTransitOperationTransformer = mock[TransitOperationTransformer]
+  private lazy val mockRepresentativeTransformer   = mock[RepresentativeTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
-        bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer)
+        bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer),
+        bind[RepresentativeTransformer].toInstance(mockRepresentativeTransformer)
       )
 
   private case object FakeConsignmentSection extends QuestionPage[JsObject] {
@@ -50,6 +52,10 @@ class IE170TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private case object FakeTransitOperationSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "transitOperation"
+  }
+
+  private case object FakeRepresentativeSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "representative"
   }
 
   "must transform data" in {
@@ -66,12 +72,18 @@ class IE170TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
             ua => Future.successful(ua.setValue(FakeTransitOperationSection, Json.obj("foo" -> "bar")))
           }
 
+        when(mockRepresentativeTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(FakeRepresentativeSection, Json.obj("foo" -> "bar")))
+          }
+
         val userAnswers = emptyUserAnswers.copy(departureData = ie015)
 
         val result = transformer.transform(userAnswers).futureValue
 
         result.getValue(FakeConsignmentSection) mustEqual Json.obj("foo" -> "bar")
         result.getValue(FakeTransitOperationSection) mustEqual Json.obj("foo" -> "bar")
+        result.getValue(FakeRepresentativeSection) mustEqual Json.obj("foo" -> "bar")
     }
   }
 }
