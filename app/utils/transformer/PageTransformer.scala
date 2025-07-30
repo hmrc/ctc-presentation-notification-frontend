@@ -22,7 +22,7 @@ import play.api.libs.json.{Reads, Writes}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait NewPageTransformer {
+trait PageTransformer {
 
   def set[T](page: QuestionPage[T], value: Option[T])(implicit writes: Writes[T], reads: Reads[T]): UserAnswers => Future[UserAnswers] =
     userAnswers =>

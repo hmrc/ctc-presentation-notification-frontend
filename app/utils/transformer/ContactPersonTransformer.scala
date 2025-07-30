@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContactPersonTransformer @Inject() (
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(
     contactPerson: Option[ContactPersonType03]

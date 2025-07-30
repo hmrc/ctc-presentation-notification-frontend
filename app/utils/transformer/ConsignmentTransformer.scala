@@ -34,7 +34,7 @@ class ConsignmentTransformer @Inject() (
   locationOfGoodsTransformer: LocationOfGoodsTransformer,
   transportModeCodesService: TransportModeCodesService
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(consignment: ConsignmentType23)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     set(AddBorderModeOfTransportYesNoPage, consignment.modeOfTransportAtTheBorder.isDefined) andThen

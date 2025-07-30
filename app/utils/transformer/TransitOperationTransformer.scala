@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class TransitOperationTransformer @Inject() extends NewPageTransformer {
+class TransitOperationTransformer @Inject() extends PageTransformer {
 
   def transform(transitOperation: TransitOperationType03)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     set(LimitDatePage, transitOperation.limitDate.map(_.toLocalDate))

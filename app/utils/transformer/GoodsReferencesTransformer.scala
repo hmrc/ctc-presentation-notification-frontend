@@ -23,7 +23,7 @@ import pages.transport.equipment.ItemPage
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) extends NewPageTransformer {
+class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(
     goodsReferences: Seq[GoodsReferenceType01],

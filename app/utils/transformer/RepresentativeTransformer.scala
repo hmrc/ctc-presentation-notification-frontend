@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RepresentativeTransformer @Inject() (
   contactPersonTransformer: ContactPersonTransformer
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(representative: Option[RepresentativeType06])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     set(ActingAsRepresentativePage, representative.isDefined) andThen

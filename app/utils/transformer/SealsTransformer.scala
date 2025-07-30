@@ -24,7 +24,7 @@ import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends NewPageTransformer {
+class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(
     seals: Seq[SealType01],

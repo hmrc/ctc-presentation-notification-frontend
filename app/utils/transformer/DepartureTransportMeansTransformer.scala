@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DepartureTransportMeansTransformer @Inject() (
   referenceDataService: CheckYourAnswersReferenceDataService
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(
     departureTransportMeans: Seq[DepartureTransportMeansType01]

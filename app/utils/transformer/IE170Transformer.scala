@@ -26,7 +26,7 @@ class IE170Transformer @Inject() (
   consignmentTransformer: ConsignmentTransformer,
   transitOperationTransformer: TransitOperationTransformer,
   representativeTransformer: RepresentativeTransformer
-) extends NewPageTransformer {
+) extends PageTransformer {
 
   def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
     val pipeline =

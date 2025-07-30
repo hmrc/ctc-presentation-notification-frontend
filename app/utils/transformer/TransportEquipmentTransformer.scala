@@ -28,7 +28,7 @@ class TransportEquipmentTransformer @Inject() (
   sealsTransformer: SealsTransformer,
   goodsReferencesTransformer: GoodsReferencesTransformer
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(
     transportEquipments: Seq[TransportEquipmentType03]

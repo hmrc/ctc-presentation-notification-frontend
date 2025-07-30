@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PlaceOfLoadingTransformer @Inject() (
   countryService: CountriesService
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(
     placeOfLoading: Option[PlaceOfLoadingType]

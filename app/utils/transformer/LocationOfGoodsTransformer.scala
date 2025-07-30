@@ -34,7 +34,7 @@ class LocationOfGoodsTransformer @Inject() (
   customsOfficeService: CustomsOfficesService,
   countryService: CountriesService
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(
     locationOfGoods: Option[LocationOfGoodsType04]

@@ -31,7 +31,7 @@ class ActiveBorderTransportMeansTransformer @Inject() (
   identificationService: MeansOfTransportIdentificationTypesActiveService,
   nationalityService: CheckYourAnswersReferenceDataService
 )(implicit ec: ExecutionContext)
-    extends NewPageTransformer {
+    extends PageTransformer {
 
   def transform(
     activeBorderTransportMeans: Seq[ActiveBorderTransportMeansType03]
