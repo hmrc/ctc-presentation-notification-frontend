@@ -25,6 +25,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.loading.LoadingSection
+import pages.sections.locationOfGoods.LocationOfGoodsSection
 import pages.sections.transport.border.BorderActiveListSection
 import pages.sections.transport.departureTransportMeans.TransportMeansListSection
 import pages.sections.transport.equipment.EquipmentsSection
@@ -45,6 +46,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockDepartureTransportMeansTransformer    = mock[DepartureTransportMeansTransformer]
   private lazy val mockPlaceOfLoadingTransformer             = mock[PlaceOfLoadingTransformer]
   private lazy val mockActiveBorderTransportMeansTransformer = mock[ActiveBorderTransportMeansTransformer]
+  private lazy val mockLocationOfGoodsTransformer            = mock[LocationOfGoodsTransformer]
 
   private lazy val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
 
@@ -55,6 +57,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
         bind[PlaceOfLoadingTransformer].toInstance(mockPlaceOfLoadingTransformer),
+        bind[LocationOfGoodsTransformer].toInstance(mockLocationOfGoodsTransformer),
         bind[ActiveBorderTransportMeansTransformer].toInstance(mockActiveBorderTransportMeansTransformer),
         bind[TransportModeCodesService].toInstance(mockTransportModeCodesService)
       )
@@ -88,6 +91,11 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
             ua => Future.successful(ua.setValue(LoadingSection, Json.obj("foo" -> "bar")))
           }
 
+        when(mockLocationOfGoodsTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(LocationOfGoodsSection, Json.obj("foo" -> "bar")))
+          }
+
         when(mockTransportModeCodesService.getInlandMode(any())(any()))
           .thenReturn(Future.successful(inlandMode))
 
@@ -110,6 +118,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         result.get(AddBorderModeOfTransportYesNoPage).value mustEqual true
         result.get(BorderActiveListSection).value mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
         result.get(ContainerIndicatorPage).value mustEqual true
+        result.getValue(LocationOfGoodsSection) mustEqual Json.obj("foo" -> "bar")
     }
   }
 }

@@ -43,7 +43,7 @@ class ActiveBorderTransportMeansTransformer @Inject() (
             set(IdentificationPage(index), value.typeOfIdentification, identificationService.getBorderMeansIdentification) andThen
             set(IdentificationNumberPage(index), value.identificationNumber) andThen
             set(NationalityPage(index), value.nationality, nationalityService.getNationality) andThen
-            set(AddConveyanceReferenceYesNoPage(index), activeBorderTransportMeans.nonEmpty && value.conveyanceReferenceNumber.isDefined) andThen
+            set(AddConveyanceReferenceYesNoPage(index), value.conveyanceReferenceNumber.isDefined) andThen
             set(ConveyanceReferenceNumberPage(index), value.conveyanceReferenceNumber)
       }
 }

@@ -31,6 +31,7 @@ class ConsignmentTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   placeOfLoadingTransformer: PlaceOfLoadingTransformer,
   activeBorderTransportMeansTransformer: ActiveBorderTransportMeansTransformer,
+  locationOfGoodsTransformer: LocationOfGoodsTransformer,
   transportModeCodesService: TransportModeCodesService
 )(implicit ec: ExecutionContext)
     extends NewPageTransformer {
@@ -44,5 +45,6 @@ class ConsignmentTransformer @Inject() (
       set(ContainerIndicatorPage, consignment.containerIndicator.map(_.toBoolean)) andThen
       departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
       activeBorderTransportMeansTransformer.transform(consignment.ActiveBorderTransportMeans) andThen
-      transportEquipmentTransformer.transform(consignment.TransportEquipment)
+      transportEquipmentTransformer.transform(consignment.TransportEquipment) andThen
+      locationOfGoodsTransformer.transform(consignment.LocationOfGoods)
 }

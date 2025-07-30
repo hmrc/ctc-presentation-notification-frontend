@@ -64,7 +64,7 @@ class PlaceOfLoadingTransformerSpec extends SpecBase with AppWithDefaultMockFixt
 
           result.get(AddUnLocodeYesNoPage).value mustEqual false
           result.get(UnLocodePage) must not be defined
-          result.get(AddExtraInformationYesNoPage).value mustEqual false
+          result.get(AddExtraInformationYesNoPage) must not be defined
           result.getValue(CountryPage) mustEqual country
           result.get(LocationPage) mustEqual placeOfLoading.location
       }
