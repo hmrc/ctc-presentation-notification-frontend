@@ -44,8 +44,10 @@ class PlaceOfLoadingTransformer @Inject() (
     }
 
   private def setAddExtraInformationYesNoPage(placeOfLoading: PlaceOfLoadingType): UserAnswers => Future[UserAnswers] =
-    placeOfLoading.UNLocode match {
-      case Some(_) => set(AddExtraInformationYesNoPage, placeOfLoading.country.isDefined)
-      case None    => Future.successful
+    if (placeOfLoading.UNLocode.isDefined) {
+      set(AddExtraInformationYesNoPage, placeOfLoading.country.isDefined)
+    } else {
+      Future.successful
     }
+
 }

@@ -29,7 +29,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocationOfGoodsTransformer @Inject() (
-  service: LocationOfGoodsIdentificationTypeService,
+  locationOfGoodsIdentificationService: LocationOfGoodsIdentificationTypeService,
   locationTypeService: LocationTypeService,
   customsOfficeService: CustomsOfficesService,
   countryService: CountriesService
@@ -62,7 +62,7 @@ class LocationOfGoodsTransformer @Inject() (
     userAnswers =>
       (for {
         locationType        <- OptionT.fromOption[Future](getLocationType(userAnswers))
-        identificationTypes <- OptionT.liftF(service.getLocationOfGoodsIdentificationTypes(locationType))
+        identificationTypes <- OptionT.liftF(locationOfGoodsIdentificationService.getLocationOfGoodsIdentificationTypes(locationType))
       } yield identificationTypes match {
         case head :: Nil => set(InferredIdentificationPage, head).apply(userAnswers)
         case values      => set(IdentificationPage, values.find(_.code == locationOfGoods.qualifierOfIdentification)).apply(userAnswers)

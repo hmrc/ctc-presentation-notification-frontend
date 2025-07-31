@@ -16,19 +16,14 @@
 
 package utils
 
-import models.{Index, UserAnswers}
 import generated.{Flag, Number0, Number1}
+import models.{Index, UserAnswers}
 
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 package object transformer {
-
-  implicit class TryOps[A](tryValue: Try[A]) {
-    def asFuture: Future[A] = Future.fromTry(tryValue)
-  }
 
   implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
 
