@@ -51,8 +51,12 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .execute[Responses[T]]
 
   // https://www.playframework.com/documentation/2.6.x/ScalaCache#Accessing-the-Cache-API
-  private def getOrElseUpdate[T: ClassTag](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Response[T]] =
-    cache.getOrElseUpdate[Response[T]](url.toString, config.asyncCacheApiExpiration.seconds) {
+  // Since BorderMode and InlandMode retrieve from the same code list, we need to be more specific with the key to avoid a ClassCastException.
+  private def getOrElseUpdate[T: ClassTag](
+    url: URL,
+    key: String
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Response[T]] =
+    cache.getOrElseUpdate[Response[T]](key, config.asyncCacheApiExpiration.seconds) {
       get[T](url).map(_.map(_.head))
     }
 
@@ -66,7 +70,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParameters                = Country.queryParams(code)(config)
     implicit val reads: Reads[Country] = Country.reads(config)
     val url                            = url"${config.referenceDataUrl}/lists/$listName?$queryParameters"
-    getOrElseUpdate[Country](url)
+    getOrElseUpdate[Country](url, url.toString)
   }
 
   def getCustomsOfficesOfTransitForCountry(
@@ -93,14 +97,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParameters                    = CountryCode.queryParams(code)(config)
     implicit val reads: Reads[CountryCode] = CountryCode.reads(config)
     val url                                = url"${config.referenceDataUrl}/lists/CountryWithoutZip?$queryParameters"
-    getOrElseUpdate[CountryCode](url)
+    getOrElseUpdate[CountryCode](url, url.toString)
   }
 
   def getUnLocode(unLocode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[UnLocode]] = {
     val queryParameters                 = UnLocode.queryParams(unLocode)(config)
     implicit val reads: Reads[UnLocode] = UnLocode.reads(config)
     val url                             = url"${config.referenceDataUrl}/lists/UnLocodeExtended?$queryParameters"
-    getOrElseUpdate[UnLocode](url)
+    getOrElseUpdate[UnLocode](url, url.toString)
   }
 
   def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Nationality]] = {
@@ -113,7 +117,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParameters                    = Nationality.queryParams(code)(config)
     implicit val reads: Reads[Nationality] = Nationality.reads(config)
     val url                                = url"${config.referenceDataUrl}/lists/Nationality?$queryParameters"
-    getOrElseUpdate[Nationality](url)
+    getOrElseUpdate[Nationality](url, url.toString)
   }
 
   def getTypesOfLocation()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[LocationType]] = {
@@ -126,7 +130,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParameters                     = LocationType.queryParams(code)(config)
     implicit val reads: Reads[LocationType] = LocationType.reads(config)
     val url                                 = url"${config.referenceDataUrl}/lists/TypeOfLocation?$queryParameters"
-    getOrElseUpdate[LocationType](url)
+    getOrElseUpdate[LocationType](url, url.toString)
   }
 
   def getQualifierOfTheIdentifications()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[LocationOfGoodsIdentification]] = {
@@ -159,14 +163,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[InlandMode] = InlandMode.reads(config)
     val queryParameters                   = InlandMode.queryParams(code)(config)
     val url                               = url"${config.referenceDataUrl}/lists/TransportModeCode?$queryParameters"
-    getOrElseUpdate[InlandMode](url)
+    getOrElseUpdate[InlandMode](url, s"$url - InlandMode")
   }
 
   def getBorderMode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[BorderMode]] = {
     implicit val reads: Reads[BorderMode] = BorderMode.reads(config)
     val queryParameters                   = BorderMode.queryParams(code)(config)
     val url                               = url"${config.referenceDataUrl}/lists/TransportModeCode?$queryParameters"
-    getOrElseUpdate[BorderMode](url)
+    getOrElseUpdate[BorderMode](url, s"$url - BorderMode")
   }
 
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Identification]] = {
@@ -179,7 +183,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParameters                       = Identification.queryParams(code)(config)
     implicit val reads: Reads[Identification] = Identification.reads(config)
     val url                                   = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive?$queryParameters"
-    getOrElseUpdate[Identification](url)
+    getOrElseUpdate[Identification](url, url.toString)
   }
 
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[TransportMeansIdentification]] = {
@@ -194,7 +198,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParameters                                     = TransportMeansIdentification.queryParams(code)(config)
     implicit val reads: Reads[TransportMeansIdentification] = TransportMeansIdentification.reads(config)
     val url                                                 = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport?$queryParameters"
-    getOrElseUpdate[TransportMeansIdentification](url)
+    getOrElseUpdate[TransportMeansIdentification](url, url.toString)
   }
 
   private def getCustomsOfficesForCountryAndRole(
@@ -211,7 +215,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParameters                            = CustomsOffice.queryParameters(ids = Seq(id))(config)
     val url                                        = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"
     implicit val reads: Reads[List[CustomsOffice]] = CustomsOffice.listReads(config)
-    getOrElseUpdate[CustomsOffice](url)
+    getOrElseUpdate[CustomsOffice](url, url.toString)
   }
 
   def getCustomsOfficesForIds(
