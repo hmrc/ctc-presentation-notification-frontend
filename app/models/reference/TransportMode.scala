@@ -25,7 +25,7 @@ import play.api.libs.json.{__, Format, Json, Reads}
 
 import scala.collection.immutable.Seq
 
-trait TransportMode[T] extends Radioable[T] {
+sealed trait TransportMode {
 
   val code: String
   val description: String
@@ -38,7 +38,7 @@ trait TransportMode[T] extends Radioable[T] {
 
 object TransportMode {
 
-  case class InlandMode(code: String, description: String) extends TransportMode[InlandMode] {
+  case class InlandMode(code: String, description: String) extends TransportMode with Radioable[InlandMode] {
     override val messageKeyPrefix: String = "transport.inlandModeOfTransport"
   }
 
@@ -64,7 +64,7 @@ object TransportMode {
     implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
   }
 
-  case class BorderMode(code: String, description: String) extends TransportMode[BorderMode] {
+  case class BorderMode(code: String, description: String) extends TransportMode with Radioable[BorderMode] {
     override val messageKeyPrefix: String = "transport.border.borderModeOfTransport"
   }
 

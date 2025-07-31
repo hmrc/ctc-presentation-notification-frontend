@@ -40,7 +40,6 @@ class PlaceOfLoadingTransformer @Inject() (
           setAddExtraInformationYesNoPage(value) andThen
           set(CountryPage, value.country, countryService.getCountry) andThen
           set(LocationPage, value.location)
-
     }
 
   private def setAddExtraInformationYesNoPage(placeOfLoading: PlaceOfLoadingType): UserAnswers => Future[UserAnswers] =
@@ -49,5 +48,4 @@ class PlaceOfLoadingTransformer @Inject() (
     } else {
       Future.successful
     }
-
 }

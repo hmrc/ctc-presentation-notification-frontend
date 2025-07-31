@@ -55,7 +55,6 @@ class LocationOfGoodsTransformer @Inject() (
           setAddContactYesNoPage(value) andThen
           set(NamePage, value.ContactPerson.map(_.name)) andThen
           set(PhoneNumberPage, value.ContactPerson.map(_.phoneNumber))
-
     }
 
   private def setIdentification(locationOfGoods: LocationOfGoodsType04)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =

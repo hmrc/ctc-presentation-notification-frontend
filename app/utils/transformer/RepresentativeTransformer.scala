@@ -36,7 +36,5 @@ class RepresentativeTransformer @Inject() (
         value =>
           set(EoriPage, value.identificationNumber) andThen
             contactPersonTransformer.transform(value.ContactPerson)
-
       }
-
 }

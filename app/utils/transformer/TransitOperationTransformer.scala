@@ -28,5 +28,4 @@ class TransitOperationTransformer @Inject() extends PageTransformer {
 
   def transform(transitOperation: TransitOperationType03)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     set(LimitDatePage, transitOperation.limitDate.map(_.toLocalDate))
-
 }

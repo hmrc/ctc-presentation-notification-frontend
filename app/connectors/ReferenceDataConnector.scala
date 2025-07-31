@@ -135,7 +135,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     get[LocationOfGoodsIdentification](url)
   }
 
-  private def getTransportModeCodes[T <: TransportMode[T]]()(implicit
+  private def getTransportModeCodes[T <: TransportMode]()(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier,
     rds: Reads[T],
