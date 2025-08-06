@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{DateTimeService, DepartureMessageService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.transformer.DepartureDataTransformer
+import utils.transformer.IE170Transformer
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,7 @@ class IndexController @Inject() (
   sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
   service: DepartureMessageService,
-  departureDataTransformer: DepartureDataTransformer,
+  departureDataTransformer: IE170Transformer,
   dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

@@ -21,15 +21,15 @@ import generated.CC015CType
 import generators.Generators
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.*
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.DepartureMessageService
-import utils.transformer.DepartureDataTransformer
+import utils.transformer.IE170Transformer
 
 import scala.concurrent.Future
 
@@ -43,14 +43,14 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   private val mockDepartureMessageService: DepartureMessageService = mock[DepartureMessageService]
 
-  private val departureDataTransformer = mock[DepartureDataTransformer]
+  private val departureDataTransformer = mock[IE170Transformer]
 
   override protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[DepartureMessageService].toInstance(mockDepartureMessageService),
-        bind[DepartureDataTransformer].toInstance(departureDataTransformer)
+        bind[IE170Transformer].toInstance(departureDataTransformer)
       )
 
   override def beforeEach(): Unit = {
@@ -81,7 +81,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
             when(mockDepartureMessageService.canSubmitPresentationNotification(any(), any(), any())(any(), any()))
               .thenReturn(Future.successful(true))
 
-            when(departureDataTransformer.transform(any())(any()))
+            when(departureDataTransformer.transform(any())(any(), any()))
               .thenReturn(Future.successful(emptyUserAnswers))
 
             when(mockSessionRepository.get(any()))

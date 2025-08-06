@@ -23,7 +23,9 @@ import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Format, Json, Reads}
 
-trait TransportMode[T] extends Radioable[T] {
+import scala.collection.immutable.Seq
+
+sealed trait TransportMode {
 
   val code: String
   val description: String
@@ -36,7 +38,7 @@ trait TransportMode[T] extends Radioable[T] {
 
 object TransportMode {
 
-  case class InlandMode(code: String, description: String) extends TransportMode[InlandMode] {
+  case class InlandMode(code: String, description: String) extends TransportMode with Radioable[InlandMode] {
     override val messageKeyPrefix: String = "transport.inlandModeOfTransport"
   }
 
@@ -52,12 +54,17 @@ object TransportMode {
         Json.reads[InlandMode]
       }
 
+    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+      val key = if (config.isPhase6Enabled) "keys" else "data.code"
+      Seq(key -> code)
+    }
+
     implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
     implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
   }
 
-  case class BorderMode(code: String, description: String) extends TransportMode[BorderMode] {
+  case class BorderMode(code: String, description: String) extends TransportMode with Radioable[BorderMode] {
     override val messageKeyPrefix: String = "transport.border.borderModeOfTransport"
   }
 
@@ -76,5 +83,10 @@ object TransportMode {
     implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
     implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => (x, y).compareBy(_.code)
+
+    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+      val key = if (config.isPhase6Enabled) "keys" else "data.code"
+      Seq(key -> code)
+    }
   }
 }

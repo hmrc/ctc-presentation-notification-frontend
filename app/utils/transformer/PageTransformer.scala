@@ -19,58 +19,36 @@ package utils.transformer
 import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 trait PageTransformer {
 
-  type DomainModelType
-  type ExtractedTypeInDepartureData
-  type CapturedAnswer = (QuestionPage[DomainModelType], DomainModelType)
-
-  def transformFromDeparture(
-    userAnswers: UserAnswers,
-    extractDataFromDepartureData: UserAnswers => Seq[ExtractedTypeInDepartureData],
-    generateCapturedAnswers: Seq[ExtractedTypeInDepartureData] => Seq[CapturedAnswer]
-  )(implicit writes: Writes[DomainModelType], reads: Reads[DomainModelType]): Future[UserAnswers] = Option
-    .when(shouldTransform(userAnswers)) {
-      val dataFromDepartureData = extractDataFromDepartureData(userAnswers)
-      val capturedAnswers       = generateCapturedAnswers(dataFromDepartureData)
-
-      collectAllCapturedAnswers(userAnswers, capturedAnswers).asFuture
-    }
-    .getOrElse(successful(userAnswers))
-
-  def shouldTransform: UserAnswers => Boolean = _ => true
-
-  private def collectAllCapturedAnswers(userAnswers: UserAnswers, capturedAnswers: Seq[CapturedAnswer])(implicit
-    writes: Writes[DomainModelType],
-    reads: Reads[DomainModelType]
-  ) =
-    capturedAnswers
-      .foldLeft(Try(userAnswers)) {
-        (accTry, capturedAnswer) =>
-          accTry.flatMap(_.set(capturedAnswer._1, capturedAnswer._2))
+  def set[T](page: QuestionPage[T], value: Option[T])(implicit writes: Writes[T], reads: Reads[T]): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      value match {
+        case Some(t) => set(page, t).apply(userAnswers)
+        case None    => Future.successful(userAnswers)
       }
 
-  def transformFromDepartureWithRefData(
-    userAnswers: UserAnswers,
-    fetchReferenceData: () => Future[Seq[DomainModelType]],
-    extractDataFromDepartureData: UserAnswers => Seq[ExtractedTypeInDepartureData],
-    generateCapturedAnswers: (Seq[ExtractedTypeInDepartureData], Seq[DomainModelType]) => Seq[CapturedAnswer]
-  )(implicit ec: ExecutionContext, writes: Writes[DomainModelType], reads: Reads[DomainModelType]): Future[UserAnswers] = Option
-    .when(shouldTransform(userAnswers)) {
-      fetchReferenceData().flatMap {
-        (dataFromRefDB: Seq[DomainModelType]) =>
-          val dataFromDepartureData = extractDataFromDepartureData(userAnswers)
-          val capturedAnswers       = generateCapturedAnswers(dataFromDepartureData, dataFromRefDB)
-          Future.fromTry(collectAllCapturedAnswers(userAnswers, capturedAnswers))
-      }
-    }
-    .getOrElse(successful(userAnswers))
+  def set[T](page: QuestionPage[T], t: T)(implicit writes: Writes[T], reads: Reads[T]): UserAnswers => Future[UserAnswers] =
+    userAnswers => Future.fromTry(userAnswers.set(page, t))
 
-  def transform(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers]
+  def set[T](
+    page: QuestionPage[T],
+    value: Option[String],
+    lookup: String => Future[T]
+  )(implicit writes: Writes[T], reads: Reads[T], ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      value match {
+        case Some(t) => set(page, t, lookup).apply(userAnswers)
+        case None    => Future.successful(userAnswers)
+      }
+
+  def set[T](
+    page: QuestionPage[T],
+    value: String,
+    lookup: String => Future[T]
+  )(implicit writes: Writes[T], reads: Reads[T], ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+    userAnswers => lookup(value).flatMap(set(page, _).apply(userAnswers))
 }
