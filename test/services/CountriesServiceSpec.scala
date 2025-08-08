@@ -23,16 +23,14 @@ import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import models.SelectableList
 import models.reference.{Country, CountryCode}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
+class CountriesServiceSpec extends SpecBase with Generators {
 
   private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                           = new CountriesService(mockRefDataConnector)

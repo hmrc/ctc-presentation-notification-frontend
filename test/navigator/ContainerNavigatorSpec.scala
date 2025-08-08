@@ -22,11 +22,10 @@ import generators.Generators
 import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.ContainerNavigator
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.border.BorderModeOfTransportPage
 
-class ContainerNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ContainerNavigatorSpec extends SpecBase with Generators {
 
   val navigator = new ContainerNavigator
 

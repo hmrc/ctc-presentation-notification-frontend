@@ -22,12 +22,11 @@ import connectors.ReferenceDataConnector
 import models.reference.LocationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LocationTypeServiceSpec extends SpecBase with BeforeAndAfterEach {
+class LocationTypeServiceSpec extends SpecBase {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new LocationTypeService(mockRefDataConnector)

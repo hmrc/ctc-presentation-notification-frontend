@@ -25,12 +25,11 @@ import models.LocationOfGoodsIdentification
 import models.reference.LocationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase with BeforeAndAfterEach {
+class LocationOfGoodsIdentificationTypeServiceSpec extends SpecBase {
 
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new LocationOfGoodsIdentificationTypeService(mockRefDataConnector)

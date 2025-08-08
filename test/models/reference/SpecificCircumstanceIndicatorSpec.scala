@@ -20,13 +20,13 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import generators.Generators
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
-import play.api.test.Helpers.running
 
-class SpecificCircumstanceIndicatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SpecificCircumstanceIndicatorSpec extends SpecBase with Generators {
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Country" - {
 
@@ -47,42 +47,37 @@ class SpecificCircumstanceIndicatorSpec extends SpecBase with ScalaCheckProperty
     "must deserialise" - {
       "when reading from reference data" - {
         "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config                                               = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = SpecificCircumstanceIndicator(code, description)
-                  Json
-                    .parse(s"""
-                              |{
-                              |  "code": "$code",
-                              |  "description": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[SpecificCircumstanceIndicator] mustEqual value
-              }
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
+          implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(mockFrontendAppConfig)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = SpecificCircumstanceIndicator(code, description)
+              Json
+                .parse(s"""
+                          |{
+                          |  "code": "$code",
+                          |  "description": "$description"
+                          |}
+                          |""".stripMargin)
+                .as[SpecificCircumstanceIndicator] mustEqual value
           }
+
         }
 
         "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config                                               = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = SpecificCircumstanceIndicator(code, description)
-                  Json
-                    .parse(s"""
-                              |{
-                              |  "key": "$code",
-                              |  "value": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[SpecificCircumstanceIndicator] mustEqual value
-              }
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
+          implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(mockFrontendAppConfig)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = SpecificCircumstanceIndicator(code, description)
+              Json
+                .parse(s"""
+                          |{
+                          |  "key": "$code",
+                          |  "value": "$description"
+                          |}
+                          |""".stripMargin)
+                .as[SpecificCircumstanceIndicator] mustEqual value
           }
         }
       }

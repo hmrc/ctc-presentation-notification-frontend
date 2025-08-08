@@ -21,10 +21,9 @@ import generators.Generators
 import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.SealNavigator
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
-class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SealNavigatorSpec extends SpecBase with Generators {
 
   private val navigator = new SealNavigator
 

@@ -18,13 +18,12 @@ package navigator
 
 import base.SpecBase
 import generators.Generators
-import models._
+import models.*
 import navigation.Navigator
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
-class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class NavigatorSpec extends SpecBase with Generators {
 
   private case object TestBadPage extends Page
 

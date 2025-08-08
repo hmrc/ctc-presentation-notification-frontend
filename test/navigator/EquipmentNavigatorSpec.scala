@@ -23,12 +23,11 @@ import generators.Generators
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigator
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.index.*
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 
-class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class EquipmentNavigatorSpec extends SpecBase with Generators {
   val navigator = new EquipmentNavigator
 
   "EquipmentNavigator" - {

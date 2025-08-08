@@ -21,21 +21,21 @@ import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.{CountryCode, CustomsOffice}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.Assertion
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
+class CustomsOfficesServiceSpec extends SpecBase {
 
   val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   val service                                      = new CustomsOfficesService(mockRefDataConnector)
 
-  val gbCustomsOffice1: CustomsOffice = CustomsOffice("GB1", "BOSTON", None)
-  val gbCustomsOffice2: CustomsOffice = CustomsOffice("GB2", "Appledore", None)
-  val gbCustomsOffices                = NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2)
+  val gbCustomsOffice1: CustomsOffice              = CustomsOffice("GB1", "BOSTON", None)
+  val gbCustomsOffice2: CustomsOffice              = CustomsOffice("GB2", "Appledore", None)
+  val gbCustomsOffices: NonEmptySet[CustomsOffice] = NonEmptySet.of(gbCustomsOffice1, gbCustomsOffice2)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

@@ -20,10 +20,9 @@ import base.SpecBase
 import generators.Generators
 import models.*
 import navigation.DepartureTransportMeansGroupNavigator
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.departureTransportMeans.*
 
-class DepartureTransportMeansGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportMeansGroupNavigatorSpec extends SpecBase with Generators {
 
   private val navigator = new DepartureTransportMeansGroupNavigator(transportIndex)
 

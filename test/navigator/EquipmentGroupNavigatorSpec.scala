@@ -22,11 +22,10 @@ import generated.*
 import generators.Generators
 import models.{CheckMode, Index, NormalMode}
 import navigation.EquipmentGroupNavigator
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
 import pages.transport.equipment.AddAnotherTransportEquipmentPage
 
-class EquipmentGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class EquipmentGroupNavigatorSpec extends SpecBase with Generators {
 
   private val navigator = new EquipmentGroupNavigator(equipmentIndex)
 

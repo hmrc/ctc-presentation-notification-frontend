@@ -23,10 +23,9 @@ import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import navigation.DepartureTransportMeansNavigator
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.departureTransportMeans.*
 
-class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportMeansNavigatorSpec extends SpecBase with Generators {
 
   val navigator = new DepartureTransportMeansNavigator
 

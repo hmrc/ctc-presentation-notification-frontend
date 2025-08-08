@@ -23,12 +23,11 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.reference.{Country, CountryCode, LocationType, Nationality}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckYourAnswersReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
+class CheckYourAnswersReferenceDataServiceSpec extends SpecBase {
 
   private val connector = mock[ReferenceDataConnector]
   private val service   = new CheckYourAnswersReferenceDataService(connector)

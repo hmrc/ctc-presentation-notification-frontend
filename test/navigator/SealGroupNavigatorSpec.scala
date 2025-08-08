@@ -20,12 +20,11 @@ import base.SpecBase
 import generators.Generators
 import models.{CheckMode, Index, NormalMode}
 import navigation.SealGroupNavigator
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.ItemPage
 import pages.transport.equipment.index.*
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 
-class SealGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SealGroupNavigatorSpec extends SpecBase with Generators {
 
   private val navigator = new SealGroupNavigator(sealIndex)
 
