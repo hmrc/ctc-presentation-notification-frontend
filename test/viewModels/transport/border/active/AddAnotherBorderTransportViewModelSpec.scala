@@ -16,7 +16,7 @@
 
 package viewModels.transport.border.active
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.DeclarationTypeSecurity.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import config.Constants.TransportModeCode.Air
 import generated.CustomsOfficeOfTransitDeclaredType06
@@ -26,14 +26,13 @@ import models.reference.transport.border.active.Identification
 import models.{Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.border.active.{IdentificationNumberPage, IdentificationPage}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import viewModels.ListItem
 import viewModels.transport.border.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
 
-class AddAnotherBorderTransportViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherBorderTransportViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "must get list items" - {
 

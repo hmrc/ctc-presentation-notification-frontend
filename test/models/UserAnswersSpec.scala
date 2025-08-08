@@ -16,7 +16,7 @@
 
 package models
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import pages.QuestionPage
 import play.api.libs.json.{Format, JsPath, JsValue, Json}
 import play.api.test.Helpers.running
@@ -24,7 +24,7 @@ import play.api.test.Helpers.running
 import java.time.Instant
 import scala.util.Try
 
-class UserAnswersSpec extends SpecBase {
+class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val testPageAnswer  = "foo"
   private val testPageAnswer2 = "bar"

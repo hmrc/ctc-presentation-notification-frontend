@@ -16,14 +16,13 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.loading._
+import pages.loading.*
 
-class PlaceOfLoadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class PlaceOfLoadingAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "PlaceOfLoadingAnswersHelper" - {
 

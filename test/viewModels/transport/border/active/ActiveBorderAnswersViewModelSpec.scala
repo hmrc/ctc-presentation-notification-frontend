@@ -16,7 +16,7 @@
 
 package viewModels.transport.border.active
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.CustomsOfficeOfTransitDeclaredType06
 import generators.Generators
 import models.reference.TransportMode.BorderMode
@@ -25,12 +25,11 @@ import models.reference.{CustomsOffice, Nationality}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.BorderModeOfTransportPage
-import pages.transport.border.active._
+import pages.transport.border.active.*
 import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
-class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ActiveBorderAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mode: Mode                   = arbitrary[Mode].sample.value
   val identificationNumber: String = Gen.alphaNumStr.sample.value
@@ -67,7 +66,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                     .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
                     .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
 
-                  val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
+                  val viewModelProvider   = new ActiveBorderAnswersViewModelProvider()
                   val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
                   activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
@@ -105,7 +104,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                     .setValue(AddConveyanceReferenceYesNoPage(activeIndex), true)
                     .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
 
-                  val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
+                  val viewModelProvider   = new ActiveBorderAnswersViewModelProvider()
                   val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
                   activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
@@ -143,7 +142,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                     .setValue(CustomsOfficeActiveBorderPage(activeIndex), office)
                     .setValue(AddConveyanceReferenceYesNoPage(activeIndex), false)
 
-                  val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
+                  val viewModelProvider   = new ActiveBorderAnswersViewModelProvider()
                   val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
                   activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
@@ -220,7 +219,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                   .setValue(CustomsOfficeActiveBorderPage(activeIndex), office)
                   .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceRefNumber)
 
-                val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
+                val viewModelProvider   = new ActiveBorderAnswersViewModelProvider()
                 val activeBorderSection = viewModelProvider.apply(answers, departureId, mode, activeIndex).section
 
                 activeBorderSection.sectionTitle.value mustEqual "Border means of transport 1"
@@ -254,7 +253,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                 .setValue(IdentificationPage(Index(0)), identification1)
                 .setValue(IdentificationPage(Index(1)), identification2)
 
-              val viewModelProvider    = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
+              val viewModelProvider    = new ActiveBorderAnswersViewModelProvider()
               val activeBorderSection1 = viewModelProvider.apply(answers, departureId, mode, Index(0)).section
               val activeBorderSection2 = viewModelProvider.apply(answers, departureId, mode, Index(1)).section
 
@@ -287,7 +286,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
                 .setValue(IdentificationPage(Index(0)), identification1)
                 .setValue(IdentificationPage(Index(1)), identification2)
 
-              val viewModelProvider    = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
+              val viewModelProvider    = new ActiveBorderAnswersViewModelProvider()
               val activeBorderSection1 = viewModelProvider.apply(answers, departureId, mode, Index(0)).section
               val activeBorderSection2 = viewModelProvider.apply(answers, departureId, mode, Index(1)).section
 

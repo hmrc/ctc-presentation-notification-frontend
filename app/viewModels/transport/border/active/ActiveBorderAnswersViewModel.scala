@@ -27,7 +27,7 @@ case class ActiveBorderAnswersViewModel(section: Section)
 
 object ActiveBorderAnswersViewModel {
 
-  class ActiveBorderAnswersViewModelProvider @Inject() () {
+  class ActiveBorderAnswersViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, index: Index)(implicit
       messages: Messages

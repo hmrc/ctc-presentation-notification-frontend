@@ -21,29 +21,21 @@ import config.Constants.AdditionalDeclarationType
 import connectors.DepartureMovementConnector
 import generated.{CC013CType, CC015CType, CC170CType}
 import generators.Generators
-import models.{MessageStatus, RichCC013CType}
 import models.departureP5.MessageType.*
 import models.departureP5.{DepartureMessages, MessageMetaData}
+import models.{MessageStatus, RichCC013CType}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.BeforeAndAfterEach
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DepartureMessageServiceSpec extends SpecBase with Generators with BeforeAndAfterEach {
+class DepartureMessageServiceSpec extends SpecBase with Generators {
 
   private val mockConnector = mock[DepartureMovementConnector]
   private val service       = new DepartureMessageService(mockConnector)
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[DepartureMovementConnector].toInstance(mockConnector))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

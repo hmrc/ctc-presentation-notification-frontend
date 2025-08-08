@@ -16,19 +16,18 @@
 
 package viewModels.transport.equipment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.transport.equipment.index.seals.routes
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.index.AddSealYesNoPage
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import viewModels.ListItem
 import viewModels.transport.equipment.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 
-class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherSealViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "must get list items" - {
 

@@ -16,7 +16,7 @@
 
 package views.templates
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.RenderConfig
 import generators.Generators
 import org.jsoup.Jsoup
@@ -29,7 +29,7 @@ import play.twirl.api.Html
 import views.base.ViewSpecAssertions
 import views.html.templates.MainTemplate
 
-class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckPropertyChecks with Generators {
+class MainTemplateSpec extends SpecBase with AppWithDefaultMockFixtures with ViewSpecAssertions with Generators {
 
   private val path = "foo"
 

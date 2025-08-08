@@ -16,7 +16,7 @@
 
 package services
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
@@ -25,12 +25,11 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TransportMeansIdentificationTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
+class TransportMeansIdentificationTypesServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockRefDataConnector: ReferenceDataConnector             = mock[ReferenceDataConnector]
   private val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]

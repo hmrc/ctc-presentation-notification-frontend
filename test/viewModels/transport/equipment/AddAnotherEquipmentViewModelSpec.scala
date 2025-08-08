@@ -16,7 +16,7 @@
 
 package viewModels.transport.equipment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.AuthorisationTypeDeparture.{ACR, SSE}
 import controllers.transport.equipment.index.routes
 import generated.AuthorisationType02
@@ -24,14 +24,13 @@ import generators.Generators
 import models.reference.Item
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.ContainerIndicatorPage
-import pages.transport.equipment.index._
+import pages.transport.equipment.index.*
 import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import viewModels.ListItem
 import viewModels.transport.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 
-class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherEquipmentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "AddAnotherEquipmentViewModelSpec" - {
     "listItems" - {
