@@ -16,7 +16,6 @@
 
 package base
 
-import config.FrontendAppConfig
 import models.{EoriNumber, Index, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -25,11 +24,7 @@ import org.scalatest.{BeforeAndAfterEach, EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
 import play.api.libs.json.{Format, Json, Reads}
-import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -46,7 +41,6 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience
     with BeforeAndAfterEach
-    with AppWithDefaultMockFixtures
     with MockitoSugar
     with Lenses
     with TestMessageData {
@@ -68,16 +62,6 @@ trait SpecBase
   val transportIndex: Index                               = Index(0)
   val houseConsignmentIndex: Index                        = Index(0)
   val houseConsignmentDepartureTransportMeansIndex: Index = Index(0)
-
-  def injector: Injector = app.injector
-
-  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
-
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

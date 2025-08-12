@@ -18,24 +18,23 @@ package navigator
 
 import base.SpecBase
 import config.Constants.AuthorisationTypeDeparture.ACR
-import config.Constants.DeclarationTypeSecurity._
-import generated._
+import config.Constants.DeclarationTypeSecurity.*
+import generated.*
 import generators.Generators
-import models._
+import models.*
 import models.reference.Country
 import navigation.LoadingNavigator
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading
-import pages.loading._
+import pages.loading.*
 import pages.transport.border.BorderModeOfTransportPage
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 import scalaxb.XMLCalendar
 
 import java.time.LocalDate
 
-class LoadingNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LoadingNavigatorSpec extends SpecBase with Generators {
 
   val navigator = new LoadingNavigator
 

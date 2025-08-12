@@ -16,18 +16,17 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.QualifierOfTheIdentification.*
 import generators.Generators
 import models.reference.{Country, CustomsOffice, LocationType}
 import models.{Coordinates, DynamicAddress, LocationOfGoodsIdentification, Mode}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.locationOfGoods.*
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
 import services.CheckYourAnswersReferenceDataService
 
-class LocationOfGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LocationOfGoodsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockReferenceDataService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
 

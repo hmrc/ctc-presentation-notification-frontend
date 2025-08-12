@@ -23,12 +23,11 @@ import models.reference.UnLocode
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnLocodeServiceSpec extends SpecBase with BeforeAndAfterEach {
+class UnLocodeServiceSpec extends SpecBase {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new UnLocodeService(mockRefDataConnector)

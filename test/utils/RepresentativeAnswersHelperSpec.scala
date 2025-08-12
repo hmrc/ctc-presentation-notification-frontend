@@ -16,16 +16,15 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ActingAsRepresentativePage
 import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
 
-class RepresentativeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class RepresentativeAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "RepresentativeAnswersHelper" - {
 

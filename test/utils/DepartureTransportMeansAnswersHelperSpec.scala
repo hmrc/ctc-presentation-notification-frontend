@@ -16,18 +16,17 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Mode
 import models.reference.Nationality
 import models.reference.transport.transportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.InlandModePage
-import pages.transport.departureTransportMeans._
+import pages.transport.departureTransportMeans.*
 
-class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportMeansAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "DepartureTransportMeansAnswersHelper" - {
 

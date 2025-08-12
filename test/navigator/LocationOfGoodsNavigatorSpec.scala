@@ -29,7 +29,6 @@ import models.reference.LocationType
 import models.reference.TransportMode.BorderMode
 import navigation.LocationOfGoodsNavigator
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.loading.CountryPage
 import pages.locationOfGoods.*
 import pages.locationOfGoods.contact.{NamePage, PhoneNumberPage}
@@ -41,7 +40,7 @@ import scalaxb.XMLCalendar
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
 
-class LocationOfGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class LocationOfGoodsNavigatorSpec extends SpecBase with Generators {
 
   val navigator = new LocationOfGoodsNavigator
 

@@ -23,15 +23,14 @@ import generators.Generators
 import models.Index
 import models.reference.TransportMode.BorderMode
 import models.reference.transport.border.active.Identification
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
+class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with Generators {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new MeansOfTransportIdentificationTypesActiveService(mockRefDataConnector)

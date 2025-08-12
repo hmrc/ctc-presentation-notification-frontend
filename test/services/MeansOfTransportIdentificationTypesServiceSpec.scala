@@ -26,14 +26,13 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
+class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Generators {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 

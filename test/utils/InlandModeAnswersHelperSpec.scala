@@ -16,19 +16,18 @@
 
 package utils
 
-import base.SpecBase
-import generated._
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import generated.*
 import generators.Generators
 import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.{AddInlandModeOfTransportYesNoPage, InlandModePage}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
 import viewModels.Section
 
-class InlandModeAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class InlandModeAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "InlandModeAnswersHelper" - {
 

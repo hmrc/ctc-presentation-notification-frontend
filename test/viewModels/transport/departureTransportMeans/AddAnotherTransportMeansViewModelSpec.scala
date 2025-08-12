@@ -16,7 +16,7 @@
 
 package viewModels.transport.departureTransportMeans
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.TransportModeCode.{Air, Mail}
 import generators.Generators
 import models.reference.TransportMode.InlandMode
@@ -24,13 +24,12 @@ import models.reference.transport.transportMeans.TransportMeansIdentification
 import models.{Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.InlandModePage
-import pages.transport.departureTransportMeans._
+import pages.transport.departureTransportMeans.*
 import viewModels.ListItem
 import viewModels.transport.departureTransportMeans.AddAnotherTransportMeansViewModel.AddAnotherTransportMeansViewModelProvider
 
-class AddAnotherTransportMeansViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherTransportMeansViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "must get list items" - {
 

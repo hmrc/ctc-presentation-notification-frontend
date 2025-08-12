@@ -23,12 +23,11 @@ import models.SelectableList
 import models.reference.Nationality
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NationalitiesServiceSpec extends SpecBase with BeforeAndAfterEach {
+class NationalitiesServiceSpec extends SpecBase {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new NationalitiesService(mockRefDataConnector)

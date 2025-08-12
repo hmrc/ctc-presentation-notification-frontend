@@ -16,7 +16,7 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.AddressType14
 import generators.Generators
 import models.reference.Country
@@ -24,13 +24,12 @@ import models.{Mode, RichAddressType14}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import services.CheckYourAnswersReferenceDataService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TransitHolderAnswerHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransitHolderAnswerHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockReferenceDataService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
 

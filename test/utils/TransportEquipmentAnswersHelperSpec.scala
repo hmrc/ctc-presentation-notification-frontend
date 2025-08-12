@@ -16,19 +16,18 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.Item
 import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.transport.equipment.{EquipmentSection, ItemSection, SealSection}
 import pages.transport.equipment.index.seals.SealIdentificationNumberPage
 import pages.transport.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
 import pages.transport.equipment.{AddTransportEquipmentYesNoPage, ItemPage}
 import play.api.libs.json.Json
 
-class TransportEquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransportEquipmentAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "TransportEquipmentAnswersHelper" - {
 

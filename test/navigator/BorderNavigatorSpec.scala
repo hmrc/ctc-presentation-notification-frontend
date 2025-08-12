@@ -27,14 +27,13 @@ import models.reference.TransportMode.{BorderMode, InlandMode}
 import models.reference.transport.border.active.Identification
 import navigation.BorderNavigator
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.active.*
 import pages.transport.border.{AddBorderMeansOfTransportYesNoPage, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.equipment.AddTransportEquipmentYesNoPage
 import pages.transport.equipment.index.ContainerIdentificationNumberPage
 import pages.transport.{AddInlandModeOfTransportYesNoPage, ContainerIndicatorPage, InlandModePage}
 
-class BorderNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class BorderNavigatorSpec extends SpecBase with Generators {
 
   val navigator = new BorderNavigator
 

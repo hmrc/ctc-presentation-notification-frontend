@@ -19,15 +19,14 @@ package navigator
 import base.SpecBase
 import generated.RepresentativeType06
 import generators.Generators
-import models._
+import models.*
 import navigation.RepresentativeNavigator
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ActingAsRepresentativePage
 import pages.representative.{AddRepresentativeContactDetailsYesNoPage, EoriPage, NamePage, RepresentativePhoneNumberPage}
 
-class RepresentativeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class RepresentativeNavigatorSpec extends SpecBase with Generators {
 
   val navigator = new RepresentativeNavigator
 

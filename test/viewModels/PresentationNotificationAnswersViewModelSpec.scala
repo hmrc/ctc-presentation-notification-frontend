@@ -16,7 +16,7 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.FrontendAppConfig
 import generators.Generators
 import models.Index
@@ -33,10 +33,10 @@ import viewModels.transport.border.active.ActiveBorderAnswersViewModel.ActiveBor
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generators {
+class PresentationNotificationAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockCyaService: CheckYourAnswersReferenceDataService = mock[CheckYourAnswersReferenceDataService]
-  private val config: FrontendAppConfig                            = injector.instanceOf[FrontendAppConfig]
+  private val mockFrontendAppConfig: FrontendAppConfig             = mock[FrontendAppConfig]
 
   override def beforeEach(): Unit = {
     reset(mockCyaService)
@@ -57,7 +57,7 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
       val activeBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModelProvider()
 
-      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(config, activeBorderAnswersViewModelProvider, mockCyaService)
+      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(mockFrontendAppConfig, activeBorderAnswersViewModelProvider, mockCyaService)
 
       val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
@@ -78,7 +78,7 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
       val activeBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModelProvider()
 
-      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(config, activeBorderAnswersViewModelProvider, mockCyaService)
+      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(mockFrontendAppConfig, activeBorderAnswersViewModelProvider, mockCyaService)
 
       val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 
@@ -97,7 +97,7 @@ class PresentationNotificationAnswersViewModelSpec extends SpecBase with Generat
 
       val activeBorderAnswersViewModelProvider = new ActiveBorderAnswersViewModelProvider()
 
-      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(config, activeBorderAnswersViewModelProvider, mockCyaService)
+      val viewModelProvider = new PresentationNotificationAnswersViewModelProvider(mockFrontendAppConfig, activeBorderAnswersViewModelProvider, mockCyaService)
 
       val result = viewModelProvider.apply(userAnswers, departureId).futureValue
 

@@ -22,12 +22,11 @@ import connectors.ReferenceDataConnector
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
+class TransportModeCodesServiceSpec extends SpecBase {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new TransportModeCodesService(mockRefDataConnector)

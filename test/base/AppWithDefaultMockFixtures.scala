@@ -25,6 +25,7 @@ import navigation.EquipmentGroupNavigator.EquipmentGroupNavigatorProvider
 import navigation.GoodsReferenceGroupNavigator.GoodsReferenceGroupNavigatorProvider
 import navigation.SealGroupNavigator.SealGroupNavigatorProvider
 import navigator.*
+import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -36,12 +37,26 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import repositories.SessionRepository
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.Injector
 import services.{CountriesService, CustomsOfficesService, NationalitiesService}
 
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite & SpecBase =>
+
+  def injector: Injector = app.injector
+
+  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+
+  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
+
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)

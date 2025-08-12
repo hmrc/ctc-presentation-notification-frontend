@@ -16,16 +16,15 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.{CustomsOffice, Nationality}
 import models.{Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.AddBorderMeansOfTransportYesNoPage
-import pages.transport.border.active._
+import pages.transport.border.active.*
 
-class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ActiveBorderTransportMeansAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "ActiveBorderTransportMeansAnswersHelper" - {
 

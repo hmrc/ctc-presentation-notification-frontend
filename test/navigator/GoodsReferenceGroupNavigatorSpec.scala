@@ -21,11 +21,10 @@ import generators.Generators
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import navigation.GoodsReferenceGroupNavigator
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.equipment.ItemPage
 import pages.transport.equipment.index.*
 
-class GoodsReferenceGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class GoodsReferenceGroupNavigatorSpec extends SpecBase with Generators {
 
   private val navigator = new GoodsReferenceGroupNavigator(itemIndex)
 

@@ -16,7 +16,7 @@
 
 package utils
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Mode
 import models.reference.CustomsOffice
@@ -24,14 +24,13 @@ import models.reference.TransportMode.BorderMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transport.{ContainerIndicatorPage, LimitDatePage}
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class PresentationNotificationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class PresentationNotificationAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "PresentationNotificationAnswersHelper" - {
 

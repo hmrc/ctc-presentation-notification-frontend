@@ -20,10 +20,9 @@ import base.SpecBase
 import generators.Generators
 import models.*
 import navigation.BorderGroupNavigator
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transport.border.AddAnotherBorderMeansOfTransportYesNoPage
 
-class BorderGroupNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class BorderGroupNavigatorSpec extends SpecBase with Generators {
 
   private val navigator = new BorderGroupNavigator(activeIndex)
 
