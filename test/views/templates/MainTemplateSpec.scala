@@ -21,7 +21,6 @@ import config.RenderConfig
 import generators.Generators
 import org.jsoup.Jsoup
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
