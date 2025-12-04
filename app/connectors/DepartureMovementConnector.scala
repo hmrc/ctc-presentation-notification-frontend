@@ -40,9 +40,7 @@ class DepartureMovementConnector @Inject() (
     extends HttpReadsTry
     with Logging {
 
-  private val version = config.isPhase6Enabled match {
-    case _ => 2.1
-  }
+  private val version = if config.isPhase6Enabled then 3.0 else 2.1
 
   private val jsonHeader: (String, String) =
     HeaderNames.ACCEPT -> s"application/vnd.hmrc.$version+json"
