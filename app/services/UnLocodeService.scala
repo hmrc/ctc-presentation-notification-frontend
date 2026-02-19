@@ -24,14 +24,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
-class UnLocodeService @Inject()(
-                                 appConfig: FrontendAppConfig,
-                                 referenceDataConnector: ReferenceDataConnector
-                               )(implicit ec: ExecutionContext) {
+class UnLocodeService @Inject() (
+  appConfig: FrontendAppConfig,
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext) {
 
   val regex: Regex = "^[A-Z0-9]{5}$".r
 
-  def doesUnLocodeExist(unLocode: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def doesUnLocodeExist(unLocode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     if (appConfig.disableUnLocodeExtendedLookup) {
       Future.successful(regex.findFirstIn(unLocode).isDefined)
     } else {
@@ -39,5 +39,4 @@ class UnLocodeService @Inject()(
         .getUnLocode(unLocode)
         .map(_.isDefined)
     }
-  }
 }
