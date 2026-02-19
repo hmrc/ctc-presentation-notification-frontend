@@ -17,12 +17,13 @@
 package services
 
 import base.SpecBase
+import config.FrontendAppConfig
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.UnLocode
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -30,7 +31,8 @@ import scala.concurrent.Future
 class UnLocodeServiceSpec extends SpecBase {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val service                                      = new UnLocodeService(mockRefDataConnector)
+  private val mockFrontendAppConfig: FrontendAppConfig     = mock[FrontendAppConfig]
+  private val service                                      = new UnLocodeService(mockFrontendAppConfig, mockRefDataConnector)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -39,10 +41,24 @@ class UnLocodeServiceSpec extends SpecBase {
 
   "UnLocodeService" - {
     "getUnLocodeList" - {
+      "when disableUnLocodeExtendedLookup is 'true' and the unLoCode is the correct format returns true" in {
+        when(mockFrontendAppConfig.disableUnLocodeExtendedLookup).thenReturn(true)
+        service.doesUnLocodeExist("DEAAL").futureValue mustEqual true
+        verifyNoInteractions(mockRefDataConnector)
+      }
+
+      "when disableUnLocodeExtendedLookup is 'true' and the unLoCode is the correct format returns false" in {
+        when(mockFrontendAppConfig.disableUnLocodeExtendedLookup).thenReturn(true)
+        service.doesUnLocodeExist("InvalidValue").futureValue mustEqual false
+        verifyNoInteractions(mockRefDataConnector)
+      }
+
       "must return true when unLocode exists" in {
 
         val unLocode     = "DEAAL"
         val unLocodeItem = UnLocode(unLocode, "Place D")
+
+        when(mockFrontendAppConfig.disableUnLocodeExtendedLookup).thenReturn(false)
 
         when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
           .thenReturn(Future.successful(Right(unLocodeItem)))
@@ -55,6 +71,8 @@ class UnLocodeServiceSpec extends SpecBase {
     "must return false when unLocode does not exist in reference data" in {
 
       val unLocode = "ABCDE"
+
+      when(mockFrontendAppConfig.disableUnLocodeExtendedLookup).thenReturn(false)
 
       when(mockRefDataConnector.getUnLocode(anyString())(any(), any()))
         .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
