@@ -31,8 +31,8 @@ import scala.concurrent.Future
 class UnLocodeServiceSpec extends SpecBase {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-  private val service = new UnLocodeService(mockFrontendAppConfig, mockRefDataConnector)
+  private val mockFrontendAppConfig: FrontendAppConfig     = mock[FrontendAppConfig]
+  private val service                                      = new UnLocodeService(mockFrontendAppConfig, mockRefDataConnector)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -55,7 +55,7 @@ class UnLocodeServiceSpec extends SpecBase {
 
       "must return true when unLocode exists" in {
 
-        val unLocode = "DEAAL"
+        val unLocode     = "DEAAL"
         val unLocodeItem = UnLocode(unLocode, "Place D")
 
         when(mockFrontendAppConfig.disableUnLocodeExtendedLookup).thenReturn(false)
