@@ -556,43 +556,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getTypesOfLocation" - {
       val url = s"/$baseUrl/lists/TypeOfLocation"
 
-      "when phase 5" - {
-        "must return Seq of security types when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(locationTypesResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                LocationType("A", "Designated location"),
-                LocationType("B", "Authorised place")
-              )
-
-              connector.getTypesOfLocation().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getTypesOfLocation())
-          }
-        }
-
-        "must handle client and server errors for control types" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getTypesOfLocation())
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Seq of security types when successful" in {
           running(phase6App) {
@@ -634,41 +597,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getTypeOfLocation" - {
       val locationType = "A"
 
-      "when phase 5" - {
-        def url(locationType: String) = s"/$baseUrl/lists/TypeOfLocation?data.type=$locationType"
-        "must return Seq of security types when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url(locationType)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(locationTypeResponseJson))
-              )
-
-              val expectedResult = LocationType("A", "Designated location")
-
-              connector.getTypeOfLocation(locationType).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url(locationType), emptyPhase5ResponseJson, connector.getTypeOfLocation(locationType))
-          }
-        }
-
-        "must handle client and server errors for control types" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url(locationType), connector.getTypeOfLocation(locationType))
-          }
-        }
-      }
-
       "when phase 6" - {
         def url(locationType: String) = s"/$baseUrl/lists/TypeOfLocation?keys=$locationType"
         "must return Seq of security types when successful" in {
@@ -706,51 +634,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCustomsOfficesOfTransitForCountry" - {
-
-      "when phase 5" - {
-        def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=TRA"
-
-        "must return a successful future response with a sequence of CustomsOffices" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              val countryId = "GB"
-
-              server.stubFor(
-                get(urlEqualTo(url(countryId)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(customsOfficesPhase5ResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                CustomsOffice("GB1", "testName1", None),
-                CustomsOffice("GB2", "testName2", None)
-              )
-
-              connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "AR"
-              checkNoReferenceDataFoundResponse(url(countryId), emptyPhase5ResponseJson, connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)))
-          }
-
-        }
-
-        "must handle client and server errors for control types" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "GB"
-              checkErrorResponse(url(countryId), connector.getCustomsOfficesOfTransitForCountry(CountryCode(countryId)))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?countryCodes=$countryId&roles=TRA"
@@ -799,48 +682,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCustomsOfficeForId" - {
-      "when phase 5" - {
-        def url(officeId: String) = s"/$baseUrl/lists/CustomsOffices?data.id=$officeId"
-
-        "must return a successful future response with a sequence of CustomsOffices" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              val id = "GB1"
-
-              server.stubFor(
-                get(urlEqualTo(url(id)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(customsOfficesPhase5ResponseJson))
-              )
-
-              val expectedResult = CustomsOffice("GB1", "testName1", None)
-
-              connector.getCustomsOfficeForId(id).futureValue.value mustEqual expectedResult
-
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val id        = "GB3"
-              checkNoReferenceDataFoundResponse(url(id), emptyPhase5ResponseJson, connector.getCustomsOfficeForId(id))
-          }
-
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val id        = "GB1"
-              checkErrorResponse(url(id), connector.getCustomsOfficeForId(id))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(officeId: String) = s"/$baseUrl/lists/CustomsOffices?referenceNumbers=$officeId"
@@ -890,48 +731,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       val ids = Seq("GB1", "GB2")
 
-      "when phase 5" - {
-
-        val url = s"/$baseUrl/lists/CustomsOffices?data.id=GB1&data.id=GB2"
-
-        "must return a successful future response with a sequence of CustomsOffices" in {
-
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(customsOfficesPhase5ResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                CustomsOffice("GB1", "testName1", None),
-                CustomsOffice("GB2", "testName2", None)
-              )
-
-              connector.getCustomsOfficesForIds(ids).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getCustomsOfficesForIds(ids))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getCustomsOfficesForIds(ids))
-          }
-        }
-      }
-
       "when phase 6" - {
 
         val url = s"/$baseUrl/lists/CustomsOffices?referenceNumbers=GB1&referenceNumbers=GB2"
@@ -976,54 +775,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCustomsOfficesOfDestinationForCountry" - {
-
-      "when phase 5" - {
-        def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=DES"
-
-        "must return a successful future response with a sequence of CustomsOffices" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              val countryId = "GB"
-
-              server.stubFor(
-                get(urlEqualTo(url(countryId)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(customsOfficesPhase5ResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                CustomsOffice("GB1", "testName1", None),
-                CustomsOffice("GB2", "testName2", None)
-              )
-
-              connector.getCustomsOfficesOfDestinationForCountry(CountryCode(countryId)).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "AR"
-              checkNoReferenceDataFoundResponse(
-                url(countryId),
-                emptyPhase5ResponseJson,
-                connector.getCustomsOfficesOfDestinationForCountry(CountryCode(countryId))
-              )
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "GB"
-              checkErrorResponse(url(countryId), connector.getCustomsOfficesOfDestinationForCountry(CountryCode(countryId)))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?countryCodes=$countryId&roles=DES"
@@ -1077,43 +828,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getNationalities" - {
       val url: String = s"/$baseUrl/lists/Nationality"
 
-      "when phase 5" - {
-        "must return Seq of Country when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(nationalitiesResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                Nationality("AR", "Argentina"),
-                Nationality("AU", "Australia")
-              )
-
-              connector.getNationalities().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getNationalities())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getNationalities())
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Seq of Country when successful" in {
           running(phase6App) {
@@ -1154,41 +868,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getNationality" - {
       val code = "AR"
-
-      "when phase 5" - {
-        def url(code: String): String = s"/$baseUrl/lists/Nationality?data.code=$code"
-        "must return a Nationality when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url(code)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(nationalityResponseJson))
-              )
-
-              val expectedResult = Nationality("AR", "Argentina")
-
-              connector.getNationality(code).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url(code), emptyPhase5ResponseJson, connector.getNationality(code))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url(code), connector.getNationality(code))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(code: String): String = s"/$baseUrl/lists/Nationality?keys=$code"
@@ -1231,71 +910,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       val url: String = s"/$baseUrl/lists/TransportModeCode"
 
       "when inland modes" - {
-
-        "when phase 5" - {
-          "must return Seq of inland modes when successful" in {
-            val responseJson: String =
-              """
-                |{
-                |  "_links": {
-                |    "self": {
-                |      "href": "/customs-reference-data/lists/TransportModeCode"
-                |    }
-                |  },
-                |  "meta": {
-                |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-                |    "snapshotDate": "2023-01-01"
-                |  },
-                |  "id": "TransportModeCode",
-                |  "data": [
-                |    {
-                |      "code": "1",
-                |      "description": "Maritime Transport"
-                |    },
-                |    {
-                |      "code": "2",
-                |      "description": "Rail Transport"
-                |    }
-                |  ]
-                |}
-                |""".stripMargin
-
-            running(phase5App) {
-              app =>
-                val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-                server.stubFor(
-                  get(urlEqualTo(url))
-                    .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                    .willReturn(okJson(responseJson))
-                )
-
-                val expectedResult = NonEmptySet.of(
-                  InlandMode("1", "Maritime Transport"),
-                  InlandMode("2", "Rail Transport")
-                )
-
-                connector.getInlandModes().futureValue.value mustEqual expectedResult
-            }
-          }
-
-          "must throw a NoReferenceDataFoundException for an empty response" in {
-            running(phase5App) {
-              app =>
-                val connector = app.injector.instanceOf[ReferenceDataConnector]
-                checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getInlandModes())
-            }
-
-          }
-
-          "must return an exception when an error response is returned" in {
-            running(phase5App) {
-              app =>
-                val connector = app.injector.instanceOf[ReferenceDataConnector]
-                checkErrorResponse(url, connector.getInlandModes())
-            }
-          }
-        }
 
         "when phase 6" - {
           "must return Seq of inland modes when successful" in {
@@ -1353,74 +967,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
 
       "when border modes" - {
-
-        "when phase 5" - {
-          "must return Seq of border modes when successful" in {
-            val responseJson: String =
-              """
-                |{
-                |  "_links": {
-                |    "self": {
-                |      "href": "/customs-reference-data/lists/TransportModeCode"
-                |    }
-                |  },
-                |  "meta": {
-                |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-                |    "snapshotDate": "2023-01-01"
-                |  },
-                |  "id": "TransportModeCode",
-                |  "data": [
-                |    {
-                |      "code": "1",
-                |      "description": "Maritime Transport"
-                |    },
-                |    {
-                |      "code": "1",
-                |      "description": "Maritime Transport"
-                |    },
-                |    {
-                |      "code": "2",
-                |      "description": "Rail Transport"
-                |    }
-                |  ]
-                |}
-                |""".stripMargin
-
-            running(phase5App) {
-              app =>
-                val connector = app.injector.instanceOf[ReferenceDataConnector]
-                server.stubFor(
-                  get(urlEqualTo(url))
-                    .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                    .willReturn(okJson(responseJson))
-                )
-
-                val expectedResult = NonEmptySet.of(
-                  BorderMode("1", "Maritime Transport"),
-                  BorderMode("2", "Rail Transport")
-                )
-
-                connector.getBorderModes().futureValue.value mustEqual expectedResult
-            }
-          }
-
-          "must throw a NoReferenceDataFoundException for an empty response" in {
-            running(phase5App) {
-              app =>
-                val connector = app.injector.instanceOf[ReferenceDataConnector]
-                checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getBorderModes())
-            }
-
-          }
-
-          "must return an exception when an error response is returned" in {
-            running(phase5App) {
-              app =>
-                val connector = app.injector.instanceOf[ReferenceDataConnector]
-                checkErrorResponse(url, connector.getBorderModes())
-            }
-          }
-        }
 
         "when phase 6" - {
           "must return Seq of border modes when successful" in {
@@ -1483,65 +1029,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getInlandModeCode" - {
       val inlandModeCode = "1"
 
-      "when phase 5" - {
-        def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?data.code=$code"
-        "must return inland mode when successful" in {
-          val responseJson: String =
-            """
-                |{
-                |  "_links": {
-                |    "self": {
-                |      "href": "/customs-reference-data/lists/TransportModeCode"
-                |    }
-                |  },
-                |  "meta": {
-                |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-                |    "snapshotDate": "2023-01-01"
-                |  },
-                |  "id": "TransportModeCode",
-                |  "data": [
-                |    {
-                |      "code": "1",
-                |      "description": "Maritime Transport"
-                |    }
-                |  ]
-                |}
-                |""".stripMargin
-
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url(inlandModeCode)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
-
-              val expectedResult = InlandMode("1", "Maritime Transport")
-
-              connector.getInlandMode(inlandModeCode).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url(inlandModeCode), emptyPhase5ResponseJson, connector.getInlandMode(inlandModeCode))
-          }
-
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url(inlandModeCode), connector.getInlandMode(inlandModeCode))
-          }
-        }
-      }
-
       "when phase 6" - {
         def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?keys=$code"
         "must return inland mode when successful" in {
@@ -1591,65 +1078,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
     "getBorderModeCode" - {
       val borderModeCode = "1"
-
-      "when phase 5" - {
-        def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?data.code=$code"
-        "must return border mode when successful" in {
-          val responseJson: String =
-            """
-                |{
-                |  "_links": {
-                |    "self": {
-                |      "href": "/customs-reference-data/lists/TransportModeCode"
-                |    }
-                |  },
-                |  "meta": {
-                |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-                |    "snapshotDate": "2023-01-01"
-                |  },
-                |  "id": "TransportModeCode",
-                |  "data": [
-                |    {
-                |      "code": "1",
-                |      "description": "Maritime Transport"
-                |    }
-                |  ]
-                |}
-                |""".stripMargin
-
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url(borderModeCode)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(responseJson))
-              )
-
-              val expectedResult = BorderMode("1", "Maritime Transport")
-
-              connector.getBorderMode(borderModeCode).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url(borderModeCode), emptyPhase5ResponseJson, connector.getBorderMode(borderModeCode))
-          }
-
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url(borderModeCode), connector.getBorderMode(borderModeCode))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(code: String): String = s"/$baseUrl/lists/TransportModeCode?keys=$code"
@@ -1702,43 +1130,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getQualifierOfTheIdentifications" - {
       val url: String = s"/$baseUrl/lists/QualifierOfTheIdentification"
 
-      "when phase 5" - {
-        "must return Seq of Identification qualifiers when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(locationOfGoodsIdentificationResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                LocationOfGoodsIdentification("T", "Postal code"),
-                LocationOfGoodsIdentification("X", "EORI number")
-              )
-
-              connector.getQualifierOfTheIdentifications().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getQualifierOfTheIdentifications())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getQualifierOfTheIdentifications())
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Seq of Identification qualifiers when successful" in {
           running(phase6App) {
@@ -1778,51 +1169,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCustomsOfficesOfExitForCountry" - {
-
-      "when phase 5" - {
-        def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=EXT"
-
-        "must return a successful future response with a sequence of CustomsOffices" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              val countryId = "GB"
-
-              server.stubFor(
-                get(urlEqualTo(url(countryId)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(customsOfficesPhase5ResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                CustomsOffice("GB1", "testName1", None),
-                CustomsOffice("GB2", "testName2", None)
-              )
-
-              connector.getCustomsOfficesOfExitForCountry(CountryCode(countryId)).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              val countryId = "AR"
-              checkNoReferenceDataFoundResponse(url(countryId), emptyPhase5ResponseJson, connector.getCustomsOfficesOfExitForCountry(CountryCode(countryId)))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "GB"
-              checkErrorResponse(url(countryId), connector.getCustomsOfficesOfExitForCountry(CountryCode(countryId)))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?countryCodes=$countryId&roles=EXT"
@@ -1871,49 +1217,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCustomsOfficesOfDepartureForCountry" - {
-      "when phase 5" - {
-        def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?data.countryId=$countryId&data.roles.role=DEP"
-
-        "must return a successful future response with a sequence of CustomsOffices" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              val countryId = "GB"
-
-              server.stubFor(
-                get(urlEqualTo(url(countryId)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(customsOfficesPhase5ResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                CustomsOffice("GB1", "testName1", None),
-                CustomsOffice("GB2", "testName2", None)
-              )
-
-              connector.getCustomsOfficesOfDepartureForCountry(countryId).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "AR"
-              checkNoReferenceDataFoundResponse(url(countryId), emptyPhase5ResponseJson, connector.getCustomsOfficesOfDepartureForCountry(countryId))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "GB"
-              checkErrorResponse(url(countryId), connector.getCustomsOfficesOfDepartureForCountry(countryId))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(countryId: String) = s"/$baseUrl/lists/CustomsOffices?countryCodes=$countryId&roles=DEP"
@@ -1963,43 +1266,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getCountries for full list" - {
       val url = s"/$baseUrl/lists/CountryCodesFullList"
 
-      "when phase 5" - {
-        "must return Seq of Country when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                Country(CountryCode("GB"), "United Kingdom"),
-                Country(CountryCode("AD"), "Andorra")
-              )
-              connector.getCountries("CountryCodesFullList").futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getCountries("CountryCodesFullList"))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getCountries("CountryCodesFullList"))
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Seq of Country when successful" in {
           running(phase6App) {
@@ -2039,44 +1305,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCountriesWithoutZipCountry" - {
-
-      "when phase 5" - {
-        def url(countryId: String) = s"/$baseUrl/lists/CountryWithoutZip?data.code=$countryId"
-        "must return Seq of Country when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "GB"
-              server.stubFor(
-                get(urlEqualTo(url(countryId)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(countryResponseJson))
-              )
-
-              val expectedResult = CountryCode(countryId)
-
-              connector.getCountriesWithoutZipCountry(countryId).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "AD"
-              checkNoReferenceDataFoundResponse(url(countryId), emptyPhase5ResponseJson, connector.getCountriesWithoutZipCountry(countryId))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "AD"
-              checkErrorResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(countryId: String) = s"/$baseUrl/lists/CountryWithoutZip?keys=$countryId"
@@ -2120,43 +1348,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getUnLocode" - {
       val code = "UN1"
 
-      "when phase 5" - {
-
-        val url = s"/$baseUrl/lists/UnLocodeExtended?data.unLocodeExtendedCode=UN1"
-
-        "must return a Seq of UN/LOCODES when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(unLocodeResponseJson))
-              )
-
-              val expectedResult = UnLocode("UN1", "testName1")
-
-              connector.getUnLocode(code).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getUnLocode(code))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getUnLocode(code))
-          }
-        }
-      }
-
       "when phase 6" - {
 
         val url = s"/$baseUrl/lists/UnLocodeExtended?keys=UN1"
@@ -2198,43 +1389,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getMeansOfTransportIdentificationTypesActive" - {
       val url: String = s"/$baseUrl/lists/TypeOfIdentificationofMeansOfTransportActive"
 
-      "when phase 5" - {
-        "must return Seq of Identification when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(meansOfTransportIdentificationTypesActiveResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                Identification("10", "IMO Ship Identification Number"),
-                Identification("11", "Name of the sea-going vessel")
-              )
-
-              connector.getMeansOfTransportIdentificationTypesActive().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getMeansOfTransportIdentificationTypesActive())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypesActive())
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Seq of Identification when successful" in {
           running(phase6App) {
@@ -2275,40 +1429,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getMeansOfTransportIdentificationTypeActive" - {
       val code = "10"
-      "when phase 5" - {
-        def url(code: String): String = s"/$baseUrl/lists/TypeOfIdentificationofMeansOfTransportActive?data.code=$code"
-        "must return Seq of Identification when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url(code)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(meansOfTransportIdentificationTypeActiveResponseJson))
-              )
-
-              val expectedResult = Identification("10", "IMO Ship Identification Number")
-
-              connector.getMeansOfTransportIdentificationTypeActive(code).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url(code), emptyPhase5ResponseJson, connector.getMeansOfTransportIdentificationTypeActive(code))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url(code), connector.getMeansOfTransportIdentificationTypeActive(code))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(code: String): String = s"/$baseUrl/lists/TypeOfIdentificationofMeansOfTransportActive?keys=$code"
@@ -2348,43 +1468,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getMeansOfTransportIdentificationTypes" - {
       val url: String = s"/$baseUrl/lists/TypeOfIdentificationOfMeansOfTransport"
-
-      "when phase 5" - {
-        "must return Seq of Identification when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(meansOfTransportIdentificationTypesResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                TransportMeansIdentification("10", "IMO Ship Identification Number"),
-                TransportMeansIdentification("11", "Name of the sea-going vessel")
-              )
-
-              connector.getMeansOfTransportIdentificationTypes().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getMeansOfTransportIdentificationTypes())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypes())
-          }
-        }
-      }
 
       "when phase 6" - {
         "must return Seq of Identification when successful" in {
@@ -2426,41 +1509,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getMeansOfTransportIdentificationType" - {
       val code = "10"
-      "when phase 5" - {
-        def url(code: String): String = s"/$baseUrl/lists/TypeOfIdentificationOfMeansOfTransport?data.type=$code"
-
-        "must return Seq of Identification when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url(code)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(meansOfTransportIdentificationTypeResponseJson))
-              )
-
-              val expectedResult = TransportMeansIdentification("10", "IMO Ship Identification Number")
-
-              connector.getMeansOfTransportIdentificationType(code).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url(code), emptyPhase5ResponseJson, connector.getMeansOfTransportIdentificationType(code))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url(code), connector.getMeansOfTransportIdentificationType(code))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(code: String): String = s"/$baseUrl/lists/TypeOfIdentificationOfMeansOfTransport?keys=$code"

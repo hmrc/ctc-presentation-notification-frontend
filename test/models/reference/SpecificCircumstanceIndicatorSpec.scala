@@ -46,26 +46,7 @@ class SpecificCircumstanceIndicatorSpec extends SpecBase with Generators {
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = SpecificCircumstanceIndicator(code, description)
-              Json
-                .parse(s"""
-                          |{
-                          |  "code": "$code",
-                          |  "description": "$description"
-                          |}
-                          |""".stripMargin)
-                .as[SpecificCircumstanceIndicator] mustEqual value
-          }
-
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[SpecificCircumstanceIndicator] = SpecificCircumstanceIndicator.reads(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>

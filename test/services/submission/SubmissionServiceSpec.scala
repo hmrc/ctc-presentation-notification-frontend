@@ -72,16 +72,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
   "attributes" - {
     "must assign phase ID" - {
-      "when phase6 disabled" in {
-        running(phase5App) {
-          app =>
-            val service = app.injector.instanceOf[SubmissionService]
-            val result  = service.attributes
-            result.keys.size mustEqual 1
-            result.get("@PhaseID").value.value.toString mustEqual "NCTS5.1"
-        }
-      }
-
       "when phase6 enabled" in {
         running(phase6App) {
           app =>

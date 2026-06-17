@@ -76,10 +76,8 @@ class SubmissionService @Inject() (
     userAnswers.data.as[CC170CType]
   }
 
-  def attributes: Map[String, DataRecord[?]] = {
-    val phaseId = if (config.phase6APIEnabled) NCTS6 else NCTS5u461
-    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(phaseId.toString, scope)))
-  }
+  def attributes: Map[String, DataRecord[?]] =
+    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS6.toString, scope)))
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDeparture: String): MESSAGESequence =
     MESSAGESequence(

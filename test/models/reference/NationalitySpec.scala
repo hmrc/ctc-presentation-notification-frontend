@@ -60,27 +60,7 @@ class NationalitySpec extends SpecBase with Generators {
       }
 
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val nationality = Nationality(code, description)
-              Json
-                .parse(s"""
-                          |{
-                          |  "code": "$code",
-                          |  "description": "$description"
-                          |}
-                          |""".stripMargin)
-                .as[Nationality](Nationality.reads(mockFrontendAppConfig)) mustEqual nationality
-          }
-
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
-
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>
               val nationality = Nationality(code, description)

@@ -44,25 +44,7 @@ class TransportMeansIdentificationSpec extends SpecBase {
       }
 
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = TransportMeansIdentification(code, description)
-              Json
-                .parse(s"""
-                          |{
-                          |  "type": "$code",
-                          |  "description": "$description"
-                          |}
-                          |""".stripMargin)
-                .as[TransportMeansIdentification](TransportMeansIdentification.reads(mockFrontendAppConfig)) mustEqual value
-          }
-
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>
               val value = TransportMeansIdentification(code, description)

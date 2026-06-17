@@ -35,19 +35,13 @@ case class Identification(code: String, description: String) extends Radioable[I
 object Identification extends DynamicEnumerableType[Identification] {
 
   def reads(config: FrontendAppConfig): Reads[Identification] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(Identification.apply)
-    } else {
-      Json.reads[Identification]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(Identification.apply)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.isPhase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
-  }
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] =
+    Seq("keys" -> code)
 
   implicit val format: Format[Identification] = Json.format[Identification]
 

@@ -34,14 +34,8 @@ import scala.xml.{Node, NodeSeq}
 
 class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
-  private lazy val phase5App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> false)
-
   private lazy val phase6App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ =>
-      guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> true)
-        .configure("feature-flags.phase-6-api-enabled" -> true)
+    _ => guiceApplicationBuilder()
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -72,26 +66,6 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
            |}
            |""".stripMargin
       )
-
-      "when phase 5" - {
-        "must return LocalReferenceNumber" in {
-          running(phase5App) {
-            app =>
-
-              val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
-
-              server.stubFor(
-                get(urlEqualTo(s"/movements/departures/$departureId"))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
-                  .willReturn(okJson(responseJson.toString()))
-              )
-
-              val result = connector.getLRN(departureId).futureValue
-
-              result mustEqual LocalReferenceNumber("DEF456")
-          }
-        }
-      }
 
       "when phase 6" - {
         "must return LocalReferenceNumber" in {
@@ -178,23 +152,6 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
         )
       )
 
-      "when phase 5" - {
-        "must return Messages" in {
-
-          running(phase5App) {
-            app =>
-              val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
-              server.stubFor(
-                get(urlEqualTo(s"/movements/departures/$departureId/messages"))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
-                  .willReturn(okJson(responseJson.toString()))
-              )
-
-              connector.getMessages(departureId).futureValue mustEqual expectedResult
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Messages" in {
 
@@ -278,22 +235,6 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
           )
         )
 
-        "when phase 5" in {
-          running(phase5App) {
-            app =>
-              val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
-              server.stubFor(
-                get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId/body"))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+xml"))
-                  .willReturn(ok(xml.toString()))
-              )
-
-              val result = connector.getMessage[CC015CType](departureId, messageId).futureValue
-
-              result mustEqual expectedResult
-          }
-        }
-
         "when phase 6" in {
           running(phase6App) {
             app =>
@@ -374,22 +315,6 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
           )
         )
 
-        "when phase 5" in {
-          running(phase5App) {
-            app =>
-              val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
-              server.stubFor(
-                get(urlEqualTo(s"/movements/departures/$departureId/messages/$messageId/body"))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+xml"))
-                  .willReturn(ok(xml.toString()))
-              )
-
-              val result = connector.getMessage[CC013CType](departureId, messageId).futureValue
-
-              result mustEqual expectedResult
-          }
-        }
-
         "when phase 6" in {
           running(phase6App) {
             app =>
@@ -413,26 +338,6 @@ class DepartureMovementConnectorSpec extends ItSpecBase with WireMockServerHandl
         <ncts:CC170C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
           <messageSender>token</messageSender>
         </ncts:CC170C>
-
-      "when phase 5" - {
-        "must return OK for successful response" in {
-          running(phase5App) {
-            app =>
-              val connector: DepartureMovementConnector = app.injector.instanceOf[DepartureMovementConnector]
-              server.stubFor(
-                post(urlEqualTo(s"/movements/departures/$departureId/messages"))
-                  .withRequestBody(equalTo(body.toString()))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
-                  .withHeader("Content-Type", equalTo("application/xml"))
-                  .willReturn(aResponse().withStatus(OK))
-              )
-
-              val result: HttpResponse = connector.submit(body, departureId).futureValue
-
-              result.status mustEqual OK
-          }
-        }
-      }
 
       "when phase 6" - {
         "must return OK for successful response" in {

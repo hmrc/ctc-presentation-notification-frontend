@@ -63,25 +63,7 @@ class TransportModeSpec extends SpecBase with Generators {
         }
 
         "when reading from reference data" - {
-          "when phase 5" in {
-            when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val value = InlandMode(code, description)
-                Json
-                  .parse(s"""
-                            |{
-                            |  "code": "$code",
-                            |  "description": "$description"
-                            |}
-                            |""".stripMargin)
-                  .as[InlandMode](InlandMode.reads(mockFrontendAppConfig)) mustEqual value
-            }
-
-          }
-
           "when phase 6" in {
-            when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
             forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
               (code, description) =>
                 val value = InlandMode(code, description)
@@ -155,24 +137,7 @@ class TransportModeSpec extends SpecBase with Generators {
         }
 
         "when reading from reference data" - {
-          "when phase 5" in {
-            when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val value = BorderMode(code, description)
-                Json
-                  .parse(s"""
-                            |{
-                            |  "code": "$code",
-                            |  "description": "$description"
-                            |}
-                            |""".stripMargin)
-                  .as[BorderMode](BorderMode.reads(mockFrontendAppConfig)) mustEqual value
-            }
-          }
-
           "when phase 6" in {
-            when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
             forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
               (code, description) =>
                 val value = BorderMode(code, description)

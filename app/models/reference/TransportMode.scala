@@ -45,19 +45,13 @@ object TransportMode {
   object InlandMode extends DynamicEnumerableType[InlandMode] {
 
     def reads(config: FrontendAppConfig): Reads[InlandMode] =
-      if (config.isPhase6Enabled) {
-        (
-          (__ \ "key").read[String] and
-            (__ \ "value").read[String]
-        )(InlandMode.apply)
-      } else {
-        Json.reads[InlandMode]
-      }
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(InlandMode.apply)
 
-    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-      val key = if (config.isPhase6Enabled) "keys" else "data.code"
-      Seq(key -> code)
-    }
+    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] =
+      Seq("keys" -> code)
 
     implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
@@ -71,22 +65,16 @@ object TransportMode {
   object BorderMode extends DynamicEnumerableType[BorderMode] {
 
     def reads(config: FrontendAppConfig): Reads[BorderMode] =
-      if (config.isPhase6Enabled) {
-        (
-          (__ \ "key").read[String] and
-            (__ \ "value").read[String]
-        )(BorderMode.apply)
-      } else {
-        Json.reads[BorderMode]
-      }
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(BorderMode.apply)
 
     implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
     implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => (x, y).compareBy(_.code)
 
-    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-      val key = if (config.isPhase6Enabled) "keys" else "data.code"
-      Seq(key -> code)
-    }
+    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] =
+      Seq("keys" -> code)
   }
 }

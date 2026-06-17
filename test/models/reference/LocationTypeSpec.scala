@@ -45,24 +45,7 @@ class LocationTypeSpec extends SpecBase {
       }
 
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = LocationType(code, description)
-              Json
-                .parse(s"""
-                          |{
-                          |  "type": "$code",
-                          |  "description": "$description"
-                          |}
-                          |""".stripMargin)
-                .as[LocationType](LocationType.reads(mockFrontendAppConfig)) mustEqual value
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>
               val value = LocationType(code, description)
