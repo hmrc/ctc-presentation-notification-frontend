@@ -5,3 +5,4 @@ tags: []
 test-repositories:
   - manage-transit-movements-performance-tests
   - manage-transit-movements-ui-journey-tests
+serviceNowMapping: SNSVC0005357
